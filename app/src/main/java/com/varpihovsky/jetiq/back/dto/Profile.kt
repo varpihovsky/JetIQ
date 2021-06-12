@@ -1,6 +1,7 @@
 package com.varpihovsky.jetiq.back.dto
 
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 @Entity
 data class Profile(
@@ -12,7 +13,7 @@ data class Profile(
     val f_id: String,
     val gr_id: String,
     val gr_name: String,
-    val id: String,
+    @PrimaryKey(autoGenerate = false) val id: String,
     val photo_url: String,
     val session: String,
     val spec_id: String,

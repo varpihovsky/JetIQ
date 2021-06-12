@@ -1,5 +1,6 @@
 package com.varpihovsky.jetiq.auth
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -56,21 +57,27 @@ class AuthViewModel @Inject constructor(
         progressShown.value = true
 
         if (!loginChecker.check(login.value!!) && !passwordChecker.check(password.value!!)) {
-            throw WrongDataException("Логін або пароль не пройшли перевірку на правильність")
+            exceptions.value =
+                WrongDataException("Логін або пароль не пройшли перевірку на правильність")
+            progressShown.value = false
+            return
         }
 
-        viewModelScope.launch(Dispatchers.IO) {
-            processLogin()
-            navigationManager.navigate(NavigationDirections.profile)
-        }
+        viewModelScope.launch(Dispatchers.IO) { processLogin() }
     }
 
     private fun processLogin() {
         try {
             profileModel.login(login.value!!, password.value!!)
+            navigationManager.navigate(NavigationDirections.profile)
         } catch (e: Exception) {
+            Log.d("Application", Log.getStackTraceString(e))
             exceptions.value = e
         }
-        progressShown.value = false
+        viewModelScope.launch { progressShown.value = false }
+    }
+
+    fun onExceptionProcessed() {
+        exceptions.value = null
     }
 }

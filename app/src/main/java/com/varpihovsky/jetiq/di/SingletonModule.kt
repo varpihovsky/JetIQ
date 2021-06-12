@@ -11,6 +11,7 @@ import com.varpihovsky.jetiq.system.navigation.NavigationManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -18,7 +19,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class SingletonModule {
+object SingletonModule {
 
     @Provides
     @Singleton
@@ -39,7 +40,7 @@ class SingletonModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(context: Context) =
+    fun provideDatabase(@ApplicationContext context: Context) =
         Room.databaseBuilder(
             context,
             JetIQDatabase::class.java,
@@ -54,7 +55,7 @@ class SingletonModule {
     @Singleton
     fun provideRetrofit() = Retrofit
         .Builder()
-        .baseUrl("/https://iq.vntu.edu.ua/b04213/curriculum/api.php")
+        .baseUrl("https://iq.vntu.edu.ua/b04213/curriculum/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 }

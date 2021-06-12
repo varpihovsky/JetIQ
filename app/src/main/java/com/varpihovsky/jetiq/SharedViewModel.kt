@@ -1,11 +1,11 @@
 package com.varpihovsky.jetiq
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.varpihovsky.jetiq.back.model.ProfileModel
 import com.varpihovsky.jetiq.system.navigation.NavigationDirections
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -16,9 +16,9 @@ class SharedViewModel @Inject constructor(
     fun getStartDestination(): String =
         runBlocking {
             try {
-                profileModel.getProfile().first()
+                Log.d("Application", profileModel.getProfile().first().toString())
                 return@runBlocking NavigationDirections.profile.destination
-            } catch (e: NoSuchElementException){
+            } catch (e: Exception) {
                 return@runBlocking NavigationDirections.authentication.destination
             }
         }
