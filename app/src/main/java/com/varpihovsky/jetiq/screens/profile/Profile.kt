@@ -105,13 +105,20 @@ private fun ExampleProfile() {
         MarksInfo(4, 100)
     )
 
+    var successChecked by remember { mutableStateOf(false) }
+    var markbookChecked by remember { mutableStateOf(false) }
+
     Profile(
         profile = exampleProfile,
         scrollState = rememberScrollState(),
         successMarksInfo = listOf(MarksInfo(1, 100), MarksInfo(2, 100)),
         subjects = successSubjectsList,
         markbookInfo = markbookInfoList,
-        markbookSubjects = markbookSubjectsList
+        markbookSubjects = markbookSubjectsList,
+        successChecked = successChecked,
+        onSuccessToggle = { _, _ -> successChecked = !successChecked },
+        markbookChecked = markbookChecked,
+        onMarkbookToggle = { _, _ -> markbookChecked = !markbookChecked }
     )
 }
 
@@ -120,10 +127,12 @@ private fun ExampleProfile() {
 fun Profile(
     profileViewModel: ProfileViewModel
 ) {
-    val scrollState = rememberScrollState()
+    val scrollState = profileViewModel.scrollState
     val profileState by profileViewModel.data.profile.observeAsState(UIProfileDTO())
     val successMarksInfoState by profileViewModel.data.successMarksInfo.observeAsState(listOf())
     val successSubjectsState by profileViewModel.data.successSubjects.observeAsState(listOf())
+    val successChecked by profileViewModel.data.successChecked.observeAsState(initial = false)
+    val markbookChecked by profileViewModel.data.markbookChecked.observeAsState(initial = false)
 
     Profile(
         profile = profileState,
@@ -131,7 +140,11 @@ fun Profile(
         successMarksInfo = successMarksInfoState,
         subjects = successSubjectsState,
         markbookInfo = listOf(),
-        markbookSubjects = listOf()
+        markbookSubjects = listOf(),
+        successChecked = successChecked,
+        onSuccessToggle = profileViewModel::onSuccessToggle,
+        markbookChecked = markbookChecked,
+        onMarkbookToggle = profileViewModel::onMarkbookToggle
     )
 }
 
@@ -143,7 +156,11 @@ fun Profile(
     successMarksInfo: List<MarksInfo>,
     subjects: List<UISubjectDTO>,
     markbookInfo: List<MarksInfo>,
-    markbookSubjects: List<UISubjectDTO>
+    markbookSubjects: List<UISubjectDTO>,
+    successChecked: Boolean,
+    onSuccessToggle: (Boolean, Int) -> Unit,
+    markbookChecked: Boolean,
+    onMarkbookToggle: (Boolean, Int) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -174,7 +191,6 @@ fun Profile(
         }
 
         InfoCard {
-            var checked by remember { mutableStateOf(false) }
             var successPosition by remember { mutableStateOf(0f) }
 
             Success(
@@ -184,9 +200,9 @@ fun Profile(
                 },
                 successMarksInfo = successMarksInfo,
                 subjects = subjects,
-                checked = checked
+                checked = successChecked
             ) {
-                checked = it
+                onSuccessToggle(it, successPosition.roundToInt())
                 if (!it) {
                     coroutineScope.launch {
                         scrollState.animateScrollTo(successPosition.roundToInt())
@@ -196,7 +212,6 @@ fun Profile(
         }
 
         InfoCard {
-            var checked by remember { mutableStateOf(false) }
             var markbookPosition by remember { mutableStateOf(0f) }
 
             Markbook(
@@ -204,11 +219,11 @@ fun Profile(
                     markbookPosition = scrollState.value + it.positionInRoot().y + SCROLL_OFFSET
                     Log.d("Application", "Markbook: $markbookPosition")
                 },
-                checked = checked,
+                checked = markbookChecked,
                 markbookSubjects = markbookSubjects,
                 marksInfo = markbookInfo
             ) {
-                checked = it
+                onMarkbookToggle(it, markbookPosition.roundToInt())
                 if (!it) {
                     coroutineScope.launch {
                         scrollState.animateScrollTo(markbookPosition.roundToInt())
