@@ -116,9 +116,9 @@ private fun ExampleProfile() {
         markbookInfo = markbookInfoList,
         markbookSubjects = markbookSubjectsList,
         successChecked = successChecked,
-        onSuccessToggle = { _, _ -> successChecked = !successChecked },
+        onSuccessToggle = { successChecked = !successChecked },
         markbookChecked = markbookChecked,
-        onMarkbookToggle = { _, _ -> markbookChecked = !markbookChecked }
+        onMarkbookToggle = { markbookChecked = !markbookChecked }
     )
 }
 
@@ -158,9 +158,9 @@ fun Profile(
     markbookInfo: List<MarksInfo>,
     markbookSubjects: List<UISubjectDTO>,
     successChecked: Boolean,
-    onSuccessToggle: (Boolean, Int) -> Unit,
+    onSuccessToggle: (Boolean) -> Unit,
     markbookChecked: Boolean,
-    onMarkbookToggle: (Boolean, Int) -> Unit
+    onMarkbookToggle: (Boolean) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -202,7 +202,7 @@ fun Profile(
                 subjects = subjects,
                 checked = successChecked
             ) {
-                onSuccessToggle(it, successPosition.roundToInt())
+                onSuccessToggle(it)
                 if (!it) {
                     coroutineScope.launch {
                         scrollState.animateScrollTo(successPosition.roundToInt())
@@ -223,7 +223,7 @@ fun Profile(
                 markbookSubjects = markbookSubjects,
                 marksInfo = markbookInfo
             ) {
-                onMarkbookToggle(it, markbookPosition.roundToInt())
+                onMarkbookToggle(it)
                 if (!it) {
                     coroutineScope.launch {
                         scrollState.animateScrollTo(markbookPosition.roundToInt())
