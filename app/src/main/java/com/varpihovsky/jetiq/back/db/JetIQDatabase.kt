@@ -2,13 +2,25 @@ package com.varpihovsky.jetiq.back.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.varpihovsky.jetiq.back.db.dao.ConfidentialDAO
 import com.varpihovsky.jetiq.back.db.dao.ProfileDAO
-import com.varpihovsky.jetiq.back.dto.Profile
+import com.varpihovsky.jetiq.back.db.dao.SubjectDAO
+import com.varpihovsky.jetiq.back.db.dao.SubjectDetailsDAO
+import com.varpihovsky.jetiq.back.dto.*
 
 @Database(
-    entities = [Profile::class],
-    version = 1
+    entities = [
+        ProfileDTO::class,
+        Confidential::class,
+        SubjectDTO::class,
+        SubjectDetailsDTO::class,
+        SubjectTaskDTO::class
+    ],
+    version = 5
 )
-abstract class JetIQDatabase: RoomDatabase() {
+abstract class JetIQDatabase : RoomDatabase() {
     abstract fun profileDAO(): ProfileDAO
+    abstract fun confidentialDAO(): ConfidentialDAO
+    abstract fun subjectDAO(): SubjectDAO
+    abstract fun subjectDetailsDAO(): SubjectDetailsDAO
 }

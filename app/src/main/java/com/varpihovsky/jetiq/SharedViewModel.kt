@@ -16,7 +16,7 @@ class SharedViewModel @Inject constructor(
     fun getStartDestination(): String =
         runBlocking {
             try {
-                Log.d("Application", profileModel.getProfile().first().toString())
+                Log.d("Application", profileModel.getConfidential().first().toString())
                 return@runBlocking NavigationDirections.profile.destination
             } catch (e: Exception) {
                 return@runBlocking NavigationDirections.authentication.destination
