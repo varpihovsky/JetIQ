@@ -71,7 +71,7 @@ fun InfoCard(
     content: @Composable () -> Unit
 ) {
     CenterLayoutItem(modifier = modifier.padding(vertical = 20.dp)) {
-        Card(modifier = Modifier.fillMaxWidth(0.95f), elevation = 5.dp) {
+        Card(modifier = Modifier.fillMaxWidth(0.92f), elevation = 5.dp) {
             content()
         }
     }

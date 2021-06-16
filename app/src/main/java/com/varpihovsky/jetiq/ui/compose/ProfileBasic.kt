@@ -58,18 +58,14 @@ fun ProfileInfoBar(
     modifier: Modifier = Modifier,
     profile: UIProfileDTO
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth(),
-    ) {
+    Row(modifier = modifier.fillMaxWidth()) {
         Avatar(
             modifier = Modifier
-                .requiredSize(35.dp)
-                .weight(1f)
-                .padding(start = 5.dp), url = profile.photoURL
+                .padding(horizontal = 9.dp)
+                .requiredSize(35.dp),
+            url = profile.photoURL
         )
         ProfileName(
-            modifier = Modifier.weight(6f),
             text = profile.name
         )
     }
