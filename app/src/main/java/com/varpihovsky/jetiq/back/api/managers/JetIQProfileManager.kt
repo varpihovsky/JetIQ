@@ -14,11 +14,18 @@ class JetIQProfileManager @Inject constructor(
         throwExceptionWhenNotConnected()
 
         val response = jetIQApi.authorize(login, password).execute()
+        val session = response.headers().get("Set-Cookie")
 
         throwExceptionWhenUnsuccessful(response, "Неправильний логін або пароль") {
             session == "wrong login or password"
         }
 
-        return response.body()!!
+        throwExceptionWhenNull(
+            "Невідома помилка! Зверніться до розробників.",
+            response.body(),
+            session
+        )
+
+        return response.body()!!.withSession(session!!)
     }
 }

@@ -20,4 +20,7 @@ interface SubjectDAO {
 
     @Query("DELETE FROM SubjectDTO WHERE card_id=:id")
     fun deleteSubjectById(id: Int)
+
+    @Query("DELETE FROM SubjectDTO")
+    fun deleteAll()
 }

@@ -18,4 +18,20 @@ data class ProfileDTO(
     val session: String?,
     val spec_id: String,
     val u_name: String
-)
+) {
+    fun withSession(session: String) = ProfileDTO(
+        course_num,
+        d_id,
+        d_name,
+        dob,
+        email,
+        f_id,
+        gr_id,
+        gr_name,
+        id,
+        photo_url,
+        session,
+        spec_id,
+        u_name
+    )
+}
