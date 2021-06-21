@@ -11,8 +11,6 @@ import com.varpihovsky.jetiq.ui.dto.MarksInfo
 import com.varpihovsky.jetiq.ui.dto.UIProfileDTO
 import com.varpihovsky.jetiq.ui.dto.UISubjectDTO
 import com.varpihovsky.jetiq.ui.dto.formMarksInfo
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
@@ -25,8 +23,6 @@ class ProfileInteractor @Inject constructor(
         get() = subjectModel.isLoading
 
     private var subscriber: Interactable? = null
-
-    private val scope = CoroutineScope(Dispatchers.IO)
 
     private val profileTask = ReactiveTask(task = this::collectProfileData)
     private val subjectListTask = ReactiveTask(task = this::collectSubjectsList)
@@ -110,7 +106,7 @@ class ProfileInteractor @Inject constructor(
     }
 
     private fun cutFacultyName(name: String) =
-        String(name.split(" ").filter { it.length > 2 }.map { it.first().toUpperCase() }
+        String(name.split(" ").filter { it.length > 2 }.map { it.first().uppercaseChar() }
             .toCharArray())
 
     private suspend fun collectMarkbookSubjects() {
