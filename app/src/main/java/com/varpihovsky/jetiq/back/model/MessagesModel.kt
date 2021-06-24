@@ -7,6 +7,7 @@ import com.varpihovsky.jetiq.back.db.managers.ProfileDatabaseManager
 import com.varpihovsky.jetiq.back.dto.MessageDTO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,7 +25,8 @@ class MessagesModel @Inject constructor(
         return messageDatabaseManager.getAll()
     }
 
-    private fun loadMessages() {
+    private suspend fun loadMessages() {
+        delay(50)
         jetIQMessageManager.getMessages(requireSession()).forEach { messageDTO ->
             messageDatabaseManager.putMessage(messageDTO)
         }
