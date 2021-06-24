@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -20,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.varpihovsky.jetiq.R
 import com.varpihovsky.jetiq.ui.compose.CenterLayout
 import com.varpihovsky.jetiq.ui.compose.CenterLayoutItem
-import com.varpihovsky.jetiq.ui.compose.ErrorDialog
+import com.varpihovsky.jetiq.ui.compose.CollectExceptions
 
 @Composable
 fun Auth(
@@ -31,10 +30,7 @@ fun Auth(
     val passwordHidden by viewModel.data.passwordHidden.observeAsState(true)
     val progressShown by viewModel.data.progressShown.observeAsState(false)
 
-    val exception by viewModel.data.exceptions.collectAsState()
-    exception?.message?.let {
-        ErrorDialog(message = it, onDismiss = viewModel::onExceptionProcessed)
-    }
+    CollectExceptions(viewModel = viewModel)
 
     Auth(
         loginValue = login,

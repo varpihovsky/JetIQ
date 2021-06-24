@@ -4,10 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.varpihovsky.jetiq.back.model.MessagesModel
+import com.varpihovsky.jetiq.system.exceptions.ViewModelExceptionReceivable
 import com.varpihovsky.jetiq.system.navigation.NavigationManager
 import com.varpihovsky.jetiq.system.util.ReactiveTask
 import com.varpihovsky.jetiq.ui.dto.UIMessageDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import java.util.*
 import javax.inject.Inject
@@ -16,8 +18,9 @@ import javax.inject.Inject
 class MessagesViewModel @Inject constructor(
     private val navigationManager: NavigationManager,
     private val messagesModel: MessagesModel
-) : ViewModel() {
+) : ViewModel(), ViewModelExceptionReceivable {
     val data by lazy { Data() }
+    override val exceptions: MutableStateFlow<Exception?> = MutableStateFlow(null)
 
     private val messages = MutableLiveData<List<UIMessageDTO>>()
     private val messagesTask = ReactiveTask(task = this::collectMessages)
@@ -48,6 +51,14 @@ class MessagesViewModel @Inject constructor(
 
     fun onNewMessageButtonClick() {
 
+    }
+
+    fun onCompose() {
+        messagesModel.receivable = this
+    }
+
+    fun onDispose() {
+        messagesModel.receivable = null
     }
 
 }
