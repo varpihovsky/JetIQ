@@ -6,6 +6,7 @@ import com.varpihovsky.jetiq.back.dto.SubjectDTO
 import com.varpihovsky.jetiq.back.dto.SubjectDetailsDTO
 import com.varpihovsky.jetiq.back.model.ProfileModel
 import com.varpihovsky.jetiq.back.model.SubjectModel
+import com.varpihovsky.jetiq.system.ConnectionManager
 import com.varpihovsky.jetiq.system.util.ReactiveTask
 import com.varpihovsky.jetiq.ui.dto.MarksInfo
 import com.varpihovsky.jetiq.ui.dto.UIProfileDTO
@@ -17,7 +18,8 @@ import javax.inject.Inject
 
 class ProfileInteractor @Inject constructor(
     private val profileModel: ProfileModel,
-    private val subjectModel: SubjectModel
+    private val subjectModel: SubjectModel,
+    private val connectionManager: ConnectionManager
 ) {
     val isLoading: LiveData<Boolean>
         get() = subjectModel.isLoading
@@ -143,6 +145,10 @@ class ProfileInteractor @Inject constructor(
     }
 
     suspend fun refresh() {
+        if (!connectionManager.isConnected()) {
+            throw RuntimeException("Немає підключення до інтернету, спробуйте ще раз")
+        }
+
         subjectListTask.stop()
         markbookSubjectsTask.stop()
 
