@@ -1,9 +1,6 @@
 package com.varpihovsky.jetiq.back.db.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.varpihovsky.jetiq.back.dto.MessageDTO
 import kotlinx.coroutines.flow.Flow
 
@@ -16,6 +13,12 @@ interface MessageDAO {
     @Query("SELECT * FROM MessageDTO WHERE msg_id=:id")
     fun getMessageById(id: Int): Flow<MessageDTO>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun addMessage(messageDTO: MessageDTO)
+
+    @Delete
+    fun deleteMessage(messageDTO: MessageDTO)
+
+    @Query("DELETE FROM MessageDTO")
+    fun deleteAll()
 }

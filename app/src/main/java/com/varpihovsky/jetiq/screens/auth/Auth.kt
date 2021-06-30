@@ -32,6 +32,8 @@ fun Auth(
 
     CollectExceptions(viewModel = viewModel)
 
+    viewModel.emptyAppbar()
+
     Auth(
         loginValue = login,
         loginOnChange = viewModel::onLoginChange,

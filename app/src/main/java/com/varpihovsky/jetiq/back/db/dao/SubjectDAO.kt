@@ -1,6 +1,10 @@
 package com.varpihovsky.jetiq.back.db.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy.IGNORE
+import androidx.room.Query
 import com.varpihovsky.jetiq.back.dto.SubjectDTO
 import kotlinx.coroutines.flow.Flow
 
@@ -12,7 +16,7 @@ interface SubjectDAO {
     @Query("SELECT * FROM SubjectDTO")
     fun getAllSubjects(): Flow<List<SubjectDTO>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = IGNORE)
     fun insert(subjectDTO: SubjectDTO)
 
     @Delete

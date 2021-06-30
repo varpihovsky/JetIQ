@@ -2,6 +2,7 @@ package com.varpihovsky.jetiq.back.db.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import com.varpihovsky.jetiq.back.dto.ProfileDTO
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +12,7 @@ interface ProfileDAO {
     @Query("SELECT * FROM ProfileDTO LIMIT 1")
     fun getProfile(): Flow<ProfileDTO>
 
-    @Insert
+    @Insert(onConflict = REPLACE)
     fun add(profileDTO: ProfileDTO)
 
     @Query("DELETE FROM ProfileDTO")

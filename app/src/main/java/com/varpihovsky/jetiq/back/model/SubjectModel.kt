@@ -1,6 +1,5 @@
 package com.varpihovsky.jetiq.back.model
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.varpihovsky.jetiq.back.api.managers.JetIQSubjectManager
 import com.varpihovsky.jetiq.back.db.managers.ConfidentialDatabaseManager
@@ -12,7 +11,6 @@ import com.varpihovsky.jetiq.back.dto.SubjectDTO
 import com.varpihovsky.jetiq.back.dto.SubjectDetailsDTO
 import com.varpihovsky.jetiq.back.dto.relations.SubjectDetailsWithTasks
 import com.varpihovsky.jetiq.system.util.ReactiveTask
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -34,8 +32,6 @@ class SubjectModel @Inject constructor(
     private var areDetailsLoading = false
     private var areMarkbookSubjectsLoading = false
 
-    private val scope = CoroutineScope(Dispatchers.IO)
-
     private val subjectDetailsTask = ReactiveTask(task = this::addSubjectDetails)
     private val markbookSubjectsTask = ReactiveTask(task = this::addMarkbookSubjects)
 
@@ -48,7 +44,6 @@ class SubjectModel @Inject constructor(
     private fun addSuccessJournal() {
         val session = requireSession()
         jetIQSubjectManager.getSuccessJournal(session).forEach {
-            Log.d(DEBUG_PREFIX, "Added SubjectDTO $it")
             subjectDatabaseManager.add(it)
         }
         areSubjectsLoading = false
@@ -71,7 +66,6 @@ class SubjectModel @Inject constructor(
         val session = requireSession()
 
         subjectDatabaseManager.getAll().filter { it.isNotEmpty() }.collect { list ->
-            Log.d(DEBUG_PREFIX, "Received SubjectDTO list with size ${list.size}")
             list.forEach { subject ->
                 jetIQSubjectManager.getSubjectDetails(
                     session,
@@ -81,7 +75,6 @@ class SubjectModel @Inject constructor(
                         it.subjectDetailsDTO.withId(subject.card_id.toInt()),
                         it.subjectTasks
                     )
-                    Log.d(DEBUG_PREFIX, "Added SubjectDetails $details")
                     subjectDetailsDatabaseManager.add(details)
                 }
             }
@@ -116,7 +109,7 @@ class SubjectModel @Inject constructor(
     }
 
     private fun updateLoadingState() {
-        scope.launch(Dispatchers.Main) {
+        modelScope.launch(Dispatchers.Main) {
             isLoading.value = areSubjectsLoading && areDetailsLoading
         }
     }
@@ -132,9 +125,5 @@ class SubjectModel @Inject constructor(
         subjectDetailsDatabaseManager.deleteAllDetails()
         subjectDetailsDatabaseManager.deleteAllTasks()
         subjectDetailsDatabaseManager.deleteAllMarkbookSubjects()
-    }
-
-    companion object {
-        private const val DEBUG_PREFIX = "SubjectModel"
     }
 }

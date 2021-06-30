@@ -5,6 +5,7 @@ import com.varpihovsky.jetiq.back.dto.SubjectDTO
 import com.varpihovsky.jetiq.back.dto.SubjectDetailsDTO
 import com.varpihovsky.jetiq.back.model.ProfileModel
 import com.varpihovsky.jetiq.back.model.SubjectModel
+import com.varpihovsky.jetiq.system.ConnectionManager
 import io.mockk.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -92,7 +93,8 @@ class ProfileInteractorTest {
         emit(array)
     }
 
-    private fun initInteractor() = ProfileInteractor(profileModel, subjectModel)
+    private fun initInteractor() =
+        ProfileInteractor(profileModel, subjectModel, ConnectionManager())
 
     @After
     fun teardown() {

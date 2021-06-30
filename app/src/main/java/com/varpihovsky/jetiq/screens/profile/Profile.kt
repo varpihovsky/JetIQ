@@ -2,7 +2,6 @@ package com.varpihovsky.jetiq.screens.profile
 
 import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -123,7 +122,8 @@ private fun ExampleProfile() {
         markbookChecked = markbookChecked,
         onMarkbookToggle = { markbookChecked = !markbookChecked },
         refreshState = rememberSwipeRefreshState(isRefreshing = true),
-        onRefresh = {}
+        onRefresh = {},
+        onSettingsClick = {}
     )
 }
 
@@ -154,6 +154,8 @@ fun Profile(
 
     CollectExceptions(viewModel = profileViewModel)
 
+    profileViewModel.emptyAppbar()
+
     Profile(
         profile = profileState,
         scrollState = scrollState,
@@ -166,7 +168,8 @@ fun Profile(
         markbookChecked = markbookChecked,
         onMarkbookToggle = profileViewModel::onMarkbookToggle,
         refreshState = rememberSwipeRefreshState(isRefreshing = isRefreshing),
-        onRefresh = profileViewModel::onRefresh
+        onRefresh = profileViewModel::onRefresh,
+        onSettingsClick = profileViewModel::onSettingsClick
     )
 }
 
@@ -184,7 +187,8 @@ fun Profile(
     markbookChecked: Boolean,
     onMarkbookToggle: (Boolean) -> Unit,
     refreshState: SwipeRefreshState,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -198,7 +202,8 @@ fun Profile(
     ProfileAppBar(
         profile = profile,
         heightState = heightState,
-        profileTextShown = profileTextShown
+        profileTextShown = profileTextShown,
+        onSettingsClick = onSettingsClick
     )
 
     SwipeRefresh(state = refreshState, onRefresh = onRefresh) {
@@ -318,15 +323,13 @@ fun Success(
 fun ProfileAppBar(
     profile: UIProfileDTO,
     heightState: Dp,
-    profileTextShown: Boolean
+    profileTextShown: Boolean,
+    onSettingsClick: () -> Unit
 ) {
     val elevation = if (profileTextShown) 10.dp else 0.dp
     val backgroundColor =
         if (heightState == 180.dp) MaterialTheme.colors.primary else Color.Transparent
-    val animatedColor = animateColorAsState(targetValue = backgroundColor)
     val zIndex = if (heightState == 180.dp) 10f else 0f
-    val buttonColor =
-        if (heightState == 180.dp) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onBackground
 
     Box(
         modifier = Modifier
@@ -336,8 +339,8 @@ fun ProfileAppBar(
         ProfileSettingsButton(
             modifier = Modifier
                 .align(Alignment.TopEnd),
-            onClick = { Log.d("UI", "clicked") },
-            color = buttonColor
+            onClick = onSettingsClick,
+            color = MaterialTheme.colors.onSurface
         )
     }
 
@@ -348,7 +351,7 @@ fun ProfileAppBar(
             .offset(y = -heightState)
             .zIndex(zIndex),
         elevation = elevation,
-        backgroundColor = animatedColor.value
+        backgroundColor = MaterialTheme.colors.surface
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             if (profileTextShown) {

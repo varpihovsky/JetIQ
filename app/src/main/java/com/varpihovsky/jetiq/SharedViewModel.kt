@@ -49,7 +49,7 @@ class SharedViewModel @Inject constructor(
     fun getCurrentDestination() = currentDestination
 
     fun onBottomBarButtonClick(direction: NavigationCommand) {
-        navigationManager.navigate(direction)
+        navigationManager.manage(direction)
         BottomNavigationItemFactory.create(direction)?.let {
             selectedNavbarEntry.value = it
         }

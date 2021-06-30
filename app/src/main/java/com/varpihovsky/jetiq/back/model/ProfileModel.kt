@@ -10,7 +10,7 @@ class ProfileModel @Inject constructor(
     private val profileDatabaseManager: ProfileDatabaseManager,
     private val confidentialDatabaseManager: ConfidentialDatabaseManager,
     private val jetIQProfileManager: JetIQProfileManager
-) {
+) : Model() {
     fun login(login: String, password: String) {
         val profile = jetIQProfileManager.login(login, password)
         confidentialDatabaseManager.putConfidential(Confidential(login, password))
@@ -20,4 +20,9 @@ class ProfileModel @Inject constructor(
     fun getProfile() = profileDatabaseManager.getProfile()
 
     fun getConfidential() = confidentialDatabaseManager.getConfidential()
+
+    fun clearData() {
+        profileDatabaseManager.removeProfile()
+        confidentialDatabaseManager.removeConfidential()
+    }
 }
