@@ -17,6 +17,10 @@ class ProfileModel @Inject constructor(
         profileDatabaseManager.putProfile(profile)
     }
 
+    fun logout() {
+        jetIQProfileManager.logout()
+    }
+
     fun getProfile() = profileDatabaseManager.getProfile()
 
     fun getConfidential() = confidentialDatabaseManager.getConfidential()

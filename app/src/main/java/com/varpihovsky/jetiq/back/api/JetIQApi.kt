@@ -16,6 +16,11 @@ interface JetIQApi {
     ): Call<ProfileDTO>
 
     @GET("api.php")
+    fun logout(
+        @Query("logout") logout: Int = 1
+    ): Call<ResponseBody>
+
+    @GET("api.php")
     fun getSuccessJournal(
         @Header("Cookie") cookie: String,
         @Query("action") action: String = "journ_list"
