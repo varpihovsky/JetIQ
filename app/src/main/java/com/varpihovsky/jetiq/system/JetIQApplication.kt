@@ -27,8 +27,6 @@ class JetIQApplication : Application(), Configuration.Provider {
     private fun scheduleBackgroundWork() {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
-            .setRequiresCharging(false)
-            .setRequiresBatteryNotLow(false)
             .build()
 
         val request = PeriodicWorkRequestBuilder<SessionRestorationWorker>(

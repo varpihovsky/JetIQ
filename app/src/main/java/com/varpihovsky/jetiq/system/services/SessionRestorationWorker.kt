@@ -5,6 +5,7 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.varpihovsky.jetiq.back.model.ProfileModel
+import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,8 +15,8 @@ import kotlinx.coroutines.launch
 
 @HiltWorker
 class SessionRestorationWorker @AssistedInject constructor(
-    context: Context,
-    workerParameters: WorkerParameters,
+    @Assisted context: Context,
+    @Assisted workerParameters: WorkerParameters,
     private val profileModel: ProfileModel
 ) : Worker(context, workerParameters) {
     private val scope = CoroutineScope(Dispatchers.IO)
