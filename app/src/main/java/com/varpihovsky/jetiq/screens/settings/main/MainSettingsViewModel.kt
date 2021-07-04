@@ -19,7 +19,7 @@ class MainSettingsViewModel @Inject constructor(
     private val profileModel: ProfileModel,
     private val messagesModel: MessagesModel,
     private val subjectModel: SubjectModel,
-    appbarManager: AppbarManager
+    appbarManager: AppbarManager,
 ) : JetIQViewModel(appbarManager, navigationManager) {
     fun onAboutClick() {
         navigationManager.manage(NavigationDirections.aboutSettings)

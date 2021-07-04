@@ -8,15 +8,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import com.varpihovsky.jetiq.R
-import com.varpihovsky.jetiq.screens.settings.SettingsAppBar
 import com.varpihovsky.jetiq.screens.settings.SettingsButton
+import com.varpihovsky.jetiq.ui.compose.BasicAppBar
 
 @Composable
 fun MainSettingsScreen(
     mainSettingsViewModel: MainSettingsViewModel
 ) {
     mainSettingsViewModel.assignAppbar {
-        SettingsAppBar(title = "Налаштування", onBackClick = mainSettingsViewModel::onBackClick)
+        BasicAppBar(
+            title = "Налаштування",
+            onBackClick = mainSettingsViewModel::onBackNavButtonClick
+        )
     }
 
     Column(

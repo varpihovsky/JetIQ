@@ -9,7 +9,7 @@ import com.varpihovsky.jetiq.ui.appbar.AppbarManager
 
 abstract class JetIQViewModel(
     private val appbarManager: AppbarManager,
-    private val navigationManager: NavigationManager
+    private val navigationManager: NavigationManager,
 ) : ViewModel() {
     fun assignAppbar(bar: @Composable () -> Unit) {
         appbarManager.manage(AppbarCommand(bar))
@@ -19,7 +19,7 @@ abstract class JetIQViewModel(
         appbarManager.manage(AppbarCommand { })
     }
 
-    fun onBackClick() {
+    open fun onBackNavButtonClick() {
         navigationManager.manage(NavigationDirections.back)
     }
 }

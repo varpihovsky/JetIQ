@@ -2,10 +2,7 @@ package com.varpihovsky.jetiq.back.dto.util
 
 import com.google.gson.Gson
 import com.google.gson.JsonParser
-import com.varpihovsky.jetiq.back.dto.MarkbookSubjectDTO
-import com.varpihovsky.jetiq.back.dto.SubjectDTO
-import com.varpihovsky.jetiq.back.dto.SubjectDetailsDTO
-import com.varpihovsky.jetiq.back.dto.SubjectTaskDTO
+import com.varpihovsky.jetiq.back.dto.*
 
 fun deserializeMarkbookSubjects(json: String): List<MarkbookSubjectDTO> {
     val gson = Gson()
@@ -71,6 +68,45 @@ fun deserializeSubjectTasks(json: String): List<SubjectTaskDTO> {
     }
     return members
 }
+
+fun deserializeTeachers(json: String): List<ListItemDTO> =
+    try {
+        deserializeListItem(json, ListItemJsonKey.TEACHER)
+    } catch (e: Exception) {
+        listOf()
+    }
+
+fun deserializeListItem(json: String, primaryKey: ListItemJsonKey): List<ListItemDTO> {
+    val parser = JsonParser()
+    val jsonObj = parser.parse(json).asJsonObject
+    val members = mutableListOf<ListItemDTO>()
+
+    val facultiesObj = jsonObj.get(primaryKey.get()).asJsonObject
+
+    for ((key, value) in facultiesObj.entrySet()) {
+        members.add(ListItemDTO(key.toInt(), value.asString))
+    }
+    return members
+}
+
+enum class ListItemJsonKey {
+    GROUP {
+        override fun get() = "st_group"
+    },
+    FACULTY {
+        override fun get() = "d_name"
+    },
+    STUDENT {
+        override fun get() = "s_name"
+    },
+    TEACHER {
+        override fun get() = "t_name"
+    };
+
+
+    abstract fun get(): String
+}
+
 
 fun isNumeric(string: String) = string.matches("-?\\d+(\\.\\d+)?".toRegex())
 

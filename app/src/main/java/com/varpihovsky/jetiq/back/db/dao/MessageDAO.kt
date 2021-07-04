@@ -4,7 +4,6 @@ import androidx.room.*
 import com.varpihovsky.jetiq.back.dto.MessageDTO
 import kotlinx.coroutines.flow.Flow
 
-
 @Dao
 interface MessageDAO {
     @Query("SELECT * FROM MessageDTO")

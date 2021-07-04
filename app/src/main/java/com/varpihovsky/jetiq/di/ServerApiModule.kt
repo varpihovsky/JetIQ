@@ -1,6 +1,7 @@
 package com.varpihovsky.jetiq.di
 
 import com.varpihovsky.jetiq.back.api.JetIQApi
+import com.varpihovsky.jetiq.back.api.managers.JetIQListManager
 import com.varpihovsky.jetiq.back.api.managers.JetIQMessageManager
 import com.varpihovsky.jetiq.back.api.managers.JetIQProfileManager
 import com.varpihovsky.jetiq.back.api.managers.JetIQSubjectManager
@@ -16,6 +17,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object ServerApiModule {
+    @Provides
+    @Singleton
+    fun provideJetIQListManager(jetIQApi: JetIQApi, connectionManager: ConnectionManager) =
+        JetIQListManager(jetIQApi, connectionManager)
+
     @Provides
     @Singleton
     fun provideJetIQMessageManager(jetIQApi: JetIQApi, connectionManager: ConnectionManager) =

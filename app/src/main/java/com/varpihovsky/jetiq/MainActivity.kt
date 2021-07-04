@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
     @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             val navController = rememberNavController()
             val viewModel = hiltViewModel<SharedViewModel>()
@@ -50,10 +51,11 @@ class MainActivity : ComponentActivity() {
                 Root(
                     sharedViewModel = viewModel,
                     navController = navController,
-                    appbarManager = appbarManager
+                    appbarManager = appbarManager,
                 )
             }
         }
     }
+
 
 }

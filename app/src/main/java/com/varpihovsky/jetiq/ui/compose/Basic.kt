@@ -4,12 +4,16 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -17,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.varpihovsky.jetiq.ui.dto.DropDownItem
 
 @Composable
 fun CenterLayout(
@@ -76,6 +81,18 @@ fun InfoCard(
         Card(modifier = cardModifier, elevation = elevation) {
             content()
         }
+    }
+}
+
+@Composable
+fun InfoCard(
+    content: @Composable () -> Unit
+) {
+    InfoCard(
+        modifier = Modifier.padding(vertical = 20.dp),
+        cardModifier = Modifier.fillMaxWidth(0.92f)
+    ) {
+        content()
     }
 }
 
@@ -201,12 +218,11 @@ fun ErrorDialog(
         onDismissRequest = onDismiss,
         buttons = {
             CenterLayoutItem {
-                TextButton(
+                BasicTextButton(
                     modifier = Modifier.padding(10.dp),
-                    onClick = onDismiss
-                ) {
-                    Text(text = "Відхилити")
-                }
+                    onClick = onDismiss,
+                    text = "Відхилити"
+                )
             }
         },
         title = {
@@ -220,4 +236,129 @@ fun ErrorDialog(
             }
         }
     )
+}
+
+@Composable
+fun BasicAppBar(
+    title: String,
+    onBackClick: () -> Unit
+) {
+    TopAppBar(
+        title = { Text(text = title) },
+        navigationIcon = { BackIconButton(onClick = onBackClick) }
+    )
+}
+
+@Composable
+fun BackIconButton(
+    onClick: () -> Unit
+) {
+    IconButton(onClick = onClick) {
+        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+    }
+}
+
+@Composable
+fun BasicTextButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    text: String
+) {
+    TextButton(modifier = modifier, onClick = onClick) {
+        Text(text = text)
+    }
+}
+
+@Composable
+fun SubscribedExposedDropDownList(
+    modifier: Modifier = Modifier,
+    text: String,
+    suggestions: List<DropDownItem>,
+    selected: DropDownItem,
+    onSelect: (DropDownItem) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    SubscribedExposedDropDownList(
+        modifier = modifier,
+        text = text,
+        expanded = expanded,
+        onExpandedChange = { expanded = it },
+        suggestions = suggestions,
+        selected = selected,
+        onSelect = {
+            expanded = false
+            onSelect(it)
+        }
+    )
+}
+
+@Composable
+fun SubscribedExposedDropDownList(
+    modifier: Modifier = Modifier,
+    text: String,
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    suggestions: List<DropDownItem>,
+    selected: DropDownItem,
+    onSelect: (DropDownItem) -> Unit
+) {
+    Row {
+        Text(text = text)
+        ExposedDropDownList(
+            modifier = modifier,
+            expanded = expanded,
+            onExpandedChange = onExpandedChange,
+            suggestions = suggestions,
+            selected = selected,
+            onSelect = onSelect
+        )
+    }
+}
+
+@Composable
+fun ExposedDropDownList(
+    modifier: Modifier = Modifier,
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    suggestions: List<DropDownItem>,
+    selected: DropDownItem,
+    onSelect: (DropDownItem) -> Unit
+) {
+    val iconRotateAnimation by animateFloatAsState(targetValue = if (expanded) 180f else 0f)
+    val icon = Icons.Filled.ArrowDropDown
+
+    Column(modifier = modifier) {
+        OutlinedTextField(
+            value = selected.text,
+            onValueChange = { },
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusable(false)
+                .clickable { onExpandedChange(!expanded) },
+            trailingIcon = {
+                IconToggleButton(
+                    checked = expanded,
+                    onCheckedChange = onExpandedChange
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        modifier = Modifier.rotate(iconRotateAnimation)
+                    )
+                }
+            }
+        )
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { onExpandedChange(false) },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            suggestions.forEach { label ->
+                DropdownMenuItem(onClick = { onSelect(label) }) {
+                    Text(text = label.text)
+                }
+            }
+        }
+    }
 }
