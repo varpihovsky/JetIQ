@@ -16,6 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.rememberCoilPainter
+import com.varpihovsky.jetiq.R
 import com.varpihovsky.jetiq.ui.dto.MarksInfo
 import com.varpihovsky.jetiq.ui.dto.UIProfileDTO
 import com.varpihovsky.jetiq.ui.dto.UISubjectDTO
@@ -36,7 +37,13 @@ fun Avatar(modifier: Modifier = Modifier, url: String) {
         painter = rememberCoilPainter(
             request = url,
             fadeIn = true,
-            requestBuilder = { transformations(CircleCropTransformation()) }),
+            requestBuilder = {
+                transformations(CircleCropTransformation())
+                placeholder(R.drawable.ic_baseline_person_24)
+                error(R.drawable.ic_baseline_person_24)
+            },
+            previewPlaceholder = R.drawable.ic_baseline_person_24
+        ),
         contentDescription = null
     )
 }

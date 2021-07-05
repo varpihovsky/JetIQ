@@ -28,6 +28,18 @@ abstract class JetIQManager constructor(
         }
     }
 
+    fun <T> exceptionWrap(
+        provider: () -> Response<T>
+    ): T {
+        throwExceptionWhenNotConnected()
+
+        val response = provider()
+
+        throwExceptionWhenUnsuccessful(response, STANDARD_ERROR_MESSAGE)
+
+        return response.body()!!
+    }
+
     companion object {
         @JvmStatic
         protected val STANDARD_ERROR_MESSAGE = "Критична помилка, зверніться до розробників"

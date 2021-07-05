@@ -16,13 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.varpihovsky.jetiq.SharedViewModel
 import com.varpihovsky.jetiq.screens.auth.Auth
-import com.varpihovsky.jetiq.screens.messages.MessagesScreen
+import com.varpihovsky.jetiq.screens.messages.contacts.ContactsScreen
+import com.varpihovsky.jetiq.screens.messages.main.MessagesScreen
+import com.varpihovsky.jetiq.screens.messages.new.NewMessageScreen
 import com.varpihovsky.jetiq.screens.profile.Profile
 import com.varpihovsky.jetiq.screens.settings.about.AboutSettingsScreen
 import com.varpihovsky.jetiq.screens.settings.main.MainSettingsScreen
@@ -37,7 +38,7 @@ import com.varpihovsky.jetiq.ui.appbar.AppbarManager
 fun Root(
     sharedViewModel: SharedViewModel,
     navController: NavHostController,
-    appbarManager: AppbarManager
+    appbarManager: AppbarManager,
 ) {
     val startDestination = remember { sharedViewModel.getStartDestination() }
     val scaffoldState = rememberScaffoldState()
@@ -74,33 +75,43 @@ fun Root(
                 route = NavigationDirections.authentication.destination,
                 arguments = NavigationDirections.authentication.arguments
             ) {
-                Auth(
-                    viewModel = hiltViewModel()
-                )
+                Auth(viewModel = hiltJetIQViewModel())
             }
             composable(
                 route = NavigationDirections.profile.destination,
                 arguments = NavigationDirections.profile.arguments
             ) {
-                Profile(profileViewModel = hiltViewModel())
+                Profile(profileViewModel = hiltJetIQViewModel())
             }
             composable(
                 route = NavigationDirections.messages.destination,
                 arguments = NavigationDirections.messages.arguments
             ) {
-                MessagesScreen(viewModel = hiltViewModel())
+                MessagesScreen(viewModel = hiltJetIQViewModel())
+            }
+            composable(
+                route = NavigationDirections.contacts.destination,
+                arguments = NavigationDirections.contacts.arguments
+            ) {
+                ContactsScreen(contactsViewModel = hiltJetIQViewModel())
+            }
+            composable(
+                route = NavigationDirections.newMessage.destination,
+                arguments = NavigationDirections.newMessage.arguments
+            ) {
+                NewMessageScreen(newMessageViewModel = hiltJetIQViewModel())
             }
             composable(
                 route = NavigationDirections.mainSettings.destination,
                 arguments = NavigationDirections.mainSettings.arguments
             ) {
-                MainSettingsScreen(mainSettingsViewModel = hiltViewModel())
+                MainSettingsScreen(mainSettingsViewModel = hiltJetIQViewModel())
             }
             composable(
                 route = NavigationDirections.aboutSettings.destination,
                 arguments = NavigationDirections.aboutSettings.arguments
             ) {
-                AboutSettingsScreen(aboutSettingsViewModel = hiltViewModel())
+                AboutSettingsScreen(aboutSettingsViewModel = hiltJetIQViewModel())
             }
         }
     }

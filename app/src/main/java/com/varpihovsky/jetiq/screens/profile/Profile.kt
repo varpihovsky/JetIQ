@@ -220,7 +220,7 @@ fun Profile(
                 StudentInfo(profile = profile)
             }
 
-            ProfileInfoCard {
+            InfoCard {
                 var successPosition by remember { mutableStateOf(0f) }
 
                 Success(
@@ -241,7 +241,7 @@ fun Profile(
                 }
             }
 
-            ProfileInfoCard {
+            InfoCard {
                 var markbookPosition by remember { mutableStateOf(0f) }
 
                 Markbook(
@@ -368,17 +368,5 @@ fun ProfileAppBar(
             }
         }
 
-    }
-}
-
-@Composable
-private fun ProfileInfoCard(
-    content: @Composable () -> Unit
-) {
-    InfoCard(
-        modifier = Modifier.padding(vertical = 20.dp),
-        cardModifier = Modifier.fillMaxWidth(0.92f)
-    ) {
-        content()
     }
 }

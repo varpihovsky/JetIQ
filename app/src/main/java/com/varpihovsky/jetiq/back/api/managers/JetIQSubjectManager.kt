@@ -27,13 +27,9 @@ class JetIQSubjectManager @Inject constructor(
     }
 
     fun getSubjectDetails(session: String, cardId: Int): SubjectDetailsWithTasks {
-        throwExceptionWhenNotConnected()
+        val response = exceptionWrap { jetIQApi.getSubjectDetails(session, cardId).execute() }
 
-        val response = jetIQApi.getSubjectDetails(session, cardId).execute()
-
-        throwExceptionWhenUnsuccessful(response, STANDARD_ERROR_MESSAGE)
-
-        val str = response.body()!!.string()
+        val str = response!!.string()
 
         val subjectDetailsDTO = deserializeSubjectDetails(str)
         val subjectTasks = deserializeSubjectTasks(str)
@@ -42,12 +38,8 @@ class JetIQSubjectManager @Inject constructor(
     }
 
     fun getMarkbookSubjects(session: String): List<MarkbookSubjectDTO> {
-        throwExceptionWhenNotConnected()
-
-        val response = jetIQApi.getMarkbookSubjects(session).execute()
-
-        throwExceptionWhenUnsuccessful(response, STANDARD_ERROR_MESSAGE)
-
-        return deserializeMarkbookSubjects(response.body()!!.string())
+        return deserializeMarkbookSubjects(exceptionWrap {
+            jetIQApi.getMarkbookSubjects(session).execute()
+        }!!.string())
     }
 }

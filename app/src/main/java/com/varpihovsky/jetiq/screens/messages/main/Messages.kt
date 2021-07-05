@@ -1,4 +1,4 @@
-package com.varpihovsky.jetiq.screens.messages
+package com.varpihovsky.jetiq.screens.messages.main
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -44,7 +44,19 @@ fun MessagesScreen(viewModel: MessagesViewModel) {
 
     CollectExceptions(viewModel = viewModel)
 
-    viewModel.assignAppbar { TopAppBar(title = { Text(text = "Повідомлення") }) }
+    viewModel.assignAppbar {
+        TopAppBar(
+            title = { Text(text = "Повідомлення") },
+            actions = {
+                IconButton(onClick = viewModel::onContactsClick) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_baseline_person_24),
+                        contentDescription = null
+                    )
+                }
+            }
+        )
+    }
 
     MessagesScreen(
         messages = messagesState,

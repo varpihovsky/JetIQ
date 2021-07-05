@@ -1,4 +1,4 @@
-package com.varpihovsky.jetiq.screens.messages
+package com.varpihovsky.jetiq.screens.messages.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,6 +6,7 @@ import com.varpihovsky.jetiq.back.model.MessagesModel
 import com.varpihovsky.jetiq.system.ConnectionManager
 import com.varpihovsky.jetiq.system.JetIQViewModel
 import com.varpihovsky.jetiq.system.exceptions.ViewModelExceptionReceivable
+import com.varpihovsky.jetiq.system.navigation.NavigationDirections
 import com.varpihovsky.jetiq.system.navigation.NavigationManager
 import com.varpihovsky.jetiq.system.util.ReactiveTask
 import com.varpihovsky.jetiq.ui.appbar.AppbarManager
@@ -21,7 +22,7 @@ class MessagesViewModel @Inject constructor(
     private val navigationManager: NavigationManager,
     private val messagesModel: MessagesModel,
     private val connectionManager: ConnectionManager,
-    appbarManager: AppbarManager
+    appbarManager: AppbarManager,
 ) : JetIQViewModel(appbarManager, navigationManager), ViewModelExceptionReceivable {
     val data by lazy { Data() }
     val isLoading: LiveData<Boolean>
@@ -58,7 +59,7 @@ class MessagesViewModel @Inject constructor(
     }
 
     fun onNewMessageButtonClick() {
-
+        //navigationManager.manage(NavigationDirections.newMessage)
     }
 
     fun onCompose() {
@@ -75,6 +76,10 @@ class MessagesViewModel @Inject constructor(
         } else {
             exceptions.value = RuntimeException("Відсутнє підключення до інтернету!")
         }
+    }
+
+    fun onContactsClick() {
+        navigationManager.manage(NavigationDirections.contacts)
     }
 
 }

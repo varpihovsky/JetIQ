@@ -11,12 +11,6 @@ class JetIQMessageManager @Inject constructor(
     connectionManager: ConnectionManager
 ) : JetIQManager(connectionManager) {
     fun getMessages(session: String): List<MessageDTO> {
-        throwExceptionWhenNotConnected()
-
-        val response = jetIQApi.getMessages(session).execute()
-
-        throwExceptionWhenUnsuccessful(response, STANDARD_ERROR_MESSAGE)
-
-        return response.body()!!
+        return exceptionWrap { jetIQApi.getMessages(session).execute() }
     }
 }

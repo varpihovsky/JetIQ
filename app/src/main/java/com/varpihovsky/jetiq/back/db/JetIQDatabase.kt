@@ -13,9 +13,10 @@ import com.varpihovsky.jetiq.back.dto.*
         SubjectDetailsDTO::class,
         SubjectTaskDTO::class,
         MarkbookSubjectDTO::class,
-        MessageDTO::class
+        MessageDTO::class,
+        ContactDTO::class
     ],
-    version = 8
+    version = 9
 )
 abstract class JetIQDatabase : RoomDatabase() {
     abstract fun profileDAO(): ProfileDAO
@@ -23,4 +24,5 @@ abstract class JetIQDatabase : RoomDatabase() {
     abstract fun subjectDAO(): SubjectDAO
     abstract fun subjectDetailsDAO(): SubjectDetailsDAO
     abstract fun messageDAO(): MessageDAO
+    abstract fun contactDAO(): ContactDAO
 }

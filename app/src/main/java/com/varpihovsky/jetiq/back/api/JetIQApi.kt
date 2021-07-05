@@ -44,4 +44,31 @@ interface JetIQApi {
         @Header("Cookie") cookie: String,
         @Query("get_mess") getMessage: Int = 1
     ): Call<List<MessageDTO>>
+
+    @GET("api.php")
+    fun getFaculties(
+        @Query("msg") msg: Int = 1,
+        @Query("facult_list") facultiesList: Int = 1
+    ): Call<ResponseBody>
+
+    @GET("api.php")
+    fun getGroupByFaculty(
+        @Query("msg") msg: Int = 1,
+        @Query("group_list") groupList: Int = 1,
+        @Query("f_id") facultyId: Int
+    ): Call<ResponseBody>
+
+    @GET("api.php")
+    fun getStudentByGroup(
+        @Query("msg") msg: Int = 1,
+        @Query("stud_list") studentList: Int = 1,
+        @Query("group_id") groupId: Int
+    ): Call<ResponseBody>
+
+    @GET("api.php")
+    fun getTeachersByQuery(
+        @Query("msg") msg: Int = 1,
+        @Query("t_list") teachersList: Int = 1,
+        @Query("t_name") query: String
+    ): Call<ResponseBody>
 }

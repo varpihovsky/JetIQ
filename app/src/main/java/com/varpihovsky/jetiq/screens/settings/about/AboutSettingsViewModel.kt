@@ -9,5 +9,5 @@ import javax.inject.Inject
 @HiltViewModel
 class AboutSettingsViewModel @Inject constructor(
     appbarManager: AppbarManager,
-    navigationManager: NavigationManager
+    navigationManager: NavigationManager,
 ) : JetIQViewModel(appbarManager, navigationManager)

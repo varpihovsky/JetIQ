@@ -23,7 +23,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val profileInteractor: ProfileInteractor,
     private val navigationManager: NavigationManager,
-    appbarManager: AppbarManager
+    appbarManager: AppbarManager,
 ) : JetIQViewModel(appbarManager, navigationManager),
     ViewModelWithException,
     ProfileInteractor.Interactable {

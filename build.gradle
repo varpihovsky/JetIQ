@@ -12,7 +12,11 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url "https://www.jitpack.io"
+        }
     }
+
     dependencies {
         classpath "com.android.tools.build:gradle:7.1.0-alpha02"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.10"
@@ -23,7 +27,7 @@ buildscript {
         // in the individual module build.gradle files
     }
 }
-
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+

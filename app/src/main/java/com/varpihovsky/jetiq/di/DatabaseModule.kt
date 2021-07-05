@@ -17,6 +17,10 @@ import javax.inject.Singleton
 object DatabaseModule {
     @Provides
     @Singleton
+    fun provideContactDatabaseManager(contactDAO: ContactDAO) = ContactDatabaseManager(contactDAO)
+
+    @Provides
+    @Singleton
     fun provideMessageDatabaseManager(messageDAO: MessageDAO) = MessageDatabaseManager(messageDAO)
 
     @Provides
@@ -36,6 +40,10 @@ object DatabaseModule {
     @Singleton
     fun provideConfidentialDatabaseManager(confidentialDAO: ConfidentialDAO) =
         ConfidentialDatabaseManager(confidentialDAO)
+
+    @Provides
+    @Singleton
+    fun provideContactDAO(jetIQDatabase: JetIQDatabase) = jetIQDatabase.contactDAO()
 
     @Provides
     @Singleton

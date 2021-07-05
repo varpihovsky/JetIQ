@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.flow
 abstract class FlowManager<T>(defaultValue: T) {
     private val flowStack = mutableListOf<T>()
 
-    val commands: Flow<T> by lazy { _commands }
+    open val commands: Flow<T> by lazy { _commands }
 
     private val _commands = flow<T> {
         while (true) {

@@ -10,15 +10,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.varpihovsky.jetiq.screens.settings.SettingsAppBar
 import com.varpihovsky.jetiq.screens.settings.SettingsButton
+import com.varpihovsky.jetiq.ui.compose.BasicAppBar
 
 @Composable
 fun AboutSettingsScreen(
     aboutSettingsViewModel: AboutSettingsViewModel
 ) {
     aboutSettingsViewModel.assignAppbar {
-        SettingsAppBar(title = "Про додаток", onBackClick = aboutSettingsViewModel::onBackClick)
+        BasicAppBar(
+            title = "Про додаток",
+            onBackClick = aboutSettingsViewModel::onBackNavButtonClick
+        )
     }
 
     Column(modifier = Modifier.fillMaxSize()) {

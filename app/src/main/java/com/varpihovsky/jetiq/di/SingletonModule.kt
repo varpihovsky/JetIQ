@@ -1,11 +1,12 @@
 package com.varpihovsky.jetiq.di
 
+import com.varpihovsky.jetiq.back.api.managers.JetIQListManager
+import com.varpihovsky.jetiq.back.api.managers.JetIQMessageManager
 import com.varpihovsky.jetiq.back.api.managers.JetIQProfileManager
 import com.varpihovsky.jetiq.back.api.managers.JetIQSubjectManager
-import com.varpihovsky.jetiq.back.db.managers.ConfidentialDatabaseManager
-import com.varpihovsky.jetiq.back.db.managers.ProfileDatabaseManager
-import com.varpihovsky.jetiq.back.db.managers.SubjectDatabaseManager
-import com.varpihovsky.jetiq.back.db.managers.SubjectDetailsDatabaseManager
+import com.varpihovsky.jetiq.back.db.managers.*
+import com.varpihovsky.jetiq.back.model.ListModel
+import com.varpihovsky.jetiq.back.model.MessagesModel
 import com.varpihovsky.jetiq.back.model.ProfileModel
 import com.varpihovsky.jetiq.back.model.SubjectModel
 import com.varpihovsky.jetiq.system.ConnectionManager
@@ -30,6 +31,27 @@ object SingletonModule {
     @Provides
     @Singleton
     fun provideAppbarManager() = AppbarManager()
+
+    @Provides
+    @Singleton
+    fun provideMessagesModel(
+        jetIQMessageManager: JetIQMessageManager,
+        messageDatabaseManager: MessageDatabaseManager,
+        confidentialDatabaseManager: ConfidentialDatabaseManager,
+        profileDatabaseManager: ProfileDatabaseManager
+    ) = MessagesModel(
+        jetIQMessageManager,
+        messageDatabaseManager,
+        confidentialDatabaseManager,
+        profileDatabaseManager
+    )
+
+    @Provides
+    @Singleton
+    fun provideListModel(
+        contactDatabaseManager: ContactDatabaseManager,
+        jetIQListManager: JetIQListManager
+    ) = ListModel(jetIQListManager, contactDatabaseManager)
 
     @Provides
     @Singleton

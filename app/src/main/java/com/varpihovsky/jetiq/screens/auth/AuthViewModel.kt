@@ -25,7 +25,7 @@ class AuthViewModel @Inject constructor(
     @Named("login_checker") private val loginValidator: Validator<String>,
     @Named("password_checker") private val passwordValidator: Validator<String>,
     private val navigationManager: NavigationManager,
-    appbarManager: AppbarManager
+    appbarManager: AppbarManager,
 ) : JetIQViewModel(appbarManager, navigationManager), ViewModelWithException {
     val data by lazy { Data() }
     override val exceptions: MutableStateFlow<Exception?> = MutableStateFlow(null)

@@ -36,13 +36,18 @@ class JetIQApplication : Application(), Configuration.Provider {
             .build()
 
         WorkManager.getInstance(this).also {
-            it.cancelAllWork()
-            it.enqueue(request)
+            //it.getWorkInfosByTag(SESSION_RESTORATION_WORK_TAG)
+            it.enqueueUniquePeriodicWork(
+                SESSION_RESTORATION_WORK_TAG,
+                ExistingPeriodicWorkPolicy.KEEP,
+                request
+            )
         }
     }
 
     companion object {
         private const val SESSION_RESTORATION_INTERVAL = 4L
         private const val SESSION_RESTORATION_FLEX_INTERVAL = 2L
+        private const val SESSION_RESTORATION_WORK_TAG = "session_restoration"
     }
 }

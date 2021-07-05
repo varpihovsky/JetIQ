@@ -3,8 +3,10 @@ package com.varpihovsky.jetiq.ui.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import com.varpihovsky.jetiq.system.JetIQViewModel
 import com.varpihovsky.jetiq.system.exceptions.ViewModelWithException
 import com.varpihovsky.jetiq.system.navigation.NavigationCommandType
 import com.varpihovsky.jetiq.system.navigation.NavigationManager
@@ -43,4 +45,10 @@ fun CollectExceptions(
     exception?.message?.let {
         ErrorDialog(message = it, onDismiss = viewModel::onExceptionProcessed)
     }
+}
+
+@Composable
+inline fun <reified T : JetIQViewModel> hiltJetIQViewModel(): T {
+
+    return hiltViewModel()
 }

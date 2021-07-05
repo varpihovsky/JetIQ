@@ -30,10 +30,6 @@ class JetIQProfileManager @Inject constructor(
     }
 
     fun logout() {
-        throwExceptionWhenNotConnected()
-
-        val response = jetIQApi.logout().execute()
-
-        throwExceptionWhenUnsuccessful(response, "")
+        exceptionWrap { jetIQApi.logout().execute() }
     }
 }
