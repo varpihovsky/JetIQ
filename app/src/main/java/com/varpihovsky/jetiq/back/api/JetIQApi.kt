@@ -1,5 +1,6 @@
 package com.varpihovsky.jetiq.back.api
 
+import com.varpihovsky.jetiq.back.dto.MessageDTO
 import com.varpihovsky.jetiq.back.dto.ProfileDTO
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -13,12 +14,6 @@ interface JetIQApi {
         @Query("login") login: String,
         @Query("pwd") password: String
     ): Call<ProfileDTO>
-
-    @GET("api.php")
-    fun getMessages(
-        @Header("Cookie") cookie: String,
-        @Query("get_mess") messageParam: Int = 1
-    )
 
     @GET("api.php")
     fun getSuccessJournal(
@@ -38,4 +33,10 @@ interface JetIQApi {
         @Header("Cookie") cookie: String,
         @Query("markbook") markbook: Int = 1
     ): Call<ResponseBody>
+
+    @GET("api.php")
+    fun getMessages(
+        @Header("Cookie") cookie: String,
+        @Query("get_mess") getMessage: Int = 1
+    ): Call<List<MessageDTO>>
 }

@@ -68,10 +68,12 @@ fun VerticalScrollLayout(
 @Composable
 fun InfoCard(
     modifier: Modifier = Modifier,
+    cardModifier: Modifier = Modifier,
+    elevation: Dp = 5.dp,
     content: @Composable () -> Unit
 ) {
-    CenterLayoutItem(modifier = modifier.padding(vertical = 20.dp)) {
-        Card(modifier = Modifier.fillMaxWidth(0.92f), elevation = 5.dp) {
+    CenterLayoutItem(modifier = modifier) {
+        Card(modifier = cardModifier, elevation = elevation) {
             content()
         }
     }

@@ -17,4 +17,9 @@ object NavigationDirections {
         override val arguments = emptyList<NamedNavArgument>()
         override val destination = "profile"
     }
+
+    val messages = object : NavigationCommand {
+        override val arguments = emptyList<NamedNavArgument>()
+        override val destination = "messages"
+    }
 }

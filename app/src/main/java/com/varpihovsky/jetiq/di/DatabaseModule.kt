@@ -3,14 +3,8 @@ package com.varpihovsky.jetiq.di
 import android.content.Context
 import androidx.room.Room
 import com.varpihovsky.jetiq.back.db.JetIQDatabase
-import com.varpihovsky.jetiq.back.db.dao.ConfidentialDAO
-import com.varpihovsky.jetiq.back.db.dao.ProfileDAO
-import com.varpihovsky.jetiq.back.db.dao.SubjectDAO
-import com.varpihovsky.jetiq.back.db.dao.SubjectDetailsDAO
-import com.varpihovsky.jetiq.back.db.managers.ConfidentialDatabaseManager
-import com.varpihovsky.jetiq.back.db.managers.ProfileDatabaseManager
-import com.varpihovsky.jetiq.back.db.managers.SubjectDatabaseManager
-import com.varpihovsky.jetiq.back.db.managers.SubjectDetailsDatabaseManager
+import com.varpihovsky.jetiq.back.db.dao.*
+import com.varpihovsky.jetiq.back.db.managers.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,6 +15,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
+    @Provides
+    @Singleton
+    fun provideMessageDatabaseManager(messageDAO: MessageDAO) = MessageDatabaseManager(messageDAO)
+
     @Provides
     @Singleton
     fun provideSubjectDatabaseManager(subjectDAO: SubjectDAO) = SubjectDatabaseManager(subjectDAO)
@@ -38,6 +36,10 @@ object DatabaseModule {
     @Singleton
     fun provideConfidentialDatabaseManager(confidentialDAO: ConfidentialDAO) =
         ConfidentialDatabaseManager(confidentialDAO)
+
+    @Provides
+    @Singleton
+    fun provideMessageDAO(jetIQDatabase: JetIQDatabase) = jetIQDatabase.messageDAO()
 
     @Provides
     @Singleton
