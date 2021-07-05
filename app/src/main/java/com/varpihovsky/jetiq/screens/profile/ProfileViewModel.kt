@@ -92,10 +92,10 @@ class ProfileViewModel @Inject constructor(
                 grade = 0
                 subIndex = 1
             }
-            subjectDetailsMutable.find { subject.card_id.toInt() == it.id }?.let {
-                grade += subjectDetails[index].total
+            subjectDetailsMutable.find { subject.card_id.toInt() == it.id }?.let { details ->
+                grade += details.total
                 subIndex++
-                subjectDetailsMutable.remove(it)
+                subjectDetailsMutable.remove(details)
             }
         }
 
