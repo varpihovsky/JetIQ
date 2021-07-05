@@ -1,132 +1,67 @@
 package com.varpihovsky.jetiq.screens.profile
 
+import androidx.compose.foundation.ScrollState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.varpihovsky.jetiq.back.dto.SubjectDTO
-import com.varpihovsky.jetiq.back.dto.SubjectDetailsDTO
-import com.varpihovsky.jetiq.back.model.ProfileModel
-import com.varpihovsky.jetiq.back.model.SubjectModel
 import com.varpihovsky.jetiq.ui.dto.MarksInfo
 import com.varpihovsky.jetiq.ui.dto.UIProfileDTO
 import com.varpihovsky.jetiq.ui.dto.UISubjectDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val profileModel: ProfileModel,
-    private val subjectModel: SubjectModel
-) : ViewModel() {
+    private val profileInteractor: ProfileInteractor
+) : ViewModel(), ProfileInteractor.Interactable {
     val data by lazy { Data() }
+    val scrollState = ScrollState(0)
 
     private val profile = MutableLiveData<UIProfileDTO>()
     private val successMarksInfo = MutableLiveData<List<MarksInfo>>()
     private val successSubjects = MutableLiveData<List<UISubjectDTO>>()
+    private val successChecked = MutableLiveData(false)
+    private val markbookChecked = MutableLiveData(false)
 
     inner class Data {
         val profile: LiveData<UIProfileDTO> = this@ProfileViewModel.profile
         val successMarksInfo: LiveData<List<MarksInfo>> = this@ProfileViewModel.successMarksInfo
         val successSubjects: LiveData<List<UISubjectDTO>> = this@ProfileViewModel.successSubjects
+        val successChecked: LiveData<Boolean> = this@ProfileViewModel.successChecked
+        val markbookChecked: LiveData<Boolean> = this@ProfileViewModel.markbookChecked
     }
 
     init {
-        viewModelScope.launch(Dispatchers.IO) { collectProfileData() }
-        viewModelScope.launch(Dispatchers.IO) {
-            collectSubjectsList()
+        profileInteractor.subscribe(this)
+    }
+
+    fun onSuccessToggle(checked: Boolean, position: Int) {
+        successChecked.value = checked
+        scroll(checked, position)
+    }
+
+    fun onMarkbookToggle(checked: Boolean, position: Int) {
+        markbookChecked.value = checked
+        scroll(checked, position)
+    }
+
+    private fun scroll(checked: Boolean, position: Int) {
+        if (!checked) {
+            viewModelScope.launch { scrollState.animateScrollTo(position) }
         }
     }
 
-    private suspend fun collectProfileData() {
-        profileModel.getProfile().collect {
-            profile.postValue(
-                UIProfileDTO(
-                    it.id.toInt(),
-                    getUsername(it.u_name),
-                    cutFacultyName(it.d_name),
-                    it.course_num,
-                    it.gr_name,
-                    0,
-                    it.photo_url
-                )
-            )
-        }
+    override fun onProfileChange(uiProfileDTO: UIProfileDTO) {
+        profile.postValue(uiProfileDTO)
     }
 
-    fun getUsername(name: String): String {
-        val strings = name.split(" ").subList(0, 2)
-        return "${strings[0]} ${strings[1]}"
+    override fun onSuccessMarksInfoChange(successMarksInfo: List<MarksInfo>) {
+        this.successMarksInfo.postValue(successMarksInfo)
     }
 
-    private suspend fun collectSubjectsList() {
-        val subjectList = subjectModel.getSubjectList()
-        val subjectDetails = subjectModel.getSubjectDetailsList()
-
-        subjectList.combine(subjectDetails) { subjects, subjectDetails ->
-            Pair(subjects, subjectDetails)
-        }.collect {
-            formSuccessMarksInfo(it.first, it.second)
-            formSuccessSubjects(it.first, it.second)
-        }
+    override fun onSuccessSubjectsChange(successSubjects: List<UISubjectDTO>) {
+        this.successSubjects.postValue(successSubjects)
     }
-
-    private fun formSuccessMarksInfo(
-        subjects: List<SubjectDTO>,
-        subjectDetails: List<SubjectDetailsDTO>
-    ) {
-        val subjectDetailsMutable = subjectDetails.toMutableList()
-        var semester = 1
-        var grade = 0
-        var subIndex = 1
-
-        val marksInfo = mutableListOf<MarksInfo>()
-        subjects.sortedBy { it.sem }.forEachIndexed { index, subject ->
-            if (semester != subject.sem.toInt() || subject == subjects.last()) {
-                marksInfo.add(MarksInfo(semester, grade / subIndex))
-                semester++
-                grade = 0
-                subIndex = 1
-            }
-            subjectDetailsMutable.find { subject.card_id.toInt() == it.id }?.let { details ->
-                grade += details.total
-                subIndex++
-                subjectDetailsMutable.remove(details)
-            }
-        }
-
-        successMarksInfo.postValue(marksInfo)
-    }
-
-    private fun formSuccessSubjects(
-        subjects: List<SubjectDTO>,
-        subjectDetails: List<SubjectDetailsDTO>
-    ) {
-        val uiSubjects = mutableListOf<UISubjectDTO>()
-        val subjectDetailsMutable = subjectDetails.toMutableList()
-        subjects.forEachIndexed { index, subject ->
-            subjectDetailsMutable.find { subject.card_id.toInt() == it.id }?.let { details ->
-                uiSubjects.add(
-                    UISubjectDTO(
-                        subject.card_id.toInt(),
-                        subject.subject,
-                        subject.t_name,
-                        details.total,
-                        subject.sem.toInt()
-                    )
-                )
-                subjectDetailsMutable.remove(details)
-            }
-        }
-        successSubjects.postValue(uiSubjects)
-    }
-
-    private fun cutFacultyName(name: String) =
-        String(name.split(" ").filter { it.length > 2 }.map { it.first().toUpperCase() }
-            .toCharArray())
-
 }
