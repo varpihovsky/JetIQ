@@ -1,9 +1,12 @@
 package com.varpihovsky.jetiq.auth
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -12,16 +15,12 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.varpihovsky.jetiq.R
 import com.varpihovsky.jetiq.ui.compose.CenterLayout
 import com.varpihovsky.jetiq.ui.compose.CenterLayoutItem
 import com.varpihovsky.jetiq.ui.compose.ErrorDialog
-import com.varpihovsky.jetiq.ui.theme.JetIQTheme
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 @Composable
 fun Auth(
@@ -33,7 +32,9 @@ fun Auth(
     val progressShown by viewModel.data.progressShown.observeAsState(false)
 
     val exception by viewModel.data.exceptions.collectAsState()
-    exception?.message?.let { ErrorDialog(message = it) }
+    exception?.message?.let {
+        ErrorDialog(message = it, onDismiss = viewModel::onExceptionProcessed)
+    }
 
     Auth(
         loginValue = login,
@@ -73,7 +74,7 @@ fun Auth(
             val visualTransformation = if (passwordHidden) {
                 VisualTransformation { text ->
                     TransformedText(
-                        AnnotatedString(text.map { '*' }.toString()),
+                        AnnotatedString(String(text.map { '*' }.toCharArray())),
                         OffsetMapping.Identity
                     )
                 }
@@ -177,7 +178,7 @@ fun AuthButton(
         onClick = onClick
     ) {
         if (progressShown) {
-            CircularProgressIndicator()
+            CircularProgressIndicator(color = Color.White)
         } else {
             Text(text = text, style = MaterialTheme.typography.button.copy(fontSize = 21.sp))
         }

@@ -5,9 +5,9 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun CenterLayout(
@@ -37,30 +37,38 @@ fun CenterLayoutItem(
     }
 }
 
+@Preview
+@Composable
+fun ErrorDialogPreview() {
+    ErrorDialog(message = "Hello, World!") {}
+}
+
 @Composable
 fun ErrorDialog(
-    message: String
+    message: String,
+    onDismiss: () -> Unit
 ) {
-    var showDialog by remember { mutableStateOf(true) }
-
-    if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { showDialog = false },
-            buttons = {
-                CenterLayoutItem{
-                    TextButton(onClick = { showDialog = false }) {
-                        Text(text = "Відхилити")
-                    }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        buttons = {
+            CenterLayoutItem {
+                TextButton(
+                    modifier = Modifier.padding(10.dp),
+                    onClick = onDismiss
+                ) {
+                    Text(text = "Відхилити")
                 }
-            },
-            title = {
-                CenterLayoutItem{
-                    Text(text = "Помилка")
-                }
-            },
+            }
+        },
+        title = {
+            CenterLayoutItem {
+                Text(modifier = Modifier.padding(10.dp), text = "Помилка")
+            }
+        },
             text = {
-                Text(text = message)
+                CenterLayoutItem {
+                    Text(modifier = Modifier.padding(10.dp), text = message)
+                }
             }
         )
-    }
 }

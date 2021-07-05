@@ -11,7 +11,7 @@ class ProfileModel(
     fun login(login: String, password: String){
         val response = jetIQApi.authorize(login, password).execute()
 
-        if(!response.isSuccessful || response.body() == null){
+        if (!response.isSuccessful || response.body() == null || response.body()!!.session == "wrong login or password") {
             throw ResponseUnsuccessfulException("Неправильний логін або пароль")
         }
 

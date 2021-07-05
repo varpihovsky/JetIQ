@@ -9,7 +9,7 @@ import javax.inject.Named
 
 @Module
 @InstallIn(ViewModelComponent::class)
-class AuthViewModelModule {
+object AuthViewModelModule {
     @Named("login_checker")
     @Provides
     fun provideLoginChecker() = object : Checker<String> {
