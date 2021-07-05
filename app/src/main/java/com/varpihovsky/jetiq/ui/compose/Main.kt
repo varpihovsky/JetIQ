@@ -1,5 +1,6 @@
 package com.varpihovsky.jetiq.ui.compose
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -7,9 +8,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.varpihovsky.jetiq.SharedViewModel
-import com.varpihovsky.jetiq.auth.Auth
+import com.varpihovsky.jetiq.screens.auth.Auth
+import com.varpihovsky.jetiq.screens.profile.Profile
 import com.varpihovsky.jetiq.system.navigation.NavigationDirections
 
+@ExperimentalAnimationApi
 @Composable
 fun Root(
     sharedViewModel: SharedViewModel,
@@ -26,6 +29,12 @@ fun Root(
             arguments = NavigationDirections.authentication.arguments
         ) {
             Auth(viewModel = hiltViewModel())
+        }
+        composable(
+            route = NavigationDirections.profile.destination,
+            arguments = NavigationDirections.profile.arguments
+        ) {
+            Profile(profileViewModel = hiltViewModel())
         }
     }
 }

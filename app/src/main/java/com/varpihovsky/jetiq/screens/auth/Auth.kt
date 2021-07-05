@@ -1,4 +1,4 @@
-package com.varpihovsky.jetiq.auth
+package com.varpihovsky.jetiq.screens.auth
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height

@@ -1,4 +1,4 @@
-package com.varpihovsky.jetiq.auth
+package com.varpihovsky.jetiq.screens.auth
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -9,7 +9,7 @@ import com.varpihovsky.jetiq.back.model.ProfileModel
 import com.varpihovsky.jetiq.system.exceptions.WrongDataException
 import com.varpihovsky.jetiq.system.navigation.NavigationDirections
 import com.varpihovsky.jetiq.system.navigation.NavigationManager
-import com.varpihovsky.jetiq.system.util.Checker
+import com.varpihovsky.jetiq.system.util.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,8 +21,8 @@ import javax.inject.Named
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val profileModel: ProfileModel,
-    @Named("login_checker") private val loginChecker: Checker<String>,
-    @Named("password_checker") private val passwordChecker: Checker<String>,
+    @Named("login_checker") private val loginValidator: Validator<String>,
+    @Named("password_checker") private val passwordValidator: Validator<String>,
     private val navigationManager: NavigationManager
 ) : ViewModel() {
     val data by lazy { Data() }
@@ -56,7 +56,7 @@ class AuthViewModel @Inject constructor(
     fun onLogin() {
         progressShown.value = true
 
-        if (!loginChecker.check(login.value!!) && !passwordChecker.check(password.value!!)) {
+        if (!loginValidator.validate(login.value!!) && !passwordValidator.validate(password.value!!)) {
             exceptions.value =
                 WrongDataException("Логін або пароль не пройшли перевірку на правильність")
             progressShown.value = false

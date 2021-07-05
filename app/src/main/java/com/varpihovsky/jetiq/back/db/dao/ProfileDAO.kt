@@ -3,22 +3,22 @@ package com.varpihovsky.jetiq.back.db.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.varpihovsky.jetiq.back.dto.Profile
+import com.varpihovsky.jetiq.back.dto.ProfileDTO
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ProfileDAO {
-    @Query("SELECT * FROM Profile LIMIT 1")
-    fun getProfile(): Flow<Profile>
+    @Query("SELECT * FROM ProfileDTO LIMIT 1")
+    fun getProfile(): Flow<ProfileDTO>
 
     @Insert
-    fun add(profile: Profile)
+    fun add(profileDTO: ProfileDTO)
 
-    @Query("DELETE FROM Profile")
+    @Query("DELETE FROM ProfileDTO")
     fun deleteAll()
 
-    fun insert(profile: Profile){
+    fun insert(profileDTO: ProfileDTO) {
         deleteAll()
-        add(profile)
+        add(profileDTO)
     }
 }
