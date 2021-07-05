@@ -1,7 +1,7 @@
 package com.varpihovsky.jetiq.back.db.dao
 
 import androidx.room.*
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy.IGNORE
 import com.varpihovsky.jetiq.back.dto.MarkbookSubjectDTO
 import com.varpihovsky.jetiq.back.dto.SubjectDetailsDTO
 import com.varpihovsky.jetiq.back.dto.SubjectTaskDTO
@@ -10,13 +10,13 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SubjectDetailsDAO {
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = IGNORE)
     fun insertDetails(subjectDetailsDTO: SubjectDetailsDTO)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = IGNORE)
     fun insertTask(subjectTaskDTO: SubjectTaskDTO)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = IGNORE)
     fun insertMarkbookSubject(markbookSubjectDTO: MarkbookSubjectDTO)
 
     @Delete

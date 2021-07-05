@@ -11,4 +11,8 @@ class ProfileDatabaseManager @Inject constructor(private val profileDAO: Profile
     }
 
     fun getProfile() = profileDAO.getProfile().distinctUntilChanged()
+
+    fun removeProfile() {
+        profileDAO.deleteAll()
+    }
 }

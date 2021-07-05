@@ -3,14 +3,15 @@ package com.varpihovsky.jetiq.screens.auth
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.jetiq.back.model.ProfileModel
+import com.varpihovsky.jetiq.system.JetIQViewModel
 import com.varpihovsky.jetiq.system.exceptions.ViewModelWithException
 import com.varpihovsky.jetiq.system.exceptions.WrongDataException
 import com.varpihovsky.jetiq.system.navigation.NavigationDirections
 import com.varpihovsky.jetiq.system.navigation.NavigationManager
 import com.varpihovsky.jetiq.system.util.Validator
+import com.varpihovsky.jetiq.ui.appbar.AppbarManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,8 +24,9 @@ class AuthViewModel @Inject constructor(
     private val profileModel: ProfileModel,
     @Named("login_checker") private val loginValidator: Validator<String>,
     @Named("password_checker") private val passwordValidator: Validator<String>,
-    private val navigationManager: NavigationManager
-) : ViewModel(), ViewModelWithException {
+    private val navigationManager: NavigationManager,
+    appbarManager: AppbarManager
+) : JetIQViewModel(appbarManager, navigationManager), ViewModelWithException {
     val data by lazy { Data() }
     override val exceptions: MutableStateFlow<Exception?> = MutableStateFlow(null)
 
@@ -68,7 +70,7 @@ class AuthViewModel @Inject constructor(
     private fun processLogin() {
         try {
             profileModel.login(login.value!!, password.value!!)
-            navigationManager.navigate(NavigationDirections.profile)
+            navigationManager.manage(NavigationDirections.profile)
         } catch (e: Exception) {
             Log.d("Application", Log.getStackTraceString(e))
             exceptions.value = e

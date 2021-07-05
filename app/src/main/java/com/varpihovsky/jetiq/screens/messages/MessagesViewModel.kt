@@ -2,11 +2,13 @@ package com.varpihovsky.jetiq.screens.messages
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.varpihovsky.jetiq.back.model.MessagesModel
+import com.varpihovsky.jetiq.system.ConnectionManager
+import com.varpihovsky.jetiq.system.JetIQViewModel
 import com.varpihovsky.jetiq.system.exceptions.ViewModelExceptionReceivable
 import com.varpihovsky.jetiq.system.navigation.NavigationManager
 import com.varpihovsky.jetiq.system.util.ReactiveTask
+import com.varpihovsky.jetiq.ui.appbar.AppbarManager
 import com.varpihovsky.jetiq.ui.dto.UIMessageDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,9 +19,14 @@ import javax.inject.Inject
 @HiltViewModel
 class MessagesViewModel @Inject constructor(
     private val navigationManager: NavigationManager,
-    private val messagesModel: MessagesModel
-) : ViewModel(), ViewModelExceptionReceivable {
+    private val messagesModel: MessagesModel,
+    private val connectionManager: ConnectionManager,
+    appbarManager: AppbarManager
+) : JetIQViewModel(appbarManager, navigationManager), ViewModelExceptionReceivable {
     val data by lazy { Data() }
+    val isLoading: LiveData<Boolean>
+        get() = messagesModel.isLoading
+
     override val exceptions: MutableStateFlow<Exception?> = MutableStateFlow(null)
 
     private val messages = MutableLiveData<List<UIMessageDTO>>()
@@ -31,12 +38,13 @@ class MessagesViewModel @Inject constructor(
 
     init {
         messagesTask.start()
+        messagesModel.loadMessages()
     }
 
     private suspend fun collectMessages() {
-        messagesModel.getAll().collect { DTOMessages ->
+        messagesModel.getMessagesState().collect { DTOMessages ->
             DTOMessages.map {
-                val split = it.body.split("<b>", "</b>:<br>")
+                val split = it.body!!.split("<b>", "</b>:<br>")
                 UIMessageDTO(
                     it.msg_id.toInt(),
                     split[1],
@@ -59,6 +67,14 @@ class MessagesViewModel @Inject constructor(
 
     fun onDispose() {
         messagesModel.receivable = null
+    }
+
+    fun onRefresh() {
+        if (connectionManager.isConnected()) {
+            messagesModel.loadMessages()
+        } else {
+            exceptions.value = RuntimeException("Відсутнє підключення до інтернету!")
+        }
     }
 
 }

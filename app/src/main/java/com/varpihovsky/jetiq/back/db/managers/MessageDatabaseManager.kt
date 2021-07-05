@@ -14,4 +14,10 @@ class MessageDatabaseManager @Inject constructor(
     fun getAll() = messageDAO.getMessages()
 
     fun getMessageById(id: Int) = messageDAO.getMessageById(id)
+
+    fun removeMessage(messageDTO: MessageDTO) = messageDAO.deleteMessage(messageDTO)
+
+    fun removeAll() {
+        messageDAO.deleteAll()
+    }
 }

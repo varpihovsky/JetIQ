@@ -3,31 +3,30 @@ package com.varpihovsky.jetiq.back.model
 import com.varpihovsky.jetiq.back.db.managers.ConfidentialDatabaseManager
 import com.varpihovsky.jetiq.back.db.managers.ProfileDatabaseManager
 import com.varpihovsky.jetiq.back.dto.Confidential
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 abstract class ConfidentModel constructor(
     private val confidentialDatabaseManager: ConfidentialDatabaseManager,
     private val profileDatabaseManager: ProfileDatabaseManager
-) {
+) : Model() {
     private var confidential: Confidential? = null
     private var session: String? = null
 
     init {
-        GlobalScope.launch(Dispatchers.IO) { collectConfidential() }
-        GlobalScope.launch(Dispatchers.IO) { collectSession() }
+        modelScope.launch { collectConfidential() }
+        modelScope.launch { collectSession() }
     }
 
     private suspend fun collectConfidential() {
-        confidentialDatabaseManager.getConfidential().collect {
+        confidentialDatabaseManager.getConfidential().filterNotNull().collect {
             confidential = it
         }
     }
 
     private suspend fun collectSession() {
-        profileDatabaseManager.getProfile().collect {
+        profileDatabaseManager.getProfile().filterNotNull().collect {
             session = it.session
         }
     }

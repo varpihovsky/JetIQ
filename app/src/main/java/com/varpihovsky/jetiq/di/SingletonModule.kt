@@ -10,6 +10,7 @@ import com.varpihovsky.jetiq.back.model.ProfileModel
 import com.varpihovsky.jetiq.back.model.SubjectModel
 import com.varpihovsky.jetiq.system.ConnectionManager
 import com.varpihovsky.jetiq.system.navigation.NavigationManager
+import com.varpihovsky.jetiq.ui.appbar.AppbarManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,6 +26,10 @@ object SingletonModule {
     @Provides
     @Singleton
     fun provideNavigationManager() = NavigationManager()
+
+    @Provides
+    @Singleton
+    fun provideAppbarManager() = AppbarManager()
 
     @Provides
     @Singleton

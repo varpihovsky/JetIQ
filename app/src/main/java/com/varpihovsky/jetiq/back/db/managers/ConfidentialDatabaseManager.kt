@@ -11,4 +11,8 @@ class ConfidentialDatabaseManager @Inject constructor(private val confidentialDA
     }
 
     fun getConfidential() = confidentialDAO.getConfidential().distinctUntilChanged()
+
+    fun removeConfidential() {
+        confidentialDAO.deleteAll()
+    }
 }

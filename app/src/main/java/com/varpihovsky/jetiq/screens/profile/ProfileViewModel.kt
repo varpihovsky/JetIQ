@@ -4,9 +4,12 @@ import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.varpihovsky.jetiq.system.JetIQViewModel
 import com.varpihovsky.jetiq.system.exceptions.ViewModelWithException
+import com.varpihovsky.jetiq.system.navigation.NavigationDirections
+import com.varpihovsky.jetiq.system.navigation.NavigationManager
+import com.varpihovsky.jetiq.ui.appbar.AppbarManager
 import com.varpihovsky.jetiq.ui.dto.MarksInfo
 import com.varpihovsky.jetiq.ui.dto.UIProfileDTO
 import com.varpihovsky.jetiq.ui.dto.UISubjectDTO
@@ -18,8 +21,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val profileInteractor: ProfileInteractor
-) : ViewModel(), ViewModelWithException, ProfileInteractor.Interactable {
+    private val profileInteractor: ProfileInteractor,
+    private val navigationManager: NavigationManager,
+    appbarManager: AppbarManager
+) : JetIQViewModel(appbarManager, navigationManager),
+    ViewModelWithException,
+    ProfileInteractor.Interactable {
     val data by lazy { Data() }
     val scrollState = ScrollState(0)
     val isLoading: LiveData<Boolean>
@@ -71,6 +78,10 @@ class ProfileViewModel @Inject constructor(
                 Log.d("Application", Log.getStackTraceString(e))
             }
         }
+    }
+
+    fun onSettingsClick() {
+        navigationManager.manage(NavigationDirections.mainSettings)
     }
 
     override fun onProfileChange(uiProfileDTO: UIProfileDTO) {

@@ -1,14 +1,13 @@
 package com.varpihovsky.jetiq.ui.compose
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
@@ -25,15 +24,20 @@ import com.varpihovsky.jetiq.SharedViewModel
 import com.varpihovsky.jetiq.screens.auth.Auth
 import com.varpihovsky.jetiq.screens.messages.MessagesScreen
 import com.varpihovsky.jetiq.screens.profile.Profile
+import com.varpihovsky.jetiq.screens.settings.about.AboutSettingsScreen
+import com.varpihovsky.jetiq.screens.settings.main.MainSettingsScreen
 import com.varpihovsky.jetiq.system.navigation.BottomNavigationItem
 import com.varpihovsky.jetiq.system.navigation.NavigationDirections
+import com.varpihovsky.jetiq.ui.appbar.AppbarCommand
+import com.varpihovsky.jetiq.ui.appbar.AppbarManager
 
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @Composable
 fun Root(
     sharedViewModel: SharedViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    appbarManager: AppbarManager
 ) {
     val startDestination = remember { sharedViewModel.getStartDestination() }
     val scaffoldState = rememberScaffoldState()
@@ -44,7 +48,11 @@ fun Root(
             val isNavbarShown by sharedViewModel.data.isNavbarShown.observeAsState(false)
             val selectedEntry by sharedViewModel.data.selectedNavbarEntry.observeAsState(initial = BottomNavigationItem.ProfileItem)
 
-            if (isNavbarShown) {
+            AnimatedVisibility(
+                visible = isNavbarShown,
+                enter = expandIn(expandFrom = Alignment.BottomCenter),
+                exit = shrinkOut(shrinkTowards = Alignment.TopCenter)
+            ) {
                 BottomNavigationMenu(
                     selected = selectedEntry,
                     onClick = { sharedViewModel.onBottomBarButtonClick(it.route) },
@@ -52,8 +60,11 @@ fun Root(
                     BottomNavigationItem.ProfileItem,
                 )
             }
-        }
+        },
+        topBar = appbarManager.commands.collectAsState(AppbarCommand { }).value.bar
+
     ) {
+
         NavHost(
             navController = navController,
             startDestination = startDestination,
@@ -64,36 +75,32 @@ fun Root(
                 arguments = NavigationDirections.authentication.arguments
             ) {
                 Auth(
-                    viewModel = hiltViewModel(
-                        backStackEntry = navController.getBackStackEntry(
-                            NavigationDirections.authentication.destination
-                        )
-                    )
+                    viewModel = hiltViewModel()
                 )
             }
             composable(
                 route = NavigationDirections.profile.destination,
                 arguments = NavigationDirections.profile.arguments
             ) {
-                Profile(
-                    profileViewModel = hiltViewModel(
-                        backStackEntry = navController.getBackStackEntry(
-                            NavigationDirections.profile.destination
-                        )
-                    )
-                )
+                Profile(profileViewModel = hiltViewModel())
             }
             composable(
                 route = NavigationDirections.messages.destination,
                 arguments = NavigationDirections.messages.arguments
             ) {
-                MessagesScreen(
-                    viewModel = hiltViewModel(
-                        backStackEntry = navController.getBackStackEntry(
-                            NavigationDirections.messages.destination
-                        )
-                    )
-                )
+                MessagesScreen(viewModel = hiltViewModel())
+            }
+            composable(
+                route = NavigationDirections.mainSettings.destination,
+                arguments = NavigationDirections.mainSettings.arguments
+            ) {
+                MainSettingsScreen(mainSettingsViewModel = hiltViewModel())
+            }
+            composable(
+                route = NavigationDirections.aboutSettings.destination,
+                arguments = NavigationDirections.aboutSettings.arguments
+            ) {
+                AboutSettingsScreen(aboutSettingsViewModel = hiltViewModel())
             }
         }
     }
