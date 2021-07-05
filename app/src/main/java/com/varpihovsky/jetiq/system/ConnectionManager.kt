@@ -12,6 +12,6 @@ class ConnectionManager {
         }
 
     companion object {
-        const val DEFAULT_HOST = "https://jetiq.vntu.edu.ua"
+        const val DEFAULT_HOST = "jetiq.vntu.edu.ua"
     }
 }
