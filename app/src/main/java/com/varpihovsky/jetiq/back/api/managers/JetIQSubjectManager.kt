@@ -2,8 +2,13 @@ package com.varpihovsky.jetiq.back.api.managers
 
 import com.varpihovsky.jetiq.back.api.JetIQApi
 import com.varpihovsky.jetiq.back.api.JetIQManager
-import com.varpihovsky.jetiq.back.dto.*
+import com.varpihovsky.jetiq.back.dto.MarkbookSubjectDTO
+import com.varpihovsky.jetiq.back.dto.SubjectDTO
 import com.varpihovsky.jetiq.back.dto.relations.SubjectDetailsWithTasks
+import com.varpihovsky.jetiq.back.dto.util.deserializeMarkbookSubjects
+import com.varpihovsky.jetiq.back.dto.util.deserializeSubjectDetails
+import com.varpihovsky.jetiq.back.dto.util.deserializeSubjectTasks
+import com.varpihovsky.jetiq.back.dto.util.deserializeSubjects
 import com.varpihovsky.jetiq.system.ConnectionManager
 import javax.inject.Inject
 
