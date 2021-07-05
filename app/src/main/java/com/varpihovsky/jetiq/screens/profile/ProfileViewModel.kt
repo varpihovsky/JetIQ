@@ -4,12 +4,10 @@ import androidx.compose.foundation.ScrollState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.varpihovsky.jetiq.ui.dto.MarksInfo
 import com.varpihovsky.jetiq.ui.dto.UIProfileDTO
 import com.varpihovsky.jetiq.ui.dto.UISubjectDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,21 +35,14 @@ class ProfileViewModel @Inject constructor(
         profileInteractor.subscribe(this)
     }
 
-    fun onSuccessToggle(checked: Boolean, position: Int) {
+    fun onSuccessToggle(checked: Boolean) {
         successChecked.value = checked
-        scroll(checked, position)
     }
 
-    fun onMarkbookToggle(checked: Boolean, position: Int) {
+    fun onMarkbookToggle(checked: Boolean) {
         markbookChecked.value = checked
-        scroll(checked, position)
     }
 
-    private fun scroll(checked: Boolean, position: Int) {
-        if (!checked) {
-            viewModelScope.launch { scrollState.animateScrollTo(position) }
-        }
-    }
 
     override fun onProfileChange(uiProfileDTO: UIProfileDTO) {
         profile.postValue(uiProfileDTO)
