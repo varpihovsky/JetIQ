@@ -10,6 +10,7 @@ import com.varpihovsky.jetiq.system.util.ReactiveTask
 import com.varpihovsky.jetiq.ui.dto.MarksInfo
 import com.varpihovsky.jetiq.ui.dto.UIProfileDTO
 import com.varpihovsky.jetiq.ui.dto.UISubjectDTO
+import com.varpihovsky.jetiq.ui.dto.formMarksInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -75,25 +76,12 @@ class ProfileInteractor @Inject constructor(
         subjectDetails: List<SubjectDetailsDTO>
     ) {
         val subjectDetailsMutable = subjectDetails.toMutableList()
-        var semester = 1
-        var grade = 0
-        var subIndex = 0
-
-        val marksInfo = mutableListOf<MarksInfo>()
-        subjects.sortedBy { it.sem }.forEach { subject ->
-            if (semester != subject.sem.toInt() || subject == subjects.last()) {
-                marksInfo.add(MarksInfo(semester, grade / if (subIndex == 0) 1 else subIndex))
-                semester++
-                grade = 0
-                subIndex = 0
-            }
-            subjectDetailsMutable.find { subject.card_id.toInt() == it.id }?.let { details ->
-                grade += details.total
-                subIndex++
-                subjectDetailsMutable.remove(details)
-            }
-        }
-
+        val marksInfo = formMarksInfo(
+            array = subjects,
+            semesterSelector = { it.sem.toInt() },
+            gradeSelector = { subject -> subjectDetailsMutable.find { subject.card_id.toInt() == it.id }?.total },
+            sortSelector = { it.sem }
+        )
         subscriber?.onSuccessMarksInfoChange(marksInfo)
     }
 
@@ -133,26 +121,12 @@ class ProfileInteractor @Inject constructor(
     }
 
     private fun formMarkbookMarksInfo(markbookSubjects: List<MarkbookSubjectDTO>) {
-        var currentSemester = 1
-        var grade = 0
-        var subIndex = 0
-
-        val marksInfo = mutableListOf<MarksInfo>()
-        markbookSubjects.sortedBy { it.semester }.forEach {
-            if (it.semester != currentSemester) {
-                marksInfo.add(MarksInfo(currentSemester, grade / subIndex))
-                grade = 0
-                subIndex = 0
-                currentSemester++
-            }
-            if (it == markbookSubjects.last()) {
-                subIndex++
-                grade += it.total
-                marksInfo.add(MarksInfo(currentSemester, grade / subIndex))
-            }
-            grade += it.total
-            subIndex++
-        }
+        val marksInfo = formMarksInfo(
+            array = markbookSubjects,
+            semesterSelector = { it.semester },
+            gradeSelector = { it.total },
+            sortSelector = { it.semester }
+        )
         subscriber?.onMarkbookMarksInfoChange(marksInfo)
     }
 
