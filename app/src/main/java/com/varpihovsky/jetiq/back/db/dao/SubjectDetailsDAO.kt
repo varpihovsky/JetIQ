@@ -2,6 +2,7 @@ package com.varpihovsky.jetiq.back.db.dao
 
 import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
+import com.varpihovsky.jetiq.back.dto.MarkbookSubjectDTO
 import com.varpihovsky.jetiq.back.dto.SubjectDetailsDTO
 import com.varpihovsky.jetiq.back.dto.SubjectTaskDTO
 import com.varpihovsky.jetiq.back.dto.relations.SubjectDetailsWithTasks
@@ -15,11 +16,26 @@ interface SubjectDetailsDAO {
     @Insert(onConflict = REPLACE)
     fun insertTask(subjectTaskDTO: SubjectTaskDTO)
 
+    @Insert(onConflict = REPLACE)
+    fun insertMarkbookSubject(markbookSubjectDTO: MarkbookSubjectDTO)
+
     @Delete
     fun deleteDetails(subjectDetailsDTO: SubjectDetailsDTO)
 
+    @Query("DELETE FROM SubjectDetailsDTO")
+    fun deleteAllDetails()
+
     @Delete
     fun deleteTask(subjectTaskDTO: SubjectTaskDTO)
+
+    @Query("DELETE FROM SubjectTaskDTO")
+    fun deleteAllTasks()
+
+    @Delete
+    fun deleteMarkbookSubject(markbookSubjectDTO: MarkbookSubjectDTO)
+
+    @Query("DELETE FROM MarkbookSubjectDTO")
+    fun deleteAllMarkbookSubjects()
 
     @Query("SELECT * FROM SubjectDetailsDTO")
     fun getDetailsOnly(): Flow<List<SubjectDetailsDTO>>
@@ -34,4 +50,10 @@ interface SubjectDetailsDAO {
     @Transaction
     @Query("SELECT * FROM SubjectDetailsDTO")
     fun getDetailsWithTasks(): Flow<List<SubjectDetailsWithTasks>>
+
+    @Query("SELECT * FROM MarkbookSubjectDTO")
+    fun getMarkbookSubjects(): Flow<List<MarkbookSubjectDTO>>
+
+    @Query("SELECT * FROM MarkbookSubjectDTO WHERE id=:id")
+    fun getMarkbookSubjectById(id: Int): Flow<MarkbookSubjectDTO>
 }

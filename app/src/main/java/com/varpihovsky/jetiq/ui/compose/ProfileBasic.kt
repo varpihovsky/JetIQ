@@ -1,5 +1,6 @@
 package com.varpihovsky.jetiq.ui.compose
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -10,6 +11,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.transform.CircleCropTransformation
@@ -76,7 +78,8 @@ fun ProfileInfoBar(
 @Composable
 fun ProfileSettingsButton(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    color: Color
 ) {
     IconButton(
         modifier = modifier,
@@ -84,11 +87,13 @@ fun ProfileSettingsButton(
     ) {
         Icon(
             imageVector = Icons.Default.Settings,
-            contentDescription = "settings"
+            contentDescription = "settings",
+            tint = color
         )
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun MarksList(
     marks: List<MarksInfo>

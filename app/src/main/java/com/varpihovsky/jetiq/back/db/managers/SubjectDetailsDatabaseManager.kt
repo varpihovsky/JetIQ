@@ -1,6 +1,7 @@
 package com.varpihovsky.jetiq.back.db.managers
 
 import com.varpihovsky.jetiq.back.db.dao.SubjectDetailsDAO
+import com.varpihovsky.jetiq.back.dto.MarkbookSubjectDTO
 import com.varpihovsky.jetiq.back.dto.SubjectDetailsDTO
 import com.varpihovsky.jetiq.back.dto.SubjectTaskDTO
 import com.varpihovsky.jetiq.back.dto.relations.SubjectDetailsWithTasks
@@ -21,6 +22,10 @@ class SubjectDetailsDatabaseManager @Inject constructor(
         }
     }
 
+    fun addMarkbookSubject(markbookSubjectDTO: MarkbookSubjectDTO) {
+        subjectDetailsDAO.insertMarkbookSubject(markbookSubjectDTO)
+    }
+
     fun getAllDetails() = subjectDetailsDAO.getDetailsOnly()
 
     fun getDetailsWithTasks() = subjectDetailsDAO.getDetailsWithTasks().distinctUntilChanged()
@@ -29,6 +34,11 @@ class SubjectDetailsDatabaseManager @Inject constructor(
 
     fun getDetailsAndTasksByDetailsId(id: Int) =
         subjectDetailsDAO.getDetailsAndTasksByDetailsId(id).distinctUntilChanged()
+
+    fun getMarkbookSubjects() = subjectDetailsDAO.getMarkbookSubjects()
+
+    fun getMarkbookSubjectById(id: Int) =
+        subjectDetailsDAO.getMarkbookSubjectById(id).distinctUntilChanged()
 
     fun deleteDetailsWithTasks(detailsWithTasks: SubjectDetailsWithTasks) {
         subjectDetailsDAO.deleteDetails(detailsWithTasks.subjectDetailsDTO)
@@ -39,7 +49,13 @@ class SubjectDetailsDatabaseManager @Inject constructor(
         subjectDetailsDAO.deleteDetails(detailsDTO)
     }
 
+    fun deleteAllDetails() = subjectDetailsDAO.deleteAllDetails()
+
     fun deleteTask(taskDTO: SubjectTaskDTO) {
         subjectDetailsDAO.deleteTask(taskDTO)
     }
+
+    fun deleteAllTasks() = subjectDetailsDAO.deleteAllTasks()
+
+    fun deleteAllMarkbookSubjects() = subjectDetailsDAO.deleteAllMarkbookSubjects()
 }

@@ -20,6 +20,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshState
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.varpihovsky.jetiq.ui.compose.*
 import com.varpihovsky.jetiq.ui.dto.MarksInfo
 import com.varpihovsky.jetiq.ui.dto.UIProfileDTO
@@ -118,7 +121,9 @@ private fun ExampleProfile() {
         successChecked = successChecked,
         onSuccessToggle = { successChecked = !successChecked },
         markbookChecked = markbookChecked,
-        onMarkbookToggle = { markbookChecked = !markbookChecked }
+        onMarkbookToggle = { markbookChecked = !markbookChecked },
+        refreshState = rememberSwipeRefreshState(isRefreshing = true),
+        onRefresh = {}
     )
 }
 
@@ -128,23 +133,38 @@ fun Profile(
     profileViewModel: ProfileViewModel
 ) {
     val scrollState = profileViewModel.scrollState
+
     val profileState by profileViewModel.data.profile.observeAsState(UIProfileDTO())
+
     val successMarksInfoState by profileViewModel.data.successMarksInfo.observeAsState(listOf())
     val successSubjectsState by profileViewModel.data.successSubjects.observeAsState(listOf())
+
+    val markbookInfo by profileViewModel.data.markbookMarksInfo.observeAsState(listOf())
+    val markbookSubjects by profileViewModel.data.markbookSubjects.observeAsState(listOf())
+
     val successChecked by profileViewModel.data.successChecked.observeAsState(initial = false)
     val markbookChecked by profileViewModel.data.markbookChecked.observeAsState(initial = false)
+
+    val isRefreshing by profileViewModel.isLoading.observeAsState(initial = false)
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isRefreshing)
+
+    if (isRefreshing) {
+        swipeRefreshState.isRefreshing = true
+    }
 
     Profile(
         profile = profileState,
         scrollState = scrollState,
         successMarksInfo = successMarksInfoState,
         subjects = successSubjectsState,
-        markbookInfo = listOf(),
-        markbookSubjects = listOf(),
+        markbookInfo = markbookInfo,
+        markbookSubjects = markbookSubjects,
         successChecked = successChecked,
         onSuccessToggle = profileViewModel::onSuccessToggle,
         markbookChecked = markbookChecked,
-        onMarkbookToggle = profileViewModel::onMarkbookToggle
+        onMarkbookToggle = profileViewModel::onMarkbookToggle,
+        refreshState = rememberSwipeRefreshState(isRefreshing = isRefreshing),
+        onRefresh = profileViewModel::onRefresh
     )
 }
 
@@ -160,7 +180,9 @@ fun Profile(
     successChecked: Boolean,
     onSuccessToggle: (Boolean) -> Unit,
     markbookChecked: Boolean,
-    onMarkbookToggle: (Boolean) -> Unit
+    onMarkbookToggle: (Boolean) -> Unit,
+    refreshState: SwipeRefreshState,
+    onRefresh: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -177,56 +199,58 @@ fun Profile(
         profileTextShown = profileTextShown
     )
 
-    VerticalScrollLayout(
-        modifier = Modifier.zIndex(-1f),
-        scrollState = scrollState
-    ) {
-        Spacer(modifier = Modifier.height(200.dp))
-        CenterLayoutItem {
-            ProfileName(text = profile.name)
-        }
+    SwipeRefresh(state = refreshState, onRefresh = onRefresh) {
+        VerticalScrollLayout(
+            modifier = Modifier.zIndex(-1f),
+            scrollState = scrollState
+        ) {
+            Spacer(modifier = Modifier.height(200.dp))
+            CenterLayoutItem {
+                ProfileName(text = profile.name)
+            }
 
-        Card(modifier = Modifier.fillMaxWidth(), elevation = 1.dp) {
-            StudentInfo(profile = profile)
-        }
+            Card(modifier = Modifier.fillMaxWidth(), elevation = 1.dp) {
+                StudentInfo(profile = profile)
+            }
 
-        InfoCard {
-            var successPosition by remember { mutableStateOf(0f) }
+            InfoCard {
+                var successPosition by remember { mutableStateOf(0f) }
 
-            Success(
-                modifier = Modifier.onGloballyPositioned {
-                    successPosition = scrollState.value + it.positionInRoot().y + SCROLL_OFFSET
-                    Log.d("Application", "Success: $successPosition")
-                },
-                successMarksInfo = successMarksInfo,
-                subjects = subjects,
-                checked = successChecked
-            ) {
-                onSuccessToggle(it)
-                if (!it) {
-                    coroutineScope.launch {
-                        scrollState.animateScrollTo(successPosition.roundToInt())
+                Success(
+                    modifier = Modifier.onGloballyPositioned {
+                        successPosition = scrollState.value + it.positionInRoot().y + SCROLL_OFFSET
+                        Log.d("Application", "Success: $successPosition")
+                    },
+                    successMarksInfo = successMarksInfo,
+                    subjects = subjects,
+                    checked = successChecked
+                ) {
+                    onSuccessToggle(it)
+                    if (!it) {
+                        coroutineScope.launch {
+                            scrollState.animateScrollTo(successPosition.roundToInt())
+                        }
                     }
                 }
             }
-        }
 
-        InfoCard {
-            var markbookPosition by remember { mutableStateOf(0f) }
+            InfoCard {
+                var markbookPosition by remember { mutableStateOf(0f) }
 
-            Markbook(
-                modifier = Modifier.onGloballyPositioned {
-                    markbookPosition = scrollState.value + it.positionInRoot().y + SCROLL_OFFSET
-                    Log.d("Application", "Markbook: $markbookPosition")
-                },
-                checked = markbookChecked,
-                markbookSubjects = markbookSubjects,
-                marksInfo = markbookInfo
-            ) {
-                onMarkbookToggle(it)
-                if (!it) {
-                    coroutineScope.launch {
-                        scrollState.animateScrollTo(markbookPosition.roundToInt())
+                Markbook(
+                    modifier = Modifier.onGloballyPositioned {
+                        markbookPosition = scrollState.value + it.positionInRoot().y + SCROLL_OFFSET
+                        Log.d("Application", "Markbook: $markbookPosition")
+                    },
+                    checked = markbookChecked,
+                    markbookSubjects = markbookSubjects,
+                    marksInfo = markbookInfo
+                ) {
+                    onMarkbookToggle(it)
+                    if (!it) {
+                        coroutineScope.launch {
+                            scrollState.animateScrollTo(markbookPosition.roundToInt())
+                        }
                     }
                 }
             }
@@ -298,12 +322,29 @@ fun ProfileAppBar(
     val backgroundColor =
         if (heightState == 180.dp) MaterialTheme.colors.primary else Color.Transparent
     val animatedColor = animateColorAsState(targetValue = backgroundColor)
+    val zIndex = if (heightState == 180.dp) 10f else 0f
+    val buttonColor =
+        if (heightState == 180.dp) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onBackground
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .zIndex(15f)
+    ) {
+        ProfileSettingsButton(
+            modifier = Modifier
+                .align(Alignment.TopEnd),
+            onClick = { Log.d("UI", "clicked") },
+            color = buttonColor
+        )
+    }
 
     TopAppBar(
         modifier = Modifier
             .fillMaxWidth()
             .height(230.dp)
-            .offset(y = -heightState),
+            .offset(y = -heightState)
+            .zIndex(zIndex),
         elevation = elevation,
         backgroundColor = animatedColor.value
     ) {
@@ -320,12 +361,6 @@ fun ProfileAppBar(
                     url = profile.photoURL
                 )
             }
-            ProfileSettingsButton(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = heightState),
-                onClick = {}
-            )
         }
 
     }

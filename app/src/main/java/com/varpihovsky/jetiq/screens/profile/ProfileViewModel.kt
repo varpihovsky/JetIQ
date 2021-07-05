@@ -4,10 +4,13 @@ import androidx.compose.foundation.ScrollState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.varpihovsky.jetiq.ui.dto.MarksInfo
 import com.varpihovsky.jetiq.ui.dto.UIProfileDTO
 import com.varpihovsky.jetiq.ui.dto.UISubjectDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,17 +19,29 @@ class ProfileViewModel @Inject constructor(
 ) : ViewModel(), ProfileInteractor.Interactable {
     val data by lazy { Data() }
     val scrollState = ScrollState(0)
+    val isLoading: LiveData<Boolean>
+        get() = profileInteractor.isLoading
 
     private val profile = MutableLiveData<UIProfileDTO>()
+
     private val successMarksInfo = MutableLiveData<List<MarksInfo>>()
     private val successSubjects = MutableLiveData<List<UISubjectDTO>>()
+
+    private val markbookMarksInfo = MutableLiveData<List<MarksInfo>>()
+    private val markbookSubjects = MutableLiveData<List<UISubjectDTO>>()
+
     private val successChecked = MutableLiveData(false)
     private val markbookChecked = MutableLiveData(false)
 
     inner class Data {
         val profile: LiveData<UIProfileDTO> = this@ProfileViewModel.profile
+
         val successMarksInfo: LiveData<List<MarksInfo>> = this@ProfileViewModel.successMarksInfo
         val successSubjects: LiveData<List<UISubjectDTO>> = this@ProfileViewModel.successSubjects
+
+        val markbookMarksInfo: LiveData<List<MarksInfo>> = this@ProfileViewModel.markbookMarksInfo
+        val markbookSubjects: LiveData<List<UISubjectDTO>> = this@ProfileViewModel.markbookSubjects
+
         val successChecked: LiveData<Boolean> = this@ProfileViewModel.successChecked
         val markbookChecked: LiveData<Boolean> = this@ProfileViewModel.markbookChecked
     }
@@ -43,6 +58,11 @@ class ProfileViewModel @Inject constructor(
         markbookChecked.value = checked
     }
 
+    fun onRefresh() {
+        viewModelScope.launch(Dispatchers.IO) {
+            profileInteractor.refresh()
+        }
+    }
 
     override fun onProfileChange(uiProfileDTO: UIProfileDTO) {
         profile.postValue(uiProfileDTO)
@@ -54,5 +74,13 @@ class ProfileViewModel @Inject constructor(
 
     override fun onSuccessSubjectsChange(successSubjects: List<UISubjectDTO>) {
         this.successSubjects.postValue(successSubjects)
+    }
+
+    override fun onMarkbookMarksInfoChange(markbookMarksInfo: List<MarksInfo>) {
+        this.markbookMarksInfo.postValue(markbookMarksInfo)
+    }
+
+    override fun onMarkbookSubjectsChange(markbookSubjects: List<UISubjectDTO>) {
+        this.markbookSubjects.postValue(markbookSubjects)
     }
 }

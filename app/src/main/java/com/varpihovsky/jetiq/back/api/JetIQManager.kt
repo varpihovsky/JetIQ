@@ -23,4 +23,9 @@ abstract class JetIQManager constructor(
         }
     }
 
+    fun throwExceptionWhenNull(message: String, vararg any: Any?) {
+        if (any.mapNotNull { it }.size < any.size) {
+            throw ResponseUnsuccessfulException(message)
+        }
+    }
 }

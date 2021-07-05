@@ -32,12 +32,14 @@ object SingletonModule {
         confidentialDatabaseManager: ConfidentialDatabaseManager,
         subjectDatabaseManager: SubjectDatabaseManager,
         subjectDetailsDatabaseManager: SubjectDetailsDatabaseManager,
-        jetIQSubjectManager: JetIQSubjectManager
+        jetIQSubjectManager: JetIQSubjectManager,
+        profileDatabaseManager: ProfileDatabaseManager
     ) = SubjectModel(
         confidentialDatabaseManager,
         subjectDatabaseManager,
         subjectDetailsDatabaseManager,
-        jetIQSubjectManager
+        jetIQSubjectManager,
+        profileDatabaseManager
     )
 
     @Provides

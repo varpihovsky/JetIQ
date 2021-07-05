@@ -23,4 +23,6 @@ class SubjectDatabaseManager @Inject constructor(
     fun deleteById(id: Int) {
         subjectDAO.deleteSubjectById(id)
     }
+
+    fun deleteAll() = subjectDAO.deleteAll()
 }
