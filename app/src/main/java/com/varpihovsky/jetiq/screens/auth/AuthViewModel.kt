@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.jetiq.back.model.ProfileModel
+import com.varpihovsky.jetiq.system.exceptions.ViewModelWithException
 import com.varpihovsky.jetiq.system.exceptions.WrongDataException
 import com.varpihovsky.jetiq.system.navigation.NavigationDirections
 import com.varpihovsky.jetiq.system.navigation.NavigationManager
@@ -13,7 +14,6 @@ import com.varpihovsky.jetiq.system.util.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
@@ -24,21 +24,20 @@ class AuthViewModel @Inject constructor(
     @Named("login_checker") private val loginValidator: Validator<String>,
     @Named("password_checker") private val passwordValidator: Validator<String>,
     private val navigationManager: NavigationManager
-) : ViewModel() {
+) : ViewModel(), ViewModelWithException {
     val data by lazy { Data() }
+    override val exceptions: MutableStateFlow<Exception?> = MutableStateFlow(null)
 
     private val login = MutableLiveData("")
     private val password = MutableLiveData("")
     private val passwordHidden = MutableLiveData(true)
     private val progressShown = MutableLiveData(false)
-    private val exceptions = MutableStateFlow<Exception?>(null)
 
     inner class Data {
         val login: LiveData<String> = this@AuthViewModel.login
         val password: LiveData<String> = this@AuthViewModel.password
         val passwordHidden: LiveData<Boolean> = this@AuthViewModel.passwordHidden
         val progressShown: LiveData<Boolean> = this@AuthViewModel.progressShown
-        val exceptions: StateFlow<Exception?> = this@AuthViewModel.exceptions
     }
 
     fun onLoginChange(value: String) {
@@ -77,7 +76,5 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch { progressShown.value = false }
     }
 
-    fun onExceptionProcessed() {
-        exceptions.value = null
-    }
+
 }

@@ -152,6 +152,8 @@ fun Profile(
         swipeRefreshState.isRefreshing = true
     }
 
+    CollectExceptions(viewModel = profileViewModel)
+
     Profile(
         profile = profileState,
         scrollState = scrollState,

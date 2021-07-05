@@ -1,26 +1,30 @@
 package com.varpihovsky.jetiq.screens.profile
 
+import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.varpihovsky.jetiq.system.exceptions.ViewModelWithException
 import com.varpihovsky.jetiq.ui.dto.MarksInfo
 import com.varpihovsky.jetiq.ui.dto.UIProfileDTO
 import com.varpihovsky.jetiq.ui.dto.UISubjectDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val profileInteractor: ProfileInteractor
-) : ViewModel(), ProfileInteractor.Interactable {
+) : ViewModel(), ViewModelWithException, ProfileInteractor.Interactable {
     val data by lazy { Data() }
     val scrollState = ScrollState(0)
     val isLoading: LiveData<Boolean>
         get() = profileInteractor.isLoading
+    override val exceptions: MutableStateFlow<Exception?> = MutableStateFlow(null)
 
     private val profile = MutableLiveData<UIProfileDTO>()
 
@@ -60,7 +64,12 @@ class ProfileViewModel @Inject constructor(
 
     fun onRefresh() {
         viewModelScope.launch(Dispatchers.IO) {
-            profileInteractor.refresh()
+            try {
+                profileInteractor.refresh()
+            } catch (e: RuntimeException) {
+                exceptions.value = e
+                Log.d("Application", Log.getStackTraceString(e))
+            }
         }
     }
 

@@ -8,6 +8,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -16,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.varpihovsky.jetiq.R
+import com.varpihovsky.jetiq.ui.compose.CollectExceptions
 import com.varpihovsky.jetiq.ui.compose.InfoCard
 import com.varpihovsky.jetiq.ui.dto.UIMessageDTO
 import com.varpihovsky.jetiq.ui.loremIpsum1Paragraph
@@ -46,8 +48,15 @@ fun MessagesPreviewDark() {
 @ExperimentalFoundationApi
 @Composable
 fun MessagesScreen(viewModel: MessagesViewModel) {
+    DisposableEffect(key1 = viewModel) {
+        viewModel.onCompose()
+        onDispose(viewModel::onDispose)
+    }
+
     val messagesState by viewModel.data.messages.observeAsState()
     val messages = messagesState ?: emptyList()
+
+    CollectExceptions(viewModel = viewModel)
 
     MessagesScreen(messages = messages, onClick = viewModel::onNewMessageButtonClick)
 }
