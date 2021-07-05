@@ -21,7 +21,7 @@ class JetIQSubjectManager @Inject constructor(
 
         val response = jetIQApi.getSuccessJournal(session).execute()
 
-        throwExceptionWhenUnsuccessful(response, ERROR_MESSAGE)
+        throwExceptionWhenUnsuccessful(response, STANDARD_ERROR_MESSAGE)
 
         return deserializeSubjects(response.body()!!.string())
     }
@@ -31,7 +31,7 @@ class JetIQSubjectManager @Inject constructor(
 
         val response = jetIQApi.getSubjectDetails(session, cardId).execute()
 
-        throwExceptionWhenUnsuccessful(response, ERROR_MESSAGE)
+        throwExceptionWhenUnsuccessful(response, STANDARD_ERROR_MESSAGE)
 
         val str = response.body()!!.string()
 
@@ -46,12 +46,8 @@ class JetIQSubjectManager @Inject constructor(
 
         val response = jetIQApi.getMarkbookSubjects(session).execute()
 
-        throwExceptionWhenUnsuccessful(response, ERROR_MESSAGE)
+        throwExceptionWhenUnsuccessful(response, STANDARD_ERROR_MESSAGE)
 
         return deserializeMarkbookSubjects(response.body()!!.string())
-    }
-
-    companion object {
-        private const val ERROR_MESSAGE = "Критична помилка, зверніться до розробників"
     }
 }

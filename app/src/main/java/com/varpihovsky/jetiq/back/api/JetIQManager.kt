@@ -28,4 +28,9 @@ abstract class JetIQManager constructor(
             throw ResponseUnsuccessfulException(message)
         }
     }
+
+    companion object {
+        @JvmStatic
+        protected val STANDARD_ERROR_MESSAGE = "Критична помилка, зверніться до розробників"
+    }
 }
