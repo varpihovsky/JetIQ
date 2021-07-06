@@ -13,6 +13,8 @@ class JetIQApplication : Application(), Configuration.Provider {
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
+    private val workmanager by lazy { WorkManager.getInstance(this) }
+
     override fun getWorkManagerConfiguration(): Configuration =
         Configuration.Builder()
             .setWorkerFactory(workerFactory)
@@ -25,29 +27,50 @@ class JetIQApplication : Application(), Configuration.Provider {
     }
 
     private fun scheduleBackgroundWork() {
-        val constraints = Constraints.Builder()
+        Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
+            .let {
+                enqueueSessionRestoration(it)
+                enqueueNotificationWorker(it)
+            }
+    }
 
+    private fun enqueueSessionRestoration(networkConstraints: Constraints) {
         val request = PeriodicWorkRequestBuilder<SessionRestorationWorker>(
             SESSION_RESTORATION_INTERVAL, TimeUnit.HOURS,
             SESSION_RESTORATION_FLEX_INTERVAL, TimeUnit.HOURS
-        ).setConstraints(constraints)
+        ).setConstraints(networkConstraints)
             .build()
 
-        WorkManager.getInstance(this).also {
-            //it.getWorkInfosByTag(SESSION_RESTORATION_WORK_TAG)
-            it.enqueueUniquePeriodicWork(
-                SESSION_RESTORATION_WORK_TAG,
-                ExistingPeriodicWorkPolicy.KEEP,
-                request
-            )
-        }
+        workmanager.enqueueUniquePeriodicWork(
+            SESSION_RESTORATION_WORK_TAG,
+            ExistingPeriodicWorkPolicy.KEEP,
+            request
+        )
+    }
+
+    private fun enqueueNotificationWorker(networkConstraints: Constraints) {
+        val request = PeriodicWorkRequestBuilder<SessionRestorationWorker>(
+            NOTIFICATION_INTERVAL, TimeUnit.MINUTES,
+            NOTIFICATION_FLEX_INTERVAL, TimeUnit.MINUTES
+        ).setConstraints(networkConstraints)
+            .build()
+
+        workmanager.enqueueUniquePeriodicWork(
+            NOTIFICATION_WORK_TAG,
+            ExistingPeriodicWorkPolicy.KEEP,
+            request
+        )
     }
 
     companion object {
         private const val SESSION_RESTORATION_INTERVAL = 4L
         private const val SESSION_RESTORATION_FLEX_INTERVAL = 2L
         private const val SESSION_RESTORATION_WORK_TAG = "session_restoration"
+
+        private const val NOTIFICATION_INTERVAL = 15L
+        private const val NOTIFICATION_FLEX_INTERVAL = 5L
+        private const val NOTIFICATION_WORK_TAG = "notifications"
     }
 }
