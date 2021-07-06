@@ -6,6 +6,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -155,7 +156,9 @@ fun MessageItem(message: UIMessageDTO) {
                 .fillMaxWidth()
                 .padding(horizontal = 7.dp, vertical = 4.dp)
         ) {
-            Text(text = message.message, style = MaterialTheme.typography.body1)
+            SelectionContainer {
+                Text(text = message.message, style = MaterialTheme.typography.body1)
+            }
         }
         Row(
             modifier = Modifier
