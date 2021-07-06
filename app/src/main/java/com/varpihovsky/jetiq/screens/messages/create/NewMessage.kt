@@ -1,5 +1,6 @@
-package com.varpihovsky.jetiq.screens.messages.new
+package com.varpihovsky.jetiq.screens.messages.create
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -21,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.varpihovsky.jetiq.ui.compose.Avatar
 import com.varpihovsky.jetiq.ui.compose.BasicAppBar
+import com.varpihovsky.jetiq.ui.compose.CollectExceptions
 import com.varpihovsky.jetiq.ui.compose.InfoCard
 import com.varpihovsky.jetiq.ui.dto.ReceiverType
 import com.varpihovsky.jetiq.ui.dto.UIReceiverDTO
@@ -72,8 +74,10 @@ fun NewMessageScreen(
         )
     }
 
+    CollectExceptions(viewModel = newMessageViewModel)
+
     NewMessageScreen(
-        scrollState = newMessageViewModel.scrollState,
+        scrollState = rememberScrollState(),
         receivers = receivers.value,
         onReceiverRemove = newMessageViewModel::onReceiverRemove,
         onNewReceiverButtonClick = newMessageViewModel::onNewReceiverButtonClick,
@@ -159,7 +163,8 @@ fun Receiver(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(10.dp),
+            .padding(10.dp)
+            .animateContentSize(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

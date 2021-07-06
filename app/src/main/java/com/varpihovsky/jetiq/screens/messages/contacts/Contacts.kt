@@ -1,5 +1,6 @@
 package com.varpihovsky.jetiq.screens.messages.contacts
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -54,6 +55,11 @@ fun ContactsScreen(
             isExternalChoosing = isExternalChoosing.value
         )
     }
+
+    BackHandler(
+        enabled = true,
+        onBack = contactsViewModel::onBackNavButtonClick
+    )
 
     if (isAdding.value) {
         AdditionDialog(

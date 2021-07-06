@@ -10,6 +10,7 @@ import com.varpihovsky.jetiq.back.model.MessagesModel
 import com.varpihovsky.jetiq.back.model.ProfileModel
 import com.varpihovsky.jetiq.back.model.SubjectModel
 import com.varpihovsky.jetiq.system.ConnectionManager
+import com.varpihovsky.jetiq.system.data_transfer.ViewModelDataTransferManager
 import com.varpihovsky.jetiq.system.navigation.NavigationManager
 import com.varpihovsky.jetiq.ui.appbar.AppbarManager
 import dagger.Module
@@ -23,6 +24,10 @@ import javax.inject.Singleton
 object SingletonModule {
     @Provides
     fun provideConnectionManager() = ConnectionManager()
+
+    @Provides
+    @Singleton
+    fun provideViewModelDataTransferManager() = ViewModelDataTransferManager()
 
     @Provides
     @Singleton

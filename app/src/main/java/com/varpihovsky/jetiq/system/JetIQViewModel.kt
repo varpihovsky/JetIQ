@@ -22,4 +22,5 @@ abstract class JetIQViewModel(
     open fun onBackNavButtonClick() {
         navigationManager.manage(NavigationDirections.back)
     }
+
 }

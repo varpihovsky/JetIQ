@@ -8,6 +8,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import com.varpihovsky.jetiq.system.data_transfer.ViewModelDataTransferManager
 import com.varpihovsky.jetiq.system.navigation.NavigationManager
 import com.varpihovsky.jetiq.ui.appbar.AppbarManager
 import com.varpihovsky.jetiq.ui.compose.Root
@@ -25,6 +26,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var appbarManager: AppbarManager
 
+    @Inject
+    lateinit var viewModelDataTransferManager: ViewModelDataTransferManager
+
     @ExperimentalFoundationApi
     @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +36,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
-            val viewModel = hiltViewModel<SharedViewModel>()
+            val viewModel = hiltViewModel<NavigationViewModel>()
             val coroutineScope = rememberCoroutineScope()
             navController.addOnDestinationChangedListener { _, destination, _ ->
                 destination.route?.let { viewModel.onDestinationChange(it) }
@@ -49,7 +53,7 @@ class MainActivity : ComponentActivity() {
 
             JetIQTheme {
                 Root(
-                    sharedViewModel = viewModel,
+                    navigationViewModel = viewModel,
                     navController = navController,
                     appbarManager = appbarManager,
                 )

@@ -1,5 +1,6 @@
 package com.varpihovsky.jetiq.ui.compose
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -20,14 +21,24 @@ suspend fun collectNavigationCommands(
     navController: NavHostController
 ) {
     navigationManager.commands.collect {
+        Log.d("Nav", navController.backQueue.toString())
+
         if (it.destination.isNotEmpty() && it.destination != currentDestination()) {
             navController.navigate(it.destination) {
                 if (it.type == NavigationCommandType.MAIN) {
-                    popUpTo(navController.graph.findStartDestination().id) {
-                        saveState = true
-                    }
                     launchSingleTop = true
                     restoreState = true
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                        inclusive = true
+                    }
+                } else {
+                    launchSingleTop
+                    restoreState = true
+                    popUpTo(it.destination) {
+                        saveState = true
+                        inclusive = true
+                    }
                 }
             }
         }
@@ -49,6 +60,5 @@ fun CollectExceptions(
 
 @Composable
 inline fun <reified T : JetIQViewModel> hiltJetIQViewModel(): T {
-
     return hiltViewModel()
 }

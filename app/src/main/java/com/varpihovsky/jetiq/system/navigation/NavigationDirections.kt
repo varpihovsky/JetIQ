@@ -3,6 +3,20 @@ package com.varpihovsky.jetiq.system.navigation
 import androidx.navigation.compose.NamedNavArgument
 
 object NavigationDirections {
+    val directions by lazy {
+        listOf(
+            empty,
+            back,
+            authentication,
+            profile,
+            messages,
+            contacts,
+            newMessage,
+            mainSettings,
+            aboutSettings
+        )
+    }
+
     val empty = object : NavigationCommand {
         override val arguments = emptyList<NamedNavArgument>()
         override val destination = ""

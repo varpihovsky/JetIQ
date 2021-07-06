@@ -1,5 +1,6 @@
 package com.varpihovsky.jetiq.back.api
 
+import com.varpihovsky.jetiq.back.dto.CSRF
 import com.varpihovsky.jetiq.back.dto.MessageDTO
 import com.varpihovsky.jetiq.back.dto.ProfileDTO
 import okhttp3.ResponseBody
@@ -71,4 +72,22 @@ interface JetIQApi {
         @Query("t_list") teachersList: Int = 1,
         @Query("t_name") query: String
     ): Call<ResponseBody>
+
+    @GET("api.php")
+    fun getCsrf(
+        @Header("Cookie") cookie: String,
+        @Query("msg") msg: Int = 1,
+        @Query("pre") pre: Int = 1
+    ): Call<CSRF>
+
+    @GET("api.php")
+    fun sendMessage(
+        @Header("Cookie") cookie: String,
+        @Query("msg") msg: Int = 1,
+        @Query("send") send: Int = 1,
+        @Query("s_id") receiverId: Int,
+        @Query("isteacher") isTeacher: Int,
+        @Query("message") message: String,
+        @Query("csrf") csrf: String
+    ): Call<Unit>
 }

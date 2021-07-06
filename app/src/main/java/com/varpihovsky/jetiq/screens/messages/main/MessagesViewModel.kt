@@ -59,7 +59,7 @@ class MessagesViewModel @Inject constructor(
     }
 
     fun onNewMessageButtonClick() {
-        //navigationManager.manage(NavigationDirections.newMessage)
+        navigationManager.manage(NavigationDirections.newMessage)
     }
 
     fun onCompose() {

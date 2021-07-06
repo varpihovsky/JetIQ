@@ -5,6 +5,7 @@ import com.varpihovsky.jetiq.back.api.managers.JetIQMessageManager
 import com.varpihovsky.jetiq.back.db.managers.ConfidentialDatabaseManager
 import com.varpihovsky.jetiq.back.db.managers.MessageDatabaseManager
 import com.varpihovsky.jetiq.back.db.managers.ProfileDatabaseManager
+import com.varpihovsky.jetiq.back.dto.MessageToSendDTO
 import com.varpihovsky.jetiq.system.exceptions.ModelExceptionSender
 import com.varpihovsky.jetiq.system.exceptions.ViewModelExceptionReceivable
 import com.varpihovsky.jetiq.system.util.logException
@@ -46,5 +47,12 @@ class MessagesModel @Inject constructor(
 
     fun clearData() {
         messageDatabaseManager.removeAll()
+    }
+
+    fun sendMessage(messageToSendDTO: MessageToSendDTO) {
+        requireSession().let {
+            val csrf = jetIQMessageManager.getCsrf(it)
+            jetIQMessageManager.sendMessage(it, csrf, messageToSendDTO)
+        }
     }
 }

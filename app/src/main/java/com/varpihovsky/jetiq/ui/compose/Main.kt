@@ -16,14 +16,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.varpihovsky.jetiq.SharedViewModel
+import androidx.navigation.navigation
+import com.varpihovsky.jetiq.NavigationViewModel
 import com.varpihovsky.jetiq.screens.auth.Auth
 import com.varpihovsky.jetiq.screens.messages.contacts.ContactsScreen
+import com.varpihovsky.jetiq.screens.messages.create.NewMessageScreen
 import com.varpihovsky.jetiq.screens.messages.main.MessagesScreen
-import com.varpihovsky.jetiq.screens.messages.new.NewMessageScreen
 import com.varpihovsky.jetiq.screens.profile.Profile
 import com.varpihovsky.jetiq.screens.settings.about.AboutSettingsScreen
 import com.varpihovsky.jetiq.screens.settings.main.MainSettingsScreen
@@ -36,18 +38,18 @@ import com.varpihovsky.jetiq.ui.appbar.AppbarManager
 @ExperimentalAnimationApi
 @Composable
 fun Root(
-    sharedViewModel: SharedViewModel,
+    navigationViewModel: NavigationViewModel,
     navController: NavHostController,
-    appbarManager: AppbarManager,
+    appbarManager: AppbarManager
 ) {
-    val startDestination = remember { sharedViewModel.getStartDestination() }
+    val startDestination = remember { navigationViewModel.getStartDestination() }
     val scaffoldState = rememberScaffoldState()
 
     Scaffold(
         scaffoldState = scaffoldState,
         bottomBar = {
-            val isNavbarShown by sharedViewModel.data.isNavbarShown.observeAsState(false)
-            val selectedEntry by sharedViewModel.data.selectedNavbarEntry.observeAsState(initial = BottomNavigationItem.ProfileItem)
+            val isNavbarShown by navigationViewModel.data.isNavbarShown.observeAsState(false)
+            val selectedEntry by navigationViewModel.data.selectedNavbarEntry.observeAsState(initial = BottomNavigationItem.ProfileItem)
 
             AnimatedVisibility(
                 visible = isNavbarShown,
@@ -56,7 +58,7 @@ fun Root(
             ) {
                 BottomNavigationMenu(
                     selected = selectedEntry,
-                    onClick = { sharedViewModel.onBottomBarButtonClick(it.route) },
+                    onClick = { navigationViewModel.onBottomBarButtonClick(it.route) },
                     BottomNavigationItem.MessagesItem,
                     BottomNavigationItem.ProfileItem,
                 )
@@ -64,54 +66,68 @@ fun Root(
         },
         topBar = appbarManager.commands.collectAsState(AppbarCommand { }).value.bar
 
-    ) {
+    ) { paddingValues ->
 
         NavHost(
             navController = navController,
-            startDestination = startDestination,
-            modifier = Modifier.padding(paddingValues = it)
+            startDestination = "Parent",
+            modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
-            composable(
-                route = NavigationDirections.authentication.destination,
-                arguments = NavigationDirections.authentication.arguments
-            ) {
-                Auth(viewModel = hiltJetIQViewModel())
-            }
-            composable(
-                route = NavigationDirections.profile.destination,
-                arguments = NavigationDirections.profile.arguments
-            ) {
-                Profile(profileViewModel = hiltJetIQViewModel())
-            }
-            composable(
-                route = NavigationDirections.messages.destination,
-                arguments = NavigationDirections.messages.arguments
-            ) {
-                MessagesScreen(viewModel = hiltJetIQViewModel())
-            }
-            composable(
-                route = NavigationDirections.contacts.destination,
-                arguments = NavigationDirections.contacts.arguments
-            ) {
-                ContactsScreen(contactsViewModel = hiltJetIQViewModel())
-            }
-            composable(
-                route = NavigationDirections.newMessage.destination,
-                arguments = NavigationDirections.newMessage.arguments
-            ) {
-                NewMessageScreen(newMessageViewModel = hiltJetIQViewModel())
-            }
-            composable(
-                route = NavigationDirections.mainSettings.destination,
-                arguments = NavigationDirections.mainSettings.arguments
-            ) {
-                MainSettingsScreen(mainSettingsViewModel = hiltJetIQViewModel())
-            }
-            composable(
-                route = NavigationDirections.aboutSettings.destination,
-                arguments = NavigationDirections.aboutSettings.arguments
-            ) {
-                AboutSettingsScreen(aboutSettingsViewModel = hiltJetIQViewModel())
+            navigation(startDestination = startDestination, route = "Parent") {
+                composable(
+                    route = NavigationDirections.authentication.destination,
+                    arguments = NavigationDirections.authentication.arguments
+                ) {
+                    Auth(viewModel = hiltViewModel(navController.getBackStackEntry("Parent")))
+                }
+                composable(
+                    route = NavigationDirections.profile.destination,
+                    arguments = NavigationDirections.profile.arguments
+                ) {
+                    Profile(profileViewModel = hiltViewModel(navController.getBackStackEntry("Parent")))
+                }
+                composable(
+                    route = NavigationDirections.messages.destination,
+                    arguments = NavigationDirections.messages.arguments
+                ) {
+                    MessagesScreen(viewModel = hiltViewModel(navController.getBackStackEntry("Parent")))
+                }
+                composable(
+                    route = NavigationDirections.contacts.destination,
+                    arguments = NavigationDirections.contacts.arguments
+                ) {
+                    ContactsScreen(
+                        contactsViewModel = hiltViewModel(
+                            navController.getBackStackEntry(
+                                "Parent"
+                            )
+                        )
+                    )
+                }
+                composable(
+                    route = NavigationDirections.newMessage.destination,
+                    arguments = NavigationDirections.newMessage.arguments
+                ) {
+                    NewMessageScreen(
+                        newMessageViewModel = hiltViewModel(navController.getBackStackEntry("Parent"))
+                    )
+                }
+                composable(
+                    route = NavigationDirections.mainSettings.destination,
+                    arguments = NavigationDirections.mainSettings.arguments
+                ) {
+                    MainSettingsScreen(
+                        mainSettingsViewModel = hiltViewModel(navController.getBackStackEntry("Parent"))
+                    )
+                }
+                composable(
+                    route = NavigationDirections.aboutSettings.destination,
+                    arguments = NavigationDirections.aboutSettings.arguments
+                ) {
+                    AboutSettingsScreen(
+                        aboutSettingsViewModel = hiltViewModel(navController.getBackStackEntry("Parent"))
+                    )
+                }
             }
         }
     }

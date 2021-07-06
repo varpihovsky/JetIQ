@@ -12,7 +12,7 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
-class SharedViewModel @Inject constructor(
+class NavigationViewModel @Inject constructor(
     private val profileModel: ProfileModel,
     private val navigationManager: NavigationManager
 ) : ViewModel() {
@@ -24,9 +24,9 @@ class SharedViewModel @Inject constructor(
     private var currentDestination: String? = null
 
     inner class Data {
-        val isNavbarShown: LiveData<Boolean> = this@SharedViewModel.isNavbarShown
+        val isNavbarShown: LiveData<Boolean> = this@NavigationViewModel.isNavbarShown
         val selectedNavbarEntry: LiveData<BottomNavigationItem> =
-            this@SharedViewModel.selectedNavbarEntry
+            this@NavigationViewModel.selectedNavbarEntry
     }
 
     fun getStartDestination(): String =
