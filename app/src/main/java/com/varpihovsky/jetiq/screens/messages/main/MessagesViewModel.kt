@@ -2,6 +2,7 @@ package com.varpihovsky.jetiq.screens.messages.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.varpihovsky.jetiq.back.model.MessagesModel
 import com.varpihovsky.jetiq.system.ConnectionManager
 import com.varpihovsky.jetiq.system.JetIQViewModel
@@ -12,8 +13,10 @@ import com.varpihovsky.jetiq.system.util.ReactiveTask
 import com.varpihovsky.jetiq.ui.appbar.AppbarManager
 import com.varpihovsky.jetiq.ui.dto.UIMessageDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -71,6 +74,10 @@ class MessagesViewModel @Inject constructor(
     }
 
     fun onRefresh() {
+        viewModelScope.launch(Dispatchers.IO) { handleRefresh() }
+    }
+
+    private fun handleRefresh() {
         if (connectionManager.isConnected()) {
             messagesModel.loadMessages()
         } else {

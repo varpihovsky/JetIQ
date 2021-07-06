@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import com.varpihovsky.jetiq.screens.messages.contacts.Contact
 import com.varpihovsky.jetiq.screens.messages.contacts.SearchBar
 import com.varpihovsky.jetiq.ui.compose.BasicTextButton
+import com.varpihovsky.jetiq.ui.compose.CollectExceptions
 import com.varpihovsky.jetiq.ui.compose.SubscribedExposedDropDownList
 import com.varpihovsky.jetiq.ui.dto.ContactTypeDropDownItem
 import com.varpihovsky.jetiq.ui.dto.DropDownItem
@@ -43,6 +44,8 @@ fun AdditionDialog(
     val searchFieldValue =
         contactAdditionViewModel.data.searchFieldValue.observeAsState(initial = "")
     val contacts = contactAdditionViewModel.data.contacts.observeAsState(initial = listOf())
+
+    CollectExceptions(viewModel = contactAdditionViewModel)
 
     AdditionDialog(
         onDismissRequest = {

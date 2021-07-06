@@ -5,19 +5,22 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.jetiq.back.model.ListModel
+import com.varpihovsky.jetiq.system.exceptions.ViewModelWithException
 import com.varpihovsky.jetiq.ui.dto.*
 import com.varpihovsky.jetiq.ui.dto.func_extensions.Selectable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ContactAdditionViewModel @Inject constructor(
     private val listModel: ListModel
-) : ViewModel() {
+) : ViewModel(), ViewModelWithException {
     val data by lazy { Data() }
     lateinit var callback: (List<UIReceiverDTO>) -> Unit
+    override val exceptions: MutableStateFlow<Exception?> = MutableStateFlow(null)
 
     private val selectedContactType = MutableLiveData(ContactTypeDropDownItem.STUDENT)
     private val faculties = MutableLiveData<List<IdDropDownItem>>()
@@ -42,7 +45,11 @@ class ContactAdditionViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            faculties.postValue(listModel.getFaculties().map { IdDropDownItem(it.id, it.text) })
+            try {
+                faculties.postValue(listModel.getFaculties().map { IdDropDownItem(it.id, it.text) })
+            } catch (e: Exception) {
+                exceptions.value = e
+            }
         }
     }
 
@@ -87,10 +94,19 @@ class ContactAdditionViewModel @Inject constructor(
     fun onSearchFieldValueChange(value: String) {
         searchFieldValue.value = value
         viewModelScope.launch(Dispatchers.IO) {
-            contacts.postValue(
-                listModel.getTeacherByQuery(value)
-                    .map { Selectable(UIReceiverDTO(it.id, it.text, ReceiverType.TEACHER), false) }
-            )
+            try {
+                contacts.postValue(
+                    listModel.getTeacherByQuery(value)
+                        .map {
+                            Selectable(
+                                UIReceiverDTO(it.id, it.text, ReceiverType.TEACHER),
+                                false
+                            )
+                        }
+                )
+            } catch (e: Exception) {
+                exceptions.value = e
+            }
         }
     }
 
