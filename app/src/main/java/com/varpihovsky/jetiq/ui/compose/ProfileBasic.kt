@@ -12,9 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.transform.CircleCropTransformation
+import coil.transform.Transformation
 import com.google.accompanist.coil.rememberCoilPainter
 import com.varpihovsky.jetiq.R
 import com.varpihovsky.jetiq.ui.dto.MarksInfo
@@ -31,20 +34,32 @@ fun ProfileName(modifier: Modifier = Modifier, text: String) {
 }
 
 @Composable
-fun Avatar(modifier: Modifier = Modifier, url: String) {
+fun Avatar(
+    modifier: Modifier = Modifier,
+    url: String,
+    colorFilter: ColorFilter? = null,
+    transformation: Transformation? = CircleCropTransformation(),
+    placeholderEnabled: Boolean = true,
+    contentScale: ContentScale = ContentScale.Fit
+) {
     Image(
         modifier = modifier,
         painter = rememberCoilPainter(
             request = url,
             fadeIn = true,
             requestBuilder = {
-                transformations(CircleCropTransformation())
-                placeholder(R.drawable.ic_baseline_person_24)
-                error(R.drawable.ic_baseline_person_24)
+                transformation?.let { transformations(it) }
+                if (placeholderEnabled) {
+                    placeholder(R.drawable.ic_baseline_person_24)
+                    error(R.drawable.ic_baseline_person_24)
+                }
+                this
             },
             previewPlaceholder = R.drawable.ic_baseline_person_24
         ),
-        contentDescription = null
+        contentDescription = null,
+        colorFilter = colorFilter,
+        contentScale = contentScale
     )
 }
 

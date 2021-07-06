@@ -3,8 +3,10 @@ package com.varpihovsky.jetiq.screens.profile
 import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TopAppBar
@@ -12,13 +14,18 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import coil.transform.BlurTransformation
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -142,9 +149,6 @@ fun Profile(
     val markbookInfo by profileViewModel.data.markbookMarksInfo.observeAsState(listOf())
     val markbookSubjects by profileViewModel.data.markbookSubjects.observeAsState(listOf())
 
-    val successChecked by profileViewModel.data.successChecked.observeAsState(initial = false)
-    val markbookChecked by profileViewModel.data.markbookChecked.observeAsState(initial = false)
-
     val isRefreshing by profileViewModel.isLoading.observeAsState(initial = false)
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isRefreshing)
 
@@ -163,9 +167,9 @@ fun Profile(
         subjects = successSubjectsState,
         markbookInfo = markbookInfo,
         markbookSubjects = markbookSubjects,
-        successChecked = successChecked,
+        successChecked = profileViewModel.data.successChecked.value,
         onSuccessToggle = profileViewModel::onSuccessToggle,
-        markbookChecked = markbookChecked,
+        markbookChecked = profileViewModel.data.markbookChecked.value,
         onMarkbookToggle = profileViewModel::onMarkbookToggle,
         refreshState = rememberSwipeRefreshState(isRefreshing = isRefreshing),
         onRefresh = profileViewModel::onRefresh,
@@ -362,8 +366,34 @@ fun ProfileAppBar(
                         .requiredSize(AVATAR_SIZE.dp)
                         .padding(5.dp)
                         .align(Alignment.Center)
-                        .padding(bottom = 30.dp),
+                        .padding(bottom = 30.dp)
+                        .zIndex(zIndex)
+                        .shadow(elevation = 10.dp, shape = CircleShape),
                     url = profile.photoURL
+                )
+                Avatar(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .zIndex(zIndex - 2f)
+                        .background(MaterialTheme.colors.background),
+                    url = profile.photoURL,
+                    transformation = BlurTransformation(LocalContext.current),
+                    placeholderEnabled = false,
+                    contentScale = ContentScale.Crop
+                )
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .zIndex(zIndex - 1f)
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colorStops = arrayOf(
+                                    0f to MaterialTheme.colors.background.copy(alpha = 0.5f),
+                                    0.7f to MaterialTheme.colors.background.copy(alpha = 0.75f),
+                                    1f to MaterialTheme.colors.background
+                                )
+                            )
+                        )
                 )
             }
         }

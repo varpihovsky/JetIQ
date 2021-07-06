@@ -2,6 +2,8 @@ package com.varpihovsky.jetiq.screens.profile
 
 import android.util.Log
 import androidx.compose.foundation.ScrollState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -33,6 +35,8 @@ class ProfileViewModel @Inject constructor(
         get() = profileInteractor.isLoading
     override val exceptions: MutableStateFlow<Exception?> = MutableStateFlow(null)
 
+    private var scrollChange = 0
+
     private val profile = MutableLiveData<UIProfileDTO>()
 
     private val successMarksInfo = MutableLiveData<List<MarksInfo>>()
@@ -41,8 +45,8 @@ class ProfileViewModel @Inject constructor(
     private val markbookMarksInfo = MutableLiveData<List<MarksInfo>>()
     private val markbookSubjects = MutableLiveData<List<UISubjectDTO>>()
 
-    private val successChecked = MutableLiveData(false)
-    private val markbookChecked = MutableLiveData(false)
+    private val successChecked = mutableStateOf(false)
+    private val markbookChecked = mutableStateOf(false)
 
     inner class Data {
         val profile: LiveData<UIProfileDTO> = this@ProfileViewModel.profile
@@ -53,8 +57,8 @@ class ProfileViewModel @Inject constructor(
         val markbookMarksInfo: LiveData<List<MarksInfo>> = this@ProfileViewModel.markbookMarksInfo
         val markbookSubjects: LiveData<List<UISubjectDTO>> = this@ProfileViewModel.markbookSubjects
 
-        val successChecked: LiveData<Boolean> = this@ProfileViewModel.successChecked
-        val markbookChecked: LiveData<Boolean> = this@ProfileViewModel.markbookChecked
+        val successChecked: State<Boolean> = this@ProfileViewModel.successChecked
+        val markbookChecked: State<Boolean> = this@ProfileViewModel.markbookChecked
     }
 
     init {
