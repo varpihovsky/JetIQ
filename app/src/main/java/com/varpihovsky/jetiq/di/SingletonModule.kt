@@ -10,7 +10,7 @@ import com.varpihovsky.jetiq.back.model.MessagesModel
 import com.varpihovsky.jetiq.back.model.ProfileModel
 import com.varpihovsky.jetiq.back.model.SubjectModel
 import com.varpihovsky.jetiq.system.ConnectionManager
-import com.varpihovsky.jetiq.system.data_transfer.ViewModelDataTransferManager
+import com.varpihovsky.jetiq.system.dataTransfer.ViewModelDataTransferManager
 import com.varpihovsky.jetiq.system.navigation.NavigationManager
 import com.varpihovsky.jetiq.ui.appbar.AppbarManager
 import dagger.Module

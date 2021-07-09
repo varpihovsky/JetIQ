@@ -9,7 +9,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,16 +47,13 @@ fun Root(
     Scaffold(
         scaffoldState = scaffoldState,
         bottomBar = {
-            val isNavbarShown by navigationViewModel.data.isNavbarShown.observeAsState(false)
-            val selectedEntry by navigationViewModel.data.selectedNavbarEntry.observeAsState(initial = BottomNavigationItem.ProfileItem)
-
             AnimatedVisibility(
-                visible = isNavbarShown,
+                visible = navigationViewModel.data.isNavbarShown.value,
                 enter = expandIn(expandFrom = Alignment.BottomCenter),
                 exit = shrinkOut(shrinkTowards = Alignment.TopCenter)
             ) {
                 BottomNavigationMenu(
-                    selected = selectedEntry,
+                    selected = navigationViewModel.data.selectedNavbarEntry.value,
                     onClick = { navigationViewModel.onBottomBarButtonClick(it.route) },
                     BottomNavigationItem.MessagesItem,
                     BottomNavigationItem.ProfileItem,

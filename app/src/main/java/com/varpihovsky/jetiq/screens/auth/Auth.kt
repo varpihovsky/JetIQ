@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -25,24 +23,19 @@ import com.varpihovsky.jetiq.ui.compose.CollectExceptions
 fun Auth(
     viewModel: AuthViewModel
 ) {
-    val login by viewModel.data.login.observeAsState("")
-    val password by viewModel.data.password.observeAsState("")
-    val passwordHidden by viewModel.data.passwordHidden.observeAsState(true)
-    val progressShown by viewModel.data.progressShown.observeAsState(false)
-
     CollectExceptions(viewModel = viewModel)
 
     viewModel.emptyAppbar()
 
     Auth(
-        loginValue = login,
+        loginValue = viewModel.data.login.value,
         loginOnChange = viewModel::onLoginChange,
-        passwordValue = password,
+        passwordValue = viewModel.data.password.value,
         passwordOnChange = viewModel::onPasswordChange,
         onLoginClick = viewModel::onLogin,
-        passwordHidden = passwordHidden,
+        passwordHidden = viewModel.data.passwordHidden.value,
         onPasswordHiddenChange = viewModel::onPasswordHiddenChange,
-        progressShown = progressShown
+        progressShown = viewModel.data.progressShown.value
     )
 }
 

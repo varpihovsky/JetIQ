@@ -10,8 +10,6 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,9 +38,6 @@ fun MessagesScreen(viewModel: MessagesViewModel) {
         onDispose(viewModel::onDispose)
     }
 
-    val messagesState by viewModel.data.messages.observeAsState(initial = emptyList())
-    val isLoading by viewModel.isLoading.observeAsState(initial = false)
-
     CollectExceptions(viewModel = viewModel)
 
     viewModel.assignAppbar {
@@ -60,9 +55,9 @@ fun MessagesScreen(viewModel: MessagesViewModel) {
     }
 
     MessagesScreen(
-        messages = messagesState,
+        messages = viewModel.data.messages.value,
         onClick = viewModel::onNewMessageButtonClick,
-        refreshState = rememberSwipeRefreshState(isRefreshing = isLoading),
+        refreshState = rememberSwipeRefreshState(isRefreshing = viewModel.isLoading.value),
         onRefresh = viewModel::onRefresh
     )
 }

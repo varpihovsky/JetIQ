@@ -9,7 +9,7 @@ import com.varpihovsky.jetiq.back.model.MessagesModel
 import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModel
 import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModelData
 import com.varpihovsky.jetiq.system.JetIQViewModel
-import com.varpihovsky.jetiq.system.data_transfer.ViewModelDataTransferManager
+import com.varpihovsky.jetiq.system.dataTransfer.ViewModelDataTransferManager
 import com.varpihovsky.jetiq.system.exceptions.ViewModelWithException
 import com.varpihovsky.jetiq.system.navigation.NavigationDirections
 import com.varpihovsky.jetiq.system.navigation.NavigationManager

@@ -1,26 +1,25 @@
 package com.varpihovsky.jetiq.screens.auth
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.jetiq.back.model.ProfileModel
 import com.varpihovsky.jetiq.system.JetIQViewModel
+import com.varpihovsky.jetiq.system.exceptions.Values
 import com.varpihovsky.jetiq.system.exceptions.ViewModelWithException
 import com.varpihovsky.jetiq.system.exceptions.WrongDataException
 import com.varpihovsky.jetiq.system.navigation.NavigationDirections
 import com.varpihovsky.jetiq.system.navigation.NavigationManager
+import com.varpihovsky.jetiq.system.util.CoroutineDispatchers
 import com.varpihovsky.jetiq.system.util.Validator
 import com.varpihovsky.jetiq.ui.appbar.AppbarManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
+    private val dispatchers: CoroutineDispatchers,
     private val profileModel: ProfileModel,
     @Named("login_checker") private val loginValidator: Validator<String>,
     @Named("password_checker") private val passwordValidator: Validator<String>,
@@ -28,18 +27,17 @@ class AuthViewModel @Inject constructor(
     appbarManager: AppbarManager,
 ) : JetIQViewModel(appbarManager, navigationManager), ViewModelWithException {
     val data by lazy { Data() }
-    override val exceptions: MutableStateFlow<Exception?> = MutableStateFlow(null)
 
-    private val login = MutableLiveData("")
-    private val password = MutableLiveData("")
-    private val passwordHidden = MutableLiveData(true)
-    private val progressShown = MutableLiveData(false)
+    private var login = mutableStateOf("")
+    private val password = mutableStateOf("")
+    private val passwordHidden = mutableStateOf(true)
+    private val progressShown = mutableStateOf(false)
 
     inner class Data {
-        val login: LiveData<String> = this@AuthViewModel.login
-        val password: LiveData<String> = this@AuthViewModel.password
-        val passwordHidden: LiveData<Boolean> = this@AuthViewModel.passwordHidden
-        val progressShown: LiveData<Boolean> = this@AuthViewModel.progressShown
+        val login: State<String> = this@AuthViewModel.login
+        val password: State<String> = this@AuthViewModel.password
+        val passwordHidden: State<Boolean> = this@AuthViewModel.passwordHidden
+        val progressShown: State<Boolean> = this@AuthViewModel.progressShown
     }
 
     fun onLoginChange(value: String) {
@@ -57,26 +55,35 @@ class AuthViewModel @Inject constructor(
     fun onLogin() {
         progressShown.value = true
 
-        if (!loginValidator.validate(login.value!!) && !passwordValidator.validate(password.value!!)) {
-            exceptions.value =
-                WrongDataException("Логін або пароль не пройшли перевірку на правильність")
+        if (isInputInvalid()) {
             progressShown.value = false
             return
         }
 
-        viewModelScope.launch(Dispatchers.IO) { processLogin() }
+        viewModelScope.launch(dispatchers.IO) {
+            processLogin()
+            progressShown.value = false
+        }
     }
+
+    private fun isInputInvalid(): Boolean =
+        if (!loginValidator.validate(login.value) && !passwordValidator.validate(password.value)) {
+            redirectExceptionToUI(WrongDataException(Values.LOGIN_OR_PASS_IS_NOT_RIGHT))
+            true
+        } else {
+            false
+        }
 
     private fun processLogin() {
         try {
-            profileModel.login(login.value!!, password.value!!)
-            navigationManager.manage(NavigationDirections.profile)
+            authorize()
         } catch (e: Exception) {
-            Log.d("Application", Log.getStackTraceString(e))
-            exceptions.value = e
+            redirectExceptionToUI(e)
         }
-        viewModelScope.launch { progressShown.value = false }
     }
 
-
+    private fun authorize() {
+        profileModel.login(login.value, password.value)
+        navigationManager.manage(NavigationDirections.profile)
+    }
 }

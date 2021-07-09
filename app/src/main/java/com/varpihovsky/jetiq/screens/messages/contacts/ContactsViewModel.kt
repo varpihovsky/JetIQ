@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.varpihovsky.jetiq.back.dto.ContactDTO
 import com.varpihovsky.jetiq.back.model.ListModel
 import com.varpihovsky.jetiq.system.JetIQViewModel
-import com.varpihovsky.jetiq.system.data_transfer.ViewModelDataTransferManager
+import com.varpihovsky.jetiq.system.dataTransfer.ViewModelDataTransferManager
 import com.varpihovsky.jetiq.system.navigation.NavigationManager
 import com.varpihovsky.jetiq.system.util.ReactiveTask
 import com.varpihovsky.jetiq.ui.appbar.AppbarManager

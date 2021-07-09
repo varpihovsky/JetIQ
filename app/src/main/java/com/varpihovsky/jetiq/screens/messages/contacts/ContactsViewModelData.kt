@@ -1,7 +1,7 @@
 package com.varpihovsky.jetiq.screens.messages.contacts
 
 import com.varpihovsky.jetiq.system.JetIQViewModel
-import com.varpihovsky.jetiq.system.data_transfer.ViewModelData
+import com.varpihovsky.jetiq.system.dataTransfer.ViewModelData
 import com.varpihovsky.jetiq.ui.dto.UIReceiverDTO
 import kotlin.reflect.KClass
 

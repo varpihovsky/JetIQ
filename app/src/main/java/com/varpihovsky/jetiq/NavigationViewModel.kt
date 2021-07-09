@@ -1,43 +1,44 @@
 package com.varpihovsky.jetiq
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.compose.runtime.State
 import com.varpihovsky.jetiq.back.model.ProfileModel
+import com.varpihovsky.jetiq.system.JetIQViewModel
 import com.varpihovsky.jetiq.system.navigation.*
+import com.varpihovsky.jetiq.system.util.CoroutineDispatchers
+import com.varpihovsky.jetiq.system.util.ThreadSafeMutableState
+import com.varpihovsky.jetiq.ui.appbar.AppbarManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
 class NavigationViewModel @Inject constructor(
+    private val dispatchers: CoroutineDispatchers,
     private val profileModel: ProfileModel,
-    private val navigationManager: NavigationManager
-) : ViewModel() {
+    private val navigationManager: NavigationManager,
+    appbarManager: AppbarManager
+) : JetIQViewModel(appbarManager, navigationManager) {
     val data by lazy { Data() }
 
-    private val isNavbarShown = MutableLiveData(false)
-    private val selectedNavbarEntry: MutableLiveData<BottomNavigationItem> =
-        MutableLiveData(BottomNavigationItem.ProfileItem)
+    private val isNavbarShown = mutableStateOf(false)
+    private val selectedNavbarEntry: ThreadSafeMutableState<BottomNavigationItem> =
+        mutableStateOf(BottomNavigationItem.ProfileItem)
     private var currentDestination: String? = null
 
     inner class Data {
-        val isNavbarShown: LiveData<Boolean> = this@NavigationViewModel.isNavbarShown
-        val selectedNavbarEntry: LiveData<BottomNavigationItem> =
+        val isNavbarShown: State<Boolean> = this@NavigationViewModel.isNavbarShown
+        val selectedNavbarEntry: State<BottomNavigationItem> =
             this@NavigationViewModel.selectedNavbarEntry
     }
 
     fun getStartDestination(): String =
-        runBlocking {
-            try {
-                Log.d("Application", profileModel.getConfidential().first().toString())
+        runBlocking(context = dispatchers.IO) {
+            if (profileModel.getConfidential().firstOrNull() != null) {
                 isNavbarShown.value = true
                 return@runBlocking NavigationDirections.profile.destination
-            } catch (e: Exception) {
-                return@runBlocking NavigationDirections.authentication.destination
             }
+            return@runBlocking NavigationDirections.authentication.destination
         }
 
     fun onDestinationChange(direction: String) {

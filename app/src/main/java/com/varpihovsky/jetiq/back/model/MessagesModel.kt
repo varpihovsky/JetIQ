@@ -1,14 +1,16 @@
 package com.varpihovsky.jetiq.back.model
 
-import androidx.lifecycle.MutableLiveData
 import com.varpihovsky.jetiq.back.api.managers.JetIQMessageManager
 import com.varpihovsky.jetiq.back.db.managers.ConfidentialDatabaseManager
 import com.varpihovsky.jetiq.back.db.managers.MessageDatabaseManager
 import com.varpihovsky.jetiq.back.db.managers.ProfileDatabaseManager
 import com.varpihovsky.jetiq.back.dto.MessageToSendDTO
+import com.varpihovsky.jetiq.system.Refreshable
 import com.varpihovsky.jetiq.system.exceptions.ModelExceptionSender
 import com.varpihovsky.jetiq.system.exceptions.ViewModelExceptionReceivable
+import com.varpihovsky.jetiq.system.util.ThreadSafeMutableState
 import com.varpihovsky.jetiq.system.util.logException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,12 +21,19 @@ class MessagesModel @Inject constructor(
     confidentialDatabaseManager: ConfidentialDatabaseManager,
     profileDatabaseManager: ProfileDatabaseManager
 ) : ConfidentModel(confidentialDatabaseManager, profileDatabaseManager), ModelExceptionSender,
-    LoadableModel {
+    Refreshable {
     override var receivable: ViewModelExceptionReceivable? = null
-    override var isLoading = MutableLiveData(false)
+    override val isLoading
+        get() = _isLoading
+
+    override fun onRefresh() {
+        loadMessages()
+    }
+
+    private val _isLoading = ThreadSafeMutableState(false, modelScope)
 
     fun loadMessages() {
-        isLoading.value = true
+        _isLoading.value = true
         modelScope.launch { processMessagesLoading() }
     }
 
@@ -42,7 +51,7 @@ class MessagesModel @Inject constructor(
             receivable?.send(e)
             logException(e, getDebugPrefix(this) ?: "Application")
         }
-        isLoading.postValue(false)
+        modelScope.launch(Dispatchers.Main) { isLoading.value = false }
     }
 
     fun clearData() {

@@ -8,7 +8,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
-import com.varpihovsky.jetiq.system.data_transfer.ViewModelDataTransferManager
+import com.varpihovsky.jetiq.system.dataTransfer.ViewModelDataTransferManager
 import com.varpihovsky.jetiq.system.navigation.NavigationManager
 import com.varpihovsky.jetiq.ui.appbar.AppbarManager
 import com.varpihovsky.jetiq.ui.compose.Root

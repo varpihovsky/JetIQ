@@ -1,4 +1,4 @@
-package com.varpihovsky.jetiq.system.data_transfer
+package com.varpihovsky.jetiq.system.dataTransfer
 
 import com.varpihovsky.jetiq.system.JetIQViewModel
 import kotlin.reflect.KClass
