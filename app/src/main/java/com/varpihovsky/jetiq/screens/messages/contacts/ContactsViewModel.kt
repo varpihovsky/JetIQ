@@ -1,17 +1,15 @@
 package com.varpihovsky.jetiq.screens.messages.contacts
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.jetiq.back.dto.ContactDTO
 import com.varpihovsky.jetiq.back.model.ListModel
 import com.varpihovsky.jetiq.system.JetIQViewModel
 import com.varpihovsky.jetiq.system.dataTransfer.ViewModelDataTransferManager
 import com.varpihovsky.jetiq.system.navigation.NavigationManager
+import com.varpihovsky.jetiq.system.util.CoroutineDispatchers
 import com.varpihovsky.jetiq.system.util.ReactiveTask
 import com.varpihovsky.jetiq.ui.appbar.AppbarManager
-import com.varpihovsky.jetiq.ui.dto.ReceiverType
 import com.varpihovsky.jetiq.ui.dto.UIReceiverDTO
 import com.varpihovsky.jetiq.ui.dto.func_extensions.Selectable
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ContactsViewModel @Inject constructor(
+    private val dispatchers: CoroutineDispatchers,
     appbarManager: AppbarManager,
     private val navigationManager: NavigationManager,
     private val listModel: ListModel,
@@ -33,25 +32,27 @@ class ContactsViewModel @Inject constructor(
     private val dataTransferFlow = dataTransferManager.getFlowByTag(DATA_TRANSFER_TAG)
 
     private var fullContacts: MutableList<Selectable<UIReceiverDTO>> = mutableListOf()
-    private val contactsTask = ReactiveTask(task = this::collectContacts)
-    private val dataTransferTask = ReactiveTask(task = this::collectTransferredData)
+    private val contactsTask =
+        ReactiveTask(task = this::collectContacts, dispatcher = dispatchers.IO)
+    private val dataTransferTask =
+        ReactiveTask(task = this::collectTransferredData, dispatcher = dispatchers.IO)
 
-    private val searchFieldValue = MutableLiveData("")
-    private val contacts = MutableLiveData<List<Selectable<UIReceiverDTO>>>()
-    private val isLongClickEnabled = MutableLiveData(true)
-    private val isClickEnabled = MutableLiveData(false)
-    private val isChoosing = MutableLiveData(false)
-    private val isExternalChoosing = MutableLiveData(false)
-    private val isAdding = MutableLiveData(false)
+    private val searchFieldValue = mutableStateOf("")
+    private val contacts = mutableStateOf(listOf<Selectable<UIReceiverDTO>>())
+    private val isLongClickEnabled = mutableStateOf(true)
+    private val isClickEnabled = mutableStateOf(false)
+    private val isChoosing = mutableStateOf(false)
+    private val isExternalChoosing = mutableStateOf(false)
+    private val isAdding = mutableStateOf(false)
 
     inner class Data {
-        val searchFieldValue: LiveData<String> = this@ContactsViewModel.searchFieldValue
-        val contacts: LiveData<List<Selectable<UIReceiverDTO>>> = this@ContactsViewModel.contacts
-        val isLongClickEnabled: LiveData<Boolean> = this@ContactsViewModel.isLongClickEnabled
-        val isClickEnabled: LiveData<Boolean> = this@ContactsViewModel.isClickEnabled
-        val isChoosing: LiveData<Boolean> = this@ContactsViewModel.isChoosing
-        val isExternalChoosing: LiveData<Boolean> = this@ContactsViewModel.isExternalChoosing
-        val isAdding: LiveData<Boolean> = this@ContactsViewModel.isAdding
+        val searchFieldValue: State<String> = this@ContactsViewModel.searchFieldValue
+        val contacts: State<List<Selectable<UIReceiverDTO>>> = this@ContactsViewModel.contacts
+        val isLongClickEnabled: State<Boolean> = this@ContactsViewModel.isLongClickEnabled
+        val isClickEnabled: State<Boolean> = this@ContactsViewModel.isClickEnabled
+        val isChoosing: State<Boolean> = this@ContactsViewModel.isChoosing
+        val isExternalChoosing: State<Boolean> = this@ContactsViewModel.isExternalChoosing
+        val isAdding: State<Boolean> = this@ContactsViewModel.isAdding
     }
 
     init {
@@ -62,15 +63,7 @@ class ContactsViewModel @Inject constructor(
     private suspend fun collectContacts() {
         listModel.getContacts().collect { list ->
             val current = list.map { contactDTO ->
-                val receiver = UIReceiverDTO(
-                    contactDTO.id,
-                    contactDTO.text,
-                    when (contactDTO.type) {
-                        ContactDTO.TYPE_STUDENT -> ReceiverType.STUDENT
-                        ContactDTO.TYPE_TEACHER -> ReceiverType.TEACHER
-                        else -> throw RuntimeException()
-                    }
-                )
+                val receiver = contactDTO.toUIDTO()
                 fullContacts.find { it.dto == receiver } ?: Selectable(receiver, false)
             }
 
@@ -78,16 +71,12 @@ class ContactsViewModel @Inject constructor(
 
             fullContacts.sortBy { it.dto.text }
 
-            searchFieldValue.value?.let { onSearchFieldValueChange(it) }
+            onSearchFieldValueChange(searchFieldValue.value)
         }
     }
 
     private suspend fun collectTransferredData() {
         dataTransferFlow.collect { uncheckedData ->
-            Log.d(
-                "Appl",
-                (uncheckedData == null).toString() + " " + (uncheckedData?.sender == this::class).toString() + " " + uncheckedData.toString() + "${uncheckedData?.data} ${uncheckedData?.sender}"
-            )
             if (uncheckedData == null || uncheckedData.sender == this::class) {
                 return@collect
             }
@@ -112,7 +101,7 @@ class ContactsViewModel @Inject constructor(
     }
 
     override fun onBackNavButtonClick() {
-        if (isExternalChoosing.value == true) {
+        if (isExternalChoosing.value) {
             dataTransferFlow.value = ContactsViewModelData(
                 fullContacts.filter { it.isSelected }.map { it.dto },
                 this::class
@@ -150,18 +139,10 @@ class ContactsViewModel @Inject constructor(
     }
 
     fun onContactLongClick(contact: Selectable<UIReceiverDTO>) {
-        if (isLongClickEnabled.value == false) {
-            return
-        }
-
         selectContact(contact)
     }
 
     fun onContactClick(contact: Selectable<UIReceiverDTO>) {
-        if (isClickEnabled.value == false) {
-            return
-        }
-
         selectContact(contact)
     }
 
@@ -176,7 +157,7 @@ class ContactsViewModel @Inject constructor(
             setChoosingFalse()
         }
 
-        searchFieldValue.value?.let { onSearchFieldValueChange(it) }
+        searchFieldValue.value.let { onSearchFieldValueChange(it) }
     }
 
     fun onAddClick() {
@@ -184,7 +165,7 @@ class ContactsViewModel @Inject constructor(
     }
 
     fun onRemoveClick() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.IO) {
             fullContacts
                 .filter { it.isSelected }
                 .map {
@@ -200,16 +181,16 @@ class ContactsViewModel @Inject constructor(
     }
 
     private fun setChoosingTrue() {
-        isClickEnabled.postValue(true)
-        isLongClickEnabled.postValue(false)
-        isChoosing.postValue(true)
+        isClickEnabled.value = true
+        isLongClickEnabled.value = false
+        isChoosing.value = false
     }
 
     private fun setChoosingFalse() {
-        isExternalChoosing.postValue(false)
-        isLongClickEnabled.postValue(true)
-        isClickEnabled.postValue(false)
-        isChoosing.postValue(false)
+        isExternalChoosing.value = false
+        isLongClickEnabled.value = true
+        isClickEnabled.value = false
+        isChoosing.value = false
     }
 
     fun onDismissRequest() {
@@ -217,7 +198,7 @@ class ContactsViewModel @Inject constructor(
     }
 
     fun onConfirmButtonClick(contacts: List<UIReceiverDTO>) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.IO) {
             contacts
                 .map { ContactDTO(it.id, it.text, it.type.name.lowercase(Locale.getDefault())) }
                 .forEach { listModel.addContact(it) }

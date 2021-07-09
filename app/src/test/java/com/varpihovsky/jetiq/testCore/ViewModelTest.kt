@@ -13,7 +13,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Rule
 
-open class ViewModelTest : JetIQTest() {
+abstract class ViewModelTest : JetIQTest() {
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 

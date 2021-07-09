@@ -1,8 +1,6 @@
 package com.varpihovsky.jetiq.screens.messages.create
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.jetiq.back.dto.MessageToSendDTO
 import com.varpihovsky.jetiq.back.model.MessagesModel
@@ -10,10 +8,13 @@ import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModel
 import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModelData
 import com.varpihovsky.jetiq.system.JetIQViewModel
 import com.varpihovsky.jetiq.system.dataTransfer.ViewModelDataTransferManager
+import com.varpihovsky.jetiq.system.exceptions.Values
 import com.varpihovsky.jetiq.system.exceptions.ViewModelWithException
 import com.varpihovsky.jetiq.system.navigation.NavigationDirections
 import com.varpihovsky.jetiq.system.navigation.NavigationManager
+import com.varpihovsky.jetiq.system.util.CoroutineDispatchers
 import com.varpihovsky.jetiq.system.util.ReactiveTask
+import com.varpihovsky.jetiq.system.util.remove
 import com.varpihovsky.jetiq.ui.appbar.AppbarManager
 import com.varpihovsky.jetiq.ui.dto.UIReceiverDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,6 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewMessageViewModel @Inject constructor(
+    private val dispatchers: CoroutineDispatchers,
     appbarManager: AppbarManager,
     private val navigationManager: NavigationManager,
     viewModelDataTransferManager: ViewModelDataTransferManager,
@@ -35,15 +37,16 @@ class NewMessageViewModel @Inject constructor(
 
     private val dataTransferFlow =
         viewModelDataTransferManager.getFlowByTag(ContactsViewModel.DATA_TRANSFER_TAG)
-    private val dataTransferTask = ReactiveTask(task = this::collectTransferredData)
+    private val dataTransferTask =
+        ReactiveTask(task = this::collectTransferredData, dispatcher = dispatchers.IO)
 
 
-    private val receivers = MutableLiveData<List<UIReceiverDTO>>()
-    private val messageFieldValue = MutableLiveData("")
+    private val receivers = mutableStateOf(listOf<UIReceiverDTO>())
+    private val messageFieldValue = mutableStateOf("")
 
     inner class Data {
-        val receivers: LiveData<List<UIReceiverDTO>> = this@NewMessageViewModel.receivers
-        val messageFieldValue: LiveData<String> = this@NewMessageViewModel.messageFieldValue
+        val receivers: State<List<UIReceiverDTO>> = this@NewMessageViewModel.receivers
+        val messageFieldValue: State<String> = this@NewMessageViewModel.messageFieldValue
     }
 
     init {
@@ -52,33 +55,20 @@ class NewMessageViewModel @Inject constructor(
 
     private suspend fun collectTransferredData() {
         dataTransferFlow.collect { uncheckedData ->
-            Log.d(
-                "Appl",
-                (uncheckedData == null).toString() + " " + (uncheckedData?.sender == this::class).toString() + " " + uncheckedData.toString() + "${uncheckedData?.data} ${uncheckedData?.sender}"
-            )
             if (uncheckedData == null || uncheckedData.sender == this::class) {
                 return@collect
             }
 
-            viewModelScope.launch {
-                receivers.value = null
-                receivers.value = (uncheckedData as ContactsViewModelData<*>).data
-            }
+            receivers.value = (uncheckedData as ContactsViewModelData<*>).data
         }
     }
 
     fun onReceiverRemove(receiver: UIReceiverDTO) {
-        val result = receivers.value?.let {
-            val mutable = it.toMutableList()
-            mutable.remove(receiver)
-            mutable
-        }
-        receivers.value = null
-        receivers.value = result
+        receivers.value = receivers.value.remove(receiver)
     }
 
     fun onNewReceiverButtonClick() {
-        dataTransferFlow.value = ContactsViewModelData(receivers.value ?: listOf(), this::class)
+        dataTransferFlow.value = ContactsViewModelData(receivers.value, this::class)
         navigationManager.manage(NavigationDirections.contacts)
     }
 
@@ -94,22 +84,32 @@ class NewMessageViewModel @Inject constructor(
         sendMessage()
     }
 
-    private fun areSendConditionsCompleted(): Boolean {
-        if (receivers.value?.isEmpty() == true) {
-            exceptions.value = RuntimeException("Необхідно додати хочаб одного отримувача")
-            return false
+    private fun areSendConditionsCompleted(): Boolean = when {
+        receivers.value.isEmpty() -> {
+            redirectExceptionToUI(RuntimeException(Values.EMPTY_RECEIVERS))
+            false
         }
-        if (messageFieldValue.value?.isEmpty() == true) {
-            exceptions.value = RuntimeException("Повідомлення не може бути пустим")
-            return false
+        messageFieldValue.value.isEmpty() -> {
+            redirectExceptionToUI(RuntimeException(Values.EMPTY_MESSAGE))
+            false
         }
-        return true
+        else -> true
     }
 
+
     private fun sendMessage() {
-        val messageBody = messageFieldValue.value!!
-        receivers.value?.map { MessageToSendDTO(it.id, it.type, messageBody) }?.forEach {
+        viewModelScope.launch(dispatchers.IO) { processSending(messageFieldValue.value) }
+        resetFields()
+    }
+
+    private suspend fun processSending(messageBody: String) {
+        receivers.value.map { MessageToSendDTO(it.id, it.type, messageBody) }.forEach {
             messagesModel.sendMessage(it)
         }
+    }
+
+    private fun resetFields() {
+        receivers.value = listOf()
+        messageFieldValue.value = ""
     }
 }

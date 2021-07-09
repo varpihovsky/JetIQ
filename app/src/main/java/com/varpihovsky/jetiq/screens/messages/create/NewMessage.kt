@@ -11,7 +11,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -64,9 +63,6 @@ fun NewMessageScreenPreviewLight() {
 fun NewMessageScreen(
     newMessageViewModel: NewMessageViewModel
 ) {
-    val receivers = newMessageViewModel.data.receivers.observeAsState(initial = listOf())
-    val messageFieldValue = newMessageViewModel.data.messageFieldValue.observeAsState(initial = "")
-
     newMessageViewModel.assignAppbar {
         BasicAppBar(
             title = "Нове повідомлення...",
@@ -78,10 +74,10 @@ fun NewMessageScreen(
 
     NewMessageScreen(
         scrollState = rememberScrollState(),
-        receivers = receivers.value,
+        receivers = newMessageViewModel.data.receivers.value,
         onReceiverRemove = newMessageViewModel::onReceiverRemove,
         onNewReceiverButtonClick = newMessageViewModel::onNewReceiverButtonClick,
-        messageFieldValue = messageFieldValue.value,
+        messageFieldValue = newMessageViewModel.data.messageFieldValue.value,
         onMessageValueChange = newMessageViewModel::onMessageValueChange,
         onSendClick = newMessageViewModel::onSendClick
     )

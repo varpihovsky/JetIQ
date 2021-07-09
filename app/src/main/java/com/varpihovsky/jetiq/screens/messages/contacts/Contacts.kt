@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,21 +37,11 @@ import com.varpihovsky.jetiq.ui.dto.func_extensions.Selectable
 fun ContactsScreen(
     contactsViewModel: ContactsViewModel
 ) {
-    val searchFieldValue = contactsViewModel.data.searchFieldValue.observeAsState(initial = "")
-    val contacts = contactsViewModel.data.contacts.observeAsState(initial = listOf())
-    val isClickEnabled = contactsViewModel.data.isClickEnabled.observeAsState(initial = false)
-    val isLongClickEnabled =
-        contactsViewModel.data.isLongClickEnabled.observeAsState(initial = true)
-    val isChoosing = contactsViewModel.data.isChoosing.observeAsState(initial = false)
-    val isExternalChoosing =
-        contactsViewModel.data.isExternalChoosing.observeAsState(initial = false)
-    val isAdding = contactsViewModel.data.isAdding.observeAsState(initial = false)
-
     contactsViewModel.assignAppbar {
         ContactsAppbar(
             contactsViewModel = contactsViewModel,
-            isChoosing = isChoosing.value,
-            isExternalChoosing = isExternalChoosing.value
+            isChoosing = contactsViewModel.data.isChoosing.value,
+            isExternalChoosing = contactsViewModel.data.isExternalChoosing.value
         )
     }
 
@@ -61,7 +50,7 @@ fun ContactsScreen(
         onBack = contactsViewModel::onBackNavButtonClick
     )
 
-    if (isAdding.value) {
+    if (contactsViewModel.data.isAdding.value) {
         AdditionDialog(
             contactAdditionViewModel = hiltViewModel(),
             onDismissRequest = contactsViewModel::onDismissRequest,
@@ -70,12 +59,12 @@ fun ContactsScreen(
     }
 
     ContactList(
-        searchFieldValue = searchFieldValue.value,
+        searchFieldValue = contactsViewModel.data.searchFieldValue.value,
         onSearchFieldValueChange = contactsViewModel::onSearchFieldValueChange,
-        contacts = contacts.value,
-        isLongClickEnabled = isLongClickEnabled.value,
+        contacts = contactsViewModel.data.contacts.value,
+        isLongClickEnabled = contactsViewModel.data.isLongClickEnabled.value,
         onLongClick = contactsViewModel::onContactLongClick,
-        isClickEnabled = isClickEnabled.value,
+        isClickEnabled = contactsViewModel.data.isClickEnabled.value,
         onClick = contactsViewModel::onContactClick
     )
 }
@@ -192,8 +181,8 @@ fun Contact(
             .fillMaxWidth()
             .combinedClickable(
                 enabled = isClickEnabled || isLongClickEnabled,
-                onClick = { onClick(contact) },
-                onLongClick = { onLongClick(contact) }
+                onClick = { if (isClickEnabled) onClick(contact) },
+                onLongClick = { if (isLongClickEnabled) onLongClick(contact) }
             )
             .padding(start = startPadding.value),
         verticalAlignment = Alignment.CenterVertically
