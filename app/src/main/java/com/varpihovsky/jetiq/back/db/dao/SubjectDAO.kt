@@ -16,6 +16,9 @@ interface SubjectDAO {
     @Query("SELECT * FROM SubjectDTO")
     fun getAllSubjects(): Flow<List<SubjectDTO>>
 
+    @Query("SELECT * FROM SubjectDTO")
+    fun getAllSubjectsList(): List<SubjectDTO>
+
     @Insert(onConflict = IGNORE)
     fun insert(subjectDTO: SubjectDTO)
 

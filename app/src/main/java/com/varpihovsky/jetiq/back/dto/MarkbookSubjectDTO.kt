@@ -2,6 +2,7 @@ package com.varpihovsky.jetiq.back.dto
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.varpihovsky.jetiq.ui.dto.UISubjectDTO
 
 @Entity
 data class MarkbookSubjectDTO(
@@ -17,22 +18,12 @@ data class MarkbookSubjectDTO(
     val total: Int,
     val semester: Int = 0
 ) {
-    fun withSemester(semester: Int) = MarkbookSubjectDTO(
+    fun toUIDTO() = UISubjectDTO(
         id,
-        credits,
-        date,
-        ects,
-        form,
-        hours,
-        mark,
         subj_name,
         teacher,
         total,
         semester
-    )
-
-    fun withId(id: Int) = MarkbookSubjectDTO(
-        id, credits, date, ects, form, hours, mark, subj_name, teacher, total, semester
     )
 }
 

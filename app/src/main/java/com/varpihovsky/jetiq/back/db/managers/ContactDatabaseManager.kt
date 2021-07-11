@@ -16,4 +16,8 @@ class ContactDatabaseManager @Inject constructor(
     fun removeContact(contactDTO: ContactDTO) {
         contactDAO.delete(contactDTO)
     }
+
+    fun clear() {
+        contactDAO.clear()
+    }
 }

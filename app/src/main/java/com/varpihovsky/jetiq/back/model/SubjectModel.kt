@@ -10,12 +10,8 @@ import com.varpihovsky.jetiq.back.dto.MarkbookSubjectDTO
 import com.varpihovsky.jetiq.back.dto.SubjectDTO
 import com.varpihovsky.jetiq.back.dto.SubjectDetailsDTO
 import com.varpihovsky.jetiq.back.dto.relations.SubjectDetailsWithTasks
-import com.varpihovsky.jetiq.system.util.ReactiveTask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,67 +28,55 @@ class SubjectModel @Inject constructor(
     private var areDetailsLoading = false
     private var areMarkbookSubjectsLoading = false
 
-    private val subjectDetailsTask = ReactiveTask(task = this::addSubjectDetails)
-    private val markbookSubjectsTask = ReactiveTask(task = this::addMarkbookSubjects)
-
     fun getSubjectList(): Flow<List<SubjectDTO>> {
-        areSubjectsLoading = true
-        addSuccessJournal()
         return subjectDatabaseManager.getAll()
     }
 
-    private fun addSuccessJournal() {
-        val session = requireSession()
-        jetIQSubjectManager.getSuccessJournal(session).forEach {
+    fun loadSuccessJournal() {
+        toggleLoading { areSubjectsLoading = true }
+
+        jetIQSubjectManager.getSuccessJournal(requireSession()).forEach {
             subjectDatabaseManager.add(it)
         }
-        areSubjectsLoading = false
-        updateLoadingState()
+
+        addSubjectDetails()
+
+        toggleLoading { areSubjectsLoading = false }
     }
 
-    fun getSubjectById(id: Int) = subjectDatabaseManager.getById(id)
-
-    fun removeSubject(subjectDTO: SubjectDTO) = subjectDatabaseManager.delete(subjectDTO)
-
-    fun removeSubjectById(id: Int) = subjectDatabaseManager.getById(id)
-
     fun getSubjectDetailsList(): Flow<List<SubjectDetailsDTO>> {
-        areDetailsLoading = true
-        subjectDetailsTask.start()
         return subjectDetailsDatabaseManager.getAllDetails()
     }
 
-    private suspend fun addSubjectDetails() {
-        val session = requireSession()
-
-        subjectDatabaseManager.getAll().filter { it.isNotEmpty() }.collect { list ->
-            list.forEach { subject ->
-                jetIQSubjectManager.getSubjectDetails(
-                    session,
-                    subject.card_id.toInt()
-                ).let {
-                    val details = SubjectDetailsWithTasks(
-                        it.subjectDetailsDTO.withId(subject.card_id.toInt()),
-                        it.subjectTasks
-                    )
-                    subjectDetailsDatabaseManager.add(details)
-                }
-            }
-            if (list.size == subjectDetailsDatabaseManager.getAllDetails().last().size) {
-                areDetailsLoading = false
-                updateLoadingState()
+    private fun addSubjectDetails() {
+        subjectDatabaseManager.getAllList().forEach { subject ->
+            jetIQSubjectManager.getSubjectDetails(
+                requireSession(),
+                subject.card_id.toInt()
+            ).let {
+                val details = SubjectDetailsWithTasks(
+                    it.subjectDetailsDTO.copy(id = subject.card_id.toInt()),
+                    it.subjectTasks
+                )
+                subjectDetailsDatabaseManager.add(details)
             }
         }
     }
 
+
     fun getMarkbookSubjects(): Flow<List<MarkbookSubjectDTO>> {
-        markbookSubjectsTask.start()
         return subjectDetailsDatabaseManager.getMarkbookSubjects()
     }
 
-    private suspend fun addMarkbookSubjects() {
+    fun loadMarkbookSubjects() {
+        toggleLoading { areMarkbookSubjectsLoading = true }
+        addMarkbookSubjects()
+        toggleLoading { areMarkbookSubjectsLoading = false }
+    }
+
+    private fun addMarkbookSubjects() {
         val session = requireSession()
-        subjectDatabaseManager.getAll().collect { subjects ->
+        subjectDatabaseManager.getAllList().let { subjects ->
             jetIQSubjectManager.getMarkbookSubjects(session)
                 .let { markbookSubjects ->
                     subjects.forEach { subject ->
@@ -101,11 +85,23 @@ class SubjectModel @Inject constructor(
                                     subject.subject == it.subj_name &&
                                     subject.sem.toInt() == it.semester
                         }?.let {
-                            subjectDetailsDatabaseManager.addMarkbookSubject(it.withId(subject.card_id.toInt()))
+                            subjectDetailsDatabaseManager.addMarkbookSubject(it.copy(id = subject.card_id.toInt()))
                         }
                     }
+                    areMarkbookSubjectsLoading = false
+                    updateLoadingState()
                 }
         }
+    }
+
+    fun removeAllSubjects() {
+        toggleLoading { areSubjectsLoading = true }
+        clearDatabases()
+    }
+
+    private fun toggleLoading(block: () -> Unit) {
+        block()
+        updateLoadingState()
     }
 
     private fun updateLoadingState() {
@@ -114,13 +110,7 @@ class SubjectModel @Inject constructor(
         }
     }
 
-    fun removeAllSubjects() {
-        areSubjectsLoading = true
-        updateLoadingState()
-
-        subjectDetailsTask.stop()
-        markbookSubjectsTask.stop()
-
+    private fun clearDatabases() {
         subjectDatabaseManager.deleteAll()
         subjectDetailsDatabaseManager.deleteAllDetails()
         subjectDetailsDatabaseManager.deleteAllTasks()

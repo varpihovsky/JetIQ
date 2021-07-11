@@ -2,6 +2,7 @@ package com.varpihovsky.jetiq.back.dto
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.varpihovsky.jetiq.ui.dto.UIProfileDTO
 
 @Entity
 data class ProfileDTO(
@@ -34,4 +35,23 @@ data class ProfileDTO(
         spec_id,
         u_name
     )
+
+    fun toUIDTO() = UIProfileDTO(
+        id.toInt(),
+        getUsername(),
+        cutFacultyName(),
+        course_num,
+        gr_name,
+        0,
+        photo_url
+    )
+
+    private fun getUsername(): String {
+        val strings = u_name.split(" ").subList(0, 2)
+        return "${strings[0]} ${strings[1]}"
+    }
+
+    private fun cutFacultyName() =
+        String(d_name.split(" ").filter { it.length > 2 }.map { it.first().uppercaseChar() }
+            .toCharArray())
 }

@@ -35,4 +35,8 @@ class ListModel @Inject constructor(
     fun removeContact(contactDTO: ContactDTO) {
         contactDatabaseManager.removeContact(contactDTO)
     }
+
+    fun clear() {
+        contactDatabaseManager.clear()
+    }
 }

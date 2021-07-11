@@ -15,7 +15,7 @@ fun deserializeMarkbookSubjects(json: String): List<MarkbookSubjectDTO> {
             val array = value.asJsonObject
             for ((k, v) in array.entrySet()) {
                 members.add(
-                    gson.fromJson(v, MarkbookSubjectDTO::class.java).withSemester(key.toInt())
+                    gson.fromJson(v, MarkbookSubjectDTO::class.java).copy(semester = key.toInt())
                 )
             }
         }

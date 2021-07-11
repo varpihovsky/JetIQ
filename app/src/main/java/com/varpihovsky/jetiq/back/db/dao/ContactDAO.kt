@@ -18,4 +18,7 @@ interface ContactDAO {
 
     @Delete
     fun delete(contactDTO: ContactDTO)
+
+    @Query("DELETE FROM ContactDTO")
+    fun clear()
 }

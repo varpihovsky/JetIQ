@@ -1,103 +1,152 @@
 package com.varpihovsky.jetiq.screens.profile
 
+import com.varpihovsky.jetiq.back.dto.MarkbookSubjectDTO
 import com.varpihovsky.jetiq.back.dto.ProfileDTO
 import com.varpihovsky.jetiq.back.dto.SubjectDTO
 import com.varpihovsky.jetiq.back.dto.SubjectDetailsDTO
 import com.varpihovsky.jetiq.back.model.ProfileModel
 import com.varpihovsky.jetiq.back.model.SubjectModel
 import com.varpihovsky.jetiq.system.ConnectionManager
-import io.mockk.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.distinctUntilChanged
+import com.varpihovsky.jetiq.testCore.ViewModelTest
+import com.varpihovsky.jetiq.ui.dto.MarksInfo
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import junit.framework.Assert.assertEquals
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
-import org.junit.After
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 
-class ProfileInteractorTest {
+class ProfileInteractorTest : ViewModelTest() {
     private lateinit var profileInteractor: ProfileInteractor
 
-    private val subscriber: ProfileInteractor.Interactable = mockk(relaxed = true)
     private val profileModel: ProfileModel = mockk(relaxed = true)
     private val subjectModel: SubjectModel = mockk(relaxed = true)
 
-    private val exampleSubject1 = SubjectDTO("1", "", "", "1", "", "")
-    private val exampleSubject2 = SubjectDTO("2", "", "", "1", "", "")
-    private val exampleSubject3 = SubjectDTO("3", "", "", "1", "", "")
-    private val exampleSubject4 = SubjectDTO("4", "", "", "1", "", "")
-    private val exampleSubject5 = SubjectDTO("5", "", "", "1", "", "")
-
-    private var exampleDetail1 = SubjectDetailsDTO(1, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-    private var exampleDetail2 = SubjectDetailsDTO(2, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-    private var exampleDetail3 = SubjectDetailsDTO(3, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-    private var exampleDetail4 = SubjectDetailsDTO(4, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-    private var exampleDetail5 = SubjectDetailsDTO(5, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-
+    @ExperimentalCoroutinesApi
     @Test
-    fun `Test subject flows processing is working`() = runBlocking {
-        every { subjectModel.getSubjectList() } returns graduateFlow(
-            0,
-            exampleSubject1, exampleSubject2, exampleSubject3, exampleSubject4, exampleSubject5
-        ).distinctUntilChanged()
-        every { subjectModel.getSubjectDetailsList() } returns graduateFlow(
-            0,
-            exampleDetail1, exampleDetail2, exampleDetail3, exampleDetail4, exampleDetail5
+    fun `Test subject flow processing is working`() = runBlockingTest {
+        every { subjectModel.getSubjectList() } returns flow {
+            emit(listOf(TEST_SUBJECTS.first()))
+        }
+        every { subjectModel.getSubjectDetailsList() } returns flow {
+            emit(listOf(TEST_DETAILS.first()))
+        }
+
+        initInteractor()
+
+        assertEquals(
+            Pair(listOf(MarksInfo(1, 0)), listOf(TEST_SUBJECTS.first().toUIDTO(0))),
+            profileInteractor.successData.last()
+        )
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `Test markbook flow processing is working`() = runBlockingTest {
+        every { subjectModel.getMarkbookSubjects() } returns flow {
+            emit(listOf(TEST_MARKBOOK_SUBJECT))
+        }
+        initInteractor()
+        assertEquals(
+            Pair(listOf(MarksInfo(1, 100)), listOf(TEST_MARKBOOK_SUBJECT.toUIDTO())),
+            profileInteractor.markbookData.last()
+        )
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `Test refreshing destroys all the database`() = runBlockingTest {
+        initInteractor()
+        profileInteractor.refresh()
+        verify { subjectModel.removeAllSubjects() }
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `Test profile flow processing is working`() = runBlockingTest {
+        every { profileModel.getProfile() } returns flow {
+            emit(TEST_PROFILE)
+        }
+        initInteractor()
+        assertEquals(TEST_PROFILE.toUIDTO(), profileInteractor.profileData.first())
+    }
+
+    @ExperimentalCoroutinesApi
+    private fun initInteractor() {
+        profileInteractor =
+            ProfileInteractor(viewModelDispatchers, profileModel, subjectModel, ConnectionManager())
+    }
+
+    companion object {
+        val TEST_SUBJECTS = listOf(
+            SubjectDTO("1", "", "", "1", "", ""),
+            SubjectDTO("2", "", "", "1", "", "")
         )
 
-        profileInteractor = initInteractor()
-        profileInteractor.subscribe(subscriber)
+        val TEST_DETAILS = listOf(
+            SubjectDetailsDTO(
+                1,
+                "",
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ),
+            SubjectDetailsDTO(
+                2,
+                "",
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            )
+        )
 
-        delay(100)
+        val TEST_MARKBOOK_SUBJECT = MarkbookSubjectDTO(
+            0,
+            "",
+            "",
+            "",
+            "",
+            "",
+            "0",
+            "",
+            "",
+            100,
+            1
+        )
 
-        verify(atLeast = 4) { subscriber.onSuccessMarksInfoChange(any()) }
-        verify(atLeast = 4) { subscriber.onSuccessSubjectsChange(any()) }
-    }
 
-    @Test
-    fun `Test refreshing destroys all the database`() = runBlocking {
-        profileInteractor = initInteractor()
-        profileInteractor.refresh()
-        verifyAll {
-            subjectModel.removeAllSubjects()
-            subjectModel.getSubjectDetailsList()
-            subjectModel.getSubjectList()
-            subjectModel.getMarkbookSubjects()
-        }
-    }
-
-    @Test
-    fun `Test profile flow processing is working`() = runBlocking {
-        val profile = ProfileDTO(0, "", "", "", "", "", "", "", "0", "", "", "", "")
-        every { profileModel.getProfile() } returns flow {
-            delay(50)
-            emit(profile)
-            emit(profile)
-            emit(profile)
-        }
-        profileInteractor = initInteractor()
-        profileInteractor.subscribe(subscriber)
-        delay(100)
-        verify { subscriber.onProfileChange(any()) }
-    }
-
-    private fun <T> graduateFlow(delayAddition: Int, vararg t: T) = flow<List<T>> {
-        var delayTime = 0L
-        val array = mutableListOf<T>()
-
-        t.forEach {
-            delay(delayTime)
-            emit(array.toList())
-            array.add(it)
-            delayTime += delayAddition
-        }
-        emit(array)
-    }
-
-    private fun initInteractor() =
-        ProfileInteractor(profileModel, subjectModel, ConnectionManager())
-
-    @After
-    fun teardown() {
-        unmockkAll()
+        val TEST_PROFILE = ProfileDTO(
+            0,
+            "",
+            "Факультет комп'ютерних систем та автоматики",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "0",
+            "",
+            "",
+            "",
+            "Name Surname Example"
+        )
     }
 }

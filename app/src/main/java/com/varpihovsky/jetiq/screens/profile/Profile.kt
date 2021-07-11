@@ -141,13 +141,13 @@ fun Profile(
 ) {
     val scrollState = profileViewModel.scrollState
 
-    val profileState by profileViewModel.data.profile.observeAsState(UIProfileDTO())
+    val profileState by profileViewModel.profile.collectAsState(UIProfileDTO())
 
-    val successMarksInfoState by profileViewModel.data.successMarksInfo.observeAsState(listOf())
-    val successSubjectsState by profileViewModel.data.successSubjects.observeAsState(listOf())
+    val successMarksInfoState by profileViewModel.successMarksInfo.collectAsState(listOf())
+    val successSubjectsState by profileViewModel.successSubjects.collectAsState(listOf())
 
-    val markbookInfo by profileViewModel.data.markbookMarksInfo.observeAsState(listOf())
-    val markbookSubjects by profileViewModel.data.markbookSubjects.observeAsState(listOf())
+    val markbookInfo by profileViewModel.markbookMarksInfo.collectAsState(listOf())
+    val markbookSubjects by profileViewModel.markbookSubjects.collectAsState(listOf())
 
     val isRefreshing by profileViewModel.isLoading.observeAsState(initial = false)
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isRefreshing)

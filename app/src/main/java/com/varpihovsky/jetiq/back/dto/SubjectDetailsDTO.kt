@@ -17,20 +17,5 @@ data class SubjectDetailsDTO(
     val sum2: Int,
     val total: Int,
     val total_prev: Int
-) {
-    fun withId(id: Int) = SubjectDetailsDTO(
-        id,
-        ects,
-        for_pres1,
-        for_pres2,
-        h_pres1,
-        h_pres2,
-        mark1,
-        mark2,
-        sum1,
-        sum2,
-        total,
-        total_prev
-    )
-}
+)
 

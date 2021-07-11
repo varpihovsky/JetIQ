@@ -7,16 +7,22 @@ import com.varpihovsky.jetiq.back.dto.SubjectDetailsDTO
 import com.varpihovsky.jetiq.back.model.ProfileModel
 import com.varpihovsky.jetiq.back.model.SubjectModel
 import com.varpihovsky.jetiq.system.ConnectionManager
-import com.varpihovsky.jetiq.system.util.ReactiveTask
+import com.varpihovsky.jetiq.system.exceptions.Values
+import com.varpihovsky.jetiq.system.util.CoroutineDispatchers
 import com.varpihovsky.jetiq.ui.dto.MarksInfo
 import com.varpihovsky.jetiq.ui.dto.UIProfileDTO
 import com.varpihovsky.jetiq.ui.dto.UISubjectDTO
 import com.varpihovsky.jetiq.ui.dto.formMarksInfo
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class ProfileInteractor @Inject constructor(
+    private val dispatchers: CoroutineDispatchers,
     private val profileModel: ProfileModel,
     private val subjectModel: SubjectModel,
     private val connectionManager: ConnectionManager
@@ -24,145 +30,101 @@ class ProfileInteractor @Inject constructor(
     val isLoading: LiveData<Boolean>
         get() = subjectModel.isLoading
 
-    private var subscriber: Interactable? = null
+    private val scope = CoroutineScope(dispatchers.IO)
 
-    private val profileTask = ReactiveTask(task = this::collectProfileData)
-    private val subjectListTask = ReactiveTask(task = this::collectSubjectsList)
-    private val markbookSubjectsTask = ReactiveTask(task = this::collectMarkbookSubjects)
+    lateinit var profileData: Flow<UIProfileDTO>
+
+    lateinit var successData: Flow<Pair<List<MarksInfo>, List<UISubjectDTO>>>
+
+
+    lateinit var markbookData: Flow<Pair<List<MarksInfo>, List<UISubjectDTO>>>
 
     init {
-        profileTask.start()
-        subjectListTask.start()
-        markbookSubjectsTask.start()
-    }
-
-    private suspend fun collectProfileData() {
-        profileModel.getProfile().collect {
-            subscriber?.onProfileChange(
-                UIProfileDTO(
-                    it.id.toInt(),
-                    getUsername(it.u_name),
-                    cutFacultyName(it.d_name),
-                    it.course_num,
-                    it.gr_name,
-                    0,
-                    it.photo_url
-                )
-            )
+        runBlocking {
+            scope.launch { startLoading() }
+            scope.launch { initMappers() }.join()
         }
     }
 
-    private fun getUsername(name: String): String {
-        val strings = name.split(" ").subList(0, 2)
-        return "${strings[0]} ${strings[1]}"
+    private fun startLoading() {
+        subjectModel.loadSuccessJournal()
+        subjectModel.loadMarkbookSubjects()
     }
 
-    private suspend fun collectSubjectsList() {
-        val subjectList = subjectModel.getSubjectList()
-        val subjectDetails = subjectModel.getSubjectDetailsList()
+    private fun initMappers() {
+        initProfileMapper()
+        initSubjectListMapper()
+        initMarkbookMapper()
+    }
 
-        subjectList.combine(subjectDetails) { subjects, details ->
-            Pair(subjects, details)
-        }.collect {
-            formSuccessMarksInfo(it.first, it.second)
-            formSuccessSubjects(it.first, it.second)
+    private fun initProfileMapper() {
+        profileData = profileModel.getProfile().map { it.toUIDTO() }
+    }
+
+    private fun initSubjectListMapper() {
+        successData = subjectModel.getSubjectList()
+            .combine(subjectModel.getSubjectDetailsList()) { subjects, details ->
+                Pair(
+                    formSuccessMarksInfo(subjects, details),
+                    formSuccessSubjects(subjects, details)
+                )
+            }
+    }
+
+    private fun initMarkbookMapper() {
+        markbookData = subjectModel.getMarkbookSubjects().map {
+            Pair(formMarkbookMarksInfo(it), formMarkbookSubjects(it))
         }
     }
 
     private fun formSuccessMarksInfo(
         subjects: List<SubjectDTO>,
         subjectDetails: List<SubjectDetailsDTO>
-    ) {
+    ): List<MarksInfo> {
         val subjectDetailsMutable = subjectDetails.toMutableList()
-        val marksInfo = formMarksInfo(
+        return formMarksInfo(
             array = subjects,
             semesterSelector = { it.sem.toInt() },
             gradeSelector = { subject -> subjectDetailsMutable.find { subject.card_id.toInt() == it.id }?.total },
             sortSelector = { it.sem }
         )
-        subscriber?.onSuccessMarksInfoChange(marksInfo)
     }
 
     private fun formSuccessSubjects(
         subjects: List<SubjectDTO>,
         subjectDetails: List<SubjectDetailsDTO>
-    ) {
+    ): MutableList<UISubjectDTO> {
         val uiSubjects = mutableListOf<UISubjectDTO>()
         val subjectDetailsMutable = subjectDetails.toMutableList()
         subjects.forEachIndexed { index, subject ->
             subjectDetailsMutable.find { subject.card_id.toInt() == it.id }?.let { details ->
-                uiSubjects.add(
-                    UISubjectDTO(
-                        subject.card_id.toInt(),
-                        subject.subject,
-                        subject.t_name,
-                        details.total,
-                        subject.sem.toInt()
-                    )
-                )
+                uiSubjects.add(subject.toUIDTO(details.total))
                 subjectDetailsMutable.remove(details)
             }
         }
-
-        subscriber?.onSuccessSubjectsChange(uiSubjects)
+        return uiSubjects
     }
 
-    private fun cutFacultyName(name: String) =
-        String(name.split(" ").filter { it.length > 2 }.map { it.first().uppercaseChar() }
-            .toCharArray())
-
-    private suspend fun collectMarkbookSubjects() {
-        subjectModel.getMarkbookSubjects().collect { markbookSubjects ->
-            formMarkbookMarksInfo(markbookSubjects)
-            formMarkbookSubjects(markbookSubjects)
-        }
-    }
-
-    private fun formMarkbookMarksInfo(markbookSubjects: List<MarkbookSubjectDTO>) {
-        val marksInfo = formMarksInfo(
+    private fun formMarkbookMarksInfo(markbookSubjects: List<MarkbookSubjectDTO>): List<MarksInfo> {
+        return formMarksInfo(
             array = markbookSubjects,
             semesterSelector = { it.semester },
             gradeSelector = { it.total },
             sortSelector = { it.semester }
         )
-        subscriber?.onMarkbookMarksInfoChange(marksInfo)
     }
 
-    private fun formMarkbookSubjects(markbookSubjects: List<MarkbookSubjectDTO>) {
-        subscriber?.onMarkbookSubjectsChange(markbookSubjects.map {
-            UISubjectDTO(
-                it.id,
-                it.subj_name,
-                it.teacher,
-                it.total,
-                it.semester
-            )
-        })
-    }
-
-    fun subscribe(subscriber: Interactable) {
-        this.subscriber = subscriber
+    private fun formMarkbookSubjects(markbookSubjects: List<MarkbookSubjectDTO>): List<UISubjectDTO> {
+        return markbookSubjects.map { it.toUIDTO() }
     }
 
     suspend fun refresh() {
         if (!connectionManager.isConnected()) {
-            throw RuntimeException("Немає підключення до інтернету, спробуйте ще раз")
+            throw RuntimeException(Values.INTERNET_UNAVAILABLE)
         }
-
-        subjectListTask.stop()
-        markbookSubjectsTask.stop()
 
         subjectModel.removeAllSubjects()
 
-        subjectListTask.start()
-        markbookSubjectsTask.start()
-    }
-
-    interface Interactable {
-        fun onProfileChange(uiProfileDTO: UIProfileDTO)
-        fun onSuccessMarksInfoChange(successMarksInfo: List<MarksInfo>)
-        fun onSuccessSubjectsChange(successSubjects: List<UISubjectDTO>)
-        fun onMarkbookMarksInfoChange(markbookMarksInfo: List<MarksInfo>)
-        fun onMarkbookSubjectsChange(markbookSubjects: List<UISubjectDTO>)
+        startLoading()
     }
 }

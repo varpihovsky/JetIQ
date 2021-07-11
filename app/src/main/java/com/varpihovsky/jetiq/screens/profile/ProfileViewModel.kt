@@ -3,21 +3,17 @@ package com.varpihovsky.jetiq.screens.profile
 import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.jetiq.system.JetIQViewModel
 import com.varpihovsky.jetiq.system.exceptions.ViewModelWithException
 import com.varpihovsky.jetiq.system.navigation.NavigationDirections
 import com.varpihovsky.jetiq.system.navigation.NavigationManager
 import com.varpihovsky.jetiq.ui.appbar.AppbarManager
-import com.varpihovsky.jetiq.ui.dto.MarksInfo
-import com.varpihovsky.jetiq.ui.dto.UIProfileDTO
-import com.varpihovsky.jetiq.ui.dto.UISubjectDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,8 +23,7 @@ class ProfileViewModel @Inject constructor(
     private val navigationManager: NavigationManager,
     appbarManager: AppbarManager,
 ) : JetIQViewModel(appbarManager, navigationManager),
-    ViewModelWithException,
-    ProfileInteractor.Interactable {
+    ViewModelWithException {
     val data by lazy { Data() }
     val scrollState = ScrollState(0)
     val isLoading: LiveData<Boolean>
@@ -37,32 +32,20 @@ class ProfileViewModel @Inject constructor(
 
     private var scrollChange = 0
 
-    private val profile = MutableLiveData<UIProfileDTO>()
+    val profile = profileInteractor.profileData
 
-    private val successMarksInfo = MutableLiveData<List<MarksInfo>>()
-    private val successSubjects = MutableLiveData<List<UISubjectDTO>>()
+    val successMarksInfo = profileInteractor.successData.map { it.first }
+    val successSubjects = profileInteractor.successData.map { it.second }
 
-    private val markbookMarksInfo = MutableLiveData<List<MarksInfo>>()
-    private val markbookSubjects = MutableLiveData<List<UISubjectDTO>>()
+    val markbookMarksInfo = profileInteractor.markbookData.map { it.first }
+    val markbookSubjects = profileInteractor.markbookData.map { it.second }
 
     private val successChecked = mutableStateOf(false)
     private val markbookChecked = mutableStateOf(false)
 
     inner class Data {
-        val profile: LiveData<UIProfileDTO> = this@ProfileViewModel.profile
-
-        val successMarksInfo: LiveData<List<MarksInfo>> = this@ProfileViewModel.successMarksInfo
-        val successSubjects: LiveData<List<UISubjectDTO>> = this@ProfileViewModel.successSubjects
-
-        val markbookMarksInfo: LiveData<List<MarksInfo>> = this@ProfileViewModel.markbookMarksInfo
-        val markbookSubjects: LiveData<List<UISubjectDTO>> = this@ProfileViewModel.markbookSubjects
-
         val successChecked: State<Boolean> = this@ProfileViewModel.successChecked
         val markbookChecked: State<Boolean> = this@ProfileViewModel.markbookChecked
-    }
-
-    init {
-        profileInteractor.subscribe(this)
     }
 
     fun onSuccessToggle(checked: Boolean) {
@@ -86,25 +69,5 @@ class ProfileViewModel @Inject constructor(
 
     fun onSettingsClick() {
         navigationManager.manage(NavigationDirections.mainSettings)
-    }
-
-    override fun onProfileChange(uiProfileDTO: UIProfileDTO) {
-        profile.postValue(uiProfileDTO)
-    }
-
-    override fun onSuccessMarksInfoChange(successMarksInfo: List<MarksInfo>) {
-        this.successMarksInfo.postValue(successMarksInfo)
-    }
-
-    override fun onSuccessSubjectsChange(successSubjects: List<UISubjectDTO>) {
-        this.successSubjects.postValue(successSubjects)
-    }
-
-    override fun onMarkbookMarksInfoChange(markbookMarksInfo: List<MarksInfo>) {
-        this.markbookMarksInfo.postValue(markbookMarksInfo)
-    }
-
-    override fun onMarkbookSubjectsChange(markbookSubjects: List<UISubjectDTO>) {
-        this.markbookSubjects.postValue(markbookSubjects)
     }
 }
