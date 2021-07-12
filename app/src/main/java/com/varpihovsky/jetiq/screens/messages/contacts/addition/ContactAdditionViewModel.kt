@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.varpihovsky.jetiq.back.model.ListModel
-import com.varpihovsky.jetiq.system.exceptions.ViewModelWithException
-import com.varpihovsky.jetiq.ui.dto.*
-import com.varpihovsky.jetiq.ui.dto.func_extensions.Selectable
+import com.varpihovsky.core.exceptions.ViewModelWithException
+import com.varpihovsky.core_repo.repo.ListRepo
+import com.varpihovsky.ui_data.*
+import com.varpihovsky.ui_data.func_extensions.Selectable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ContactAdditionViewModel @Inject constructor(
-    private val listModel: ListModel
+    private val listModel: ListRepo
 ) : ViewModel(), ViewModelWithException {
     val data by lazy { Data() }
     lateinit var callback: (List<UIReceiverDTO>) -> Unit

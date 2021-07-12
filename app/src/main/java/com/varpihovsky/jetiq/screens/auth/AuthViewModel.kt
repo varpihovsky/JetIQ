@@ -2,16 +2,16 @@ package com.varpihovsky.jetiq.screens.auth
 
 import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
-import com.varpihovsky.jetiq.back.model.ProfileModel
-import com.varpihovsky.jetiq.system.JetIQViewModel
-import com.varpihovsky.jetiq.system.exceptions.Values
-import com.varpihovsky.jetiq.system.exceptions.ViewModelWithException
-import com.varpihovsky.jetiq.system.exceptions.WrongDataException
-import com.varpihovsky.jetiq.system.navigation.NavigationDirections
-import com.varpihovsky.jetiq.system.navigation.NavigationManager
-import com.varpihovsky.jetiq.system.util.CoroutineDispatchers
-import com.varpihovsky.jetiq.system.util.Validator
-import com.varpihovsky.jetiq.ui.appbar.AppbarManager
+import com.varpihovsky.core.exceptions.Values
+import com.varpihovsky.core.exceptions.ViewModelWithException
+import com.varpihovsky.core.exceptions.WrongDataException
+import com.varpihovsky.core.navigation.NavigationDirections
+import com.varpihovsky.core.navigation.NavigationManager
+import com.varpihovsky.core.util.CoroutineDispatchers
+import com.varpihovsky.core.util.Validator
+import com.varpihovsky.core_repo.repo.ProfileRepo
+import com.varpihovsky.jetiq.appbar.AppbarManager
+import com.varpihovsky.jetiq.screens.JetIQViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,7 +20,7 @@ import javax.inject.Named
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val profileModel: ProfileModel,
+    private val profileModel: ProfileRepo,
     @Named("login_checker") private val loginValidator: Validator<String>,
     @Named("password_checker") private val passwordValidator: Validator<String>,
     private val navigationManager: NavigationManager,

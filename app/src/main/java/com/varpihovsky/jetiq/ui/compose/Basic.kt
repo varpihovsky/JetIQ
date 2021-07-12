@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.varpihovsky.jetiq.ui.dto.DropDownItem
+import com.varpihovsky.ui_data.DropDownItem
 
 @Composable
 fun CenterLayout(

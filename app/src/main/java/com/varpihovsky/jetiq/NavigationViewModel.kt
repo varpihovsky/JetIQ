@@ -1,12 +1,12 @@
 package com.varpihovsky.jetiq
 
 import androidx.compose.runtime.State
-import com.varpihovsky.jetiq.back.model.ProfileModel
-import com.varpihovsky.jetiq.system.JetIQViewModel
-import com.varpihovsky.jetiq.system.navigation.*
-import com.varpihovsky.jetiq.system.util.CoroutineDispatchers
-import com.varpihovsky.jetiq.system.util.ThreadSafeMutableState
-import com.varpihovsky.jetiq.ui.appbar.AppbarManager
+import com.varpihovsky.core.navigation.*
+import com.varpihovsky.core.util.CoroutineDispatchers
+import com.varpihovsky.core.util.ThreadSafeMutableState
+import com.varpihovsky.core_repo.repo.ProfileRepo
+import com.varpihovsky.jetiq.appbar.AppbarManager
+import com.varpihovsky.jetiq.screens.JetIQViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
@@ -15,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NavigationViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val profileModel: ProfileModel,
+    private val profileModel: ProfileRepo,
     private val navigationManager: NavigationManager,
     appbarManager: AppbarManager
 ) : JetIQViewModel(appbarManager, navigationManager) {

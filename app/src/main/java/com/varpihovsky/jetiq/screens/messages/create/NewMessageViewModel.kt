@@ -2,21 +2,21 @@ package com.varpihovsky.jetiq.screens.messages.create
 
 import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
-import com.varpihovsky.jetiq.back.dto.MessageToSendDTO
-import com.varpihovsky.jetiq.back.model.MessagesModel
+import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
+import com.varpihovsky.core.exceptions.Values
+import com.varpihovsky.core.exceptions.ViewModelWithException
+import com.varpihovsky.core.navigation.NavigationDirections
+import com.varpihovsky.core.navigation.NavigationManager
+import com.varpihovsky.core.util.CoroutineDispatchers
+import com.varpihovsky.core.util.ReactiveTask
+import com.varpihovsky.core.util.remove
+import com.varpihovsky.core_repo.repo.MessagesRepo
+import com.varpihovsky.jetiq.appbar.AppbarManager
+import com.varpihovsky.jetiq.screens.JetIQViewModel
 import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModel
 import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModelData
-import com.varpihovsky.jetiq.system.JetIQViewModel
-import com.varpihovsky.jetiq.system.dataTransfer.ViewModelDataTransferManager
-import com.varpihovsky.jetiq.system.exceptions.Values
-import com.varpihovsky.jetiq.system.exceptions.ViewModelWithException
-import com.varpihovsky.jetiq.system.navigation.NavigationDirections
-import com.varpihovsky.jetiq.system.navigation.NavigationManager
-import com.varpihovsky.jetiq.system.util.CoroutineDispatchers
-import com.varpihovsky.jetiq.system.util.ReactiveTask
-import com.varpihovsky.jetiq.system.util.remove
-import com.varpihovsky.jetiq.ui.appbar.AppbarManager
-import com.varpihovsky.jetiq.ui.dto.UIReceiverDTO
+import com.varpihovsky.repo_data.MessageToSendDTO
+import com.varpihovsky.ui_data.UIReceiverDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -29,7 +29,7 @@ class NewMessageViewModel @Inject constructor(
     appbarManager: AppbarManager,
     private val navigationManager: NavigationManager,
     viewModelDataTransferManager: ViewModelDataTransferManager,
-    private val messagesModel: MessagesModel
+    private val messagesModel: MessagesRepo
 ) : JetIQViewModel(appbarManager, navigationManager), ViewModelWithException {
     val data by lazy { Data() }
 
@@ -55,11 +55,13 @@ class NewMessageViewModel @Inject constructor(
 
     private suspend fun collectTransferredData() {
         dataTransferFlow.collect { uncheckedData ->
-            if (uncheckedData == null || uncheckedData.sender == this::class) {
+            if (uncheckedData == null) {
                 return@collect
             }
 
-            receivers.value = (uncheckedData as ContactsViewModelData<*>).data
+            (uncheckedData as? ContactsViewModelData)?.data?.let {
+                receivers.value = it
+            }
         }
     }
 
@@ -68,7 +70,7 @@ class NewMessageViewModel @Inject constructor(
     }
 
     fun onNewReceiverButtonClick() {
-        dataTransferFlow.value = ContactsViewModelData(receivers.value, this::class)
+        dataTransferFlow.value = ContactsViewModelData(receivers.value)
         navigationManager.manage(NavigationDirections.contacts)
     }
 
@@ -103,7 +105,7 @@ class NewMessageViewModel @Inject constructor(
     }
 
     private suspend fun processSending(messageBody: String) {
-        receivers.value.map { MessageToSendDTO(it.id, it.type, messageBody) }.forEach {
+        receivers.value.map { MessageToSendDTO(it.id, it.type.toInt(), messageBody) }.forEach {
             messagesModel.sendMessage(it)
         }
     }

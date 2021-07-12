@@ -11,7 +11,6 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -30,10 +29,10 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.varpihovsky.jetiq.ui.compose.*
-import com.varpihovsky.jetiq.ui.dto.MarksInfo
-import com.varpihovsky.jetiq.ui.dto.UIProfileDTO
-import com.varpihovsky.jetiq.ui.dto.UISubjectDTO
 import com.varpihovsky.jetiq.ui.theme.JetIQTheme
+import com.varpihovsky.ui_data.MarksInfo
+import com.varpihovsky.ui_data.UIProfileDTO
+import com.varpihovsky.ui_data.UISubjectDTO
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -149,13 +148,6 @@ fun Profile(
     val markbookInfo by profileViewModel.markbookMarksInfo.collectAsState(listOf())
     val markbookSubjects by profileViewModel.markbookSubjects.collectAsState(listOf())
 
-    val isRefreshing by profileViewModel.isLoading.observeAsState(initial = false)
-    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isRefreshing)
-
-    if (isRefreshing) {
-        swipeRefreshState.isRefreshing = true
-    }
-
     CollectExceptions(viewModel = profileViewModel)
 
     profileViewModel.emptyAppbar()
@@ -171,7 +163,7 @@ fun Profile(
         onSuccessToggle = profileViewModel::onSuccessToggle,
         markbookChecked = profileViewModel.data.markbookChecked.value,
         onMarkbookToggle = profileViewModel::onMarkbookToggle,
-        refreshState = rememberSwipeRefreshState(isRefreshing = isRefreshing),
+        refreshState = rememberSwipeRefreshState(isRefreshing = profileViewModel.isLoading.value),
         onRefresh = profileViewModel::onRefresh,
         onSettingsClick = profileViewModel::onSettingsClick
     )

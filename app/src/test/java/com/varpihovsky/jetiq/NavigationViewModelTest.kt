@@ -1,10 +1,10 @@
 package com.varpihovsky.jetiq
 
-import com.varpihovsky.jetiq.back.dto.Confidential
-import com.varpihovsky.jetiq.back.model.ProfileModel
-import com.varpihovsky.jetiq.system.navigation.BottomNavigationItem
-import com.varpihovsky.jetiq.system.navigation.NavigationDirections
+import com.varpihovsky.core.navigation.BottomNavigationItem
+import com.varpihovsky.core.navigation.NavigationDirections
+import com.varpihovsky.core_repo.repo.ProfileRepo
 import com.varpihovsky.jetiq.testCore.ViewModelTest
+import com.varpihovsky.repo_data.Confidential
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -18,7 +18,7 @@ import org.junit.Test
 
 class NavigationViewModelTest : ViewModelTest() {
     private lateinit var sharedViewModel: NavigationViewModel
-    private val profileModel: ProfileModel = mockk()
+    private val profileModel: ProfileRepo = mockk()
 
     private val mainScreens = listOf(
         NavigationDirections.profile.destination,

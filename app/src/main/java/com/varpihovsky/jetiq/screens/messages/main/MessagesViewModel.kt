@@ -1,18 +1,19 @@
 package com.varpihovsky.jetiq.screens.messages.main
 
 import androidx.compose.runtime.State
-import com.varpihovsky.jetiq.back.model.MessagesModel
-import com.varpihovsky.jetiq.system.ConnectionManager
-import com.varpihovsky.jetiq.system.JetIQViewModel
-import com.varpihovsky.jetiq.system.Refreshable
-import com.varpihovsky.jetiq.system.exceptions.Values
-import com.varpihovsky.jetiq.system.exceptions.ViewModelExceptionReceivable
-import com.varpihovsky.jetiq.system.navigation.NavigationDirections
-import com.varpihovsky.jetiq.system.navigation.NavigationManager
-import com.varpihovsky.jetiq.system.util.CoroutineDispatchers
-import com.varpihovsky.jetiq.system.util.ReactiveTask
-import com.varpihovsky.jetiq.ui.appbar.AppbarManager
-import com.varpihovsky.jetiq.ui.dto.UIMessageDTO
+import com.varpihovsky.core.ConnectionManager
+import com.varpihovsky.core.Refreshable
+import com.varpihovsky.core.exceptions.Values
+import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
+import com.varpihovsky.core.navigation.NavigationDirections
+import com.varpihovsky.core.navigation.NavigationManager
+import com.varpihovsky.core.util.CoroutineDispatchers
+import com.varpihovsky.core.util.ReactiveTask
+import com.varpihovsky.core_repo.repo.MessagesRepo
+import com.varpihovsky.jetiq.appbar.AppbarManager
+import com.varpihovsky.jetiq.screens.JetIQViewModel
+import com.varpihovsky.ui_data.UIMessageDTO
+import com.varpihovsky.ui_data.mappers.toUIDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import java.util.*
@@ -22,7 +23,7 @@ import javax.inject.Inject
 class MessagesViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val navigationManager: NavigationManager,
-    private val messagesModel: MessagesModel,
+    private val messagesModel: MessagesRepo,
     private val connectionManager: ConnectionManager,
     appbarManager: AppbarManager,
 ) : JetIQViewModel(appbarManager, navigationManager), ViewModelExceptionReceivable, Refreshable {
@@ -44,12 +45,8 @@ class MessagesViewModel @Inject constructor(
     }
 
     private suspend fun collectMessages() {
-        messagesModel.getMessagesState().collect { DTOMessages ->
-            DTOMessages.map {
-                it.toUIDTO()
-            }.also {
-                messages.value = it
-            }
+        messagesModel.getMessages().collect { DTOMessages ->
+            DTOMessages.map { it.toUIDTO() }.also { messages.value = it }
         }
     }
 

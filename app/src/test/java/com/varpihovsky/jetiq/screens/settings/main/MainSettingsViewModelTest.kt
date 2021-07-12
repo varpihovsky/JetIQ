@@ -1,10 +1,10 @@
 package com.varpihovsky.jetiq.screens.settings.main
 
-import com.varpihovsky.jetiq.back.model.ListModel
-import com.varpihovsky.jetiq.back.model.MessagesModel
-import com.varpihovsky.jetiq.back.model.ProfileModel
-import com.varpihovsky.jetiq.back.model.SubjectModel
-import com.varpihovsky.jetiq.system.navigation.NavigationDirections
+import com.varpihovsky.core.navigation.NavigationDirections
+import com.varpihovsky.core_repo.repo.ListRepo
+import com.varpihovsky.core_repo.repo.MessagesRepo
+import com.varpihovsky.core_repo.repo.ProfileRepo
+import com.varpihovsky.core_repo.repo.SubjectRepo
 import com.varpihovsky.jetiq.testCore.ViewModelTest
 import io.mockk.mockk
 import io.mockk.verify
@@ -16,10 +16,10 @@ import org.junit.Test
 class MainSettingsViewModelTest : ViewModelTest() {
     private lateinit var mainSettingsViewModel: MainSettingsViewModel
 
-    private val profileModel: ProfileModel = mockk(relaxed = true)
-    private val messagesModel: MessagesModel = mockk(relaxed = true)
-    private val subjectModel: SubjectModel = mockk(relaxed = true)
-    private val listModel: ListModel = mockk(relaxed = true)
+    private val profileModel: ProfileRepo = mockk(relaxed = true)
+    private val messagesModel: MessagesRepo = mockk(relaxed = true)
+    private val subjectModel: SubjectRepo = mockk(relaxed = true)
+    private val listModel: ListRepo = mockk(relaxed = true)
 
     @ExperimentalCoroutinesApi
     override fun setup() {
@@ -54,10 +54,10 @@ class MainSettingsViewModelTest : ViewModelTest() {
     fun `Test data clears on logout button click`() = runBlockingTest {
         mainSettingsViewModel.onLogoutClick()
         verifyAll {
-            profileModel.clearData()
-            messagesModel.clearData()
+            profileModel.clear()
+            messagesModel.clear()
             listModel.clear()
-            subjectModel.removeAllSubjects()
+            subjectModel.clear()
         }
     }
 }

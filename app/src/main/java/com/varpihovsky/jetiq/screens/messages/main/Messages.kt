@@ -22,10 +22,10 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.varpihovsky.jetiq.R
 import com.varpihovsky.jetiq.ui.compose.CollectExceptions
 import com.varpihovsky.jetiq.ui.compose.InfoCard
-import com.varpihovsky.jetiq.ui.dto.UIMessageDTO
 import com.varpihovsky.jetiq.ui.loremIpsum1Paragraph
 import com.varpihovsky.jetiq.ui.loremIpsumTitle
 import com.varpihovsky.jetiq.ui.sampleDate
+import com.varpihovsky.ui_data.UIMessageDTO
 
 private val exampleMessage = UIMessageDTO(0, loremIpsumTitle, loremIpsum1Paragraph, sampleDate)
 

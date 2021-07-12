@@ -1,9 +1,9 @@
 package com.varpihovsky.jetiq.screens.auth
 
-import com.varpihovsky.jetiq.back.model.ProfileModel
-import com.varpihovsky.jetiq.system.navigation.NavigationDirections
-import com.varpihovsky.jetiq.system.util.CoroutineDispatchers
-import com.varpihovsky.jetiq.system.util.Validator
+import com.varpihovsky.core.navigation.NavigationDirections
+import com.varpihovsky.core.util.CoroutineDispatchers
+import com.varpihovsky.core.util.Validator
+import com.varpihovsky.core_repo.repo.ProfileRepo
 import com.varpihovsky.jetiq.testCore.ViewModelTest
 import io.mockk.every
 import io.mockk.mockk
@@ -17,7 +17,7 @@ import org.junit.Test
 
 class AuthViewModelTest : ViewModelTest() {
     private lateinit var viewModel: AuthViewModel
-    private val profileModel: ProfileModel = mockk(relaxed = true)
+    private val profileModel: ProfileRepo = mockk(relaxed = true)
 
     @ExperimentalCoroutinesApi
     private val dispatchers: CoroutineDispatchers = CoroutineDispatchers(TestCoroutineDispatcher())

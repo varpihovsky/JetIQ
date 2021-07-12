@@ -1,13 +1,12 @@
 package com.varpihovsky.jetiq.screens.messages.create
 
-import com.varpihovsky.jetiq.back.model.MessagesModel
-import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModel
+import com.varpihovsky.core.exceptions.Values
+import com.varpihovsky.core.navigation.NavigationDirections
+import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModelData
-import com.varpihovsky.jetiq.system.exceptions.Values
-import com.varpihovsky.jetiq.system.navigation.NavigationDirections
 import com.varpihovsky.jetiq.testCore.ViewModelDataTransferTest
-import com.varpihovsky.jetiq.ui.dto.ReceiverType
-import com.varpihovsky.jetiq.ui.dto.UIReceiverDTO
+import com.varpihovsky.ui_data.ReceiverType
+import com.varpihovsky.ui_data.UIReceiverDTO
 import io.mockk.mockk
 import io.mockk.verify
 import junit.framework.Assert.assertEquals
@@ -17,7 +16,7 @@ import org.junit.Test
 
 class NewMessageViewModelTest : ViewModelDataTransferTest() {
     private lateinit var viewModel: NewMessageViewModel
-    private val messagesModel: MessagesModel = mockk(relaxed = true)
+    private val messagesModel: MessagesRepo = mockk(relaxed = true)
 
     @ExperimentalCoroutinesApi
     override fun setup() {
@@ -36,7 +35,7 @@ class NewMessageViewModelTest : ViewModelDataTransferTest() {
             messagesModel
         )
         dataTransferStateFlow.value =
-            ContactsViewModelData(TEST_RECEIVERS, ContactsViewModel::class)
+            ContactsViewModelData(TEST_RECEIVERS)
     }
 
     @ExperimentalCoroutinesApi

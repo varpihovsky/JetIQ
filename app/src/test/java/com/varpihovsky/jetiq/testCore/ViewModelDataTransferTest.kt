@@ -1,7 +1,7 @@
 package com.varpihovsky.jetiq.testCore
 
-import com.varpihovsky.jetiq.system.dataTransfer.ViewModelData
-import com.varpihovsky.jetiq.system.dataTransfer.ViewModelDataTransferManager
+import com.varpihovsky.core.dataTransfer.ViewModelData
+import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
@@ -12,7 +12,7 @@ abstract class ViewModelDataTransferTest : ViewModelTest() {
     protected val viewModelDataTransferManager: ViewModelDataTransferManager = mockk(relaxed = true)
 
     protected val dataTransferStateFlow =
-        spyk(MutableStateFlow<ViewModelData<*, *>?>(null))
+        spyk(MutableStateFlow<ViewModelData<*>?>(null))
 
     @ExperimentalCoroutinesApi
     override fun setup() {

@@ -3,13 +3,13 @@ package com.varpihovsky.jetiq.screens.profile
 import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.State
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.varpihovsky.jetiq.system.JetIQViewModel
-import com.varpihovsky.jetiq.system.exceptions.ViewModelWithException
-import com.varpihovsky.jetiq.system.navigation.NavigationDirections
-import com.varpihovsky.jetiq.system.navigation.NavigationManager
-import com.varpihovsky.jetiq.ui.appbar.AppbarManager
+import com.varpihovsky.core.Refreshable
+import com.varpihovsky.core.exceptions.ViewModelWithException
+import com.varpihovsky.core.navigation.NavigationDirections
+import com.varpihovsky.core.navigation.NavigationManager
+import com.varpihovsky.jetiq.appbar.AppbarManager
+import com.varpihovsky.jetiq.screens.JetIQViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,10 +23,10 @@ class ProfileViewModel @Inject constructor(
     private val navigationManager: NavigationManager,
     appbarManager: AppbarManager,
 ) : JetIQViewModel(appbarManager, navigationManager),
-    ViewModelWithException {
+    ViewModelWithException, Refreshable {
     val data by lazy { Data() }
     val scrollState = ScrollState(0)
-    val isLoading: LiveData<Boolean>
+    override val isLoading: State<Boolean>
         get() = profileInteractor.isLoading
     override val exceptions: MutableStateFlow<Exception?> = MutableStateFlow(null)
 
@@ -56,10 +56,10 @@ class ProfileViewModel @Inject constructor(
         markbookChecked.value = checked
     }
 
-    fun onRefresh() {
+    override fun onRefresh() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                profileInteractor.refresh()
+                profileInteractor.onRefresh()
             } catch (e: RuntimeException) {
                 exceptions.value = e
                 Log.d("Application", Log.getStackTraceString(e))

@@ -20,9 +20,9 @@ import coil.transform.CircleCropTransformation
 import coil.transform.Transformation
 import com.google.accompanist.coil.rememberCoilPainter
 import com.varpihovsky.jetiq.R
-import com.varpihovsky.jetiq.ui.dto.MarksInfo
-import com.varpihovsky.jetiq.ui.dto.UIProfileDTO
-import com.varpihovsky.jetiq.ui.dto.UISubjectDTO
+import com.varpihovsky.ui_data.MarksInfo
+import com.varpihovsky.ui_data.UIProfileDTO
+import com.varpihovsky.ui_data.UISubjectDTO
 
 @Composable
 fun ProfileName(modifier: Modifier = Modifier, text: String) {

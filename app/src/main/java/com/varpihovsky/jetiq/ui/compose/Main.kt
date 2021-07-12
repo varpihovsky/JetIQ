@@ -20,7 +20,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.varpihovsky.core.navigation.BottomNavigationItem
+import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.jetiq.NavigationViewModel
+import com.varpihovsky.jetiq.appbar.AppbarCommand
+import com.varpihovsky.jetiq.appbar.AppbarManager
 import com.varpihovsky.jetiq.screens.auth.Auth
 import com.varpihovsky.jetiq.screens.messages.contacts.ContactsScreen
 import com.varpihovsky.jetiq.screens.messages.create.NewMessageScreen
@@ -28,10 +32,6 @@ import com.varpihovsky.jetiq.screens.messages.main.MessagesScreen
 import com.varpihovsky.jetiq.screens.profile.Profile
 import com.varpihovsky.jetiq.screens.settings.about.AboutSettingsScreen
 import com.varpihovsky.jetiq.screens.settings.main.MainSettingsScreen
-import com.varpihovsky.jetiq.system.navigation.BottomNavigationItem
-import com.varpihovsky.jetiq.system.navigation.NavigationDirections
-import com.varpihovsky.jetiq.ui.appbar.AppbarCommand
-import com.varpihovsky.jetiq.ui.appbar.AppbarManager
 
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi

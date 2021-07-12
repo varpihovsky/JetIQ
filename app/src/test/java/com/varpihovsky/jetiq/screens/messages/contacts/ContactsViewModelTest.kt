@@ -1,10 +1,10 @@
 package com.varpihovsky.jetiq.screens.messages.contacts
 
-import com.varpihovsky.jetiq.back.dto.ContactDTO
-import com.varpihovsky.jetiq.back.model.ListModel
-import com.varpihovsky.jetiq.screens.messages.create.NewMessageViewModel
+import com.varpihovsky.core_repo.repo.ListRepo
 import com.varpihovsky.jetiq.testCore.ViewModelDataTransferTest
-import com.varpihovsky.jetiq.ui.dto.func_extensions.Selectable
+import com.varpihovsky.repo_data.ContactDTO
+import com.varpihovsky.ui_data.func_extensions.Selectable
+import com.varpihovsky.ui_data.mappers.toUIDTO
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -16,7 +16,7 @@ import org.junit.Test
 
 class ContactsViewModelTest : ViewModelDataTransferTest() {
     private lateinit var contactsViewModel: ContactsViewModel
-    private val listModel: ListModel = mockk(relaxed = true)
+    private val listModel: ListRepo = mockk(relaxed = true)
 
     @ExperimentalCoroutinesApi
     private fun initViewModel() {
@@ -160,8 +160,7 @@ class ContactsViewModelTest : ViewModelDataTransferTest() {
 
     private fun transferContacts(vararg contacts: ContactDTO) {
         dataTransferStateFlow.value = ContactsViewModelData(
-            listOf(*contacts).map { it.toUIDTO() },
-            NewMessageViewModel::class
+            listOf(*contacts).map { it.toUIDTO() }
         )
     }
 

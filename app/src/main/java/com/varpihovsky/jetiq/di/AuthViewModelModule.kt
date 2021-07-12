@@ -1,6 +1,6 @@
 package com.varpihovsky.jetiq.di
 
-import com.varpihovsky.jetiq.system.util.Validator
+import com.varpihovsky.core.util.Validator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

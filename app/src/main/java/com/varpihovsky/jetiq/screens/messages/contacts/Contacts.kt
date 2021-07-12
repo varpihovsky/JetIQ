@@ -29,8 +29,9 @@ import com.varpihovsky.jetiq.R
 import com.varpihovsky.jetiq.screens.messages.contacts.addition.AdditionDialog
 import com.varpihovsky.jetiq.ui.compose.Avatar
 import com.varpihovsky.jetiq.ui.compose.BackIconButton
-import com.varpihovsky.jetiq.ui.dto.UIReceiverDTO
-import com.varpihovsky.jetiq.ui.dto.func_extensions.Selectable
+import com.varpihovsky.ui_data.UIReceiverDTO
+import com.varpihovsky.ui_data.func_extensions.Selectable
+
 
 @ExperimentalFoundationApi
 @Composable

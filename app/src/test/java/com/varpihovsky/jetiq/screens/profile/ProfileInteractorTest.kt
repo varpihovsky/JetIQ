@@ -1,14 +1,15 @@
 package com.varpihovsky.jetiq.screens.profile
 
-import com.varpihovsky.jetiq.back.dto.MarkbookSubjectDTO
-import com.varpihovsky.jetiq.back.dto.ProfileDTO
-import com.varpihovsky.jetiq.back.dto.SubjectDTO
-import com.varpihovsky.jetiq.back.dto.SubjectDetailsDTO
-import com.varpihovsky.jetiq.back.model.ProfileModel
-import com.varpihovsky.jetiq.back.model.SubjectModel
-import com.varpihovsky.jetiq.system.ConnectionManager
+import com.varpihovsky.core.ConnectionManager
+import com.varpihovsky.core_repo.repo.ProfileRepo
+import com.varpihovsky.core_repo.repo.SubjectRepo
 import com.varpihovsky.jetiq.testCore.ViewModelTest
-import com.varpihovsky.jetiq.ui.dto.MarksInfo
+import com.varpihovsky.repo_data.MarkbookSubjectDTO
+import com.varpihovsky.repo_data.ProfileDTO
+import com.varpihovsky.repo_data.SubjectDTO
+import com.varpihovsky.repo_data.SubjectDetailsDTO
+import com.varpihovsky.ui_data.MarksInfo
+import com.varpihovsky.ui_data.mappers.toUIDTO
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -23,16 +24,16 @@ import org.junit.Test
 class ProfileInteractorTest : ViewModelTest() {
     private lateinit var profileInteractor: ProfileInteractor
 
-    private val profileModel: ProfileModel = mockk(relaxed = true)
-    private val subjectModel: SubjectModel = mockk(relaxed = true)
+    private val profileModel: ProfileRepo = mockk(relaxed = true)
+    private val subjectModel: SubjectRepo = mockk(relaxed = true)
 
     @ExperimentalCoroutinesApi
     @Test
     fun `Test subject flow processing is working`() = runBlockingTest {
-        every { subjectModel.getSubjectList() } returns flow {
+        every { subjectModel.getSubjects() } returns flow {
             emit(listOf(TEST_SUBJECTS.first()))
         }
-        every { subjectModel.getSubjectDetailsList() } returns flow {
+        every { subjectModel.getSubjectsDetails() } returns flow {
             emit(listOf(TEST_DETAILS.first()))
         }
 
@@ -47,7 +48,7 @@ class ProfileInteractorTest : ViewModelTest() {
     @ExperimentalCoroutinesApi
     @Test
     fun `Test markbook flow processing is working`() = runBlockingTest {
-        every { subjectModel.getMarkbookSubjects() } returns flow {
+        every { subjectModel.getMarkbook() } returns flow {
             emit(listOf(TEST_MARKBOOK_SUBJECT))
         }
         initInteractor()
@@ -61,8 +62,8 @@ class ProfileInteractorTest : ViewModelTest() {
     @Test
     fun `Test refreshing destroys all the database`() = runBlockingTest {
         initInteractor()
-        profileInteractor.refresh()
-        verify { subjectModel.removeAllSubjects() }
+        profileInteractor.onRefresh()
+        verify { subjectModel.onRefresh() }
     }
 
     @ExperimentalCoroutinesApi

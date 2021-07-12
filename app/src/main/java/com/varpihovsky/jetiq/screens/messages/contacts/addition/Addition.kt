@@ -15,11 +15,11 @@ import com.varpihovsky.jetiq.screens.messages.contacts.SearchBar
 import com.varpihovsky.jetiq.ui.compose.BasicTextButton
 import com.varpihovsky.jetiq.ui.compose.CollectExceptions
 import com.varpihovsky.jetiq.ui.compose.SubscribedExposedDropDownList
-import com.varpihovsky.jetiq.ui.dto.ContactTypeDropDownItem
-import com.varpihovsky.jetiq.ui.dto.DropDownItem
-import com.varpihovsky.jetiq.ui.dto.EmptyDropDownItem
-import com.varpihovsky.jetiq.ui.dto.UIReceiverDTO
-import com.varpihovsky.jetiq.ui.dto.func_extensions.Selectable
+import com.varpihovsky.ui_data.ContactTypeDropDownItem
+import com.varpihovsky.ui_data.DropDownItem
+import com.varpihovsky.ui_data.EmptyDropDownItem
+import com.varpihovsky.ui_data.UIReceiverDTO
+import com.varpihovsky.ui_data.func_extensions.Selectable
 import soup.compose.material.motion.Axis
 import soup.compose.material.motion.MaterialSharedAxis
 

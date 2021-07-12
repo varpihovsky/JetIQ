@@ -1,10 +1,11 @@
 package com.varpihovsky.jetiq.screens.messages.main
 
-import com.varpihovsky.jetiq.back.dto.MessageDTO
-import com.varpihovsky.jetiq.back.model.MessagesModel
-import com.varpihovsky.jetiq.system.ConnectionManager
-import com.varpihovsky.jetiq.system.navigation.NavigationDirections
+import com.varpihovsky.core.ConnectionManager
+import com.varpihovsky.core.navigation.NavigationDirections
+import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.jetiq.testCore.ViewModelTest
+import com.varpihovsky.repo_data.MessageDTO
+import com.varpihovsky.ui_data.mappers.toUIDTO
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -18,14 +19,14 @@ import org.junit.Test
 
 class MessagesViewModelTest : ViewModelTest() {
     private lateinit var messagesViewModel: MessagesViewModel
-    private val messagesModel: MessagesModel = mockk(relaxed = true)
+    private val messagesModel: MessagesRepo = mockk(relaxed = true)
     private val connectionManager: ConnectionManager = mockk(relaxed = true)
 
     @ExperimentalCoroutinesApi
     override fun setup() = runBlockingTest {
         super.setup()
 
-        every { messagesModel.getMessagesState() } returns flow {
+        every { messagesModel.getMessages() } returns flow {
             emit(TEST_MESSAGES)
         }
 

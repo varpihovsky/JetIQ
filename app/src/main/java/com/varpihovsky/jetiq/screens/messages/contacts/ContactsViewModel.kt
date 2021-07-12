@@ -2,16 +2,17 @@ package com.varpihovsky.jetiq.screens.messages.contacts
 
 import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
-import com.varpihovsky.jetiq.back.dto.ContactDTO
-import com.varpihovsky.jetiq.back.model.ListModel
-import com.varpihovsky.jetiq.system.JetIQViewModel
-import com.varpihovsky.jetiq.system.dataTransfer.ViewModelDataTransferManager
-import com.varpihovsky.jetiq.system.navigation.NavigationManager
-import com.varpihovsky.jetiq.system.util.CoroutineDispatchers
-import com.varpihovsky.jetiq.system.util.ReactiveTask
-import com.varpihovsky.jetiq.ui.appbar.AppbarManager
-import com.varpihovsky.jetiq.ui.dto.UIReceiverDTO
-import com.varpihovsky.jetiq.ui.dto.func_extensions.Selectable
+import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
+import com.varpihovsky.core.navigation.NavigationManager
+import com.varpihovsky.core.util.CoroutineDispatchers
+import com.varpihovsky.core.util.ReactiveTask
+import com.varpihovsky.core_repo.repo.ListRepo
+import com.varpihovsky.jetiq.appbar.AppbarManager
+import com.varpihovsky.jetiq.screens.JetIQViewModel
+import com.varpihovsky.repo_data.ContactDTO
+import com.varpihovsky.ui_data.UIReceiverDTO
+import com.varpihovsky.ui_data.func_extensions.Selectable
+import com.varpihovsky.ui_data.mappers.toUIDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -24,7 +25,7 @@ class ContactsViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     appbarManager: AppbarManager,
     private val navigationManager: NavigationManager,
-    private val listModel: ListModel,
+    private val listModel: ListRepo,
     private val dataTransferManager: ViewModelDataTransferManager
 ) : JetIQViewModel(appbarManager, navigationManager) {
     val data by lazy { Data() }
@@ -77,14 +78,14 @@ class ContactsViewModel @Inject constructor(
 
     private suspend fun collectTransferredData() {
         dataTransferFlow.collect { uncheckedData ->
-            if (uncheckedData == null || uncheckedData.sender == this::class) {
+            if (uncheckedData == null) {
                 return@collect
             }
 
             markExternal()
 
-            val viewModelData = uncheckedData as ContactsViewModelData<*>
-            viewModelData.data.forEach { receiver ->
+            val viewModelData = uncheckedData as? ContactsViewModelData
+            viewModelData?.data?.forEach { receiver ->
                 fullContacts.find { it.dto == receiver }?.let { selectContact(it) }
             }
         }
@@ -103,8 +104,7 @@ class ContactsViewModel @Inject constructor(
     override fun onBackNavButtonClick() {
         if (isExternalChoosing.value) {
             dataTransferFlow.value = ContactsViewModelData(
-                fullContacts.filter { it.isSelected }.map { it.dto },
-                this::class
+                fullContacts.filter { it.isSelected }.map { it.dto }
             )
         }
         resetState()

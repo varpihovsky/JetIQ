@@ -23,9 +23,9 @@ import com.varpihovsky.jetiq.ui.compose.Avatar
 import com.varpihovsky.jetiq.ui.compose.BasicAppBar
 import com.varpihovsky.jetiq.ui.compose.CollectExceptions
 import com.varpihovsky.jetiq.ui.compose.InfoCard
-import com.varpihovsky.jetiq.ui.dto.ReceiverType
-import com.varpihovsky.jetiq.ui.dto.UIReceiverDTO
 import com.varpihovsky.jetiq.ui.theme.JetIQTheme
+import com.varpihovsky.ui_data.ReceiverType
+import com.varpihovsky.ui_data.UIReceiverDTO
 
 @Preview
 @Composable

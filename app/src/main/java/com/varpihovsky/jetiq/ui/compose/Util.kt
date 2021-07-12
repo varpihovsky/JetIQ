@@ -7,10 +7,10 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import com.varpihovsky.jetiq.system.JetIQViewModel
-import com.varpihovsky.jetiq.system.exceptions.ViewModelWithException
-import com.varpihovsky.jetiq.system.navigation.NavigationCommandType
-import com.varpihovsky.jetiq.system.navigation.NavigationManager
+import com.varpihovsky.core.exceptions.ViewModelWithException
+import com.varpihovsky.core.navigation.NavigationCommandType
+import com.varpihovsky.core.navigation.NavigationManager
+import com.varpihovsky.jetiq.screens.JetIQViewModel
 import kotlinx.coroutines.flow.collect
 
 

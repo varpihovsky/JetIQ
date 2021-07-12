@@ -11,3 +11,9 @@ dependencyResolutionManagement {
 }
 rootProject.name = "JetIQ"
 include ':app'
+include ':core_repo'
+include ':core'
+include ':ui_data'
+include ':core_network'
+include ':core_db'
+include ':repo_data'

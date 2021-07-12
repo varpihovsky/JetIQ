@@ -1,10 +1,10 @@
 package com.varpihovsky.jetiq.di
 
-import com.varpihovsky.jetiq.back.model.ProfileModel
-import com.varpihovsky.jetiq.back.model.SubjectModel
+import com.varpihovsky.core.ConnectionManager
+import com.varpihovsky.core.util.CoroutineDispatchers
+import com.varpihovsky.core_repo.repo.ProfileRepo
+import com.varpihovsky.core_repo.repo.SubjectRepo
 import com.varpihovsky.jetiq.screens.profile.ProfileInteractor
-import com.varpihovsky.jetiq.system.ConnectionManager
-import com.varpihovsky.jetiq.system.util.CoroutineDispatchers
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,9 +16,13 @@ object InteractorsModule {
     @Provides
     fun provideProfileInteractor(
         dispatchers: CoroutineDispatchers,
-        profileModel: ProfileModel,
-        subjectModel: SubjectModel,
+        profileModel: ProfileRepo,
+        subjectModel: SubjectRepo,
         connectionManager: ConnectionManager
-    ) =
-        ProfileInteractor(dispatchers, profileModel, subjectModel, connectionManager)
+    ) = ProfileInteractor(
+        dispatchers,
+        profileModel,
+        subjectModel,
+        connectionManager
+    )
 }

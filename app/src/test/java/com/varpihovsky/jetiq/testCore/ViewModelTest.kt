@@ -1,9 +1,9 @@
 package com.varpihovsky.jetiq.testCore
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.varpihovsky.jetiq.system.navigation.NavigationManager
-import com.varpihovsky.jetiq.system.util.CoroutineDispatchers
-import com.varpihovsky.jetiq.ui.appbar.AppbarManager
+import com.varpihovsky.core.navigation.NavigationManager
+import com.varpihovsky.core.util.CoroutineDispatchers
+import com.varpihovsky.jetiq.appbar.AppbarManager
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

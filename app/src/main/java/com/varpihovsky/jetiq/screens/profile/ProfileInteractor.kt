@@ -1,18 +1,20 @@
 package com.varpihovsky.jetiq.screens.profile
 
-import androidx.lifecycle.LiveData
-import com.varpihovsky.jetiq.back.dto.MarkbookSubjectDTO
-import com.varpihovsky.jetiq.back.dto.SubjectDTO
-import com.varpihovsky.jetiq.back.dto.SubjectDetailsDTO
-import com.varpihovsky.jetiq.back.model.ProfileModel
-import com.varpihovsky.jetiq.back.model.SubjectModel
-import com.varpihovsky.jetiq.system.ConnectionManager
-import com.varpihovsky.jetiq.system.exceptions.Values
-import com.varpihovsky.jetiq.system.util.CoroutineDispatchers
-import com.varpihovsky.jetiq.ui.dto.MarksInfo
-import com.varpihovsky.jetiq.ui.dto.UIProfileDTO
-import com.varpihovsky.jetiq.ui.dto.UISubjectDTO
-import com.varpihovsky.jetiq.ui.dto.formMarksInfo
+import androidx.compose.runtime.State
+import com.varpihovsky.core.ConnectionManager
+import com.varpihovsky.core.Refreshable
+import com.varpihovsky.core.exceptions.Values
+import com.varpihovsky.core.util.CoroutineDispatchers
+import com.varpihovsky.core_repo.repo.ProfileRepo
+import com.varpihovsky.core_repo.repo.SubjectRepo
+import com.varpihovsky.repo_data.MarkbookSubjectDTO
+import com.varpihovsky.repo_data.SubjectDTO
+import com.varpihovsky.repo_data.SubjectDetailsDTO
+import com.varpihovsky.ui_data.MarksInfo
+import com.varpihovsky.ui_data.UIProfileDTO
+import com.varpihovsky.ui_data.UISubjectDTO
+import com.varpihovsky.ui_data.formMarksInfo
+import com.varpihovsky.ui_data.mappers.toUIDTO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -23,11 +25,11 @@ import javax.inject.Inject
 
 class ProfileInteractor @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val profileModel: ProfileModel,
-    private val subjectModel: SubjectModel,
+    private val profileModel: ProfileRepo,
+    private val subjectModel: SubjectRepo,
     private val connectionManager: ConnectionManager
-) {
-    val isLoading: LiveData<Boolean>
+) : Refreshable {
+    override val isLoading: State<Boolean>
         get() = subjectModel.isLoading
 
     private val scope = CoroutineScope(dispatchers.IO)
@@ -62,8 +64,8 @@ class ProfileInteractor @Inject constructor(
     }
 
     private fun initSubjectListMapper() {
-        successData = subjectModel.getSubjectList()
-            .combine(subjectModel.getSubjectDetailsList()) { subjects, details ->
+        successData = subjectModel.getSubjects()
+            .combine(subjectModel.getSubjectsDetails()) { subjects, details ->
                 Pair(
                     formSuccessMarksInfo(subjects, details),
                     formSuccessSubjects(subjects, details)
@@ -72,7 +74,7 @@ class ProfileInteractor @Inject constructor(
     }
 
     private fun initMarkbookMapper() {
-        markbookData = subjectModel.getMarkbookSubjects().map {
+        markbookData = subjectModel.getMarkbook().map {
             Pair(formMarkbookMarksInfo(it), formMarkbookSubjects(it))
         }
     }
@@ -118,13 +120,11 @@ class ProfileInteractor @Inject constructor(
         return markbookSubjects.map { it.toUIDTO() }
     }
 
-    suspend fun refresh() {
+    override fun onRefresh() {
         if (!connectionManager.isConnected()) {
             throw RuntimeException(Values.INTERNET_UNAVAILABLE)
         }
 
-        subjectModel.removeAllSubjects()
-
-        startLoading()
+        subjectModel.onRefresh()
     }
 }
