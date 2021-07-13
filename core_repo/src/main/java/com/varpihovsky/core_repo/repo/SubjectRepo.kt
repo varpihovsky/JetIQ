@@ -16,8 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 interface SubjectRepo : Refreshable {
-    suspend fun loadSuccessJournal()
-    suspend fun loadMarkbookSubjects()
+    suspend fun load()
 
     fun getSubjects(): Flow<List<SubjectDTO>>
     fun getSubjectsDetails(): Flow<List<SubjectDetailsDTO>>
@@ -51,10 +50,6 @@ private class SubjectRepoImpl @Inject constructor(
 ) : ConfidentRepo(confidentialDAO, profileDAO), SubjectRepo {
     override val isLoading = mutableStateOf(false)
 
-    private var areSubjectsLoading = false
-    private var areDetailsLoading = false
-    private var areMarkbookSubjectsLoading = false
-
     override fun onRefresh() {
         modelScope.launch(Dispatchers.IO) {
             loadSuccessJournal()
@@ -62,19 +57,29 @@ private class SubjectRepoImpl @Inject constructor(
         }
     }
 
+    override suspend fun load() {
+        modelScope.launch {
+            isLoading.value = true
+
+            val successJob = launch { loadSuccessJournal() }
+            val markbookJob = launch { loadMarkbookSubjects() }
+
+            successJob.join()
+            markbookJob.join()
+
+            isLoading.value = false
+        }.join()
+    }
+
     override fun getSubjects(): Flow<List<SubjectDTO>> {
         return subjectDAO.getAllSubjects()
     }
 
-    override suspend fun loadSuccessJournal() {
-        toggleLoading { areSubjectsLoading = true }
-
+    private suspend fun loadSuccessJournal() {
         val session = requireSession()
-
         wrapException(
             result = jetIQSubjectManager.getSuccessJournal(session),
             onSuccess = { processSubjects(it.value, session) },
-            onFailure = { toggleLoading { areSubjectsLoading = false } }
         )
     }
 
@@ -83,7 +88,6 @@ private class SubjectRepoImpl @Inject constructor(
             subjectDAO.insert(it)
             addSubjectDetails(session, it.card_id.toInt())
         }
-        toggleLoading { areSubjectsLoading = false }
     }
 
     private suspend fun addSubjectDetails(session: String, id: Int) {
@@ -106,13 +110,7 @@ private class SubjectRepoImpl @Inject constructor(
         return subjectDetailsDAO.getMarkbookSubjects()
     }
 
-    override suspend fun loadMarkbookSubjects() {
-        toggleLoading { areMarkbookSubjectsLoading = true }
-        addMarkbookSubjects()
-        toggleLoading { areMarkbookSubjectsLoading = false }
-    }
-
-    private suspend fun addMarkbookSubjects() {
+    private suspend fun loadMarkbookSubjects() {
         val session = requireSession()
         wrapException(
             result = jetIQSubjectManager.getMarkbookSubjects(session),
@@ -127,19 +125,7 @@ private class SubjectRepoImpl @Inject constructor(
     }
 
     override fun clear() {
-        toggleLoading { areSubjectsLoading = true }
         clearDatabases()
-    }
-
-    private fun toggleLoading(block: () -> Unit) {
-        block()
-        updateLoadingState()
-    }
-
-    private fun updateLoadingState() {
-        modelScope.launch(Dispatchers.Main) {
-            isLoading.value = areSubjectsLoading && areDetailsLoading
-        }
     }
 
     private fun clearDatabases() {
