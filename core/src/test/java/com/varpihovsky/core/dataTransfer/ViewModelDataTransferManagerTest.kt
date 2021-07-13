@@ -1,7 +1,6 @@
-package com.varpihovsky.jetiq.system.dataTransfer
+package com.varpihovsky.core.dataTransfer
 
-import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
-import com.varpihovsky.jetiq.testCore.JetIQTest
+import com.varpihovsky.core.testCore.JetIQTest
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNotSame
 import org.junit.Before

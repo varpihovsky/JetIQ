@@ -1,9 +1,7 @@
-package com.varpihovsky.jetiq.system.navigation
+package com.varpihovsky.core.navigation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.varpihovsky.core.navigation.NavigationDirections
-import com.varpihovsky.core.navigation.NavigationManager
-import com.varpihovsky.jetiq.testCore.JetIQTest
+import com.varpihovsky.core.testCore.JetIQTest
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
