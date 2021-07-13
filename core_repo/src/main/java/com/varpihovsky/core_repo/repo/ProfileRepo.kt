@@ -1,5 +1,7 @@
 package com.varpihovsky.core_repo.repo
 
+import com.varpihovsky.core.exceptions.ModelExceptionSender
+import com.varpihovsky.core.exceptions.Values
 import com.varpihovsky.core_db.dao.ConfidentialDAO
 import com.varpihovsky.core_db.dao.ProfileDAO
 import com.varpihovsky.core_db.dao.reset
@@ -9,8 +11,8 @@ import com.varpihovsky.repo_data.ProfileDTO
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-interface ProfileRepo {
-    suspend fun login(login: String, password: String)
+interface ProfileRepo : ModelExceptionSender {
+    suspend fun login(login: String, password: String): Boolean
     suspend fun logout()
 
     fun getProfile(): Flow<ProfileDTO>
@@ -36,14 +38,22 @@ private class ProfileRepoImpl @Inject constructor(
     private val confidentialDAO: ConfidentialDAO,
     private val jetIQProfileManager: JetIQProfileManager
 ) : Repo(), ProfileRepo {
-    override suspend fun login(login: String, password: String) {
+    override suspend fun login(login: String, password: String): Boolean {
         val profile = wrapException(
             result = jetIQProfileManager.login(login, password),
             onSuccess = { it.value },
-            onFailure = { return }
+            onFailure = { return false }
         )
-        confidentialDAO.reset(Confidential(login, password))
-        profileDAO.reset(profile)
+        profile?.let {
+            confidentialDAO.reset(Confidential(login, password))
+            profileDAO.reset(it)
+        }
+
+        if (profile == null) {
+            receivable?.send(RuntimeException(Values.LOGIN_OR_PASS_IS_NOT_RIGHT))
+        }
+
+        return profile != null
     }
 
     override suspend fun logout() {
