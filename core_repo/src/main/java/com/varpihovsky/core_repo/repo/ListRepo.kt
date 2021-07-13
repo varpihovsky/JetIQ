@@ -1,5 +1,6 @@
 package com.varpihovsky.core_repo.repo
 
+import com.varpihovsky.core.exceptions.ModelExceptionSender
 import com.varpihovsky.core_db.dao.ContactDAO
 import com.varpihovsky.core_network.managers.JetIQListManager
 import com.varpihovsky.repo_data.ContactDTO
@@ -7,12 +8,12 @@ import com.varpihovsky.repo_data.ListItemDTO
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-interface ListRepo {
-    fun getFaculties(): List<ListItemDTO>
-    fun getGroupByFaculty(facultyID: Int): List<ListItemDTO>
-    fun getStudentsByGroup(groupId: Int): List<ListItemDTO>
+interface ListRepo : ModelExceptionSender {
+    suspend fun getFaculties(): List<ListItemDTO>
+    suspend fun getGroupByFaculty(facultyID: Int): List<ListItemDTO>
+    suspend fun getStudentsByGroup(groupId: Int): List<ListItemDTO>
 
-    fun getTeacherByQuery(query: String): List<ListItemDTO>
+    suspend fun getTeacherByQuery(query: String): List<ListItemDTO>
 
     fun getContacts(): Flow<List<ContactDTO>>
     fun addContact(contactDTO: ContactDTO)
@@ -21,31 +22,48 @@ interface ListRepo {
     fun clear()
 
     companion object {
-        internal operator fun invoke(
-            jetIQListManager: JetIQListManager,
-            contactDAO: ContactDAO
-        ): ListRepo = ListRepoImpl(jetIQListManager, contactDAO)
+        operator fun invoke(jetIQListManager: JetIQListManager, contactDAO: ContactDAO): ListRepo =
+            ListRepoImpl(
+                jetIQListManager,
+                contactDAO
+            )
     }
 }
 
 private class ListRepoImpl @Inject constructor(
     private val jetIQListManager: JetIQListManager,
     private val contactDAO: ContactDAO
-) : ListRepo {
-    override fun getFaculties(): List<ListItemDTO> {
-        return jetIQListManager.getFaculties()
+) : ListRepo, Repo() {
+    override suspend fun getFaculties(): List<ListItemDTO> {
+        return wrapException(
+            result = jetIQListManager.getFaculties(),
+            onSuccess = { it.value },
+            onFailure = { listOf() }
+        )
     }
 
-    override fun getGroupByFaculty(facultyID: Int): List<ListItemDTO> {
-        return jetIQListManager.getGroupsByFaculty(facultyID)
+    override suspend fun getGroupByFaculty(facultyID: Int): List<ListItemDTO> {
+        return wrapException(
+            result = jetIQListManager.getGroupsByFaculty(facultyID),
+            onSuccess = { it.value },
+            onFailure = { listOf() }
+        )
     }
 
-    override fun getStudentsByGroup(groupId: Int): List<ListItemDTO> {
-        return jetIQListManager.getStudentsByGroup(groupId)
+    override suspend fun getStudentsByGroup(groupId: Int): List<ListItemDTO> {
+        return wrapException(
+            result = jetIQListManager.getStudentsByGroup(groupId),
+            onSuccess = { it.value },
+            onFailure = { listOf() }
+        )
     }
 
-    override fun getTeacherByQuery(query: String): List<ListItemDTO> {
-        return jetIQListManager.getTeacherByQuery(query)
+    override suspend fun getTeacherByQuery(query: String): List<ListItemDTO> {
+        return wrapException(
+            result = jetIQListManager.getTeacherByQuery(query),
+            onSuccess = { it.value },
+            onFailure = { listOf() }
+        )
     }
 
     override fun getContacts() = contactDAO.getContacts()

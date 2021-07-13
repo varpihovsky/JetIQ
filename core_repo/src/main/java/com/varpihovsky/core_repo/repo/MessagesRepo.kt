@@ -3,7 +3,6 @@ package com.varpihovsky.core_repo.repo
 import com.varpihovsky.core.Refreshable
 import com.varpihovsky.core.exceptions.ModelExceptionSender
 import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
-import com.varpihovsky.core.util.logException
 import com.varpihovsky.core_db.dao.ConfidentialDAO
 import com.varpihovsky.core_db.dao.MessageDAO
 import com.varpihovsky.core_db.dao.ProfileDAO
@@ -16,12 +15,15 @@ import javax.inject.Inject
 
 interface MessagesRepo : Refreshable, ModelExceptionSender {
     fun loadMessages()
+
     fun getMessages(): Flow<List<MessageDTO>>
-    fun sendMessage(messageToSendDTO: MessageToSendDTO)
+
+    suspend fun sendMessage(messageToSendDTO: MessageToSendDTO)
+
     fun clear()
 
     companion object {
-        internal operator fun invoke(
+        operator fun invoke(
             jetIQMessageManager: JetIQMessageManager,
             messageDAO: MessageDAO,
             confidentialDAO: ConfidentialDAO,
@@ -59,27 +61,33 @@ private class MessagesRepoImpl @Inject constructor(
     override fun getMessages() = messageDAO.getMessages()
 
     private suspend fun processMessagesLoading() {
-        try {
-            jetIQMessageManager.getMessages(requireSession()).forEach { messageDTO ->
-                if (messageDTO.body != null) {
-                    messageDAO.addMessage(messageDTO)
-                }
-            }
-        } catch (e: RuntimeException) {
-            receivable?.send(e)
-            logException(e, getDebugPrefix(this) ?: "Application")
-        }
+        wrapException(
+            result = jetIQMessageManager.getMessages(requireSession()),
+            onSuccess = { addMessagesToDatabase(it.value) },
+        )
         isLoading.value = false
+    }
+
+    private fun addMessagesToDatabase(messages: List<MessageDTO>) {
+        messages.forEach {
+            if (it.body != null) {
+                messageDAO.addMessage(it)
+            }
+        }
     }
 
     override fun clear() {
         messageDAO.deleteAll()
     }
 
-    override fun sendMessage(messageToSendDTO: MessageToSendDTO) {
-        requireSession().let {
-            val csrf = jetIQMessageManager.getCsrf(it)
-            jetIQMessageManager.sendMessage(it, csrf, messageToSendDTO)
+    override suspend fun sendMessage(messageToSendDTO: MessageToSendDTO) {
+        requireSession().let { session ->
+            val csrf = wrapException(
+                result = jetIQMessageManager.getCsrf(session),
+                onSuccess = { it.value },
+                onFailure = { return@let }
+            )
+            wrapException(result = jetIQMessageManager.sendMessage(session, csrf, messageToSendDTO))
         }
     }
 }

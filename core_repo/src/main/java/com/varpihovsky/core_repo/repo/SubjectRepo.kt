@@ -9,14 +9,15 @@ import com.varpihovsky.core_network.managers.JetIQSubjectManager
 import com.varpihovsky.repo_data.MarkbookSubjectDTO
 import com.varpihovsky.repo_data.SubjectDTO
 import com.varpihovsky.repo_data.SubjectDetailsDTO
+import com.varpihovsky.repo_data.relations.SubjectDetailsWithTasks
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 interface SubjectRepo : Refreshable {
-    fun loadSuccessJournal()
-    fun loadMarkbookSubjects()
+    suspend fun loadSuccessJournal()
+    suspend fun loadMarkbookSubjects()
 
     fun getSubjects(): Flow<List<SubjectDTO>>
     fun getSubjectsDetails(): Flow<List<SubjectDetailsDTO>>
@@ -25,7 +26,7 @@ interface SubjectRepo : Refreshable {
     fun clear()
 
     companion object {
-        internal operator fun invoke(
+        operator fun invoke(
             subjectDAO: SubjectDAO,
             subjectDetailsDAO: SubjectDetailsDAO,
             jetIQSubjectManager: JetIQSubjectManager,
@@ -55,69 +56,73 @@ private class SubjectRepoImpl @Inject constructor(
     private var areMarkbookSubjectsLoading = false
 
     override fun onRefresh() {
-        TODO("Not yet implemented")
+        modelScope.launch(Dispatchers.IO) {
+            loadSuccessJournal()
+            loadMarkbookSubjects()
+        }
     }
 
     override fun getSubjects(): Flow<List<SubjectDTO>> {
         return subjectDAO.getAllSubjects()
     }
 
-    override fun loadSuccessJournal() {
+    override suspend fun loadSuccessJournal() {
         toggleLoading { areSubjectsLoading = true }
 
-        jetIQSubjectManager.getSuccessJournal(requireSession()).forEach {
+        val session = requireSession()
+
+        wrapException(
+            result = jetIQSubjectManager.getSuccessJournal(session),
+            onSuccess = { processSubjects(it.value, session) },
+            onFailure = { toggleLoading { areSubjectsLoading = false } }
+        )
+    }
+
+    private suspend fun processSubjects(subjects: List<SubjectDTO>, session: String) {
+        subjects.forEach {
             subjectDAO.insert(it)
+            addSubjectDetails(session, it.card_id.toInt())
         }
-
-        addSubjectDetails()
-
         toggleLoading { areSubjectsLoading = false }
+    }
+
+    private suspend fun addSubjectDetails(session: String, id: Int) {
+        wrapException(
+            result = jetIQSubjectManager.getSubjectDetails(session, id),
+            onSuccess = { processSubjectDetails(it.value, id) }
+        )
+    }
+
+    private fun processSubjectDetails(subjectDetailsWithTasks: SubjectDetailsWithTasks, id: Int) {
+        subjectDetailsDAO.insertDetails(subjectDetailsWithTasks.subjectDetailsDTO.copy(id = id))
+        subjectDetailsWithTasks.subjectTasks.forEach { subjectDetailsDAO.insertTask(it) }
     }
 
     override fun getSubjectsDetails(): Flow<List<SubjectDetailsDTO>> {
         return subjectDetailsDAO.getDetailsOnly()
     }
 
-    private fun addSubjectDetails() {
-        subjectDAO.getAllSubjectsList().forEach { subject ->
-            jetIQSubjectManager.getSubjectDetails(
-                requireSession(),
-                subject.card_id.toInt()
-            ).let { subjectDetailsWithTasks ->
-                subjectDetailsDAO.insertDetails(subjectDetailsWithTasks.subjectDetailsDTO.copy(id = subject.card_id.toInt()))
-                subjectDetailsWithTasks.subjectTasks.forEach { subjectDetailsDAO.insertTask(it) }
-            }
-        }
-    }
-
-
     override fun getMarkbook(): Flow<List<MarkbookSubjectDTO>> {
         return subjectDetailsDAO.getMarkbookSubjects()
     }
 
-    override fun loadMarkbookSubjects() {
+    override suspend fun loadMarkbookSubjects() {
         toggleLoading { areMarkbookSubjectsLoading = true }
         addMarkbookSubjects()
         toggleLoading { areMarkbookSubjectsLoading = false }
     }
 
-    private fun addMarkbookSubjects() {
+    private suspend fun addMarkbookSubjects() {
         val session = requireSession()
-        subjectDAO.getAllSubjectsList().let { subjects ->
-            jetIQSubjectManager.getMarkbookSubjects(session)
-                .let { markbookSubjects ->
-                    subjects.forEach { subject ->
-                        markbookSubjects.find {
-                            subject.t_name == it.teacher &&
-                                    subject.subject == it.subj_name &&
-                                    subject.sem.toInt() == it.semester
-                        }?.let {
-                            subjectDetailsDAO.insertMarkbookSubject(it.copy(id = subject.card_id.toInt()))
-                        }
-                    }
-                    areMarkbookSubjectsLoading = false
-                    updateLoadingState()
-                }
+        wrapException(
+            result = jetIQSubjectManager.getMarkbookSubjects(session),
+            onSuccess = { processMarkbook(it.value) }
+        )
+    }
+
+    private fun processMarkbook(markbookSubjects: List<MarkbookSubjectDTO>) {
+        markbookSubjects.forEach {
+            subjectDetailsDAO.insertMarkbookSubject(it)
         }
     }
 

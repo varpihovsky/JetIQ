@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface ProfileRepo {
-    fun login(login: String, password: String)
-    fun logout()
+    suspend fun login(login: String, password: String)
+    suspend fun logout()
 
     fun getProfile(): Flow<ProfileDTO>
     fun getConfidential(): Flow<Confidential>
@@ -19,7 +19,7 @@ interface ProfileRepo {
     fun clear()
 
     companion object {
-        internal operator fun invoke(
+        operator fun invoke(
             profileDAO: ProfileDAO,
             confidentialDAO: ConfidentialDAO,
             jetIQProfileManager: JetIQProfileManager
@@ -36,14 +36,18 @@ private class ProfileRepoImpl @Inject constructor(
     private val confidentialDAO: ConfidentialDAO,
     private val jetIQProfileManager: JetIQProfileManager
 ) : Repo(), ProfileRepo {
-    override fun login(login: String, password: String) {
-        val profile = jetIQProfileManager.login(login, password)
+    override suspend fun login(login: String, password: String) {
+        val profile = wrapException(
+            result = jetIQProfileManager.login(login, password),
+            onSuccess = { it.value },
+            onFailure = { return }
+        )
         confidentialDAO.reset(Confidential(login, password))
         profileDAO.reset(profile)
     }
 
-    override fun logout() {
-        jetIQProfileManager.logout()
+    override suspend fun logout() {
+        wrapException(jetIQProfileManager.logout())
     }
 
     override fun getProfile() = profileDAO.get()
