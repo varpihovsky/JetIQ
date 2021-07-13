@@ -14,6 +14,7 @@ import com.varpihovsky.jetiq.screens.messages.contacts.Contact
 import com.varpihovsky.jetiq.screens.messages.contacts.SearchBar
 import com.varpihovsky.jetiq.ui.compose.BasicTextButton
 import com.varpihovsky.jetiq.ui.compose.CollectExceptions
+import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 import com.varpihovsky.jetiq.ui.compose.SubscribedExposedDropDownList
 import com.varpihovsky.ui_data.ContactTypeDropDownItem
 import com.varpihovsky.ui_data.DropDownItem
@@ -30,6 +31,8 @@ fun AdditionDialog(
     onDismissRequest: () -> Unit,
     onConfirmButtonClick: (List<UIReceiverDTO>) -> Unit
 ) {
+    MapLifecycle(viewModel = contactAdditionViewModel)
+
     contactAdditionViewModel.callback = onConfirmButtonClick
 
     val selectedContactType = contactAdditionViewModel.data.selectedContactType.observeAsState(

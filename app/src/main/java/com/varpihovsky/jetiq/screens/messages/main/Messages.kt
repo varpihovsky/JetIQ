@@ -22,6 +22,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.varpihovsky.jetiq.R
 import com.varpihovsky.jetiq.ui.compose.CollectExceptions
 import com.varpihovsky.jetiq.ui.compose.InfoCard
+import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 import com.varpihovsky.jetiq.ui.loremIpsum1Paragraph
 import com.varpihovsky.jetiq.ui.loremIpsumTitle
 import com.varpihovsky.jetiq.ui.sampleDate
@@ -37,6 +38,8 @@ fun MessagesScreen(viewModel: MessagesViewModel) {
         viewModel.onCompose()
         onDispose(viewModel::onDispose)
     }
+
+    MapLifecycle(viewModel = viewModel)
 
     CollectExceptions(viewModel = viewModel)
 

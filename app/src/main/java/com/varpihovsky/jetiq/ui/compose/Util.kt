@@ -2,6 +2,7 @@ package com.varpihovsky.jetiq.ui.compose
 
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -55,6 +56,14 @@ fun CollectExceptions(
     val exception by viewModel.exceptions.collectAsState()
     exception?.message?.let {
         ErrorDialog(message = it, onDismiss = viewModel::onExceptionProcessed)
+    }
+}
+
+@Composable
+fun MapLifecycle(viewModel: JetIQViewModel) {
+    DisposableEffect(key1 = Unit) {
+        viewModel.onCompose()
+        onDispose { viewModel.onDispose() }
     }
 }
 

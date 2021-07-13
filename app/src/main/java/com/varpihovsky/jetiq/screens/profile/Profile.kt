@@ -148,6 +148,8 @@ fun Profile(
     val markbookInfo by profileViewModel.markbookMarksInfo.collectAsState(listOf())
     val markbookSubjects by profileViewModel.markbookSubjects.collectAsState(listOf())
 
+    MapLifecycle(viewModel = profileViewModel)
+
     CollectExceptions(viewModel = profileViewModel)
 
     profileViewModel.emptyAppbar()

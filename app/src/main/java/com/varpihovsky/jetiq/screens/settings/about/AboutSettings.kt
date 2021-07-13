@@ -12,6 +12,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.varpihovsky.jetiq.screens.settings.SettingsButton
 import com.varpihovsky.jetiq.ui.compose.BasicAppBar
+import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 
 @Composable
 fun AboutSettingsScreen(
@@ -23,6 +24,8 @@ fun AboutSettingsScreen(
             onBackClick = aboutSettingsViewModel::onBackNavButtonClick
         )
     }
+
+    MapLifecycle(viewModel = aboutSettingsViewModel)
 
     Column(modifier = Modifier.fillMaxSize()) {
         Text(

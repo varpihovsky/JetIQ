@@ -18,6 +18,7 @@ import com.varpihovsky.jetiq.R
 import com.varpihovsky.jetiq.ui.compose.CenterLayout
 import com.varpihovsky.jetiq.ui.compose.CenterLayoutItem
 import com.varpihovsky.jetiq.ui.compose.CollectExceptions
+import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 
 @Composable
 fun Auth(
@@ -26,6 +27,8 @@ fun Auth(
     CollectExceptions(viewModel = viewModel)
 
     viewModel.emptyAppbar()
+
+    MapLifecycle(viewModel = viewModel)
 
     Auth(
         loginValue = viewModel.data.login.value,

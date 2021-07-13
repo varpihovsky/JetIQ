@@ -10,6 +10,7 @@ import androidx.compose.ui.res.painterResource
 import com.varpihovsky.jetiq.R
 import com.varpihovsky.jetiq.screens.settings.SettingsButton
 import com.varpihovsky.jetiq.ui.compose.BasicAppBar
+import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 
 @Composable
 fun MainSettingsScreen(
@@ -21,6 +22,8 @@ fun MainSettingsScreen(
             onBackClick = mainSettingsViewModel::onBackNavButtonClick
         )
     }
+
+    MapLifecycle(viewModel = mainSettingsViewModel)
 
     Column(
         modifier = Modifier.fillMaxSize(),

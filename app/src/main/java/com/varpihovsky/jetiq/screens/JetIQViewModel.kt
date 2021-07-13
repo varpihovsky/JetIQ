@@ -16,7 +16,7 @@ abstract class JetIQViewModel(
     private val appbarManager: AppbarManager,
     private val navigationManager: NavigationManager,
 ) : ViewModel(), ViewModelWithException {
-    override val exceptions: MutableStateFlow<Exception?> = MutableStateFlow(null)
+    override val exceptions: MutableStateFlow<Throwable?> = MutableStateFlow(null)
 
     fun assignAppbar(bar: @Composable () -> Unit) {
         appbarManager.manage(AppbarCommand(bar))
@@ -28,6 +28,14 @@ abstract class JetIQViewModel(
 
     open fun onBackNavButtonClick() {
         navigationManager.manage(NavigationDirections.back)
+    }
+
+    open fun onCompose() {
+
+    }
+
+    open fun onDispose() {
+
     }
 
     protected fun redirectExceptionToUI(exception: Exception) {

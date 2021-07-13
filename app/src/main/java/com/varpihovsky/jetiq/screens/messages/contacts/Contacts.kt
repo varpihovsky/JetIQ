@@ -29,6 +29,7 @@ import com.varpihovsky.jetiq.R
 import com.varpihovsky.jetiq.screens.messages.contacts.addition.AdditionDialog
 import com.varpihovsky.jetiq.ui.compose.Avatar
 import com.varpihovsky.jetiq.ui.compose.BackIconButton
+import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 import com.varpihovsky.ui_data.UIReceiverDTO
 import com.varpihovsky.ui_data.func_extensions.Selectable
 
@@ -45,6 +46,8 @@ fun ContactsScreen(
             isExternalChoosing = contactsViewModel.data.isExternalChoosing.value
         )
     }
+
+    MapLifecycle(viewModel = contactsViewModel)
 
     BackHandler(
         enabled = true,
