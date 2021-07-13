@@ -4,7 +4,6 @@ import com.varpihovsky.core_network.result.EmptyResult
 import com.varpihovsky.core_network.result.Result
 import com.varpihovsky.repo_data.CSRF
 import com.varpihovsky.repo_data.MessageDTO
-import com.varpihovsky.repo_data.ProfileDTO
 import okhttp3.ResponseBody
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -15,7 +14,7 @@ interface JetIQApi {
     suspend fun authorize(
         @Query("login") login: String,
         @Query("pwd") password: String
-    ): Result<ProfileDTO>
+    ): Result<NullableProfile>
 
     @GET("api.php")
     suspend fun logout(
