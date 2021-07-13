@@ -26,14 +26,12 @@ internal class ResultCall<T>(proxy: Call<T>) : CallDelegate<T, Result<T>>(proxy)
         override fun onResponse(call: Call<T>, response: Response<T>) {
             val result: Result<T>
             if (response.isSuccessful) {
-                val call = call.request()
-
                 result = Result.Success.HttpResponse(
                     value = response.body() as T,
                     statusCode = response.code(),
                     statusMessage = response.message(),
-                    url = call.url().toString(),
-                    headers = call.headers()
+                    url = call.request().url().toString(),
+                    headers = response.headers()
                 )
             } else {
                 result = Result.Failure.HttpError(
