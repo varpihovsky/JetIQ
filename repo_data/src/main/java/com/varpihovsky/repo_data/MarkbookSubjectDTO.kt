@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class MarkbookSubjectDTO(
-    @PrimaryKey(autoGenerate = false) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val credits: String,
     val date: String,
     val ects: String,
