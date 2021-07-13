@@ -1,10 +1,10 @@
 package com.varpihovsky.core_network
 
-import com.varpihovsky.core.ConnectionManager
 import com.varpihovsky.core_network.managers.JetIQListManager
 import com.varpihovsky.core_network.managers.JetIQMessageManager
 import com.varpihovsky.core_network.managers.JetIQProfileManager
 import com.varpihovsky.core_network.managers.JetIQSubjectManager
+import com.varpihovsky.core_network.result.adapter.ResultAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,23 +18,23 @@ import javax.inject.Singleton
 object NetworkModule {
     @Provides
     @Singleton
-    fun provideJetIQListManager(jetIQApi: JetIQApi, connectionManager: ConnectionManager) =
-        JetIQListManager(jetIQApi, connectionManager)
+    fun provideJetIQListManager(jetIQApi: JetIQApi) =
+        JetIQListManager(jetIQApi)
 
     @Provides
     @Singleton
-    fun provideJetIQMessageManager(jetIQApi: JetIQApi, connectionManager: ConnectionManager) =
-        JetIQMessageManager(jetIQApi, connectionManager)
+    fun provideJetIQMessageManager(jetIQApi: JetIQApi) =
+        JetIQMessageManager(jetIQApi)
 
     @Provides
     @Singleton
-    fun provideJetIQSubjectManager(jetIQApi: JetIQApi, connectionManager: ConnectionManager) =
-        JetIQSubjectManager(jetIQApi, connectionManager)
+    fun provideJetIQSubjectManager(jetIQApi: JetIQApi) =
+        JetIQSubjectManager(jetIQApi)
 
     @Provides
     @Singleton
-    fun provideJetIQProfileManager(jetIQApi: JetIQApi, connectionManager: ConnectionManager) =
-        JetIQProfileManager(jetIQApi, connectionManager)
+    fun provideJetIQProfileManager(jetIQApi: JetIQApi) =
+        JetIQProfileManager(jetIQApi)
 
     @Provides
     @Singleton
@@ -45,6 +45,7 @@ object NetworkModule {
     fun provideRetrofit(): Retrofit = Retrofit
         .Builder()
         .baseUrl("https://iq.vntu.edu.ua/b04213/curriculum/")
+        .addCallAdapterFactory(ResultAdapterFactory())
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 }

@@ -1,35 +1,34 @@
 package com.varpihovsky.core_network.managers
 
-import com.varpihovsky.core.ConnectionManager
 import com.varpihovsky.core_network.JetIQApi
 import com.varpihovsky.core_network.JetIQManager
+import com.varpihovsky.core_network.result.EmptyResult
+import com.varpihovsky.core_network.result.Result
+import com.varpihovsky.core_network.result.asHttpResponse
 import com.varpihovsky.repo_data.ProfileDTO
-import javax.inject.Inject
 
-class JetIQProfileManager @Inject constructor(
-    private val jetIQApi: JetIQApi,
-    connectionManager: ConnectionManager
-) : JetIQManager(connectionManager) {
-    fun login(login: String, password: String): ProfileDTO {
-        throwExceptionWhenNotConnected()
+interface JetIQProfileManager {
+    suspend fun login(login: String, password: String): Result<ProfileDTO>
 
-        val response = jetIQApi.authorize(login, password).execute()
-        val session = response.headers().get("Set-Cookie")
+    suspend fun logout(): EmptyResult
 
-        throwExceptionWhenUnsuccessful(response, "Неправильний логін або пароль") {
-            session == "wrong login or password"
+    companion object {
+        operator fun invoke(jetIQApi: JetIQApi): JetIQProfileManager =
+            JetIQProfileManagerImpl(jetIQApi)
+    }
+}
+
+class JetIQProfileManagerImpl(private val jetIQApi: JetIQApi) : JetIQManager(),
+    JetIQProfileManager {
+    override suspend fun login(login: String, password: String): Result<ProfileDTO> {
+        return mapResult(jetIQApi.authorize(login, password)) {
+            val session = it.asHttpResponse().headers.get("Set-Cookie")
+            val profile = it.value
+            Result.Success.Value(profile.copy(session = session))
         }
-
-        throwExceptionWhenNull(
-            "Невідома помилка! Зверніться до розробників.",
-            response.body(),
-            session
-        )
-
-        return response.body()!!.copy(session = session!!)
     }
 
-    fun logout() {
-        exceptionWrap { jetIQApi.logout().execute() }
+    override suspend fun logout(): EmptyResult {
+        return jetIQApi.logout()
     }
 }

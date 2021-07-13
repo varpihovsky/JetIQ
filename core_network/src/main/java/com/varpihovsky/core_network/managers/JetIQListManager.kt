@@ -1,45 +1,52 @@
 package com.varpihovsky.core_network.managers
 
-import com.varpihovsky.core.ConnectionManager
 import com.varpihovsky.core_network.JetIQApi
 import com.varpihovsky.core_network.JetIQManager
 import com.varpihovsky.core_network.parsers.ListItemJsonKey
 import com.varpihovsky.core_network.parsers.deserializeListItem
 import com.varpihovsky.core_network.parsers.deserializeTeachers
+import com.varpihovsky.core_network.result.Result
 import com.varpihovsky.repo_data.ListItemDTO
-import javax.inject.Inject
 
-class JetIQListManager @Inject constructor(
-    private val jetIQApi: JetIQApi,
-    connectionManager: ConnectionManager
-) : JetIQManager(connectionManager) {
-    fun getFaculties(): List<ListItemDTO> {
-        return deserializeListItem(
-            exceptionWrap { jetIQApi.getFaculties().execute() }!!.string(),
-            ListItemJsonKey.FACULTY
-        )
+interface JetIQListManager {
+    suspend fun getFaculties(): Result<List<ListItemDTO>>
+
+    suspend fun getGroupsByFaculty(facultyId: Int): Result<List<ListItemDTO>>
+
+    suspend fun getStudentsByGroup(groupId: Int): Result<List<ListItemDTO>>
+
+    suspend fun getTeacherByQuery(query: String): Result<List<ListItemDTO>>
+
+    companion object {
+        operator fun invoke(jetIQApi: JetIQApi): JetIQListManager =
+            JetIQListManagerImpl(jetIQApi)
+    }
+}
+
+
+private class JetIQListManagerImpl(private val jetIQApi: JetIQApi) : JetIQManager(),
+    JetIQListManager {
+    override suspend fun getFaculties(): Result<List<ListItemDTO>> {
+        return mapResult(jetIQApi.getFaculties()) {
+            Result.Success.Value(deserializeListItem(it.value.string(), ListItemJsonKey.FACULTY))
+        }
     }
 
-    fun getGroupsByFaculty(facultyId: Int): List<ListItemDTO> {
-        return deserializeListItem(
-            exceptionWrap {
-                jetIQApi.getGroupByFaculty(facultyId = facultyId).execute()
-            }!!.string(),
-            ListItemJsonKey.GROUP
-        )
+    override suspend fun getGroupsByFaculty(facultyId: Int): Result<List<ListItemDTO>> {
+        return mapResult(jetIQApi.getGroupByFaculty(facultyId = facultyId)) {
+            Result.Success.Value(deserializeListItem(it.value.string(), ListItemJsonKey.GROUP))
+        }
     }
 
-    fun getStudentsByGroup(groupId: Int): List<ListItemDTO> {
-        return deserializeListItem(
-            exceptionWrap { jetIQApi.getStudentByGroup(groupId = groupId).execute() }!!.string(),
-            ListItemJsonKey.STUDENT
-        )
+    override suspend fun getStudentsByGroup(groupId: Int): Result<List<ListItemDTO>> {
+        return mapResult(jetIQApi.getStudentByGroup(groupId = groupId)) {
+            Result.Success.Value(deserializeListItem(it.value.string(), ListItemJsonKey.STUDENT))
+        }
     }
 
-    fun getTeacherByQuery(query: String): List<ListItemDTO> {
-        return deserializeTeachers(exceptionWrap {
-            jetIQApi.getTeachersByQuery(query = query).execute()
-        }!!.string())
-
+    override suspend fun getTeacherByQuery(query: String): Result<List<ListItemDTO>> {
+        return mapResult(jetIQApi.getTeachersByQuery(query = query)) {
+            Result.Success.Value(deserializeTeachers(it.value.string()))
+        }
     }
 }

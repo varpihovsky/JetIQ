@@ -1,47 +1,17 @@
 package com.varpihovsky.core_network
 
-import com.varpihovsky.core.ConnectionManager
-import retrofit2.Response
+import com.varpihovsky.core_network.result.Result
+import com.varpihovsky.core_network.result.asFailure
+import com.varpihovsky.core_network.result.asSuccess
+import com.varpihovsky.core_network.result.isSuccess
 
-abstract class JetIQManager constructor(
-    private val connectionManager: ConnectionManager
-) {
-    fun throwExceptionWhenNotConnected() {
-        if (!connectionManager.isConnected()) {
-            throw RuntimeException("Немає підключення до інтернету")
-        }
-    }
-
-    fun <T> throwExceptionWhenUnsuccessful(
-        response: Response<T>,
-        message: String,
-        predicate: T.() -> Boolean = { false },
-    ) {
-        if (!response.isSuccessful || response.body() == null || predicate(response.body()!!)) {
-            throw RuntimeException(message)
-        }
-    }
-
-    fun throwExceptionWhenNull(message: String, vararg any: Any?) {
-        if (any.mapNotNull { it }.size < any.size) {
-            throw RuntimeException(message)
-        }
-    }
-
-    fun <T> exceptionWrap(
-        provider: () -> Response<T>
-    ): T {
-        throwExceptionWhenNotConnected()
-
-        val response = provider()
-
-        throwExceptionWhenUnsuccessful(response, STANDARD_ERROR_MESSAGE)
-
-        return response.body()!!
-    }
-
-    companion object {
-        @JvmStatic
-        protected val STANDARD_ERROR_MESSAGE = "Критична помилка, зверніться до розробників"
+abstract class JetIQManager {
+    protected fun <T, R> mapResult(
+        result: Result<T>,
+        unwrapBlock: (Result.Success<T>) -> Result<R>
+    ): Result<R> = if (result.isSuccess()) {
+        unwrapBlock(result.asSuccess())
+    } else {
+        result.asFailure()
     }
 }

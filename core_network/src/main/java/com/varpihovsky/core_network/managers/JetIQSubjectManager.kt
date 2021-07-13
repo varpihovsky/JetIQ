@@ -1,45 +1,57 @@
 package com.varpihovsky.core_network.managers
 
-import com.varpihovsky.core.ConnectionManager
 import com.varpihovsky.core_network.JetIQApi
 import com.varpihovsky.core_network.JetIQManager
 import com.varpihovsky.core_network.parsers.deserializeMarkbookSubjects
 import com.varpihovsky.core_network.parsers.deserializeSubjectDetails
 import com.varpihovsky.core_network.parsers.deserializeSubjectTasks
 import com.varpihovsky.core_network.parsers.deserializeSubjects
+import com.varpihovsky.core_network.result.Result
 import com.varpihovsky.repo_data.MarkbookSubjectDTO
 import com.varpihovsky.repo_data.SubjectDTO
 import com.varpihovsky.repo_data.relations.SubjectDetailsWithTasks
-import javax.inject.Inject
 
-class JetIQSubjectManager @Inject constructor(
-    private val jetIQApi: JetIQApi,
-    connectionManager: ConnectionManager
-) : JetIQManager(connectionManager) {
-    fun getSuccessJournal(session: String): List<SubjectDTO> {
-        throwExceptionWhenNotConnected()
+interface JetIQSubjectManager {
+    suspend fun getSuccessJournal(session: String): Result<List<SubjectDTO>>
 
-        val response = jetIQApi.getSuccessJournal(session).execute()
+    suspend fun getSubjectDetails(session: String, cardId: Int): Result<SubjectDetailsWithTasks>
 
-        throwExceptionWhenUnsuccessful(response, STANDARD_ERROR_MESSAGE)
+    suspend fun getMarkbookSubjects(session: String): Result<List<MarkbookSubjectDTO>>
 
-        return deserializeSubjects(response.body()!!.string())
+    companion object {
+        operator fun invoke(jetIQApi: JetIQApi): JetIQSubjectManager =
+            JetIQSubjectManagerImpl(jetIQApi)
+
+    }
+}
+
+class JetIQSubjectManagerImpl(private val jetIQApi: JetIQApi) : JetIQManager(),
+    JetIQSubjectManager {
+    override suspend fun getSuccessJournal(session: String): Result<List<SubjectDTO>> {
+        return mapResult(jetIQApi.getSuccessJournal(cookie = session)) {
+            Result.Success.Value(deserializeSubjects(it.value.string()))
+        }
     }
 
-    fun getSubjectDetails(session: String, cardId: Int): SubjectDetailsWithTasks {
-        val response = exceptionWrap { jetIQApi.getSubjectDetails(session, cardId).execute() }
+    override suspend fun getSubjectDetails(
+        session: String,
+        cardId: Int
+    ): Result<SubjectDetailsWithTasks> {
+        return mapResult(jetIQApi.getSubjectDetails(session, cardId)) {
+            val json = it.value.string()
 
-        val str = response!!.string()
-
-        val subjectDetailsDTO = deserializeSubjectDetails(str)
-        val subjectTasks = deserializeSubjectTasks(str)
-
-        return SubjectDetailsWithTasks(subjectDetailsDTO, subjectTasks)
+            Result.Success.Value(
+                SubjectDetailsWithTasks(
+                    deserializeSubjectDetails(json),
+                    deserializeSubjectTasks(json)
+                )
+            )
+        }
     }
 
-    fun getMarkbookSubjects(session: String): List<MarkbookSubjectDTO> {
-        return deserializeMarkbookSubjects(exceptionWrap {
-            jetIQApi.getMarkbookSubjects(session).execute()
-        }!!.string())
+    override suspend fun getMarkbookSubjects(session: String): Result<List<MarkbookSubjectDTO>> {
+        return mapResult(jetIQApi.getMarkbookSubjects(session)) {
+            Result.Success.Value(deserializeMarkbookSubjects(it.value.string()))
+        }
     }
 }

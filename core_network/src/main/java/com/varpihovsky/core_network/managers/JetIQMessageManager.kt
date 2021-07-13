@@ -1,34 +1,47 @@
 package com.varpihovsky.core_network.managers
 
-import com.varpihovsky.core.ConnectionManager
 import com.varpihovsky.core_network.JetIQApi
 import com.varpihovsky.core_network.JetIQManager
+import com.varpihovsky.core_network.result.EmptyResult
+import com.varpihovsky.core_network.result.Result
 import com.varpihovsky.repo_data.CSRF
 import com.varpihovsky.repo_data.MessageDTO
 import com.varpihovsky.repo_data.MessageToSendDTO
-import javax.inject.Inject
 
-class JetIQMessageManager @Inject constructor(
-    private val jetIQApi: JetIQApi,
-    connectionManager: ConnectionManager
-) : JetIQManager(connectionManager) {
-    fun getMessages(session: String): List<MessageDTO> {
-        return exceptionWrap { jetIQApi.getMessages(session).execute() }
+interface JetIQMessageManager {
+    suspend fun getMessages(session: String): Result<List<MessageDTO>>
+
+    suspend fun getCsrf(session: String): Result<CSRF>
+
+    suspend fun sendMessage(session: String, csrf: CSRF, message: MessageToSendDTO): EmptyResult
+
+    companion object {
+        operator fun invoke(jetIQApi: JetIQApi): JetIQMessageManager =
+            JetIQMessageManagerImpl(jetIQApi)
+    }
+}
+
+class JetIQMessageManagerImpl(private val jetIQApi: JetIQApi) : JetIQManager(),
+    JetIQMessageManager {
+    override suspend fun getMessages(session: String): Result<List<MessageDTO>> {
+        return jetIQApi.getMessages(cookie = session)
     }
 
-    fun getCsrf(session: String): CSRF {
-        return exceptionWrap { jetIQApi.getCsrf(session).execute() }
+    override suspend fun getCsrf(session: String): Result<CSRF> {
+        return jetIQApi.getCsrf(cookie = session)
     }
 
-    fun sendMessage(session: String, scrf: CSRF, message: MessageToSendDTO) {
-        exceptionWrap {
-            jetIQApi.sendMessage(
-                cookie = session,
-                receiverId = message.id,
-                isTeacher = message.type,
-                message = message.body,
-                csrf = scrf.body
-            ).execute()
-        }
+    override suspend fun sendMessage(
+        session: String,
+        csrf: CSRF,
+        message: MessageToSendDTO
+    ): EmptyResult {
+        return jetIQApi.sendMessage(
+            cookie = session,
+            receiverId = message.id,
+            isTeacher = message.type,
+            message = message.body,
+            csrf = csrf.body
+        )
     }
 }
