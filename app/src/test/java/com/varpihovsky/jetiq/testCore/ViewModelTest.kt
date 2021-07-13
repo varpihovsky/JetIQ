@@ -1,6 +1,5 @@
 package com.varpihovsky.jetiq.testCore
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.varpihovsky.core.navigation.NavigationManager
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.jetiq.appbar.AppbarManager
@@ -11,11 +10,9 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.Before
-import org.junit.Rule
 
 abstract class ViewModelTest : JetIQTest() {
-    @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
+
 
     protected var appbarManager: AppbarManager = mockk(relaxed = true)
     protected var navigationManager: NavigationManager = mockk(relaxed = true)

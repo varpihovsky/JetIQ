@@ -12,7 +12,6 @@ import com.varpihovsky.jetiq.appbar.AppbarManager
 import com.varpihovsky.jetiq.screens.JetIQViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,7 +27,6 @@ class ProfileViewModel @Inject constructor(
     val scrollState = ScrollState(0)
     override val isLoading: State<Boolean>
         get() = profileInteractor.isLoading
-    override val exceptions: MutableStateFlow<Exception?> = MutableStateFlow(null)
 
     private var scrollChange = 0
 
@@ -46,6 +44,10 @@ class ProfileViewModel @Inject constructor(
     inner class Data {
         val successChecked: State<Boolean> = this@ProfileViewModel.successChecked
         val markbookChecked: State<Boolean> = this@ProfileViewModel.markbookChecked
+    }
+
+    init {
+        profileInteractor._exceptions = exceptions
     }
 
     fun onSuccessToggle(checked: Boolean) {

@@ -3,6 +3,7 @@ package com.varpihovsky.jetiq.screens.auth
 import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.exceptions.Values
+import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
 import com.varpihovsky.core.exceptions.ViewModelWithException
 import com.varpihovsky.core.exceptions.WrongDataException
 import com.varpihovsky.core.navigation.NavigationDirections
@@ -25,7 +26,8 @@ class AuthViewModel @Inject constructor(
     @Named("password_checker") private val passwordValidator: Validator<String>,
     private val navigationManager: NavigationManager,
     appbarManager: AppbarManager,
-) : JetIQViewModel(appbarManager, navigationManager), ViewModelWithException {
+) : JetIQViewModel(appbarManager, navigationManager), ViewModelWithException,
+    ViewModelExceptionReceivable {
     val data by lazy { Data() }
 
     private var login = mutableStateOf("")
@@ -38,6 +40,14 @@ class AuthViewModel @Inject constructor(
         val password: State<String> = this@AuthViewModel.password
         val passwordHidden: State<Boolean> = this@AuthViewModel.passwordHidden
         val progressShown: State<Boolean> = this@AuthViewModel.progressShown
+    }
+
+    override fun onCompose() {
+        profileModel.receivable = this
+    }
+
+    override fun onDispose() {
+        profileModel.receivable = null
     }
 
     fun onLoginChange(value: String) {
@@ -75,15 +85,12 @@ class AuthViewModel @Inject constructor(
         }
 
     private fun processLogin() {
-        try {
-            authorize()
-        } catch (e: Exception) {
-            redirectExceptionToUI(e)
-        }
+        viewModelScope.launch(dispatchers.IO) { authorize() }
     }
 
-    private fun authorize() {
-        profileModel.login(login.value, password.value)
-        navigationManager.manage(NavigationDirections.profile)
+    private suspend fun authorize() {
+        if (profileModel.login(login.value, password.value)) {
+            navigationManager.manage(NavigationDirections.profile)
+        }
     }
 }

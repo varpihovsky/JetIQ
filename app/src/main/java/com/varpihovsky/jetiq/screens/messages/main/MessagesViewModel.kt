@@ -54,11 +54,11 @@ class MessagesViewModel @Inject constructor(
         navigationManager.manage(NavigationDirections.newMessage)
     }
 
-    fun onCompose() {
+    override fun onCompose() {
         messagesModel.receivable = this
     }
 
-    fun onDispose() {
+    override fun onDispose() {
         messagesModel.receivable = null
     }
 

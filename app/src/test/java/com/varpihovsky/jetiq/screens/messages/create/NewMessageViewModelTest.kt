@@ -7,6 +7,7 @@ import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModelData
 import com.varpihovsky.jetiq.testCore.ViewModelDataTransferTest
 import com.varpihovsky.ui_data.ReceiverType
 import com.varpihovsky.ui_data.UIReceiverDTO
+import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
 import junit.framework.Assert.assertEquals
@@ -76,7 +77,7 @@ class NewMessageViewModelTest : ViewModelDataTransferTest() {
     @Test
     fun `Empty message cant to be sent`() = runBlockingTest {
         viewModel.onSendClick()
-        verify(exactly = 0) { messagesModel.sendMessage(any()) }
+        coVerify(exactly = 0) { messagesModel.sendMessage(any()) }
     }
 
     @ExperimentalCoroutinesApi
@@ -85,7 +86,7 @@ class NewMessageViewModelTest : ViewModelDataTransferTest() {
         TEST_RECEIVERS.forEach { viewModel.onReceiverRemove(it) }
         viewModel.onMessageValueChange(MESSAGE_VALUE)
         viewModel.onSendClick()
-        verify(exactly = 0) { messagesModel.sendMessage(any()) }
+        coVerify(exactly = 0) { messagesModel.sendMessage(any()) }
     }
 
     @ExperimentalCoroutinesApi
@@ -115,7 +116,7 @@ class NewMessageViewModelTest : ViewModelDataTransferTest() {
     fun `Message is sent to all receivers when everything is alright`() = runBlockingTest {
         viewModel.onMessageValueChange(MESSAGE_VALUE)
         viewModel.onSendClick()
-        verify(exactly = 2) { messagesModel.sendMessage(any()) }
+        coVerify(exactly = 2) { messagesModel.sendMessage(any()) }
     }
 
     companion object {

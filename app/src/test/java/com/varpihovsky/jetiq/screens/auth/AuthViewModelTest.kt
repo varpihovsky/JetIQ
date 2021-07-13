@@ -5,7 +5,7 @@ import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core.util.Validator
 import com.varpihovsky.core_repo.repo.ProfileRepo
 import com.varpihovsky.jetiq.testCore.ViewModelTest
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
 import junit.framework.Assert.*
@@ -71,19 +71,10 @@ class AuthViewModelTest : ViewModelTest() {
     @ExperimentalCoroutinesApi
     @Test
     fun `Test navigate to profile when auth is successful`() = runBlockingTest {
+        coEvery { profileModel.login(SAMPLE_LOGIN, SAMPLE_PASSWORD) } returns true
         authorize(SAMPLE_LOGIN, SAMPLE_PASSWORD)
         verify(exactly = 1) { navigationManager.manage(NavigationDirections.profile) }
         assertFalse(viewModel.data.progressShown.value)
-    }
-
-    @Test
-    fun `Test exception providing when auth is fault`() = runBlockingTest {
-        val exception = RuntimeException()
-        every { profileModel.login(any(), any()) } throws exception
-        authorize(SAMPLE_LOGIN, SAMPLE_PASSWORD)
-        assertEquals(exception, viewModel.exceptions.value)
-        assertFalse(viewModel.data.progressShown.value)
-
     }
 
     private fun authorize(login: String, password: String) {

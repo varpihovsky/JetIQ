@@ -2,25 +2,29 @@ package com.varpihovsky.jetiq.screens.messages.contacts.addition
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
 import com.varpihovsky.core.exceptions.ViewModelWithException
+import com.varpihovsky.core.navigation.NavigationManager
 import com.varpihovsky.core_repo.repo.ListRepo
+import com.varpihovsky.jetiq.appbar.AppbarManager
+import com.varpihovsky.jetiq.screens.JetIQViewModel
 import com.varpihovsky.ui_data.*
 import com.varpihovsky.ui_data.func_extensions.Selectable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ContactAdditionViewModel @Inject constructor(
-    private val listModel: ListRepo
-) : ViewModel(), ViewModelWithException {
+    private val listModel: ListRepo,
+    appbarManager: AppbarManager,
+    navigationManager: NavigationManager
+) : JetIQViewModel(appbarManager, navigationManager), ViewModelWithException,
+    ViewModelExceptionReceivable {
     val data by lazy { Data() }
     lateinit var callback: (List<UIReceiverDTO>) -> Unit
-    override val exceptions: MutableStateFlow<Exception?> = MutableStateFlow(null)
 
     private val selectedContactType = MutableLiveData(ContactTypeDropDownItem.STUDENT)
     private val faculties = MutableLiveData<List<IdDropDownItem>>()
@@ -51,6 +55,14 @@ class ContactAdditionViewModel @Inject constructor(
                 exceptions.value = e
             }
         }
+    }
+
+    override fun onCompose() {
+        listModel.receivable = this
+    }
+
+    override fun onDispose() {
+        listModel.receivable = null
     }
 
     fun onDismiss() {

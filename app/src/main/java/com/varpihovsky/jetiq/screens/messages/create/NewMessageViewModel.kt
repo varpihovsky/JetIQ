@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
 import com.varpihovsky.core.exceptions.Values
+import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
 import com.varpihovsky.core.exceptions.ViewModelWithException
 import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core.navigation.NavigationManager
@@ -18,7 +19,6 @@ import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModelData
 import com.varpihovsky.repo_data.MessageToSendDTO
 import com.varpihovsky.ui_data.UIReceiverDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,16 +30,14 @@ class NewMessageViewModel @Inject constructor(
     private val navigationManager: NavigationManager,
     viewModelDataTransferManager: ViewModelDataTransferManager,
     private val messagesModel: MessagesRepo
-) : JetIQViewModel(appbarManager, navigationManager), ViewModelWithException {
+) : JetIQViewModel(appbarManager, navigationManager), ViewModelWithException,
+    ViewModelExceptionReceivable {
     val data by lazy { Data() }
-
-    override val exceptions: MutableStateFlow<Exception?> = MutableStateFlow(null)
 
     private val dataTransferFlow =
         viewModelDataTransferManager.getFlowByTag(ContactsViewModel.DATA_TRANSFER_TAG)
     private val dataTransferTask =
         ReactiveTask(task = this::collectTransferredData, dispatcher = dispatchers.IO)
-
 
     private val receivers = mutableStateOf(listOf<UIReceiverDTO>())
     private val messageFieldValue = mutableStateOf("")
@@ -51,6 +49,14 @@ class NewMessageViewModel @Inject constructor(
 
     init {
         dataTransferTask.start()
+    }
+
+    override fun onCompose() {
+        messagesModel.receivable = this
+    }
+
+    override fun onDispose() {
+        messagesModel.receivable = null
     }
 
     private suspend fun collectTransferredData() {
