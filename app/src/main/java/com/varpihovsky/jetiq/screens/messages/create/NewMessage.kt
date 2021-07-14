@@ -1,5 +1,6 @@
 package com.varpihovsky.jetiq.screens.messages.create
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
@@ -70,6 +71,8 @@ fun NewMessageScreen(
     MapLifecycle(viewModel = newMessageViewModel)
 
     CollectExceptions(viewModel = newMessageViewModel)
+
+    BackHandler(true, onBack = newMessageViewModel::onBackNavButtonClick)
 
     NewMessageScreen(
         scrollState = rememberScrollState(),

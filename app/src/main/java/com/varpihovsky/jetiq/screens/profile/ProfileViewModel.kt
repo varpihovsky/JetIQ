@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.Refreshable
 import com.varpihovsky.core.exceptions.ViewModelWithException
 import com.varpihovsky.core.navigation.NavigationDirections
-import com.varpihovsky.core.navigation.NavigationManager
+import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.jetiq.appbar.AppbarManager
 import com.varpihovsky.jetiq.screens.JetIQViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,9 +19,9 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val profileInteractor: ProfileInteractor,
-    private val navigationManager: NavigationManager,
+    private val navigationController: NavigationController,
     appbarManager: AppbarManager,
-) : JetIQViewModel(appbarManager, navigationManager),
+) : JetIQViewModel(appbarManager, navigationController),
     ViewModelWithException, Refreshable {
     val data by lazy { Data() }
     val scrollState = ScrollState(0)
@@ -70,6 +70,6 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun onSettingsClick() {
-        navigationManager.manage(NavigationDirections.mainSettings)
+        navigationController.manage(NavigationDirections.mainSettings.destination)
     }
 }

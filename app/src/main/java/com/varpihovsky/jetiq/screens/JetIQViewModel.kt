@@ -5,16 +5,15 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.exceptions.ViewModelWithException
-import com.varpihovsky.core.navigation.NavigationDirections
-import com.varpihovsky.core.navigation.NavigationManager
 import com.varpihovsky.core.util.ThreadSafeMutableState
+import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.jetiq.appbar.AppbarCommand
 import com.varpihovsky.jetiq.appbar.AppbarManager
 import kotlinx.coroutines.flow.MutableStateFlow
 
 abstract class JetIQViewModel(
     private val appbarManager: AppbarManager,
-    private val navigationManager: NavigationManager,
+    private val navigationController: NavigationController,
 ) : ViewModel(), ViewModelWithException {
     override val exceptions: MutableStateFlow<Throwable?> = MutableStateFlow(null)
 
@@ -27,7 +26,7 @@ abstract class JetIQViewModel(
     }
 
     open fun onBackNavButtonClick() {
-        navigationManager.manage(NavigationDirections.back)
+        navigationController.onBack()
     }
 
     open fun onCompose() {

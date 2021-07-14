@@ -35,7 +35,7 @@ class AuthViewModelTest : ViewModelTest() {
             profileModel,
             stubValidator,
             stubValidator,
-            navigationManager,
+            navigationController,
             appbarManager
         )
     }
@@ -73,7 +73,7 @@ class AuthViewModelTest : ViewModelTest() {
     fun `Test navigate to profile when auth is successful`() = runBlockingTest {
         coEvery { profileModel.login(SAMPLE_LOGIN, SAMPLE_PASSWORD) } returns true
         authorize(SAMPLE_LOGIN, SAMPLE_PASSWORD)
-        verify(exactly = 1) { navigationManager.manage(NavigationDirections.profile) }
+        verify(exactly = 1) { navigationController.manage(NavigationDirections.profile.destination) }
         assertFalse(viewModel.data.progressShown.value)
     }
 

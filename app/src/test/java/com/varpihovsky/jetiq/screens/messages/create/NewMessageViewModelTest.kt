@@ -31,7 +31,7 @@ class NewMessageViewModelTest : ViewModelDataTransferTest() {
         viewModel = NewMessageViewModel(
             viewModelDispatchers,
             appbarManager,
-            navigationManager,
+            navigationController,
             viewModelDataTransferManager,
             messagesModel
         )
@@ -70,7 +70,7 @@ class NewMessageViewModelTest : ViewModelDataTransferTest() {
     @Test
     fun `On new receiver button click navigates to contacts`() = runBlockingTest {
         viewModel.onNewReceiverButtonClick()
-        verify(exactly = 1) { navigationManager.manage(NavigationDirections.contacts) }
+        verify(exactly = 1) { navigationController.manage(NavigationDirections.contacts.destination) }
     }
 
     @ExperimentalCoroutinesApi

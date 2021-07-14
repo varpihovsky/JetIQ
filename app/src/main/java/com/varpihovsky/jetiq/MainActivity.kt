@@ -5,29 +5,26 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.compose.rememberNavController
 import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
-import com.varpihovsky.core.navigation.NavigationManager
+import com.varpihovsky.core_nav.main.NavigationControllerStorage
 import com.varpihovsky.jetiq.appbar.AppbarManager
+import com.varpihovsky.jetiq.ui.compose.InitNavigation
 import com.varpihovsky.jetiq.ui.compose.Root
-import com.varpihovsky.jetiq.ui.compose.collectNavigationCommands
 import com.varpihovsky.jetiq.ui.theme.JetIQTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject
-    lateinit var navigationManager: NavigationManager
-
-    @Inject
     lateinit var appbarManager: AppbarManager
 
     @Inject
     lateinit var viewModelDataTransferManager: ViewModelDataTransferManager
+
+    @Inject
+    lateinit var navigationControllerStorage: NavigationControllerStorage
 
     @ExperimentalFoundationApi
     @ExperimentalAnimationApi
@@ -35,27 +32,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val navController = rememberNavController()
             val viewModel = hiltViewModel<NavigationViewModel>()
-            val coroutineScope = rememberCoroutineScope()
-            navController.addOnDestinationChangedListener { _, destination, _ ->
-                destination.route?.let { viewModel.onDestinationChange(it) }
-            }
 
-            coroutineScope.launch {
-                collectNavigationCommands(
-                    navigationManager = navigationManager,
-                    currentDestination = viewModel::getCurrentDestination,
-                    onDestinationChange = viewModel::onDestinationChange,
-                    navController = navController
-                )
-            }
+            InitNavigation(
+                navigationViewModel = viewModel,
+                navigationControllerStorage = navigationControllerStorage
+            )
 
             JetIQTheme {
                 Root(
                     navigationViewModel = viewModel,
-                    navController = navController,
                     appbarManager = appbarManager,
+                    navigationControllerStorage = navigationControllerStorage
                 )
             }
         }

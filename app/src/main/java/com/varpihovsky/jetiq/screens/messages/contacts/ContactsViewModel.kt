@@ -3,9 +3,9 @@ package com.varpihovsky.jetiq.screens.messages.contacts
 import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
-import com.varpihovsky.core.navigation.NavigationManager
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core.util.ReactiveTask
+import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.ListRepo
 import com.varpihovsky.jetiq.appbar.AppbarManager
 import com.varpihovsky.jetiq.screens.JetIQViewModel
@@ -24,10 +24,10 @@ import javax.inject.Inject
 class ContactsViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     appbarManager: AppbarManager,
-    private val navigationManager: NavigationManager,
+    private val navigationController: NavigationController,
     private val listModel: ListRepo,
     private val dataTransferManager: ViewModelDataTransferManager
-) : JetIQViewModel(appbarManager, navigationManager) {
+) : JetIQViewModel(appbarManager, navigationController) {
     val data by lazy { Data() }
 
     private val dataTransferFlow = dataTransferManager.getFlowByTag(DATA_TRANSFER_TAG)

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
 import com.varpihovsky.core.exceptions.ViewModelWithException
-import com.varpihovsky.core.navigation.NavigationManager
+import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.ListRepo
 import com.varpihovsky.jetiq.appbar.AppbarManager
 import com.varpihovsky.jetiq.screens.JetIQViewModel
@@ -20,8 +20,8 @@ import javax.inject.Inject
 class ContactAdditionViewModel @Inject constructor(
     private val listModel: ListRepo,
     appbarManager: AppbarManager,
-    navigationManager: NavigationManager
-) : JetIQViewModel(appbarManager, navigationManager), ViewModelWithException,
+    navigationController: NavigationController
+) : JetIQViewModel(appbarManager, navigationController), ViewModelWithException,
     ViewModelExceptionReceivable {
     val data by lazy { Data() }
     lateinit var callback: (List<UIReceiverDTO>) -> Unit

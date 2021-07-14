@@ -1,5 +1,6 @@
 package com.varpihovsky.jetiq.screens.settings.about
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +27,8 @@ fun AboutSettingsScreen(
     }
 
     MapLifecycle(viewModel = aboutSettingsViewModel)
+
+    BackHandler(true, onBack = aboutSettingsViewModel::onBackNavButtonClick)
 
     Column(modifier = Modifier.fillMaxSize()) {
         Text(

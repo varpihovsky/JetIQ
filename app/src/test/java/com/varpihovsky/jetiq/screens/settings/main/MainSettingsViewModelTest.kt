@@ -27,7 +27,7 @@ class MainSettingsViewModelTest : ViewModelTest() {
 
         mainSettingsViewModel = MainSettingsViewModel(
             viewModelDispatchers,
-            navigationManager,
+            navigationController,
             profileModel,
             messagesModel,
             subjectModel,
@@ -39,14 +39,14 @@ class MainSettingsViewModelTest : ViewModelTest() {
     @Test
     fun `Test navigates to about settings on about button click`() {
         mainSettingsViewModel.onAboutClick()
-        verify { navigationManager.manage(NavigationDirections.aboutSettings) }
+        verify { navigationController.manage(NavigationDirections.aboutSettings.destination) }
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun `Test navigates to auth screen on logout button click`() = runBlockingTest {
         mainSettingsViewModel.onLogoutClick()
-        verify { navigationManager.manage(NavigationDirections.authentication) }
+        verify { navigationController.manage(NavigationDirections.authentication.destination) }
     }
 
     @ExperimentalCoroutinesApi

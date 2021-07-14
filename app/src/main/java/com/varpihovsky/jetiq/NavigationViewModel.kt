@@ -1,14 +1,18 @@
 package com.varpihovsky.jetiq
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.navigation.*
 import com.varpihovsky.core.util.CoroutineDispatchers
-import com.varpihovsky.core.util.ThreadSafeMutableState
+import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.ProfileRepo
 import com.varpihovsky.jetiq.appbar.AppbarManager
-import com.varpihovsky.jetiq.screens.JetIQViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -16,13 +20,12 @@ import javax.inject.Inject
 class NavigationViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val profileModel: ProfileRepo,
-    private val navigationManager: NavigationManager,
     appbarManager: AppbarManager
-) : JetIQViewModel(appbarManager, navigationManager) {
+) : ViewModel() {
     val data by lazy { Data() }
 
     private val isNavbarShown = mutableStateOf(false)
-    private val selectedNavbarEntry: ThreadSafeMutableState<BottomNavigationItem> =
+    private val selectedNavbarEntry: MutableState<BottomNavigationItem> =
         mutableStateOf(BottomNavigationItem.ProfileItem)
     private var currentDestination: String? = null
 
@@ -35,24 +38,29 @@ class NavigationViewModel @Inject constructor(
     fun getStartDestination(): String =
         runBlocking(context = dispatchers.IO) {
             if (profileModel.getConfidential().firstOrNull() != null) {
-                isNavbarShown.value = true
+                viewModelScope.launch { isNavbarShown.value = true }
                 return@runBlocking NavigationDirections.profile.destination
             }
             return@runBlocking NavigationDirections.authentication.destination
         }
 
     fun onDestinationChange(direction: String) {
-        isNavbarShown.value =
-            direction == NavigationDirections.profile.destination || direction == NavigationDirections.messages.destination
-        currentDestination = direction
+        viewModelScope.launch {
+            isNavbarShown.value =
+                direction == NavigationDirections.profile.destination || direction == NavigationDirections.messages.destination
+            currentDestination = direction
+        }
     }
 
     fun getCurrentDestination() = currentDestination
 
-    fun onBottomBarButtonClick(direction: NavigationCommand) {
-        navigationManager.manage(direction)
+    fun onBottomBarButtonClick(
+        direction: NavigationCommand,
+        navigationController: NavigationController
+    ) {
+        navigationController.manage(direction.destination)
         BottomNavigationItemFactory.create(direction)?.let {
-            selectedNavbarEntry.value = it
+            viewModelScope.launch { selectedNavbarEntry.value = it }
         }
     }
 }

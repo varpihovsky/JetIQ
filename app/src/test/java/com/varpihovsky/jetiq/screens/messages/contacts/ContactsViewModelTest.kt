@@ -23,7 +23,7 @@ class ContactsViewModelTest : ViewModelDataTransferTest() {
         contactsViewModel = ContactsViewModel(
             viewModelDispatchers,
             appbarManager,
-            navigationManager,
+            navigationController,
             listModel,
             viewModelDataTransferManager
         )
