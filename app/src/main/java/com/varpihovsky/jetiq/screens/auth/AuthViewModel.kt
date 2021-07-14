@@ -7,9 +7,9 @@ import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
 import com.varpihovsky.core.exceptions.ViewModelWithException
 import com.varpihovsky.core.exceptions.WrongDataException
 import com.varpihovsky.core.navigation.NavigationDirections
-import com.varpihovsky.core.navigation.NavigationManager
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core.util.Validator
+import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.ProfileRepo
 import com.varpihovsky.jetiq.appbar.AppbarManager
 import com.varpihovsky.jetiq.screens.JetIQViewModel
@@ -24,9 +24,9 @@ class AuthViewModel @Inject constructor(
     private val profileModel: ProfileRepo,
     @Named("login_checker") private val loginValidator: Validator<String>,
     @Named("password_checker") private val passwordValidator: Validator<String>,
-    private val navigationManager: NavigationManager,
+    private val navigationController: NavigationController,
     appbarManager: AppbarManager,
-) : JetIQViewModel(appbarManager, navigationManager), ViewModelWithException,
+) : JetIQViewModel(appbarManager, navigationController), ViewModelWithException,
     ViewModelExceptionReceivable {
     val data by lazy { Data() }
 
@@ -90,7 +90,7 @@ class AuthViewModel @Inject constructor(
 
     private suspend fun authorize() {
         if (profileModel.login(login.value, password.value)) {
-            navigationManager.manage(NavigationDirections.profile)
+            navigationController.manage(NavigationDirections.profile.destination)
         }
     }
 }

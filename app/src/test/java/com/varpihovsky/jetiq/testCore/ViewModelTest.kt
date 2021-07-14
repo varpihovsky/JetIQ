@@ -1,7 +1,7 @@
 package com.varpihovsky.jetiq.testCore
 
-import com.varpihovsky.core.navigation.NavigationManager
 import com.varpihovsky.core.util.CoroutineDispatchers
+import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.jetiq.appbar.AppbarManager
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +15,7 @@ abstract class ViewModelTest : JetIQTest() {
 
 
     protected var appbarManager: AppbarManager = mockk(relaxed = true)
-    protected var navigationManager: NavigationManager = mockk(relaxed = true)
+    protected var navigationController: NavigationController = mockk(relaxed = true)
 
     @ExperimentalCoroutinesApi
     protected var viewModelDispatchers = CoroutineDispatchers(TestCoroutineDispatcher())

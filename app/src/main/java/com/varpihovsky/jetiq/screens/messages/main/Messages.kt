@@ -1,5 +1,6 @@
 package com.varpihovsky.jetiq.screens.messages.main
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -42,6 +43,8 @@ fun MessagesScreen(viewModel: MessagesViewModel) {
     MapLifecycle(viewModel = viewModel)
 
     CollectExceptions(viewModel = viewModel)
+
+    BackHandler(true, onBack = viewModel::onBackNavButtonClick)
 
     viewModel.assignAppbar {
         TopAppBar(

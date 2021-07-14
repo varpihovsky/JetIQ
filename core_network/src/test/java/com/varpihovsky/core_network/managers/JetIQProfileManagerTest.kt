@@ -1,5 +1,6 @@
 package com.varpihovsky.core_network.managers
 
+import com.varpihovsky.core_network.NullableProfile
 import com.varpihovsky.core_network.result.Result
 import com.varpihovsky.core_network.result.asSuccess
 import com.varpihovsky.core_network.testCore.JetIQNetworkManagerTest
@@ -29,19 +30,35 @@ class JetIQProfileManagerTest : JetIQNetworkManagerTest() {
         every { headers.get("Set-Cookie") } returns TEST_SESSION
 
         coEvery { jetIQApi.authorize(any(), any()) } returns Result.Success.HttpResponse(
-            TEST_PROFILE,
+            TEST_PROFILE_NULLABLE,
             0,
             headers = headers
         )
 
         assertEquals(
-            TEST_PROFILE.copy(session = TEST_SESSION),
+            TEST_PROFILE,
             jetIQProfileManager.login("", "").asSuccess().value
         )
     }
 
     companion object {
         const val TEST_SESSION = "example"
+
+        val TEST_PROFILE_NULLABLE = NullableProfile(
+            1,
+            "",
+            "",
+            null,
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            null,
+            "",
+            ""
+        )
 
         val TEST_PROFILE = ProfileDTO(
             1,
@@ -54,7 +71,7 @@ class JetIQProfileManagerTest : JetIQNetworkManagerTest() {
             "",
             "",
             "",
-            null,
+            TEST_SESSION,
             "",
             ""
         )

@@ -7,10 +7,10 @@ import com.varpihovsky.core.exceptions.Values
 import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
 import com.varpihovsky.core.exceptions.ViewModelWithException
 import com.varpihovsky.core.navigation.NavigationDirections
-import com.varpihovsky.core.navigation.NavigationManager
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core.util.ReactiveTask
 import com.varpihovsky.core.util.remove
+import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.jetiq.appbar.AppbarManager
 import com.varpihovsky.jetiq.screens.JetIQViewModel
@@ -27,10 +27,10 @@ import javax.inject.Inject
 class NewMessageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     appbarManager: AppbarManager,
-    private val navigationManager: NavigationManager,
+    private val navigationController: NavigationController,
     viewModelDataTransferManager: ViewModelDataTransferManager,
     private val messagesModel: MessagesRepo
-) : JetIQViewModel(appbarManager, navigationManager), ViewModelWithException,
+) : JetIQViewModel(appbarManager, navigationController), ViewModelWithException,
     ViewModelExceptionReceivable {
     val data by lazy { Data() }
 
@@ -77,7 +77,7 @@ class NewMessageViewModel @Inject constructor(
 
     fun onNewReceiverButtonClick() {
         dataTransferFlow.value = ContactsViewModelData(receivers.value)
-        navigationManager.manage(NavigationDirections.contacts)
+        navigationController.manage(NavigationDirections.contacts.destination)
     }
 
     fun onMessageValueChange(change: String) {

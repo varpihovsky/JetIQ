@@ -52,8 +52,7 @@ private class SubjectRepoImpl @Inject constructor(
 
     override fun onRefresh() {
         modelScope.launch(Dispatchers.IO) {
-            loadSuccessJournal()
-            loadMarkbookSubjects()
+            load()
         }
     }
 
@@ -119,8 +118,11 @@ private class SubjectRepoImpl @Inject constructor(
     }
 
     private fun processMarkbook(markbookSubjects: List<MarkbookSubjectDTO>) {
+        val current = subjectDetailsDAO.getMarkbookSubjectsList().map { it.copy(id = 0) }
         markbookSubjects.forEach {
-            subjectDetailsDAO.insertMarkbookSubject(it)
+            if (!current.contains(it)) {
+                subjectDetailsDAO.insertMarkbookSubject(it)
+            }
         }
     }
 

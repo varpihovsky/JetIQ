@@ -51,6 +51,7 @@ android {
 dependencies {
     implementation project(":core")
     implementation project(":core_repo")
+    implementation project(":core_nav")
     implementation project(":ui_data")
     implementation project(":repo_data")
 
@@ -73,7 +74,6 @@ dependencies {
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:1.0.0-rc1"
     implementation "androidx.compose.ui:ui-tooling:1.0.0-rc1"
-    implementation "androidx.navigation:navigation-compose:2.4.0-alpha04"
 
     // Calpose
     implementation 'com.github.sigmadeltasoftware:CalPose:master-SNAPSHOT'

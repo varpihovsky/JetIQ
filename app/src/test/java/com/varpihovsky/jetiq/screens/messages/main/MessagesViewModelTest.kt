@@ -32,7 +32,7 @@ class MessagesViewModelTest : ViewModelTest() {
 
         messagesViewModel = MessagesViewModel(
             viewModelDispatchers,
-            navigationManager,
+            navigationController,
             messagesModel,
             connectionManager,
             appbarManager
@@ -49,7 +49,7 @@ class MessagesViewModelTest : ViewModelTest() {
     @Test
     fun `Test navigates to new messages screen on new message button click`() = runBlockingTest {
         messagesViewModel.onNewMessageButtonClick()
-        verify(exactly = 1) { navigationManager.manage(NavigationDirections.newMessage) }
+        verify(exactly = 1) { navigationController.manage(NavigationDirections.newMessage.destination) }
     }
 
     @ExperimentalCoroutinesApi

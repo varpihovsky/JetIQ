@@ -6,9 +6,9 @@ import com.varpihovsky.core.Refreshable
 import com.varpihovsky.core.exceptions.Values
 import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
 import com.varpihovsky.core.navigation.NavigationDirections
-import com.varpihovsky.core.navigation.NavigationManager
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core.util.ReactiveTask
+import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.jetiq.appbar.AppbarManager
 import com.varpihovsky.jetiq.screens.JetIQViewModel
@@ -22,9 +22,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MessagesViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val navigationManager: NavigationManager,
+    private val navigationManager: NavigationController,
     private val messagesModel: MessagesRepo,
-    private val connectionManager: ConnectionManager,
+    private val connectionController: ConnectionManager,
     appbarManager: AppbarManager,
 ) : JetIQViewModel(appbarManager, navigationManager), ViewModelExceptionReceivable, Refreshable {
     val data by lazy { Data() }
@@ -51,7 +51,7 @@ class MessagesViewModel @Inject constructor(
     }
 
     fun onNewMessageButtonClick() {
-        navigationManager.manage(NavigationDirections.newMessage)
+        navigationManager.manage(NavigationDirections.newMessage.destination)
     }
 
     override fun onCompose() {
@@ -63,7 +63,7 @@ class MessagesViewModel @Inject constructor(
     }
 
     override fun onRefresh() {
-        if (connectionManager.isConnected()) {
+        if (connectionController.isConnected()) {
             messagesModel.onRefresh()
         } else {
             redirectExceptionToUI(RuntimeException(Values.INTERNET_UNAVAILABLE))
@@ -71,7 +71,7 @@ class MessagesViewModel @Inject constructor(
     }
 
     fun onContactsClick() {
-        navigationManager.manage(NavigationDirections.contacts)
+        navigationManager.manage(NavigationDirections.contacts.destination)
     }
 
 }

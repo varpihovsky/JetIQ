@@ -1,6 +1,7 @@
 package com.varpihovsky.jetiq.screens.profile
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -151,6 +152,8 @@ fun Profile(
     MapLifecycle(viewModel = profileViewModel)
 
     CollectExceptions(viewModel = profileViewModel)
+
+    BackHandler(true, onBack = profileViewModel::onBackNavButtonClick)
 
     profileViewModel.emptyAppbar()
 

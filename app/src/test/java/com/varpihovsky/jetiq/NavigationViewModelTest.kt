@@ -41,7 +41,7 @@ class NavigationViewModelTest : ViewModelTest() {
         sharedViewModel = NavigationViewModel(
             viewModelDispatchers,
             profileModel,
-            navigationManager,
+            navigationController,
             appbarManager
         )
     }
@@ -87,7 +87,7 @@ class NavigationViewModelTest : ViewModelTest() {
     @Test
     fun `Test bottom navbar click`() {
         sharedViewModel.onBottomBarButtonClick(NavigationDirections.profile)
-        verify(exactly = 1) { navigationManager.manage(NavigationDirections.profile) }
+        verify(exactly = 1) { navigationController.manage(NavigationDirections.profile.destination) }
         assertEquals(
             BottomNavigationItem.ProfileItem,
             sharedViewModel.data.selectedNavbarEntry.value

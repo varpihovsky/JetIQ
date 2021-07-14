@@ -2,7 +2,6 @@ package com.varpihovsky.core.di
 
 import com.varpihovsky.core.ConnectionManager
 import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
-import com.varpihovsky.core.navigation.NavigationManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,8 +17,4 @@ object CoreModule {
     @Provides
     @Singleton
     fun provideDataTransferManager() = ViewModelDataTransferManager()
-
-    @Provides
-    @Singleton
-    fun provideNavigationManager() = NavigationManager()
 }

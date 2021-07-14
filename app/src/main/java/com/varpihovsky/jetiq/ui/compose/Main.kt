@@ -6,22 +6,19 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.navigation
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.varpihovsky.core.navigation.BottomNavigationItem
 import com.varpihovsky.core.navigation.NavigationDirections
+import com.varpihovsky.core_nav.dsl.DisplayNavigation
+import com.varpihovsky.core_nav.dsl.navigationController
+import com.varpihovsky.core_nav.main.EntryType
+import com.varpihovsky.core_nav.main.NavigationControllerStorage
 import com.varpihovsky.jetiq.NavigationViewModel
 import com.varpihovsky.jetiq.appbar.AppbarCommand
 import com.varpihovsky.jetiq.appbar.AppbarManager
@@ -32,16 +29,19 @@ import com.varpihovsky.jetiq.screens.messages.main.MessagesScreen
 import com.varpihovsky.jetiq.screens.profile.Profile
 import com.varpihovsky.jetiq.screens.settings.about.AboutSettingsScreen
 import com.varpihovsky.jetiq.screens.settings.main.MainSettingsScreen
+import soup.compose.material.motion.Axis
+import soup.compose.material.motion.materialElevationScale
+import soup.compose.material.motion.materialFadeThrough
+import soup.compose.material.motion.materialSharedAxis
 
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @Composable
 fun Root(
     navigationViewModel: NavigationViewModel,
-    navController: NavHostController,
+    navigationControllerStorage: NavigationControllerStorage,
     appbarManager: AppbarManager
 ) {
-    val startDestination = remember { navigationViewModel.getStartDestination() }
     val scaffoldState = rememberScaffoldState()
 
     Scaffold(
@@ -54,7 +54,12 @@ fun Root(
             ) {
                 BottomNavigationMenu(
                     selected = navigationViewModel.data.selectedNavbarEntry.value,
-                    onClick = { navigationViewModel.onBottomBarButtonClick(it.route) },
+                    onClick = {
+                        navigationViewModel.onBottomBarButtonClick(
+                            it.route,
+                            navigationControllerStorage.navigationController
+                        )
+                    },
                     BottomNavigationItem.MessagesItem,
                     BottomNavigationItem.ProfileItem,
                 )
@@ -63,69 +68,90 @@ fun Root(
         topBar = appbarManager.commands.collectAsState(AppbarCommand { }).value.bar
 
     ) { paddingValues ->
+        DisplayNavigation(
+            modifier = Modifier.padding(paddingValues = paddingValues),
+            controller = navigationControllerStorage.navigationController
+        )
+    }
+}
 
-        NavHost(
-            navController = navController,
-            startDestination = "Parent",
-            modifier = Modifier.padding(paddingValues = paddingValues)
-        ) {
-            navigation(startDestination = startDestination, route = "Parent") {
-                composable(
-                    route = NavigationDirections.authentication.destination,
-                    arguments = NavigationDirections.authentication.arguments
-                ) {
-                    Auth(viewModel = hiltViewModel(navController.getBackStackEntry("Parent")))
-                }
-                composable(
-                    route = NavigationDirections.profile.destination,
-                    arguments = NavigationDirections.profile.arguments
-                ) {
-                    Profile(profileViewModel = hiltViewModel(navController.getBackStackEntry("Parent")))
-                }
-                composable(
-                    route = NavigationDirections.messages.destination,
-                    arguments = NavigationDirections.messages.arguments
-                ) {
-                    MessagesScreen(viewModel = hiltViewModel(navController.getBackStackEntry("Parent")))
-                }
-                composable(
-                    route = NavigationDirections.contacts.destination,
-                    arguments = NavigationDirections.contacts.arguments
-                ) {
-                    ContactsScreen(
-                        contactsViewModel = hiltViewModel(
-                            navController.getBackStackEntry(
-                                "Parent"
-                            )
-                        )
-                    )
-                }
-                composable(
-                    route = NavigationDirections.newMessage.destination,
-                    arguments = NavigationDirections.newMessage.arguments
-                ) {
-                    NewMessageScreen(
-                        newMessageViewModel = hiltViewModel(navController.getBackStackEntry("Parent"))
-                    )
-                }
-                composable(
-                    route = NavigationDirections.mainSettings.destination,
-                    arguments = NavigationDirections.mainSettings.arguments
-                ) {
-                    MainSettingsScreen(
-                        mainSettingsViewModel = hiltViewModel(navController.getBackStackEntry("Parent"))
-                    )
-                }
-                composable(
-                    route = NavigationDirections.aboutSettings.destination,
-                    arguments = NavigationDirections.aboutSettings.arguments
-                ) {
-                    AboutSettingsScreen(
-                        aboutSettingsViewModel = hiltViewModel(navController.getBackStackEntry("Parent"))
-                    )
-                }
+@ExperimentalAnimationApi
+@Composable
+@ExperimentalFoundationApi
+fun InitNavigation(
+    navigationViewModel: NavigationViewModel,
+    navigationControllerStorage: NavigationControllerStorage
+) {
+    val startDestination = remember { navigationViewModel.getStartDestination() }
+
+    DisposableEffect(key1 = navigationViewModel) {
+        val controller = navigationController(startDestination) {
+            entry({ Auth(viewModel = viewModel(key = NavigationDirections.authentication.destination)) }) {
+                route = NavigationDirections.authentication.destination
+                entryType = EntryType.SubMenu
+                inAnimation = materialSharedAxis(
+                    axis = Axis.Y,
+                    forward = true
+                )
+                outAnimation = materialSharedAxis(
+                    axis = Axis.Y,
+                    forward = false
+                )
+            }
+            entry({ NewMessageScreen(newMessageViewModel = viewModel(key = NavigationDirections.newMessage.destination)) }) {
+                route = NavigationDirections.newMessage.destination
+                entryType = EntryType.SubMenu
+                inAnimation = materialElevationScale(false)
+                outAnimation = materialElevationScale(true)
+            }
+            entry({ ContactsScreen(contactsViewModel = viewModel(key = NavigationDirections.contacts.destination)) }) {
+                route = NavigationDirections.contacts.destination
+                entryType = EntryType.SubMenu
+                inAnimation = materialFadeThrough()
+                outAnimation = materialFadeThrough()
+            }
+            entry({ MainSettingsScreen(mainSettingsViewModel = viewModel(key = NavigationDirections.mainSettings.destination)) }) {
+                route = NavigationDirections.mainSettings.destination
+                entryType = EntryType.SubMenu
+                inAnimation = materialFadeThrough()
+                outAnimation = materialFadeThrough()
+            }
+            entry({ AboutSettingsScreen(aboutSettingsViewModel = viewModel(key = NavigationDirections.aboutSettings.destination)) }) {
+                route = NavigationDirections.aboutSettings.destination
+                entryType = EntryType.SubMenu
+                inAnimation = materialElevationScale(false)
+                outAnimation = materialElevationScale(true)
+            }
+            entry({ MessagesScreen(viewModel = viewModel(key = NavigationDirections.messages.destination)) }) {
+                route = NavigationDirections.messages.destination
+                entryType = EntryType.Main
+                inAnimation = materialSharedAxis(
+                    axis = Axis.X,
+                    forward = true
+                )
+                outAnimation = materialSharedAxis(
+                    axis = Axis.X,
+                    forward = false
+                )
+            }
+            entry({ Profile(profileViewModel = viewModel(key = NavigationDirections.profile.destination)) }) {
+                route = NavigationDirections.profile.destination
+                entryType = EntryType.Main
+                inAnimation = materialSharedAxis(
+                    axis = Axis.X,
+                    forward = true
+                )
+                outAnimation = materialSharedAxis(
+                    axis = Axis.X,
+                    forward = false
+                )
             }
         }
+
+        navigationControllerStorage.navigationController = controller
+
+        controller.setNavigationCallback(navigationViewModel::onDestinationChange)
+        onDispose {}
     }
 }
 
