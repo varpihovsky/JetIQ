@@ -34,4 +34,7 @@ interface SubjectDetailsDAO {
 
     @Query("SELECT * FROM MarkbookSubjectDTO")
     fun getMarkbookSubjects(): Flow<List<MarkbookSubjectDTO>>
+
+    @Query("SELECT * FROM MarkbookSubjectDTO")
+    fun getMarkbookSubjectsList(): List<MarkbookSubjectDTO>
 }
