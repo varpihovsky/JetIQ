@@ -3,6 +3,7 @@ package com.varpihovsky.core_nav.main
 import com.varpihovsky.core.util.addAndReturn
 import com.varpihovsky.core.util.removeLastAndReturn
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import soup.compose.material.motion.materialFadeThrough
 
@@ -10,7 +11,7 @@ class NavigationController(
     internal val entries: List<NavigationEntry>,
     private val defaultRoute: String
 ) {
-    val operation by lazy { backStack.map { backStackToOperation(it) } }
+    val operation by lazy { backStack.map { backStackToOperation(it) }.distinctUntilChanged() }
 
     private var backStackSize = 1
 
