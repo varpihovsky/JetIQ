@@ -1,10 +1,11 @@
 package com.varpihovsky.jetiq.screens.messages.contacts.addition
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
 import com.varpihovsky.core.exceptions.ViewModelWithException
+import com.varpihovsky.core.util.CoroutineDispatchers
+import com.varpihovsky.core.util.replaceAndReturn
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.ListRepo
 import com.varpihovsky.jetiq.appbar.AppbarManager
@@ -12,13 +13,13 @@ import com.varpihovsky.jetiq.screens.JetIQViewModel
 import com.varpihovsky.ui_data.*
 import com.varpihovsky.ui_data.func_extensions.Selectable
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ContactAdditionViewModel @Inject constructor(
-    private val listModel: ListRepo,
+    private val dispatchers: CoroutineDispatchers,
+    private val listRepo: ListRepo,
     appbarManager: AppbarManager,
     navigationController: NavigationController
 ) : JetIQViewModel(appbarManager, navigationController), ViewModelWithException,
@@ -26,43 +27,39 @@ class ContactAdditionViewModel @Inject constructor(
     val data by lazy { Data() }
     lateinit var callback: (List<UIReceiverDTO>) -> Unit
 
-    private val selectedContactType = MutableLiveData(ContactTypeDropDownItem.STUDENT)
-    private val faculties = MutableLiveData<List<IdDropDownItem>>()
-    private val selectedFaculty = MutableLiveData<IdDropDownItem>()
-    private val groups = MutableLiveData<List<IdDropDownItem>>()
-    private val selectedGroup = MutableLiveData<IdDropDownItem>()
-    private val searchFieldValue = MutableLiveData("")
-    private val contacts = MutableLiveData<List<Selectable<UIReceiverDTO>>>()
+    private val selectedContactType = mutableStateOf(ContactTypeDropDownItem.STUDENT)
+    private val faculties = mutableStateOf(listOf<IdDropDownItem>())
+    private val selectedFaculty = mutableStateOf(IdDropDownItem())
+    private val groups = mutableStateOf<List<IdDropDownItem>>(listOf())
+    private val selectedGroup = mutableStateOf(IdDropDownItem())
+    private val searchFieldValue = mutableStateOf("")
+    private val contacts = mutableStateOf(listOf<Selectable<UIReceiverDTO>>())
 
     inner class Data {
-        val selectedContactType: LiveData<ContactTypeDropDownItem> =
+        val selectedContactType: State<ContactTypeDropDownItem> =
             this@ContactAdditionViewModel.selectedContactType
-        val faculties: LiveData<List<IdDropDownItem>> = this@ContactAdditionViewModel.faculties
-        val selectedFaculty: LiveData<IdDropDownItem> =
+        val faculties: State<List<IdDropDownItem>> = this@ContactAdditionViewModel.faculties
+        val selectedFaculty: State<IdDropDownItem> =
             this@ContactAdditionViewModel.selectedFaculty
-        val groups: LiveData<List<IdDropDownItem>> = this@ContactAdditionViewModel.groups
-        val selectedGroup: LiveData<IdDropDownItem> = this@ContactAdditionViewModel.selectedGroup
-        val searchFieldValue: LiveData<String> = this@ContactAdditionViewModel.searchFieldValue
-        val contacts: LiveData<List<Selectable<UIReceiverDTO>>> =
+        val groups: State<List<IdDropDownItem>> = this@ContactAdditionViewModel.groups
+        val selectedGroup: State<IdDropDownItem> = this@ContactAdditionViewModel.selectedGroup
+        val searchFieldValue: State<String> = this@ContactAdditionViewModel.searchFieldValue
+        val contacts: State<List<Selectable<UIReceiverDTO>>> =
             this@ContactAdditionViewModel.contacts
     }
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                faculties.postValue(listModel.getFaculties().map { IdDropDownItem(it.id, it.text) })
-            } catch (e: Exception) {
-                exceptions.value = e
-            }
+        viewModelScope.launch(dispatchers.IO) {
+            faculties.value = listRepo.getFaculties().map { IdDropDownItem(it.id, it.text) }
         }
     }
 
     override fun onCompose() {
-        listModel.receivable = this
+        listRepo.receivable = this
     }
 
     override fun onDispose() {
-        listModel.receivable = null
+        listRepo.receivable = null
     }
 
     fun onDismiss() {
@@ -71,9 +68,7 @@ class ContactAdditionViewModel @Inject constructor(
     }
 
     fun onConfirm() {
-        contacts.value?.let { selectables ->
-            callback(selectables.filter { it.isSelected }.map { it.dto })
-        }
+        callback(contacts.value.filter { it.isSelected }.map { it.dto })
         clearFields()
     }
 
@@ -86,59 +81,39 @@ class ContactAdditionViewModel @Inject constructor(
 
     fun onFacultySelect(faculty: DropDownItem) {
         selectedFaculty.value = faculty as IdDropDownItem
-        viewModelScope.launch(Dispatchers.IO) {
-            groups.postValue(
-                listModel.getGroupByFaculty(faculty.id).map { IdDropDownItem(it.id, it.text) }
-            )
+        viewModelScope.launch(dispatchers.IO) {
+            groups.value =
+                listRepo.getGroupByFaculty(faculty.id).map { IdDropDownItem(it.id, it.text) }
         }
     }
 
     fun onGroupSelect(group: DropDownItem) {
         selectedGroup.value = group as IdDropDownItem
-        viewModelScope.launch(Dispatchers.IO) {
-            contacts.postValue(
-                listModel.getStudentsByGroup(group.id)
-                    .map { Selectable(UIReceiverDTO(it.id, it.text, ReceiverType.STUDENT), false) }
-            )
+        viewModelScope.launch(dispatchers.IO) {
+            contacts.value = listRepo.getStudentsByGroup(group.id)
+                .map { Selectable(UIReceiverDTO(it.id, it.text, ReceiverType.STUDENT), false) }
         }
     }
 
     fun onSearchFieldValueChange(value: String) {
         searchFieldValue.value = value
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                contacts.postValue(
-                    listModel.getTeacherByQuery(value)
-                        .map {
-                            Selectable(
-                                UIReceiverDTO(it.id, it.text, ReceiverType.TEACHER),
-                                false
-                            )
-                        }
-                )
-            } catch (e: Exception) {
-                exceptions.value = e
+        viewModelScope.launch(dispatchers.IO) {
+            contacts.value = listRepo.getTeacherByQuery(value).map {
+                Selectable(UIReceiverDTO(it.id, it.text, ReceiverType.TEACHER), false)
             }
         }
     }
 
     fun onContactSelected(contact: Selectable<UIReceiverDTO>) {
         val current = contacts.value
-        contacts.value = null
-        contacts.value = current?.let { list ->
-            val index = list.indexOf(contact)
-            val mutableList = list.toMutableList()
-            mutableList.removeAt(index)
-            mutableList.add(index, contact.selectedToggle())
-            mutableList
-        }
+        contacts.value = current.replaceAndReturn(contact, contact.selectedToggle())
     }
 
     private fun clearFields() {
         contacts.value = listOf()
         searchFieldValue.value = ""
-        selectedGroup.value = IdDropDownItem(0, "")
+        selectedGroup.value = IdDropDownItem()
         groups.value = listOf()
-        selectedFaculty.value = IdDropDownItem(0, "")
+        selectedFaculty.value = IdDropDownItem()
     }
 }
