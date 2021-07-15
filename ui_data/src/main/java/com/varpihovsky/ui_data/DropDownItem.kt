@@ -10,7 +10,7 @@ class EmptyDropDownItem : DropDownItem {
 
 }
 
-class IdDropDownItem(val id: Int, override val text: String) : DropDownItem
+class IdDropDownItem(val id: Int = -1, override val text: String = "") : DropDownItem
 
 enum class ContactTypeDropDownItem : DropDownItem {
     STUDENT {
