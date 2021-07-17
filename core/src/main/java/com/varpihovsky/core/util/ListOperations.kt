@@ -25,3 +25,7 @@ fun <T> List<T>.addAndReturn(element: T): List<T> {
     mutable.add(element)
     return mutable
 }
+
+fun <T> List<Selectable<T>>.selectedOnly(): List<T> {
+    return filter { it.isSelected }.map { it.dto }
+}
