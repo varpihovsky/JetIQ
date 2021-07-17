@@ -9,6 +9,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.varpihovsky.core.util.Selectable
 import com.varpihovsky.jetiq.screens.messages.contacts.Contact
 import com.varpihovsky.jetiq.screens.messages.contacts.SearchBar
 import com.varpihovsky.jetiq.ui.compose.BasicTextButton
@@ -18,7 +19,6 @@ import com.varpihovsky.jetiq.ui.compose.SubscribedExposedDropDownList
 import com.varpihovsky.ui_data.ContactTypeDropDownItem
 import com.varpihovsky.ui_data.DropDownItem
 import com.varpihovsky.ui_data.UIReceiverDTO
-import com.varpihovsky.ui_data.func_extensions.Selectable
 import soup.compose.material.motion.Axis
 import soup.compose.material.motion.MaterialSharedAxis
 

@@ -5,13 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
 import com.varpihovsky.core.exceptions.ViewModelWithException
 import com.varpihovsky.core.util.CoroutineDispatchers
+import com.varpihovsky.core.util.Selectable
 import com.varpihovsky.core.util.replaceAndReturn
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.ListRepo
 import com.varpihovsky.jetiq.appbar.AppbarManager
 import com.varpihovsky.jetiq.screens.JetIQViewModel
 import com.varpihovsky.ui_data.*
-import com.varpihovsky.ui_data.func_extensions.Selectable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,6 +33,8 @@ class ContactAdditionViewModel @Inject constructor(
     private val groups = mutableStateOf<List<IdDropDownItem>>(listOf())
     private val selectedGroup = mutableStateOf(IdDropDownItem())
     private val searchFieldValue = mutableStateOf("")
+
+    //TODO: Replace with selection engine.
     private val contacts = mutableStateOf(listOf<Selectable<UIReceiverDTO>>())
 
     inner class Data {

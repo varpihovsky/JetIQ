@@ -59,6 +59,11 @@ class NewMessageViewModel @Inject constructor(
         messagesModel.receivable = null
     }
 
+    override fun onBackNavButtonClick() {
+        receivers.value = listOf()
+        super.onBackNavButtonClick()
+    }
+
     private suspend fun collectTransferredData() {
         dataTransferFlow.collect { uncheckedData ->
             if (uncheckedData == null) {
@@ -66,7 +71,7 @@ class NewMessageViewModel @Inject constructor(
             }
 
             (uncheckedData as? ContactsViewModelData)?.data?.let {
-                receivers.value = it
+                receivers.value = it.sortedBy { it.text }
             }
         }
     }
@@ -76,7 +81,7 @@ class NewMessageViewModel @Inject constructor(
     }
 
     fun onNewReceiverButtonClick() {
-        dataTransferFlow.value = ContactsViewModelData(receivers.value)
+        dataTransferFlow.value = ContactsViewModelData(receivers.value, this::class)
         navigationController.manage(NavigationDirections.contacts.destination)
     }
 
