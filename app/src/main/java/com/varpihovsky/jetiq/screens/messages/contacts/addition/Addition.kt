@@ -8,8 +8,8 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import com.varpihovsky.core.util.Selectable
 import com.varpihovsky.jetiq.screens.messages.contacts.Contact
 import com.varpihovsky.jetiq.screens.messages.contacts.SearchBar
 import com.varpihovsky.jetiq.ui.compose.BasicTextButton
@@ -18,9 +18,7 @@ import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 import com.varpihovsky.jetiq.ui.compose.SubscribedExposedDropDownList
 import com.varpihovsky.ui_data.ContactTypeDropDownItem
 import com.varpihovsky.ui_data.DropDownItem
-import com.varpihovsky.ui_data.EmptyDropDownItem
 import com.varpihovsky.ui_data.UIReceiverDTO
-import com.varpihovsky.ui_data.func_extensions.Selectable
 import soup.compose.material.motion.Axis
 import soup.compose.material.motion.MaterialSharedAxis
 
@@ -35,19 +33,6 @@ fun AdditionDialog(
 
     contactAdditionViewModel.callback = onConfirmButtonClick
 
-    val selectedContactType = contactAdditionViewModel.data.selectedContactType.observeAsState(
-        initial = ContactTypeDropDownItem.STUDENT
-    )
-    val faculties = contactAdditionViewModel.data.faculties.observeAsState(initial = listOf())
-    val selectedFaculty =
-        contactAdditionViewModel.data.selectedFaculty.observeAsState(initial = EmptyDropDownItem())
-    val groups = contactAdditionViewModel.data.groups.observeAsState(initial = listOf())
-    val selectedGroup =
-        contactAdditionViewModel.data.selectedGroup.observeAsState(initial = EmptyDropDownItem())
-    val searchFieldValue =
-        contactAdditionViewModel.data.searchFieldValue.observeAsState(initial = "")
-    val contacts = contactAdditionViewModel.data.contacts.observeAsState(initial = listOf())
-
     CollectExceptions(viewModel = contactAdditionViewModel)
 
     AdditionDialog(
@@ -56,17 +41,17 @@ fun AdditionDialog(
             contactAdditionViewModel.onDismiss()
         },
         onConfirmButtonClick = contactAdditionViewModel::onConfirm,
-        selectedContactType = selectedContactType.value,
+        selectedContactType = contactAdditionViewModel.data.selectedContactType.value,
         onContactTypeSelected = contactAdditionViewModel::onContactTypeSelected,
-        faculties = faculties.value,
-        selectedFaculty = selectedFaculty.value,
+        faculties = contactAdditionViewModel.data.faculties.value,
+        selectedFaculty = contactAdditionViewModel.data.selectedFaculty.value,
         onFacultySelect = contactAdditionViewModel::onFacultySelect,
-        groups = groups.value,
-        selectedGroup = selectedGroup.value,
+        groups = contactAdditionViewModel.data.groups.value,
+        selectedGroup = contactAdditionViewModel.data.selectedGroup.value,
         onGroupSelect = contactAdditionViewModel::onGroupSelect,
-        searchFieldValue = searchFieldValue.value,
+        searchFieldValue = contactAdditionViewModel.data.searchFieldValue.value,
         onSearchFieldValueChange = contactAdditionViewModel::onSearchFieldValueChange,
-        contacts = contacts.value,
+        contacts = contactAdditionViewModel.data.contacts.value,
         onContactSelected = contactAdditionViewModel::onContactSelected
     )
 }

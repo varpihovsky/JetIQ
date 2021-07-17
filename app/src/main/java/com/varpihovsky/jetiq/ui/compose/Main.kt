@@ -6,7 +6,10 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -55,10 +58,12 @@ fun Root(
                 BottomNavigationMenu(
                     selected = navigationViewModel.data.selectedNavbarEntry.value,
                     onClick = {
-                        navigationViewModel.onBottomBarButtonClick(
-                            it.route,
-                            navigationControllerStorage.navigationController
-                        )
+                        navigationControllerStorage.navigationController?.let { it1 ->
+                            navigationViewModel.onBottomBarButtonClick(
+                                it.route,
+                                it1
+                            )
+                        }
                     },
                     BottomNavigationItem.MessagesItem,
                     BottomNavigationItem.ProfileItem,
@@ -68,10 +73,12 @@ fun Root(
         topBar = appbarManager.commands.collectAsState(AppbarCommand { }).value.bar
 
     ) { paddingValues ->
-        DisplayNavigation(
-            modifier = Modifier.padding(paddingValues = paddingValues),
-            controller = navigationControllerStorage.navigationController
-        )
+        navigationControllerStorage.navigationController?.let {
+            DisplayNavigation(
+                modifier = Modifier.padding(paddingValues = paddingValues),
+                controller = it
+            )
+        }
     }
 }
 
@@ -84,7 +91,7 @@ fun InitNavigation(
 ) {
     val startDestination = remember { navigationViewModel.getStartDestination() }
 
-    DisposableEffect(key1 = navigationViewModel) {
+    if (navigationControllerStorage.navigationController == null) {
         val controller = navigationController(startDestination) {
             entry({ Auth(viewModel = viewModel(key = NavigationDirections.authentication.destination)) }) {
                 route = NavigationDirections.authentication.destination
@@ -151,7 +158,6 @@ fun InitNavigation(
         navigationControllerStorage.navigationController = controller
 
         controller.setNavigationCallback(navigationViewModel::onDestinationChange)
-        onDispose {}
     }
 }
 

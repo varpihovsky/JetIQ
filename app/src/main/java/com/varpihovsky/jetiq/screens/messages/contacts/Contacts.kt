@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,13 +26,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.varpihovsky.core.util.Selectable
 import com.varpihovsky.jetiq.R
 import com.varpihovsky.jetiq.screens.messages.contacts.addition.AdditionDialog
 import com.varpihovsky.jetiq.ui.compose.Avatar
 import com.varpihovsky.jetiq.ui.compose.BackIconButton
 import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 import com.varpihovsky.ui_data.UIReceiverDTO
-import com.varpihovsky.ui_data.func_extensions.Selectable
 
 
 @ExperimentalFoundationApi
@@ -63,9 +64,9 @@ fun ContactsScreen(
     }
 
     ContactList(
-        searchFieldValue = contactsViewModel.data.searchFieldValue.value,
+        searchFieldValue = contactsViewModel.data.searchFieldValue.collectAsState().value,
         onSearchFieldValueChange = contactsViewModel::onSearchFieldValueChange,
-        contacts = contactsViewModel.data.contacts.value,
+        contacts = contactsViewModel.data.contacts.collectAsState(listOf()).value,
         isLongClickEnabled = contactsViewModel.data.isLongClickEnabled.value,
         onLongClick = contactsViewModel::onContactLongClick,
         isClickEnabled = contactsViewModel.data.isClickEnabled.value,

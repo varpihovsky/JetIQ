@@ -1,6 +1,7 @@
 package com.varpihovsky.jetiq.screens
 
 import android.util.Log
+import androidx.annotation.CallSuper
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,6 +26,7 @@ abstract class JetIQViewModel(
         appbarManager.manage(AppbarCommand { })
     }
 
+    @CallSuper
     open fun onBackNavButtonClick() {
         navigationController.onBack()
     }

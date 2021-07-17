@@ -1,9 +1,10 @@
 package com.varpihovsky.jetiq.screens.messages.contacts
 
+import com.varpihovsky.core.util.Selectable
 import com.varpihovsky.core_repo.repo.ListRepo
+import com.varpihovsky.jetiq.screens.messages.create.NewMessageViewModel
 import com.varpihovsky.jetiq.testCore.ViewModelDataTransferTest
 import com.varpihovsky.repo_data.ContactDTO
-import com.varpihovsky.ui_data.func_extensions.Selectable
 import com.varpihovsky.ui_data.mappers.toUIDTO
 import io.mockk.every
 import io.mockk.mockk
@@ -36,7 +37,7 @@ class ContactsViewModelTest : ViewModelDataTransferTest() {
 
         assertEquals(
             TEST_CONTACTS.map { Selectable(it.toUIDTO(), false) },
-            contactsViewModel.data.contacts.value
+            contactsViewModel.data.contacts.takeLast(listOf(), this)
         )
     }
 
@@ -48,7 +49,7 @@ class ContactsViewModelTest : ViewModelDataTransferTest() {
 
         assertEquals(
             TEST_CONTACTS.map { Selectable(it.toUIDTO(), false) },
-            contactsViewModel.data.contacts.value
+            contactsViewModel.data.contacts.takeLast(listOf(), this)
         )
     }
 
@@ -63,7 +64,7 @@ class ContactsViewModelTest : ViewModelDataTransferTest() {
                 Selectable(TEST_CONTACTS.first().toUIDTO(), true),
                 Selectable(TEST_CONTACTS[1].toUIDTO(), false)
             ),
-            contactsViewModel.data.contacts.value
+            contactsViewModel.data.contacts.takeLast(listOf(), this)
         )
     }
 
@@ -142,9 +143,10 @@ class ContactsViewModelTest : ViewModelDataTransferTest() {
     fun `Test contacts are filtered on field changes`() = runBlockingTest {
         defaultInit()
         contactsViewModel.onSearchFieldValueChange(TEST_QUERY)
+
         assertEquals(
             listOf(Selectable(TEST_CONTACTS.first().toUIDTO(), false)),
-            contactsViewModel.data.contacts.value
+            contactsViewModel.data.contacts.takeLast(listOf(), this)
         )
     }
 
@@ -160,7 +162,8 @@ class ContactsViewModelTest : ViewModelDataTransferTest() {
 
     private fun transferContacts(vararg contacts: ContactDTO) {
         dataTransferStateFlow.value = ContactsViewModelData(
-            listOf(*contacts).map { it.toUIDTO() }
+            listOf(*contacts).map { it.toUIDTO() },
+            NewMessageViewModel::class
         )
     }
 
