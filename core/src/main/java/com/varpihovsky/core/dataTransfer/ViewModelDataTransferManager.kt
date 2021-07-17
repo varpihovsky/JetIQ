@@ -6,15 +6,18 @@ import javax.inject.Inject
 class ViewModelDataTransferManager @Inject constructor() {
     private val flows = hashMapOf<String, MutableStateFlow<ViewModelData<*>?>>()
 
-    fun getFlowByTag(tag: String) =
-        flows[tag].let {
-            val flow: MutableStateFlow<ViewModelData<*>?>
-            if (it == null) {
-                flow = MutableStateFlow(null)
-                flows[tag] = flow
-            } else {
-                flow = it
+    fun getFlowByTag(tag: String) = createIfNotExists(flows[tag], tag)
+
+    private fun createIfNotExists(
+        flow: MutableStateFlow<ViewModelData<*>?>?,
+        tag: String
+    ): MutableStateFlow<ViewModelData<*>?> {
+        if (flow == null) {
+            return MutableStateFlow<ViewModelData<*>?>(null).also {
+                flows[tag] = it
             }
-            flow
         }
+
+        return flow
+    }
 }
