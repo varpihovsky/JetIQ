@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.varpihovsky.jetiq.screens.settings.SettingsButton
 import com.varpihovsky.jetiq.ui.compose.BasicAppBar
 import com.varpihovsky.jetiq.ui.compose.MapLifecycle
+import com.varpihovsky.jetiq.ui.compose.OpenPage
 
 @Composable
 fun AboutSettingsScreen(
@@ -30,6 +31,11 @@ fun AboutSettingsScreen(
 
     BackHandler(true, onBack = aboutSettingsViewModel::onBackNavButtonClick)
 
+    if (aboutSettingsViewModel.data.pageToOpen.value.isNotEmpty()) {
+        OpenPage(url = aboutSettingsViewModel.data.pageToOpen.value)
+        aboutSettingsViewModel.onPageOpened()
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -40,7 +46,7 @@ fun AboutSettingsScreen(
         )
         Text(
             modifier = Modifier.padding(horizontal = 40.dp, vertical = 10.dp),
-            text = "Неофіційний клієнт для JetIQ.\n\nСтабільний, гнучкий та красивий!",
+            text = "Неофіційний клієнт для JetIQ.",
             style = MaterialTheme.typography.h5,
             textAlign = TextAlign.Center
         )
@@ -52,12 +58,12 @@ fun AboutSettingsScreen(
         SettingsButton(
             title = "GitHub",
             hint = "github.com/varpihovsky",
-            onClick = {}
+            onClick = { aboutSettingsViewModel.onUrlButtonClick("https://www.github.com/varpihovsky") }
         )
         SettingsButton(
             title = "LinkedIn",
             hint = "linkedin.com/in/varpihovsky",
-            onClick = {}
+            onClick = { aboutSettingsViewModel.onUrlButtonClick("https://www.linkedin.com/in/varpihovsky") }
         )
     }
 }
