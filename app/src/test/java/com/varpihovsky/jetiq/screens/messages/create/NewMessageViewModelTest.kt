@@ -3,6 +3,7 @@ package com.varpihovsky.jetiq.screens.messages.create
 import com.varpihovsky.core.exceptions.Values
 import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.MessagesRepo
+import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModel
 import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModelData
 import com.varpihovsky.jetiq.testCore.ViewModelDataTransferTest
 import com.varpihovsky.ui_data.ReceiverType
@@ -36,7 +37,7 @@ class NewMessageViewModelTest : ViewModelDataTransferTest() {
             messagesModel
         )
         dataTransferStateFlow.value =
-            ContactsViewModelData(TEST_RECEIVERS)
+            ContactsViewModelData(TEST_RECEIVERS, ContactsViewModel::class)
     }
 
     @ExperimentalCoroutinesApi
