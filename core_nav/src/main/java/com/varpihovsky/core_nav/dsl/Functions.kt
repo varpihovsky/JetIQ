@@ -7,7 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.main.NavigationOperation
-import com.varpihovsky.core_nav.main.OperationType
 import soup.compose.material.motion.MaterialMotion
 
 fun navigationController(defaultRoute: String, block: NavigationControllerBuilder.() -> Unit) =
@@ -15,16 +14,21 @@ fun navigationController(defaultRoute: String, block: NavigationControllerBuilde
 
 @Composable
 fun DisplayNavigation(modifier: Modifier = Modifier, controller: NavigationController) {
-    val current = controller.operation.collectAsState(NavigationOperation()).value
+    val current = controller.operation.collectAsState(NavigationOperation.Navigate()).value
+    var screen: NavigationOperation.Navigate = NavigationOperation.Navigate()
 
-    if (current.type == OperationType.FINISH) {
-        (LocalContext.current as Activity).finish()
+    when (current) {
+        is NavigationOperation.Finish -> current.process {
+            (LocalContext.current as Activity).finish()
+        }
+
+        is NavigationOperation.Navigate -> screen = current
     }
 
     MaterialMotion(
         modifier = modifier,
-        targetState = current.route,
-        motionSpec = current.motionSpec
+        targetState = screen.route,
+        motionSpec = screen.motionSpec
     ) { str ->
         controller.entries.find { it.route == str }?.composable?.invoke()
     }

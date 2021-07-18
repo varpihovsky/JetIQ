@@ -5,7 +5,6 @@ import com.varpihovsky.core.util.removeLastAndReturn
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import soup.compose.material.motion.materialFadeThrough
 
 class NavigationController(
     internal val entries: List<NavigationEntry>,
@@ -23,25 +22,17 @@ class NavigationController(
         MutableStateFlow(listOf(checkNotNull(entries.find { defaultRoute == it.route })))
 
     private fun backStackToOperation(stack: List<NavigationEntry>): NavigationOperation {
-        val entry = stack.lastOrNull() ?: NavigationEntry(
-            {},
-            "",
-            EntryType.SubMenu,
-            materialFadeThrough(),
-            materialFadeThrough()
-        )
-        val motionSpec = getMotionSpecByEntry(entry, stack)
-        val type = if (stack.isEmpty()) {
-            OperationType.FINISH
-        } else {
-            OperationType.Navigate
+        if (stack.isEmpty()) {
+            return NavigationOperation.Finish(this::onFinished)
         }
 
-        previousEntry = entry
+        val entry = stack.last()
+        val motionSpec = getMotionSpecByEntry(entry, stack)
 
+        previousEntry = entry
         backStackSize = stack.size
 
-        return NavigationOperation(entry.route, entry.composable, motionSpec, type)
+        return NavigationOperation.Navigate(entry.route, entry.composable, motionSpec)
     }
 
     private fun getMotionSpecByEntry(entry: NavigationEntry, stack: List<NavigationEntry>) = when {
@@ -89,5 +80,9 @@ class NavigationController(
 
     fun setNavigationCallback(callback: (String) -> Unit) {
         this.callback = callback
+    }
+
+    private fun onFinished() {
+        manage(defaultRoute)
     }
 }
