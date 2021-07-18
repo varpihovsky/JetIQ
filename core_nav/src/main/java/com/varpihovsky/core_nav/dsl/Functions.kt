@@ -3,6 +3,8 @@ package com.varpihovsky.core_nav.dsl
 import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.varpihovsky.core_nav.main.NavigationController
@@ -11,6 +13,22 @@ import soup.compose.material.motion.MaterialMotion
 
 fun navigationController(defaultRoute: String, block: NavigationControllerBuilder.() -> Unit) =
     NavigationControllerBuilder(defaultRoute).apply(block).build()
+
+
+@Composable
+fun rememberNavigationController(
+    defaultRoute: String,
+    block: NavigationControllerBuilder.() -> Unit
+) =
+    rememberSaveable(saver = navigationControllerSaver()) {
+        NavigationControllerBuilder(defaultRoute).apply(block).build()
+    }
+
+@Composable
+private fun navigationControllerSaver(): Saver<NavigationController, *> = Saver(
+    save = { it.saveState() },
+    restore = { NavigationController(listOf(), "").apply { restoreState(it) } }
+)
 
 @Composable
 fun DisplayNavigation(modifier: Modifier = Modifier, controller: NavigationController) {

@@ -6,7 +6,8 @@ import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.main.NavigationEntry
 import soup.compose.material.motion.MotionSpec
 
-class NavigationEntryBuilder(private val composable: @Composable () -> Unit) {
+class NavigationEntryBuilder {
+    var composable: @Composable () -> Unit = {}
     var route: String = ""
     var entryType: EntryType? = null
     var inAnimation: MotionSpec? = null
@@ -25,8 +26,8 @@ class NavigationEntryBuilder(private val composable: @Composable () -> Unit) {
 class NavigationControllerBuilder(private val defaultRoute: String) {
     private val entries = mutableListOf<NavigationEntry>()
 
-    fun entry(composable: @Composable () -> Unit, block: NavigationEntryBuilder.() -> Unit) {
-        val builder = NavigationEntryBuilder(composable).apply(block).build()
+    fun entry(block: NavigationEntryBuilder.() -> Unit) {
+        val builder = NavigationEntryBuilder().apply(block).build()
         entries.add(builder)
     }
 

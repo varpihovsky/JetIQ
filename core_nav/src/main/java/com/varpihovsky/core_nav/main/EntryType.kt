@@ -1,6 +1,13 @@
 package com.varpihovsky.core_nav.main
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+
 sealed class EntryType {
-    object Main : EntryType()
-    object SubMenu : EntryType()
+    @Parcelize
+    object Main : EntryType(), Parcelable
+
+    @Parcelize
+    object SubMenu : EntryType(), Parcelable
 }

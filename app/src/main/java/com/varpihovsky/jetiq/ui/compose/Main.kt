@@ -19,8 +19,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.varpihovsky.core.navigation.BottomNavigationItem
 import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core_nav.dsl.DisplayNavigation
-import com.varpihovsky.core_nav.dsl.navigationController
+import com.varpihovsky.core_nav.dsl.rememberNavigationController
 import com.varpihovsky.core_nav.main.EntryType
+import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.main.NavigationControllerStorage
 import com.varpihovsky.jetiq.NavigationViewModel
 import com.varpihovsky.jetiq.appbar.AppbarCommand
@@ -73,93 +74,103 @@ fun Root(
         topBar = appbarManager.commands.collectAsState(AppbarCommand { }).value.bar
 
     ) { paddingValues ->
-        navigationControllerStorage.navigationController?.let {
-            DisplayNavigation(
-                modifier = Modifier.padding(paddingValues = paddingValues),
-                controller = it
-            )
-        }
+        val navigationController = initNavigation(navigationViewModel = navigationViewModel)
+
+        navigationController.setNavigationCallback(navigationViewModel::onDestinationChange)
+
+        navigationControllerStorage.navigationController = navigationController
+
+        DisplayNavigation(
+            modifier = Modifier.padding(paddingValues = paddingValues),
+            controller = navigationController
+        )
     }
 }
 
 @ExperimentalAnimationApi
 @Composable
 @ExperimentalFoundationApi
-fun InitNavigation(
-    navigationViewModel: NavigationViewModel,
-    navigationControllerStorage: NavigationControllerStorage
-) {
+fun initNavigation(navigationViewModel: NavigationViewModel): NavigationController {
     val startDestination = remember { navigationViewModel.getStartDestination() }
 
-    if (navigationControllerStorage.navigationController == null) {
-        val controller = navigationController(startDestination) {
-            entry({ Auth(viewModel = viewModel(key = NavigationDirections.authentication.destination)) }) {
-                route = NavigationDirections.authentication.destination
-                entryType = EntryType.SubMenu
-                inAnimation = materialSharedAxis(
-                    axis = Axis.Y,
-                    forward = true
-                )
-                outAnimation = materialSharedAxis(
-                    axis = Axis.Y,
-                    forward = false
-                )
-            }
-            entry({ NewMessageScreen(newMessageViewModel = viewModel(key = NavigationDirections.newMessage.destination)) }) {
-                route = NavigationDirections.newMessage.destination
-                entryType = EntryType.SubMenu
-                inAnimation = materialElevationScale(false)
-                outAnimation = materialElevationScale(true)
-            }
-            entry({ ContactsScreen(contactsViewModel = viewModel(key = NavigationDirections.contacts.destination)) }) {
-                route = NavigationDirections.contacts.destination
-                entryType = EntryType.SubMenu
-                inAnimation = materialFadeThrough()
-                outAnimation = materialFadeThrough()
-            }
-            entry({ MainSettingsScreen(mainSettingsViewModel = viewModel(key = NavigationDirections.mainSettings.destination)) }) {
-                route = NavigationDirections.mainSettings.destination
-                entryType = EntryType.SubMenu
-                inAnimation = materialFadeThrough()
-                outAnimation = materialFadeThrough()
-            }
-            entry({ AboutSettingsScreen(aboutSettingsViewModel = viewModel(key = NavigationDirections.aboutSettings.destination)) }) {
-                route = NavigationDirections.aboutSettings.destination
-                entryType = EntryType.SubMenu
-                inAnimation = materialElevationScale(false)
-                outAnimation = materialElevationScale(true)
-            }
-            entry({ MessagesScreen(viewModel = viewModel(key = NavigationDirections.messages.destination)) }) {
-                route = NavigationDirections.messages.destination
-                entryType = EntryType.Main
-                inAnimation = materialSharedAxis(
-                    axis = Axis.X,
-                    forward = true
-                )
-                outAnimation = materialSharedAxis(
-                    axis = Axis.X,
-                    forward = false
-                )
-            }
-            entry({ Profile(profileViewModel = viewModel(key = NavigationDirections.profile.destination)) }) {
-                route = NavigationDirections.profile.destination
-                entryType = EntryType.Main
-                inAnimation = materialSharedAxis(
-                    axis = Axis.X,
-                    forward = true
-                )
-                outAnimation = materialSharedAxis(
-                    axis = Axis.X,
-                    forward = false
-                )
-            }
+    return rememberNavigationController(startDestination) {
+        entry {
+            composable =
+                { Auth(viewModel = viewModel(key = NavigationDirections.authentication.destination)) }
+            route = NavigationDirections.authentication.destination
+            entryType = EntryType.SubMenu
+            inAnimation = materialSharedAxis(
+                axis = Axis.Y,
+                forward = true
+            )
+            outAnimation = materialSharedAxis(
+                axis = Axis.Y,
+                forward = false
+            )
         }
-
-        navigationControllerStorage.navigationController = controller
-
-        controller.setNavigationCallback(navigationViewModel::onDestinationChange)
+        entry {
+            composable =
+                { NewMessageScreen(newMessageViewModel = viewModel(key = NavigationDirections.newMessage.destination)) }
+            route = NavigationDirections.newMessage.destination
+            entryType = EntryType.SubMenu
+            inAnimation = materialElevationScale(false)
+            outAnimation = materialElevationScale(true)
+        }
+        entry {
+            composable =
+                { ContactsScreen(contactsViewModel = viewModel(key = NavigationDirections.contacts.destination)) }
+            route = NavigationDirections.contacts.destination
+            entryType = EntryType.SubMenu
+            inAnimation = materialFadeThrough()
+            outAnimation = materialFadeThrough()
+        }
+        entry {
+            composable =
+                { MainSettingsScreen(mainSettingsViewModel = viewModel(key = NavigationDirections.mainSettings.destination)) }
+            route = NavigationDirections.mainSettings.destination
+            entryType = EntryType.SubMenu
+            inAnimation = materialFadeThrough()
+            outAnimation = materialFadeThrough()
+        }
+        entry {
+            composable =
+                { AboutSettingsScreen(aboutSettingsViewModel = viewModel(key = NavigationDirections.aboutSettings.destination)) }
+            route = NavigationDirections.aboutSettings.destination
+            entryType = EntryType.SubMenu
+            inAnimation = materialElevationScale(false)
+            outAnimation = materialElevationScale(true)
+        }
+        entry {
+            composable =
+                { MessagesScreen(viewModel = viewModel(key = NavigationDirections.messages.destination)) }
+            route = NavigationDirections.messages.destination
+            entryType = EntryType.Main
+            inAnimation = materialSharedAxis(
+                axis = Axis.X,
+                forward = true
+            )
+            outAnimation = materialSharedAxis(
+                axis = Axis.X,
+                forward = false
+            )
+        }
+        entry {
+            composable =
+                { Profile(profileViewModel = viewModel(key = NavigationDirections.profile.destination)) }
+            route = NavigationDirections.profile.destination
+            entryType = EntryType.Main
+            inAnimation = materialSharedAxis(
+                axis = Axis.X,
+                forward = true
+            )
+            outAnimation = materialSharedAxis(
+                axis = Axis.X,
+                forward = false
+            )
+        }
     }
 }
+
 
 @ExperimentalAnimationApi
 @Composable

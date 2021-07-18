@@ -1,5 +1,7 @@
 package com.varpihovsky.core_nav.main
 
+import android.os.Bundle
+import androidx.core.os.bundleOf
 import com.varpihovsky.core.util.addAndReturn
 import com.varpihovsky.core.util.removeLastAndReturn
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -7,8 +9,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 class NavigationController(
-    internal val entries: List<NavigationEntry>,
-    private val defaultRoute: String
+    internal var entries: List<NavigationEntry>,
+    private var defaultRoute: String
 ) {
     val operation by lazy { backStack.map { backStackToOperation(it) }.distinctUntilChanged() }
 
@@ -82,7 +84,30 @@ class NavigationController(
         this.callback = callback
     }
 
+    fun saveState(): Bundle {
+        return bundleOf(
+            ENTRIES_KEY to entries.toTypedArray(),
+            DEFAULT_ROUTE_KEY to defaultRoute
+        )
+    }
+
+    fun restoreState(bundle: Bundle?) {
+        bundle?.apply {
+            getParcelableArray(ENTRIES_KEY)?.toList()?.let {
+                entries = it as List<NavigationEntry>
+            }
+            getString(DEFAULT_ROUTE_KEY)?.let {
+                defaultRoute = it
+            }
+        }
+    }
+
     private fun onFinished() {
         manage(defaultRoute)
+    }
+
+    companion object {
+        private const val ENTRIES_KEY = "entries"
+        private const val DEFAULT_ROUTE_KEY = "route"
     }
 }

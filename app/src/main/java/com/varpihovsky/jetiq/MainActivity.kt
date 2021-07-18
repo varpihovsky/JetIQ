@@ -9,7 +9,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
 import com.varpihovsky.core_nav.main.NavigationControllerStorage
 import com.varpihovsky.jetiq.appbar.AppbarManager
-import com.varpihovsky.jetiq.ui.compose.InitNavigation
 import com.varpihovsky.jetiq.ui.compose.Root
 import com.varpihovsky.jetiq.ui.theme.JetIQTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,11 +32,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val viewModel = hiltViewModel<NavigationViewModel>()
-
-            InitNavigation(
-                navigationViewModel = viewModel,
-                navigationControllerStorage = navigationControllerStorage
-            )
 
             JetIQTheme {
                 Root(
