@@ -1,6 +1,5 @@
 package com.varpihovsky.jetiq.screens.messages.create
 
-import com.varpihovsky.core.exceptions.Values
 import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModel
@@ -34,7 +33,8 @@ class NewMessageViewModelTest : ViewModelDataTransferTest() {
             appbarManager,
             navigationController,
             viewModelDataTransferManager,
-            messagesModel
+            messagesModel,
+            exceptionEventManager
         )
         dataTransferStateFlow.value =
             ContactsViewModelData(TEST_RECEIVERS, ContactsViewModel::class)
@@ -94,10 +94,7 @@ class NewMessageViewModelTest : ViewModelDataTransferTest() {
     @Test
     fun `Empty message exception is shown`() = runBlockingTest {
         viewModel.onSendClick()
-        assertEquals(
-            RuntimeException(Values.EMPTY_MESSAGE).message,
-            viewModel.exceptions.value?.message
-        )
+        verify { exceptionEventManager.pushException(any()) }
     }
 
     @ExperimentalCoroutinesApi
@@ -106,10 +103,7 @@ class NewMessageViewModelTest : ViewModelDataTransferTest() {
         TEST_RECEIVERS.forEach { viewModel.onReceiverRemove(it) }
         viewModel.onMessageValueChange(MESSAGE_VALUE)
         viewModel.onSendClick()
-        assertEquals(
-            RuntimeException(Values.EMPTY_RECEIVERS).message,
-            viewModel.exceptions.value?.message
-        )
+        verify { exceptionEventManager.pushException(any()) }
     }
 
     @ExperimentalCoroutinesApi

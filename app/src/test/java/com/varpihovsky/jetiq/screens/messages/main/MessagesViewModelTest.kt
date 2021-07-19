@@ -10,9 +10,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
@@ -35,7 +33,8 @@ class MessagesViewModelTest : ViewModelTest() {
             navigationController,
             messagesModel,
             connectionManager,
-            appbarManager
+            appbarManager,
+            exceptionEventManager
         )
     }
 
@@ -65,7 +64,7 @@ class MessagesViewModelTest : ViewModelTest() {
     fun `When internet unavailable shows exception`() = runBlockingTest {
         every { connectionManager.isConnected(any()) } returns false
         messagesViewModel.onRefresh()
-        assertTrue(messagesViewModel.exceptions.firstOrNull() != null)
+        verify { exceptionEventManager.pushException(any()) }
     }
 
     companion object {

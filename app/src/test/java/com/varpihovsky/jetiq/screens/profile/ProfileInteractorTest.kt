@@ -1,6 +1,5 @@
 package com.varpihovsky.jetiq.screens.profile
 
-import com.varpihovsky.core.ConnectionManager
 import com.varpihovsky.core_repo.repo.ProfileRepo
 import com.varpihovsky.core_repo.repo.SubjectRepo
 import com.varpihovsky.jetiq.testCore.ViewModelTest
@@ -79,7 +78,7 @@ class ProfileInteractorTest : ViewModelTest() {
     @ExperimentalCoroutinesApi
     private fun initInteractor() {
         profileInteractor =
-            ProfileInteractor(viewModelDispatchers, profileModel, subjectModel, ConnectionManager())
+            ProfileInteractor(viewModelDispatchers, profileModel, subjectModel)
     }
 
     companion object {

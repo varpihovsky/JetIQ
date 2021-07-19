@@ -32,7 +32,8 @@ class MainSettingsViewModelTest : ViewModelTest() {
             messagesModel,
             subjectModel,
             listModel,
-            appbarManager
+            appbarManager,
+            exceptionEventManager
         )
     }
 

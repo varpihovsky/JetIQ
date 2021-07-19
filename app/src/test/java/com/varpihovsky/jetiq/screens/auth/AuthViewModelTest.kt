@@ -8,7 +8,8 @@ import com.varpihovsky.jetiq.testCore.ViewModelTest
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
-import junit.framework.Assert.*
+import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertFalse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
@@ -36,7 +37,8 @@ class AuthViewModelTest : ViewModelTest() {
             stubValidator,
             stubValidator,
             navigationController,
-            appbarManager
+            appbarManager,
+            exceptionEventManager
         )
     }
 
@@ -65,7 +67,7 @@ class AuthViewModelTest : ViewModelTest() {
     @Test
     fun `Test validations are processed`() = runBlockingTest {
         authorize(EMPTY, EMPTY)
-        assertTrue(viewModel.exceptions.value != null)
+        verify { exceptionEventManager.pushException(any()) }
     }
 
     @ExperimentalCoroutinesApi

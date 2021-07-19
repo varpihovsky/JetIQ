@@ -26,7 +26,8 @@ class ContactsViewModelTest : ViewModelDataTransferTest() {
             appbarManager,
             navigationController,
             listModel,
-            viewModelDataTransferManager
+            viewModelDataTransferManager,
+            exceptionEventManager
         )
     }
 
