@@ -76,7 +76,11 @@ fun deserializeTeachers(json: String): List<ListItemDTO> =
         listOf()
     }
 
-fun deserializeListItem(json: String, primaryKey: ListItemJsonKey): List<ListItemDTO> {
+fun deserializeListItem(json: String?, primaryKey: ListItemJsonKey): List<ListItemDTO> {
+    if (json == " null") {
+        return emptyList()
+    }
+
     val parser = JsonParser()
     val jsonObj = parser.parse(json).asJsonObject
     val members = mutableListOf<ListItemDTO>()
