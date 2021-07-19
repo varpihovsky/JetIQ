@@ -1,6 +1,6 @@
 package com.varpihovsky.core_repo.repo
 
-import com.varpihovsky.core.exceptions.ModelExceptionSender
+import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core_db.dao.ContactDAO
 import com.varpihovsky.core_network.managers.JetIQListManager
 import com.varpihovsky.repo_data.ContactDTO
@@ -8,7 +8,7 @@ import com.varpihovsky.repo_data.ListItemDTO
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-interface ListRepo : ModelExceptionSender {
+interface ListRepo {
     suspend fun getFaculties(): List<ListItemDTO>
     suspend fun getGroupByFaculty(facultyID: Int): List<ListItemDTO>
     suspend fun getStudentsByGroup(groupId: Int): List<ListItemDTO>
@@ -22,18 +22,23 @@ interface ListRepo : ModelExceptionSender {
     fun clear()
 
     companion object {
-        operator fun invoke(jetIQListManager: JetIQListManager, contactDAO: ContactDAO): ListRepo =
-            ListRepoImpl(
-                jetIQListManager,
-                contactDAO
-            )
+        operator fun invoke(
+            jetIQListManager: JetIQListManager,
+            contactDAO: ContactDAO,
+            exceptionEventManager: ExceptionEventManager
+        ): ListRepo = ListRepoImpl(
+            jetIQListManager,
+            contactDAO,
+            exceptionEventManager
+        )
     }
 }
 
 private class ListRepoImpl @Inject constructor(
     private val jetIQListManager: JetIQListManager,
-    private val contactDAO: ContactDAO
-) : ListRepo, Repo() {
+    private val contactDAO: ContactDAO,
+    exceptionEventManager: ExceptionEventManager
+) : ListRepo, Repo(exceptionEventManager) {
     override suspend fun getFaculties(): List<ListItemDTO> {
         return wrapException(
             result = jetIQListManager.getFaculties(),

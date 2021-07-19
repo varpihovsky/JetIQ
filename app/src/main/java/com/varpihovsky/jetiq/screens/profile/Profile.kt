@@ -151,8 +151,6 @@ fun Profile(
 
     MapLifecycle(viewModel = profileViewModel)
 
-    CollectExceptions(viewModel = profileViewModel)
-
     BackHandler(true, onBack = profileViewModel::onBackNavButtonClick)
 
     profileViewModel.emptyAppbar()

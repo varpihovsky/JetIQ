@@ -1,5 +1,6 @@
 package com.varpihovsky.core_repo.repo
 
+import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core_db.dao.ConfidentialDAO
 import com.varpihovsky.core_db.dao.ProfileDAO
 import com.varpihovsky.core_db.dao.SingleEntryDAO
@@ -10,8 +11,9 @@ import kotlinx.coroutines.launch
 
 abstract class ConfidentRepo internal constructor(
     private val confidentialDAO: ConfidentialDAO,
-    private val profileDAO: ProfileDAO
-) : Repo() {
+    private val profileDAO: ProfileDAO,
+    exceptionEventManager: ExceptionEventManager
+) : Repo(exceptionEventManager) {
     private var confidential: Confidential? = null
     private var session: String? = null
 

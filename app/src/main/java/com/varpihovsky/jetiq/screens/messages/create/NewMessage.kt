@@ -20,7 +20,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.varpihovsky.jetiq.ui.compose.*
+import com.varpihovsky.jetiq.ui.compose.Avatar
+import com.varpihovsky.jetiq.ui.compose.BackIconButton
+import com.varpihovsky.jetiq.ui.compose.InfoCard
+import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 import com.varpihovsky.jetiq.ui.theme.JetIQTheme
 import com.varpihovsky.ui_data.ReceiverType
 import com.varpihovsky.ui_data.UIReceiverDTO
@@ -67,8 +70,6 @@ fun NewMessageScreen(
     )
 
     MapLifecycle(viewModel = newMessageViewModel)
-
-    CollectExceptions(viewModel = newMessageViewModel)
 
     BackHandler(true, onBack = newMessageViewModel::onBackNavButtonClick)
 

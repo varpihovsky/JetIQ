@@ -8,6 +8,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
+import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core_nav.main.NavigationControllerStorage
 import com.varpihovsky.jetiq.ui.compose.Root
 import com.varpihovsky.jetiq.ui.theme.JetIQTheme
@@ -25,6 +26,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var navigationControllerStorage: NavigationControllerStorage
 
+    @Inject
+    lateinit var exceptionEventManager: ExceptionEventManager
+
     @ExperimentalFoundationApi
     @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +41,8 @@ class MainActivity : ComponentActivity() {
                 Root(
                     navigationViewModel = viewModel,
                     appbarManager = appbarManager,
-                    navigationControllerStorage = navigationControllerStorage
+                    navigationControllerStorage = navigationControllerStorage,
+                    exceptionEventManager = exceptionEventManager
                 )
             }
         }

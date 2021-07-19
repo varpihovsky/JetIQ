@@ -2,25 +2,37 @@ package com.varpihovsky.jetiq.ui.compose
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.startActivity
-import com.varpihovsky.core.exceptions.ViewModelWithException
+import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.jetiq.screens.JetIQViewModel
 
-
 @Composable
-fun CollectExceptions(
-    viewModel: ViewModelWithException
-) {
-    val exception by viewModel.exceptions.collectAsState()
-    exception?.message?.let {
-        ErrorDialog(message = it, onDismiss = viewModel::onExceptionProcessed)
+fun ExceptionProcessor(exceptionEventManager: ExceptionEventManager) {
+    val isExceptionShown = rememberSaveable { mutableStateOf(false) }
+    val currentException = exceptionEventManager.exceptions.collectAsState(
+        initial = Throwable(EMPTY_EXCEPTION_ID) //It could be sealed class, but IMO there is no diff
+    )
+
+    LaunchedEffect(key1 = currentException.value) {
+        if (currentException.value.message == EMPTY_EXCEPTION_ID) {
+            return@LaunchedEffect
+        }
+
+        isExceptionShown.value = true
+    }
+
+    if (isExceptionShown.value) {
+        ErrorDialog(message = currentException.value.message ?: ON_EMPTY_EXCEPTION_MESSAGE) {
+            isExceptionShown.value = false
+        }
     }
 }
+
+const val EMPTY_EXCEPTION_ID = "EMPTY"
+const val ON_EMPTY_EXCEPTION_MESSAGE = "Невідома помилка!"
 
 @Composable
 fun MapLifecycle(viewModel: JetIQViewModel) {

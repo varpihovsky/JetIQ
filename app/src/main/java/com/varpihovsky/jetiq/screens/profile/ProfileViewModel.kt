@@ -1,19 +1,15 @@
 package com.varpihovsky.jetiq.screens.profile
 
-import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.State
-import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.Refreshable
 import com.varpihovsky.core.appbar.AppbarManager
-import com.varpihovsky.core.exceptions.ViewModelWithException
+import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.jetiq.screens.JetIQViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,14 +17,12 @@ class ProfileViewModel @Inject constructor(
     private val profileInteractor: ProfileInteractor,
     private val navigationController: NavigationController,
     appbarManager: AppbarManager,
-) : JetIQViewModel(appbarManager, navigationController),
-    ViewModelWithException, Refreshable {
+    exceptionEventManager: ExceptionEventManager,
+) : JetIQViewModel(appbarManager, navigationController, exceptionEventManager), Refreshable {
     val data by lazy { Data() }
     val scrollState = ScrollState(0)
     override val isLoading: State<Boolean>
         get() = profileInteractor.isLoading
-
-    private var scrollChange = 0
 
     val profile = profileInteractor.profileData
 
@@ -46,10 +40,6 @@ class ProfileViewModel @Inject constructor(
         val markbookChecked: State<Boolean> = this@ProfileViewModel.markbookChecked
     }
 
-    init {
-        profileInteractor._exceptions = exceptions
-    }
-
     fun onSuccessToggle(checked: Boolean) {
         successChecked.value = checked
     }
@@ -59,14 +49,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     override fun onRefresh() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                profileInteractor.onRefresh()
-            } catch (e: RuntimeException) {
-                exceptions.value = e
-                Log.d("Application", Log.getStackTraceString(e))
-            }
-        }
+        profileInteractor.onRefresh()
     }
 
     fun onSettingsClick() {

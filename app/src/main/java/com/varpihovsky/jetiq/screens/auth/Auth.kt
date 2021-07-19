@@ -17,15 +17,12 @@ import androidx.compose.ui.unit.sp
 import com.varpihovsky.jetiq.R
 import com.varpihovsky.jetiq.ui.compose.CenterLayout
 import com.varpihovsky.jetiq.ui.compose.CenterLayoutItem
-import com.varpihovsky.jetiq.ui.compose.CollectExceptions
 import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 
 @Composable
 fun Auth(
     viewModel: AuthViewModel
 ) {
-    CollectExceptions(viewModel = viewModel)
-
     viewModel.emptyAppbar()
 
     MapLifecycle(viewModel = viewModel)

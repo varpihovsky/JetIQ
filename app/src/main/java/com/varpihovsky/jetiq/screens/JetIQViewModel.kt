@@ -8,17 +8,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.appbar.AppbarCommand
 import com.varpihovsky.core.appbar.AppbarManager
-import com.varpihovsky.core.exceptions.ViewModelWithException
+import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.util.ThreadSafeMutableState
 import com.varpihovsky.core_nav.main.NavigationController
-import kotlinx.coroutines.flow.MutableStateFlow
 
 abstract class JetIQViewModel(
     private val appbarManager: AppbarManager,
     private val navigationController: NavigationController,
-) : ViewModel(), ViewModelWithException {
-    override val exceptions: MutableStateFlow<Throwable?> = MutableStateFlow(null)
-
+    private val exceptionEventManager: ExceptionEventManager
+) : ViewModel() {
     fun assignAppbar(
         title: String? = null,
         icon: (@Composable () -> Unit)? = null,
@@ -56,7 +54,7 @@ abstract class JetIQViewModel(
 
     protected fun redirectExceptionToUI(exception: Exception) {
         Log.d("ViewModels", Log.getStackTraceString(exception))
-        exceptions.value = exception
+        exceptionEventManager.pushException(exception)
     }
 
     fun <T> mutableStateOf(t: T): ThreadSafeMutableState<T> {

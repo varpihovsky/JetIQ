@@ -4,9 +4,8 @@ import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
+import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.exceptions.Values
-import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
-import com.varpihovsky.core.exceptions.ViewModelWithException
 import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core.util.ReactiveTask
@@ -29,9 +28,9 @@ class NewMessageViewModel @Inject constructor(
     appbarManager: AppbarManager,
     private val navigationController: NavigationController,
     viewModelDataTransferManager: ViewModelDataTransferManager,
-    private val messagesModel: MessagesRepo
-) : JetIQViewModel(appbarManager, navigationController), ViewModelWithException,
-    ViewModelExceptionReceivable {
+    private val messagesModel: MessagesRepo,
+    exceptionEventManager: ExceptionEventManager
+) : JetIQViewModel(appbarManager, navigationController, exceptionEventManager) {
     val data by lazy { Data() }
 
     private val dataTransferFlow =
@@ -49,14 +48,6 @@ class NewMessageViewModel @Inject constructor(
 
     init {
         dataTransferTask.start()
-    }
-
-    override fun onCompose() {
-        messagesModel.receivable = this
-    }
-
-    override fun onDispose() {
-        messagesModel.receivable = null
     }
 
     override fun onBackNavButtonClick() {

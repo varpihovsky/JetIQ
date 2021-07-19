@@ -20,7 +20,6 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.varpihovsky.jetiq.R
-import com.varpihovsky.jetiq.ui.compose.CollectExceptions
 import com.varpihovsky.jetiq.ui.compose.InfoCard
 import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 import com.varpihovsky.jetiq.ui.loremIpsum1Paragraph
@@ -35,8 +34,6 @@ private val exampleMessage = UIMessageDTO(0, loremIpsumTitle, loremIpsum1Paragra
 @Composable
 fun MessagesScreen(viewModel: MessagesViewModel) {
     MapLifecycle(viewModel = viewModel)
-
-    CollectExceptions(viewModel = viewModel)
 
     BackHandler(true, onBack = viewModel::onBackNavButtonClick)
 

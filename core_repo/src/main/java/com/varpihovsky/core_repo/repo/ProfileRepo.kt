@@ -1,6 +1,6 @@
 package com.varpihovsky.core_repo.repo
 
-import com.varpihovsky.core.exceptions.ModelExceptionSender
+import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.exceptions.Values
 import com.varpihovsky.core_db.dao.ConfidentialDAO
 import com.varpihovsky.core_db.dao.ProfileDAO
@@ -11,7 +11,7 @@ import com.varpihovsky.repo_data.ProfileDTO
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-interface ProfileRepo : ModelExceptionSender {
+interface ProfileRepo {
     suspend fun login(login: String, password: String): Boolean
     suspend fun logout()
 
@@ -24,11 +24,13 @@ interface ProfileRepo : ModelExceptionSender {
         operator fun invoke(
             profileDAO: ProfileDAO,
             confidentialDAO: ConfidentialDAO,
-            jetIQProfileManager: JetIQProfileManager
+            jetIQProfileManager: JetIQProfileManager,
+            exceptionEventManager: ExceptionEventManager
         ): ProfileRepo = ProfileRepoImpl(
             profileDAO,
             confidentialDAO,
-            jetIQProfileManager
+            jetIQProfileManager,
+            exceptionEventManager
         )
     }
 }
@@ -36,8 +38,9 @@ interface ProfileRepo : ModelExceptionSender {
 private class ProfileRepoImpl @Inject constructor(
     private val profileDAO: ProfileDAO,
     private val confidentialDAO: ConfidentialDAO,
-    private val jetIQProfileManager: JetIQProfileManager
-) : Repo(), ProfileRepo {
+    private val jetIQProfileManager: JetIQProfileManager,
+    exceptionEventManager: ExceptionEventManager
+) : Repo(exceptionEventManager), ProfileRepo {
     override suspend fun login(login: String, password: String): Boolean {
         val profile = wrapException(
             result = jetIQProfileManager.login(login, password),
@@ -50,7 +53,7 @@ private class ProfileRepoImpl @Inject constructor(
         }
 
         if (profile == null) {
-            receivable?.send(RuntimeException(Values.LOGIN_OR_PASS_IS_NOT_RIGHT))
+            exceptionEventManager.pushException(RuntimeException(Values.LOGIN_OR_PASS_IS_NOT_RIGHT))
         }
 
         return profile != null

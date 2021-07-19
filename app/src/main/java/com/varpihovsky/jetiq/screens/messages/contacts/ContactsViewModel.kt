@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
+import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.util.*
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.ListRepo
@@ -23,8 +24,9 @@ class ContactsViewModel @Inject constructor(
     appbarManager: AppbarManager,
     private val navigationController: NavigationController,
     private val listModel: ListRepo,
-    private val dataTransferManager: ViewModelDataTransferManager
-) : JetIQViewModel(appbarManager, navigationController) {
+    private val dataTransferManager: ViewModelDataTransferManager,
+    exceptionEventManager: ExceptionEventManager
+) : JetIQViewModel(appbarManager, navigationController, exceptionEventManager) {
     val data by lazy { Data() }
 
     private val dataTransferFlow = dataTransferManager.getFlowByTag(DATA_TRANSFER_TAG)

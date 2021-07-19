@@ -1,8 +1,7 @@
 package com.varpihovsky.core_repo.repo
 
 import com.varpihovsky.core.Refreshable
-import com.varpihovsky.core.exceptions.ModelExceptionSender
-import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
+import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core_db.dao.ConfidentialDAO
 import com.varpihovsky.core_db.dao.MessageDAO
 import com.varpihovsky.core_db.dao.ProfileDAO
@@ -13,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-interface MessagesRepo : Refreshable, ModelExceptionSender {
+interface MessagesRepo : Refreshable {
     fun loadMessages()
 
     fun getMessages(): Flow<List<MessageDTO>>
@@ -27,12 +26,14 @@ interface MessagesRepo : Refreshable, ModelExceptionSender {
             jetIQMessageManager: JetIQMessageManager,
             messageDAO: MessageDAO,
             confidentialDAO: ConfidentialDAO,
-            profileDAO: ProfileDAO
+            profileDAO: ProfileDAO,
+            exceptionEventManager: ExceptionEventManager
         ): MessagesRepo = MessagesRepoImpl(
             jetIQMessageManager,
             messageDAO,
             confidentialDAO,
-            profileDAO
+            profileDAO,
+            exceptionEventManager
         )
     }
 }
@@ -42,8 +43,8 @@ private class MessagesRepoImpl @Inject constructor(
     private val messageDAO: MessageDAO,
     confidentialDAO: ConfidentialDAO,
     profileDAO: ProfileDAO,
-) : ConfidentRepo(confidentialDAO, profileDAO), MessagesRepo {
-    override var receivable: ViewModelExceptionReceivable? = null
+    exceptionEventManager: ExceptionEventManager
+) : ConfidentRepo(confidentialDAO, profileDAO, exceptionEventManager), MessagesRepo {
     override val isLoading
         get() = _isLoading
 

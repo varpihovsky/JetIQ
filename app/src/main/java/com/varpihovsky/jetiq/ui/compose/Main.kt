@@ -16,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.varpihovsky.core.appbar.AppbarManager
+import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.navigation.BottomNavigationItem
 import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core_nav.dsl.DisplayNavigation
@@ -42,7 +43,8 @@ import soup.compose.material.motion.materialSharedAxis
 fun Root(
     navigationViewModel: NavigationViewModel,
     navigationControllerStorage: NavigationControllerStorage,
-    appbarManager: AppbarManager
+    appbarManager: AppbarManager,
+    exceptionEventManager: ExceptionEventManager
 ) {
     val scaffoldState = rememberScaffoldState()
 
@@ -73,6 +75,8 @@ fun Root(
         topBar = { Appbar(appbarManager = appbarManager) }
 
     ) { paddingValues ->
+        ExceptionProcessor(exceptionEventManager = exceptionEventManager)
+
         val navigationController = initNavigation(navigationViewModel = navigationViewModel)
 
         navigationController.setNavigationCallback(navigationViewModel::onDestinationChange)

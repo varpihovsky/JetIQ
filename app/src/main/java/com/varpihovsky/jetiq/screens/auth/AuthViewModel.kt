@@ -3,9 +3,8 @@ package com.varpihovsky.jetiq.screens.auth
 import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.appbar.AppbarManager
+import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.exceptions.Values
-import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
-import com.varpihovsky.core.exceptions.ViewModelWithException
 import com.varpihovsky.core.exceptions.WrongDataException
 import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core.util.CoroutineDispatchers
@@ -21,13 +20,13 @@ import javax.inject.Named
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val profileModel: ProfileRepo,
+    private val profileRepo: ProfileRepo,
     @Named("login_checker") private val loginValidator: Validator<String>,
     @Named("password_checker") private val passwordValidator: Validator<String>,
     private val navigationController: NavigationController,
     appbarManager: AppbarManager,
-) : JetIQViewModel(appbarManager, navigationController), ViewModelWithException,
-    ViewModelExceptionReceivable {
+    exceptionEventManager: ExceptionEventManager,
+) : JetIQViewModel(appbarManager, navigationController, exceptionEventManager) {
     val data by lazy { Data() }
 
     private var login = mutableStateOf("")
@@ -40,14 +39,6 @@ class AuthViewModel @Inject constructor(
         val password: State<String> = this@AuthViewModel.password
         val passwordHidden: State<Boolean> = this@AuthViewModel.passwordHidden
         val progressShown: State<Boolean> = this@AuthViewModel.progressShown
-    }
-
-    override fun onCompose() {
-        profileModel.receivable = this
-    }
-
-    override fun onDispose() {
-        profileModel.receivable = null
     }
 
     fun onLoginChange(value: String) {
@@ -89,7 +80,7 @@ class AuthViewModel @Inject constructor(
     }
 
     private suspend fun authorize() {
-        if (profileModel.login(login.value, password.value)) {
+        if (profileRepo.login(login.value, password.value)) {
             navigationController.manage(NavigationDirections.profile.destination)
         }
     }

@@ -1,6 +1,7 @@
 package com.varpihovsky.core_repo.repo
 
 import com.varpihovsky.core.Refreshable
+import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core_db.dao.ConfidentialDAO
 import com.varpihovsky.core_db.dao.ProfileDAO
 import com.varpihovsky.core_db.dao.SubjectDAO
@@ -31,12 +32,14 @@ interface SubjectRepo : Refreshable {
             jetIQSubjectManager: JetIQSubjectManager,
             confidentialDAO: ConfidentialDAO,
             profileDAO: ProfileDAO,
+            exceptionEventManager: ExceptionEventManager
         ): SubjectRepo = SubjectRepoImpl(
             subjectDAO,
             subjectDetailsDAO,
             jetIQSubjectManager,
             confidentialDAO,
-            profileDAO
+            profileDAO,
+            exceptionEventManager
         )
     }
 }
@@ -47,7 +50,8 @@ private class SubjectRepoImpl @Inject constructor(
     private val jetIQSubjectManager: JetIQSubjectManager,
     confidentialDAO: ConfidentialDAO,
     profileDAO: ProfileDAO,
-) : ConfidentRepo(confidentialDAO, profileDAO), SubjectRepo {
+    exceptionEventManager: ExceptionEventManager
+) : ConfidentRepo(confidentialDAO, profileDAO, exceptionEventManager), SubjectRepo {
     override val isLoading = mutableStateOf(false)
 
     override fun onRefresh() {

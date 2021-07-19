@@ -1,6 +1,5 @@
 package com.varpihovsky.jetiq.di
 
-import com.varpihovsky.core.ConnectionManager
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core_repo.repo.ProfileRepo
 import com.varpihovsky.core_repo.repo.SubjectRepo
@@ -18,11 +17,9 @@ object InteractorsModule {
         dispatchers: CoroutineDispatchers,
         profileModel: ProfileRepo,
         subjectModel: SubjectRepo,
-        connectionManager: ConnectionManager
     ) = ProfileInteractor(
         dispatchers,
         profileModel,
         subjectModel,
-        connectionManager
     )
 }

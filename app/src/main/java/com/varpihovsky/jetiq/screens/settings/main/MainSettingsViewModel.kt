@@ -2,6 +2,7 @@ package com.varpihovsky.jetiq.screens.settings.main
 
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.appbar.AppbarManager
+import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core_nav.main.NavigationController
@@ -23,7 +24,8 @@ class MainSettingsViewModel @Inject constructor(
     private val subjectModel: SubjectRepo,
     private val listModel: ListRepo,
     appbarManager: AppbarManager,
-) : JetIQViewModel(appbarManager, navigationManager) {
+    exceptionEventManager: ExceptionEventManager,
+) : JetIQViewModel(appbarManager, navigationManager, exceptionEventManager) {
     fun onAboutClick() {
         navigationManager.manage(NavigationDirections.aboutSettings.destination)
     }

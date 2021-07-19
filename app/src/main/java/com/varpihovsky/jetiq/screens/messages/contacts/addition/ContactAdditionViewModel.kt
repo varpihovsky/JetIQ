@@ -3,8 +3,7 @@ package com.varpihovsky.jetiq.screens.messages.contacts.addition
 import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.appbar.AppbarManager
-import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
-import com.varpihovsky.core.exceptions.ViewModelWithException
+import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core.util.Selectable
 import com.varpihovsky.core.util.replaceAndReturn
@@ -21,9 +20,9 @@ class ContactAdditionViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val listRepo: ListRepo,
     appbarManager: AppbarManager,
-    navigationController: NavigationController
-) : JetIQViewModel(appbarManager, navigationController), ViewModelWithException,
-    ViewModelExceptionReceivable {
+    navigationController: NavigationController,
+    exceptionEventManager: ExceptionEventManager
+) : JetIQViewModel(appbarManager, navigationController, exceptionEventManager) {
     val data by lazy { Data() }
     lateinit var callback: (List<UIReceiverDTO>) -> Unit
 
@@ -54,14 +53,6 @@ class ContactAdditionViewModel @Inject constructor(
         viewModelScope.launch(dispatchers.IO) {
             faculties.value = listRepo.getFaculties().map { IdDropDownItem(it.id, it.text) }
         }
-    }
-
-    override fun onCompose() {
-        listRepo.receivable = this
-    }
-
-    override fun onDispose() {
-        listRepo.receivable = null
     }
 
     fun onDismiss() {

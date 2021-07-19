@@ -13,7 +13,6 @@ import com.varpihovsky.core.util.Selectable
 import com.varpihovsky.jetiq.screens.messages.contacts.Contact
 import com.varpihovsky.jetiq.screens.messages.contacts.SearchBar
 import com.varpihovsky.jetiq.ui.compose.BasicTextButton
-import com.varpihovsky.jetiq.ui.compose.CollectExceptions
 import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 import com.varpihovsky.jetiq.ui.compose.SubscribedExposedDropDownList
 import com.varpihovsky.ui_data.ContactTypeDropDownItem
@@ -32,8 +31,6 @@ fun AdditionDialog(
     MapLifecycle(viewModel = contactAdditionViewModel)
 
     contactAdditionViewModel.callback = onConfirmButtonClick
-
-    CollectExceptions(viewModel = contactAdditionViewModel)
 
     AdditionDialog(
         onDismissRequest = {

@@ -1,5 +1,6 @@
 package com.varpihovsky.core_repo
 
+import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core_db.dao.*
 import com.varpihovsky.core_network.managers.JetIQListManager
 import com.varpihovsky.core_network.managers.JetIQMessageManager
@@ -22,10 +23,12 @@ object RepoModule {
     @Singleton
     fun provideListRepo(
         jetIQListManager: JetIQListManager,
-        contactDAO: ContactDAO
+        contactDAO: ContactDAO,
+        exceptionEventManager: ExceptionEventManager
     ) = ListRepo(
         jetIQListManager,
-        contactDAO
+        contactDAO,
+        exceptionEventManager
     )
 
     @Provides
@@ -35,11 +38,13 @@ object RepoModule {
         messageDAO: MessageDAO,
         confidentialDAO: ConfidentialDAO,
         profileDAO: ProfileDAO,
+        exceptionEventManager: ExceptionEventManager
     ) = MessagesRepo(
         jetIQMessageManager,
         messageDAO,
         confidentialDAO,
-        profileDAO
+        profileDAO,
+        exceptionEventManager
     )
 
     @Provides
@@ -47,11 +52,13 @@ object RepoModule {
     fun provideProfileRepo(
         profileDAO: ProfileDAO,
         confidentialDAO: ConfidentialDAO,
-        jetIQProfileManager: JetIQProfileManager
+        jetIQProfileManager: JetIQProfileManager,
+        exceptionEventManager: ExceptionEventManager
     ) = ProfileRepo(
         profileDAO,
         confidentialDAO,
-        jetIQProfileManager
+        jetIQProfileManager,
+        exceptionEventManager
     )
 
     @Provides
@@ -62,11 +69,13 @@ object RepoModule {
         jetIQSubjectManager: JetIQSubjectManager,
         confidentialDAO: ConfidentialDAO,
         profileDAO: ProfileDAO,
+        exceptionEventManager: ExceptionEventManager
     ) = SubjectRepo(
         subjectDAO,
         subjectDetailsDAO,
         jetIQSubjectManager,
         confidentialDAO,
-        profileDAO
+        profileDAO,
+        exceptionEventManager
     )
 }

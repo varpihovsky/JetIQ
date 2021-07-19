@@ -4,8 +4,8 @@ import androidx.compose.runtime.State
 import com.varpihovsky.core.ConnectionManager
 import com.varpihovsky.core.Refreshable
 import com.varpihovsky.core.appbar.AppbarManager
+import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.exceptions.Values
-import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
 import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core.util.ReactiveTask
@@ -26,7 +26,8 @@ class MessagesViewModel @Inject constructor(
     private val messagesModel: MessagesRepo,
     private val connectionController: ConnectionManager,
     appbarManager: AppbarManager,
-) : JetIQViewModel(appbarManager, navigationManager), ViewModelExceptionReceivable, Refreshable {
+    exceptionEventManager: ExceptionEventManager,
+) : JetIQViewModel(appbarManager, navigationManager, exceptionEventManager), Refreshable {
     val data by lazy { Data() }
     override val isLoading
         get() = messagesModel.isLoading
@@ -52,14 +53,6 @@ class MessagesViewModel @Inject constructor(
 
     fun onNewMessageButtonClick() {
         navigationManager.manage(NavigationDirections.newMessage.destination)
-    }
-
-    override fun onCompose() {
-        messagesModel.receivable = this
-    }
-
-    override fun onDispose() {
-        messagesModel.receivable = null
     }
 
     override fun onRefresh() {

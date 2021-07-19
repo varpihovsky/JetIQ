@@ -1,14 +1,12 @@
 package com.varpihovsky.core_repo.repo
 
-import com.varpihovsky.core.exceptions.ModelExceptionSender
-import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
+import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.util.ThreadSafeMutableState
 import com.varpihovsky.core_network.result.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
-abstract class Repo : ModelExceptionSender {
-    override var receivable: ViewModelExceptionReceivable? = null
+abstract class Repo(val exceptionEventManager: ExceptionEventManager) {
 
     protected val modelScope = CoroutineScope(Dispatchers.IO)
 
@@ -44,7 +42,7 @@ abstract class Repo : ModelExceptionSender {
             onFailure()
         }
         else -> {
-            result.asFailure().error?.let { receivable?.send(it) }
+            result.asFailure().error?.let { exceptionEventManager.pushException(it) }
             onFailure()
         }
     }

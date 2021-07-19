@@ -1,9 +1,7 @@
 package com.varpihovsky.jetiq.screens.profile
 
 import androidx.compose.runtime.State
-import com.varpihovsky.core.ConnectionManager
 import com.varpihovsky.core.Refreshable
-import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core_repo.repo.ProfileRepo
 import com.varpihovsky.core_repo.repo.SubjectRepo
@@ -17,7 +15,6 @@ import com.varpihovsky.ui_data.formMarksInfo
 import com.varpihovsky.ui_data.mappers.toUIDTO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -28,13 +25,7 @@ class ProfileInteractor @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val profileModel: ProfileRepo,
     private val subjectModel: SubjectRepo,
-    private val connectionManager: ConnectionManager,
-) : Refreshable, ViewModelExceptionReceivable {
-    override val exceptions: MutableStateFlow<Throwable?>
-        get() = _exceptions
-
-    var _exceptions = MutableStateFlow<Throwable?>(null)
-
+) : Refreshable {
     override val isLoading: State<Boolean>
         get() = subjectModel.isLoading
 
