@@ -14,7 +14,7 @@ The aim of this app to provide stable and modern-looking application of JetIQ fo
 * Uses [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) for
   dependency injection.
 * Unit testing with [JUnit 4](https://junit.org/junit4/) and [MockK](https://mockk.io).
-*Uses [StateFlow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-state-flow/) to process events.
+* Uses [StateFlow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-state-flow/) to process events.
 
 ## Screenshots
 
