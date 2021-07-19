@@ -1,8 +1,8 @@
 package com.varpihovsky.jetiq.testCore
 
+import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core_nav.main.NavigationController
-import com.varpihovsky.jetiq.appbar.AppbarManager
 import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

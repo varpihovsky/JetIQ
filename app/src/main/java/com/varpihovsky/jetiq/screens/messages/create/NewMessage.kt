@@ -61,12 +61,10 @@ fun NewMessageScreenPreviewLight() {
 fun NewMessageScreen(
     newMessageViewModel: NewMessageViewModel
 ) {
-    newMessageViewModel.assignAppbar {
-        BasicAppBar(
-            title = "Нове повідомлення...",
-            onBackClick = newMessageViewModel::onBackNavButtonClick
-        )
-    }
+    newMessageViewModel.assignAppbar(
+        title = "Нове повідомлення...",
+        icon = { BackIconButton(onClick = newMessageViewModel::onBackNavButtonClick) }
+    )
 
     MapLifecycle(viewModel = newMessageViewModel)
 

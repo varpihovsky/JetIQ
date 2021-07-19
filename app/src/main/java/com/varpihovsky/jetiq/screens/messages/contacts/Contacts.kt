@@ -40,13 +40,11 @@ import com.varpihovsky.ui_data.UIReceiverDTO
 fun ContactsScreen(
     contactsViewModel: ContactsViewModel
 ) {
-    contactsViewModel.assignAppbar {
-        ContactsAppbar(
-            contactsViewModel = contactsViewModel,
-            isChoosing = contactsViewModel.data.isChoosing.value,
-            isExternalChoosing = contactsViewModel.data.isExternalChoosing.value
-        )
-    }
+    ContactsAppbar(
+        contactsViewModel = contactsViewModel,
+        isChoosing = contactsViewModel.data.isChoosing.value,
+        isExternalChoosing = contactsViewModel.data.isExternalChoosing.value
+    )
 
     MapLifecycle(viewModel = contactsViewModel)
 
@@ -81,9 +79,9 @@ fun ContactsAppbar(
     isExternalChoosing: Boolean
 ) {
     val text = if (isChoosing) "Вибір контактів..." else "Контакти"
-    TopAppBar(
-        title = { Text(text = text) },
-        navigationIcon = { BackIconButton(onClick = contactsViewModel::onBackNavButtonClick) },
+    contactsViewModel.assignAppbar(
+        title = text,
+        icon = { BackIconButton(onClick = contactsViewModel::onBackNavButtonClick) },
         actions = {
             IconButton(onClick = contactsViewModel::onAddClick) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Додати")

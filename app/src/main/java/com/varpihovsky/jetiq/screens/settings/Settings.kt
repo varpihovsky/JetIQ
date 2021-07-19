@@ -15,13 +15,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SettingsScreen(
-
-) {
-
-}
-
-@Composable
 fun SettingsButton(
     modifier: Modifier = Modifier,
     title: String,

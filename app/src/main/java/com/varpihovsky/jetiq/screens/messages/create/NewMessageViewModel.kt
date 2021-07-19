@@ -2,6 +2,7 @@ package com.varpihovsky.jetiq.screens.messages.create
 
 import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
+import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
 import com.varpihovsky.core.exceptions.Values
 import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
@@ -12,7 +13,6 @@ import com.varpihovsky.core.util.ReactiveTask
 import com.varpihovsky.core.util.remove
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.MessagesRepo
-import com.varpihovsky.jetiq.appbar.AppbarManager
 import com.varpihovsky.jetiq.screens.JetIQViewModel
 import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModel
 import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModelData

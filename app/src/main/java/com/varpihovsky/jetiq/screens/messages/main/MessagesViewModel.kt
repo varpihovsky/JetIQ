@@ -3,6 +3,7 @@ package com.varpihovsky.jetiq.screens.messages.main
 import androidx.compose.runtime.State
 import com.varpihovsky.core.ConnectionManager
 import com.varpihovsky.core.Refreshable
+import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.exceptions.Values
 import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
 import com.varpihovsky.core.navigation.NavigationDirections
@@ -10,7 +11,6 @@ import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core.util.ReactiveTask
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.MessagesRepo
-import com.varpihovsky.jetiq.appbar.AppbarManager
 import com.varpihovsky.jetiq.screens.JetIQViewModel
 import com.varpihovsky.ui_data.UIMessageDTO
 import com.varpihovsky.ui_data.mappers.toUIDTO

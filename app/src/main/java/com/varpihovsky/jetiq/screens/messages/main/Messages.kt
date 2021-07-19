@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,30 +34,24 @@ private val exampleMessage = UIMessageDTO(0, loremIpsumTitle, loremIpsum1Paragra
 @ExperimentalFoundationApi
 @Composable
 fun MessagesScreen(viewModel: MessagesViewModel) {
-    DisposableEffect(key1 = viewModel) {
-        viewModel.onCompose()
-        onDispose(viewModel::onDispose)
-    }
-
     MapLifecycle(viewModel = viewModel)
 
     CollectExceptions(viewModel = viewModel)
 
     BackHandler(true, onBack = viewModel::onBackNavButtonClick)
 
-    viewModel.assignAppbar {
-        TopAppBar(
-            title = { Text(text = "Повідомлення") },
-            actions = {
-                IconButton(onClick = viewModel::onContactsClick) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_baseline_person_24),
-                        contentDescription = null
-                    )
-                }
+    viewModel.assignAppbar(
+        title = "Повідомлення",
+        icon = null,
+        actions = {
+            IconButton(onClick = viewModel::onContactsClick) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_person_24),
+                    contentDescription = null
+                )
             }
-        )
-    }
+        }
+    )
 
     MessagesScreen(
         messages = viewModel.data.messages.value,

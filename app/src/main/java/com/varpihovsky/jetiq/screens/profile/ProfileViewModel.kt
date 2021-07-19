@@ -5,10 +5,10 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.Refreshable
+import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.exceptions.ViewModelWithException
 import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core_nav.main.NavigationController
-import com.varpihovsky.jetiq.appbar.AppbarManager
 import com.varpihovsky.jetiq.screens.JetIQViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

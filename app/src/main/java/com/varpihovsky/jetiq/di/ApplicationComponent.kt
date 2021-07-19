@@ -1,6 +1,6 @@
 package com.varpihovsky.jetiq.di
 
-import com.varpihovsky.jetiq.appbar.AppbarManager
+import com.varpihovsky.core.appbar.AppbarManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

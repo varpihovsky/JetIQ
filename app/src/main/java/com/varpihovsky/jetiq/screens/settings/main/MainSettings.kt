@@ -10,19 +10,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import com.varpihovsky.jetiq.R
 import com.varpihovsky.jetiq.screens.settings.SettingsButton
-import com.varpihovsky.jetiq.ui.compose.BasicAppBar
+import com.varpihovsky.jetiq.ui.compose.BackIconButton
 import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 
 @Composable
 fun MainSettingsScreen(
     mainSettingsViewModel: MainSettingsViewModel
 ) {
-    mainSettingsViewModel.assignAppbar {
-        BasicAppBar(
-            title = "Налаштування",
-            onBackClick = mainSettingsViewModel::onBackNavButtonClick
-        )
-    }
+    mainSettingsViewModel.assignAppbar(
+        title = "Налаштування",
+        icon = { BackIconButton(mainSettingsViewModel::onBackNavButtonClick) },
+        actions = null
+    )
 
     MapLifecycle(viewModel = mainSettingsViewModel)
 

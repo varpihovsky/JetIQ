@@ -26,6 +26,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_version
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -38,6 +44,7 @@ android {
 dependencies {
     //Dagger
     implementation "com.google.dagger:hilt-android:$dagger_version"
+    implementation 'androidx.compose.foundation:foundation-layout:1.0.0-beta07'
     kapt "com.google.dagger:hilt-compiler:$dagger_version"
     kapt 'androidx.hilt:hilt-compiler:1.0.0'
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0-alpha03"

@@ -7,7 +7,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -16,6 +15,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.navigation.BottomNavigationItem
 import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core_nav.dsl.DisplayNavigation
@@ -24,8 +24,6 @@ import com.varpihovsky.core_nav.main.EntryType
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.main.NavigationControllerStorage
 import com.varpihovsky.jetiq.NavigationViewModel
-import com.varpihovsky.jetiq.appbar.AppbarCommand
-import com.varpihovsky.jetiq.appbar.AppbarManager
 import com.varpihovsky.jetiq.screens.auth.Auth
 import com.varpihovsky.jetiq.screens.messages.contacts.ContactsScreen
 import com.varpihovsky.jetiq.screens.messages.create.NewMessageScreen
@@ -53,8 +51,8 @@ fun Root(
         bottomBar = {
             AnimatedVisibility(
                 visible = navigationViewModel.data.isNavbarShown.value,
-                enter = expandIn(expandFrom = Alignment.BottomCenter),
-                exit = shrinkOut(shrinkTowards = Alignment.TopCenter)
+                enter = expandVertically(expandFrom = Alignment.CenterVertically),
+                exit = shrinkVertically(shrinkTowards = Alignment.CenterVertically)
             ) {
                 BottomNavigationMenu(
                     selected = navigationViewModel.data.selectedNavbarEntry.value,
@@ -65,13 +63,14 @@ fun Root(
                                 it1
                             )
                         }
-                    },
-                    BottomNavigationItem.MessagesItem,
-                    BottomNavigationItem.ProfileItem,
+                    }, buttons = listOf(
+                        BottomNavigationItem.MessagesItem,
+                        BottomNavigationItem.ProfileItem,
+                    )
                 )
             }
         },
-        topBar = appbarManager.commands.collectAsState(AppbarCommand { }).value.bar
+        topBar = { Appbar(appbarManager = appbarManager) }
 
     ) { paddingValues ->
         val navigationController = initNavigation(navigationViewModel = navigationViewModel)
@@ -171,13 +170,12 @@ fun initNavigation(navigationViewModel: NavigationViewModel): NavigationControll
     }
 }
 
-
 @ExperimentalAnimationApi
 @Composable
 fun BottomNavigationMenu(
     selected: BottomNavigationItem,
     onClick: (BottomNavigationItem) -> Unit,
-    vararg buttons: BottomNavigationItem
+    buttons: List<BottomNavigationItem>
 ) {
     InfoCard(
         modifier = Modifier

@@ -19,10 +19,9 @@ fun navigationController(defaultRoute: String, block: NavigationControllerBuilde
 fun rememberNavigationController(
     defaultRoute: String,
     block: NavigationControllerBuilder.() -> Unit
-) =
-    rememberSaveable(saver = navigationControllerSaver()) {
-        NavigationControllerBuilder(defaultRoute).apply(block).build()
-    }
+) = rememberSaveable(saver = navigationControllerSaver()) {
+    NavigationControllerBuilder(defaultRoute).apply(block).build()
+}
 
 @Composable
 private fun navigationControllerSaver(): Saver<NavigationController, *> = Saver(
@@ -31,7 +30,11 @@ private fun navigationControllerSaver(): Saver<NavigationController, *> = Saver(
 )
 
 @Composable
-fun DisplayNavigation(modifier: Modifier = Modifier, controller: NavigationController) {
+fun DisplayNavigation(
+    modifier: Modifier = Modifier,
+    controller: NavigationController,
+
+    ) {
     val current = controller.operation.collectAsState(NavigationOperation.Navigate()).value
     var screen: NavigationOperation.Navigate = NavigationOperation.Navigate()
 

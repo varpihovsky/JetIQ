@@ -1,8 +1,8 @@
 package com.varpihovsky.jetiq.screens.settings.about
 
 import androidx.compose.runtime.State
+import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core_nav.main.NavigationController
-import com.varpihovsky.jetiq.appbar.AppbarManager
 import com.varpihovsky.jetiq.screens.JetIQViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

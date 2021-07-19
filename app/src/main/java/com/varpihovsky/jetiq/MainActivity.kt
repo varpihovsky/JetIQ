@@ -6,9 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
 import com.varpihovsky.core_nav.main.NavigationControllerStorage
-import com.varpihovsky.jetiq.appbar.AppbarManager
 import com.varpihovsky.jetiq.ui.compose.Root
 import com.varpihovsky.jetiq.ui.theme.JetIQTheme
 import dagger.hilt.android.AndroidEntryPoint

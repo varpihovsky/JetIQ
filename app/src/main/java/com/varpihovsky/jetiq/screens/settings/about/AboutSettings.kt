@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.varpihovsky.jetiq.screens.settings.SettingsButton
-import com.varpihovsky.jetiq.ui.compose.BasicAppBar
+import com.varpihovsky.jetiq.ui.compose.BackIconButton
 import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 import com.varpihovsky.jetiq.ui.compose.OpenPage
 
@@ -20,12 +20,10 @@ import com.varpihovsky.jetiq.ui.compose.OpenPage
 fun AboutSettingsScreen(
     aboutSettingsViewModel: AboutSettingsViewModel
 ) {
-    aboutSettingsViewModel.assignAppbar {
-        BasicAppBar(
-            title = "Про додаток",
-            onBackClick = aboutSettingsViewModel::onBackNavButtonClick
-        )
-    }
+    aboutSettingsViewModel.assignAppbar(
+        title = "Про додаток",
+        icon = { BackIconButton(aboutSettingsViewModel::onBackNavButtonClick) }
+    )
 
     MapLifecycle(viewModel = aboutSettingsViewModel)
 

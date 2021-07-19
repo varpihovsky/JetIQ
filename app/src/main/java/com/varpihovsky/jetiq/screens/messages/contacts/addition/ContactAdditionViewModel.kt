@@ -2,6 +2,7 @@ package com.varpihovsky.jetiq.screens.messages.contacts.addition
 
 import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
+import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.exceptions.ViewModelExceptionReceivable
 import com.varpihovsky.core.exceptions.ViewModelWithException
 import com.varpihovsky.core.util.CoroutineDispatchers
@@ -9,7 +10,6 @@ import com.varpihovsky.core.util.Selectable
 import com.varpihovsky.core.util.replaceAndReturn
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.ListRepo
-import com.varpihovsky.jetiq.appbar.AppbarManager
 import com.varpihovsky.jetiq.screens.JetIQViewModel
 import com.varpihovsky.ui_data.*
 import dagger.hilt.android.lifecycle.HiltViewModel

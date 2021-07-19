@@ -2,14 +2,15 @@ package com.varpihovsky.jetiq.screens
 
 import android.util.Log
 import androidx.annotation.CallSuper
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.varpihovsky.core.appbar.AppbarCommand
+import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.exceptions.ViewModelWithException
 import com.varpihovsky.core.util.ThreadSafeMutableState
 import com.varpihovsky.core_nav.main.NavigationController
-import com.varpihovsky.jetiq.appbar.AppbarCommand
-import com.varpihovsky.jetiq.appbar.AppbarManager
 import kotlinx.coroutines.flow.MutableStateFlow
 
 abstract class JetIQViewModel(
@@ -18,12 +19,26 @@ abstract class JetIQViewModel(
 ) : ViewModel(), ViewModelWithException {
     override val exceptions: MutableStateFlow<Throwable?> = MutableStateFlow(null)
 
+    fun assignAppbar(
+        title: String? = null,
+        icon: (@Composable () -> Unit)? = null,
+        actions: (@Composable RowScope.() -> Unit)? = null
+    ) {
+        appbarManager.manage(
+            AppbarCommand.Configured(
+                title = title,
+                navIcon = icon,
+                actions = actions
+            )
+        )
+    }
+
     fun assignAppbar(bar: @Composable () -> Unit) {
-        appbarManager.manage(AppbarCommand(bar))
+        appbarManager.manage(AppbarCommand.Custom(bar))
     }
 
     fun emptyAppbar() {
-        appbarManager.manage(AppbarCommand { })
+        appbarManager.manage(AppbarCommand.Empty)
     }
 
     @CallSuper
