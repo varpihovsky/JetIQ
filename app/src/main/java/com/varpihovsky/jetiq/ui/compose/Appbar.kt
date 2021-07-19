@@ -25,15 +25,17 @@ fun Appbar(appbarManager: AppbarManager) {
     val title = remember { mutableStateOf<String?>(null) }
     val navIcon = remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
     val actions = remember { mutableStateOf<(@Composable RowScope.() -> Unit)?>(null) }
+    val bar = remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
 
     when (current) {
         is AppbarCommand.Custom -> {
-            isShown.value = false
-            current.bar()
+            isShown.value = true
+            bar.value = current.bar
         }
         AppbarCommand.Empty -> isShown.value = false
 
         is AppbarCommand.Configured -> {
+            bar.value = null
             isShown.value = true
             title.value = current.title
             navIcon.value = current.navIcon
@@ -46,7 +48,7 @@ fun Appbar(appbarManager: AppbarManager) {
         enter = expandVertically(expandFrom = Alignment.CenterVertically, clip = false),
         exit = shrinkVertically(shrinkTowards = Alignment.CenterVertically)
     ) {
-        TopAppBar(
+        bar.value?.invoke() ?: TopAppBar(
             title = {
                 MaterialSharedAxis(
                     targetState = title.value,
@@ -56,14 +58,7 @@ fun Appbar(appbarManager: AppbarManager) {
                     it?.let { Text(text = it) }
                 }
             },
-            navigationIcon = {
-                AnimatedVisibility(
-                    modifier = Modifier.animateContentSize(),
-                    visible = navIcon.value != null
-                ) {
-                    navIcon.value?.invoke()
-                }
-            },
+            navigationIcon = navIcon.value,
             actions = {
                 AnimatedVisibility(
                     modifier = Modifier.animateContentSize(),
