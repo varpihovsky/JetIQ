@@ -69,13 +69,15 @@ object RepoModule {
         jetIQSubjectManager: JetIQSubjectManager,
         confidentialDAO: ConfidentialDAO,
         profileDAO: ProfileDAO,
-        exceptionEventManager: ExceptionEventManager
+        exceptionEventManager: ExceptionEventManager,
+        profileRepo: ProfileRepo
     ) = SubjectRepo(
         subjectDAO,
         subjectDetailsDAO,
         jetIQSubjectManager,
         confidentialDAO,
         profileDAO,
-        exceptionEventManager
+        exceptionEventManager,
+        profileRepo
     )
 }

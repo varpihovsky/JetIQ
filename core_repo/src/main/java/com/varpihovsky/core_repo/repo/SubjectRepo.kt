@@ -32,14 +32,16 @@ interface SubjectRepo : Refreshable {
             jetIQSubjectManager: JetIQSubjectManager,
             confidentialDAO: ConfidentialDAO,
             profileDAO: ProfileDAO,
-            exceptionEventManager: ExceptionEventManager
+            exceptionEventManager: ExceptionEventManager,
+            profileRepo: ProfileRepo
         ): SubjectRepo = SubjectRepoImpl(
             subjectDAO,
             subjectDetailsDAO,
             jetIQSubjectManager,
             confidentialDAO,
             profileDAO,
-            exceptionEventManager
+            exceptionEventManager,
+            profileRepo
         )
     }
 }
@@ -50,7 +52,8 @@ private class SubjectRepoImpl @Inject constructor(
     private val jetIQSubjectManager: JetIQSubjectManager,
     confidentialDAO: ConfidentialDAO,
     profileDAO: ProfileDAO,
-    exceptionEventManager: ExceptionEventManager
+    exceptionEventManager: ExceptionEventManager,
+    private val profileRepo: ProfileRepo
 ) : ConfidentRepo(confidentialDAO, profileDAO, exceptionEventManager), SubjectRepo {
     override val isLoading = mutableStateOf(false)
 
@@ -82,7 +85,16 @@ private class SubjectRepoImpl @Inject constructor(
         val session = requireSession()
         wrapException(
             result = jetIQSubjectManager.getSuccessJournal(session),
-            onSuccess = { processSubjects(it.value, session) },
+            onSuccess = {
+                if (it.value.isNotEmpty()) {
+                    processSubjects(it.value, session)
+                    return@wrapException
+                }
+
+                val confidential = requireConfidential()
+                profileRepo.login(confidential.login, confidential.password)
+                loadSuccessJournal()
+            }
         )
     }
 
