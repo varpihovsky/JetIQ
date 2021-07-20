@@ -29,7 +29,8 @@ class JetIQSubjectManagerImpl(private val jetIQApi: JetIQApi) : JetIQManager(),
     JetIQSubjectManager {
     override suspend fun getSuccessJournal(session: String): Result<List<SubjectDTO>> {
         return mapResult(jetIQApi.getSuccessJournal(cookie = session)) {
-            Result.Success.Value(deserializeSubjects(it.value.string()))
+            val subjects = deserializeSubjects(it.value.string())
+            Result.Success.Value(subjects)
         }
     }
 

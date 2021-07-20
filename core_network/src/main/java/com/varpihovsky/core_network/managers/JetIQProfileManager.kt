@@ -10,7 +10,7 @@ import com.varpihovsky.repo_data.ProfileDTO
 interface JetIQProfileManager {
     suspend fun login(login: String, password: String): Result<ProfileDTO?>
 
-    suspend fun logout(): EmptyResult
+    suspend fun logout(session: String): EmptyResult
 
     companion object {
         operator fun invoke(jetIQApi: JetIQApi): JetIQProfileManager =
@@ -47,7 +47,7 @@ class JetIQProfileManagerImpl(private val jetIQApi: JetIQApi) : JetIQManager(),
         }
     }
 
-    override suspend fun logout(): EmptyResult {
-        return jetIQApi.logout()
+    override suspend fun logout(session: String): EmptyResult {
+        return jetIQApi.logout(session)
     }
 }

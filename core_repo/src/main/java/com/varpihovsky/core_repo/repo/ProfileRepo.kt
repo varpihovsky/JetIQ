@@ -9,6 +9,7 @@ import com.varpihovsky.core_network.managers.JetIQProfileManager
 import com.varpihovsky.repo_data.Confidential
 import com.varpihovsky.repo_data.ProfileDTO
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.last
 import javax.inject.Inject
 
 interface ProfileRepo {
@@ -60,7 +61,9 @@ private class ProfileRepoImpl @Inject constructor(
     }
 
     override suspend fun logout() {
-        wrapException(jetIQProfileManager.logout())
+        profileDAO.get().last().session?.let {
+            wrapException(jetIQProfileManager.logout(it))
+        }
     }
 
     override fun getProfile() = profileDAO.get()
