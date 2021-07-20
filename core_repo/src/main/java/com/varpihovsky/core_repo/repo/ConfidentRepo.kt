@@ -9,6 +9,11 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
+/**
+ * Standard class for all Repo classes which need data about current user.
+ *
+ * @author Vladyslav Podrezenko
+ */
 abstract class ConfidentRepo internal constructor(
     private val confidentialDAO: ConfidentialDAO,
     private val profileDAO: ProfileDAO,
@@ -47,11 +52,21 @@ abstract class ConfidentRepo internal constructor(
         singleEntryDAO.get().filterNotNull().collect { collector(it) }
     }
 
+    /**
+     * Returns [Confidential] if it there is in repo. If it isn't causes thread block.
+     *
+     * @return [Confidential]
+     */
     protected fun requireConfidential(): Confidential {
         while (confidential == null);
         return confidential!!
     }
 
+    /**
+     * Returns session if there is in repo. If it isn't causes thread block.
+     *
+     * @return session
+     */
     protected fun requireSession(): String {
         while (session == null);
         return session!!

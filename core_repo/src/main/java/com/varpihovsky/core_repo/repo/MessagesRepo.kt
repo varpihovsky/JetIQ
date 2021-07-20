@@ -12,13 +12,34 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * Interface used for loading and sending messages.
+ *
+ * @author Vladyslav Podrezenko
+ */
 interface MessagesRepo : Refreshable {
+    /**
+     * Requests messages from server and adds missing. If message is present in database - ignores.
+     */
     fun loadMessages()
 
+    /**
+     * Returns flow of current messages in database. To load messages use [loadMessages] method.
+     *
+     * @return list of [MessageDTO]
+     */
     fun getMessages(): Flow<List<MessageDTO>>
 
+    /**
+     * Sends message to user specified in [MessageToSendDTO].
+     *
+     * @param messageToSendDTO contains all message-related data.
+     */
     suspend fun sendMessage(messageToSendDTO: MessageToSendDTO)
 
+    /**
+     * Clears database.
+     */
     fun clear()
 
     companion object {

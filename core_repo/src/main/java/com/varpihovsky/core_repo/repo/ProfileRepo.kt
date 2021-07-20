@@ -12,13 +12,46 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.last
 import javax.inject.Inject
 
+/**
+ * Interface which used for authorization on server and saving all user-related data.
+ *
+ * @author Vladyslav Podrezenko
+ */
 interface ProfileRepo {
+    /**
+     * Adds received user-related data into database and returns true if user successfully authorized.
+     * If something went wrong returns false. Every successful call of function resets all user-related
+     * data to a new one.
+     *
+     * @param login login of current user.
+     * @param password password of current user.
+     *
+     * @return signal about operation status.
+     */
     suspend fun login(login: String, password: String): Boolean
+
+    /**
+     * Deletes current information in server-side only.
+     */
     suspend fun logout()
 
+    /**
+     * Returns current user flow.
+     *
+     * @return flow of [ProfileDTO]
+     */
     fun getProfile(): Flow<ProfileDTO>
+
+    /**
+     * Returns current user flow of confidential.
+     *
+     * @return flow of [Confidential]
+     */
     fun getConfidential(): Flow<Confidential>
 
+    /**
+     * Clears all user-related data.
+     */
     fun clear()
 
     companion object {

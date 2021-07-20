@@ -8,17 +8,65 @@ import com.varpihovsky.repo_data.ListItemDTO
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+/**
+ * Interface used for controlling contacts-related data. To add contact you should map response from
+ * methods [getStudentsByGroup] and [getTeacherByQuery] to [ContactDTO] class.
+ *
+ * @author Vladyslav Podrezenko
+ */
 interface ListRepo {
+    /**
+     * Returns list of received faculties if request is successful and empty list when response was
+     * failed.
+     *
+     * @return list of [ListItemDTO]
+     */
     suspend fun getFaculties(): List<ListItemDTO>
+
+    /**
+     * Returns list of groups by facultyId which you have got from [getFaculties] method. If request
+     * was successful returns response value. If it was failed returns empty list.
+     *
+     * @return list of [ListItemDTO]
+     */
     suspend fun getGroupByFaculty(facultyID: Int): List<ListItemDTO>
+
+    /**
+     * Returns list of students by group id which you have got from [getGroupByFaculty] method.
+     * If request was successful returns response value. If it was failed returns empty list.
+     *
+     * @return list of [ListItemDTO]
+     */
     suspend fun getStudentsByGroup(groupId: Int): List<ListItemDTO>
 
+    /**
+     * Returns list of teachers by query. If request was successful returns response value.
+     * If it was failed returns empty list.
+     *
+     * @return list of [ListItemDTO]
+     */
     suspend fun getTeacherByQuery(query: String): List<ListItemDTO>
 
+    /**
+     * Returns flow of contacts saved in database.
+     *
+     * @return list of [ContactDTO]
+     */
     fun getContacts(): Flow<List<ContactDTO>>
+
+    /**
+     * Adds contact into database.
+     */
     fun addContact(contactDTO: ContactDTO)
+
+    /**
+     * Removes contact from database with same id.
+     */
     fun removeContact(contactDTO: ContactDTO)
 
+    /**
+     * Clears database.
+     */
     fun clear()
 
     companion object {

@@ -16,13 +16,44 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * Interface used for providing subject data of current user.
+ *
+ * @author Vladyslav Podrezenko
+ */
 interface SubjectRepo : Refreshable {
+    /**
+     * Loads all data about subjects from success journal and markbook and stores them in database.
+     * Ignores all new changes.
+     */
     suspend fun load()
 
+    /**
+     * Returns flow of current saved subjects provided by success journal.
+     *
+     * @return list of [SubjectDTO]
+     */
     fun getSubjects(): Flow<List<SubjectDTO>>
+
+    /**
+     * Returns flow of subject details from subject provided by success journal.
+     * Every detail has same id as [SubjectDTO] from [getSubjects] method. Always sorted same as
+     * result from [getSubjects] method.
+     *
+     * @return list of [SubjectDetailsDTO]
+     */
     fun getSubjectsDetails(): Flow<List<SubjectDetailsDTO>>
+
+    /**
+     * Returns flow of markbook subjects.
+     *
+     * @return list of [MarkbookSubjectDTO]
+     */
     fun getMarkbook(): Flow<List<MarkbookSubjectDTO>>
 
+    /**
+     * Clears database.
+     */
     fun clear()
 
     companion object {
