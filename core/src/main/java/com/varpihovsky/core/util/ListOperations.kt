@@ -1,5 +1,8 @@
 package com.varpihovsky.core.util
 
+/**
+ * Returns same list but instead of same as "from" element, has "to" element.
+ */
 fun <T> List<T>.replaceAndReturn(from: T, to: T): List<T> {
     val mutable = toMutableList()
     val fromIndex = mutable.indexOf(from)
@@ -8,24 +11,18 @@ fun <T> List<T>.replaceAndReturn(from: T, to: T): List<T> {
     return mutable
 }
 
+/**
+ * Returns same list but without specified element.
+ */
 fun <T> List<T>.remove(t: T): List<T> {
     val mutable = toMutableList()
     mutable.remove(t)
     return mutable
 }
 
-fun <T> List<T>.removeLastAndReturn(): List<T> {
-    val mutable = toMutableList()
-    mutable.removeLast()
-    return mutable
-}
-
-fun <T> List<T>.addAndReturn(element: T): List<T> {
-    val mutable = toMutableList()
-    mutable.add(element)
-    return mutable
-}
-
+/**
+ * Returns only selected and mapped to dto list.
+ */
 fun <T> List<Selectable<T>>.selectedOnly(): List<T> {
     return filter { it.isSelected }.map { it.dto }
 }

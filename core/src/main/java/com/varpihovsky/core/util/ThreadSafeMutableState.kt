@@ -7,6 +7,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.reflect.KProperty
 
+/**
+ * Wrapper over [MutableState] class. Used to change value on every dispatcher safely.
+ *
+ * @param value default value.
+ * @param scope scope in which value will be changed.
+ *
+ * @author Vladyslav Podrezenko
+ */
 class ThreadSafeMutableState<V>(value: V, private val scope: CoroutineScope) :
     MutableState<V> {
     private val state = mutableStateOf(value)

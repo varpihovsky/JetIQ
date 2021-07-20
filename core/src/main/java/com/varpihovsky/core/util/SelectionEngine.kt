@@ -8,6 +8,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
+/**
+ * Class that used for simplifying selection process. To get data out of it use [state] value.
+ *
+ * @param dataSource used to put data inside of it.
+ * @param scope used to map lifecycle with ViewModel.
+ * @param dispatcher if you need to specify dispatcher.
+ *
+ * @author Vladyslav Podrezenko
+ */
 class SelectionEngine<T>(
     dataSource: Flow<List<T>>,
     scope: CoroutineScope,
@@ -31,17 +40,31 @@ class SelectionEngine<T>(
         }
     }
 
+    /**
+     * Looks for [Selectable] with same dto and changes [Selectable.isSelected] to opposite.
+     * Than puts it into [state].
+     */
     fun toggle(element: T) {
         _state.value.find { it.dto == element }?.let { toggle(it) }
     }
 
+    /**
+     * Toggles same element with same [Selectable.isSelected] field value and changes [Selectable.isSelected]
+     * to opposite. Than puts it into [state].
+     */
     fun toggle(element: Selectable<T>) {
         _state.value = _state.value.replaceAndReturn(element, element.selectedToggle())
     }
 
+    /**
+     * Deselects every selected element and puts it into [state].
+     */
     fun deselectAll() {
         _state.value = _state.value.map { Selectable(it.dto, false) }
     }
 
+    /**
+     * Returns true if there is any selected [Selectable].
+     */
     fun isAnySelected() = _state.value.any { it.isSelected }
 }
