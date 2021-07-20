@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import soup.compose.material.motion.MotionSpec
 import soup.compose.material.motion.materialFade
 
-sealed class NavigationOperation {
+internal sealed class NavigationOperation {
 
     class Navigate(
         val route: String = "",

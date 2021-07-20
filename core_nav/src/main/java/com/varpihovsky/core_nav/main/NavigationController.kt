@@ -1,18 +1,28 @@
 package com.varpihovsky.core_nav.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.core.os.bundleOf
-import com.varpihovsky.core.util.addAndReturn
-import com.varpihovsky.core.util.removeLastAndReturn
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
+import com.varpihovsky.core.eventBus.EventBus
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
+import java.util.*
 
+/**
+ * Class which is used to control navigation stack. Designed to work only with composable functions.
+ *
+ * @author Vladyslav Podrezenko
+ */
 class NavigationController(
+    private val eventBus: EventBus,
     internal var entries: List<NavigationEntry>,
     private var defaultRoute: String
 ) {
-    val operation by lazy { backStack.map { backStackToOperation(it) }.distinctUntilChanged() }
+    internal val operation = eventBus.bus
+        .mapNotNull { it as? List<NavigationEntry> }
+        .map { backStackToOperation(it) }
+
+    private val backStack: Stack<NavigationEntry> = Stack()
 
     private var backStackSize = 1
 
@@ -20,8 +30,15 @@ class NavigationController(
 
     private var callback: ((String) -> Unit)? = null
 
-    private val backStack =
-        MutableStateFlow(listOf(checkNotNull(entries.find { defaultRoute == it.route })))
+    init {
+        val default = getDefault()
+
+        if (default != null) {
+            resetBackStack(default)
+        } else {
+            Log.d("NavigationController", "Haven't found default route. Probably restoring state.")
+        }
+    }
 
     private fun backStackToOperation(stack: List<NavigationEntry>): NavigationOperation {
         if (stack.isEmpty()) {
@@ -63,34 +80,57 @@ class NavigationController(
     private fun isSubEntryOut(entry: NavigationEntry, stack: List<NavigationEntry>) =
         entry.type == EntryType.SubMenu && stack.size < backStackSize
 
+    /**
+     * Removes last element from backstack and than invokes callback. If last entry was removed
+     * application is finishing.
+     */
     fun onBack() {
-        backStack.value = backStack.value.removeLastAndReturn()
+        backStack.pop()
+        eventBus.push(backStack.toList())
 
-        backStack.value.lastOrNull()?.route?.let { callback?.invoke(it) }
+        backStack.lastOrNull()?.route?.let { callback?.invoke(it) }
     }
 
+    /**
+     * Finds route in the entries and than adds it to stack. Behaviour depends on EntryType.
+     * Invokes callback before actually navigating. But invokes after navigating back in [onBack] method.
+     *
+     * @see [EntryType]
+     */
     fun manage(route: String) {
         val entry = checkNotNull(entries.find { route == it.route })
 
         callback?.invoke(route)
 
         when (entry.type) {
-            EntryType.Main -> backStack.value = listOf(entry)
-            EntryType.SubMenu -> backStack.value = backStack.value.addAndReturn(entry)
+            EntryType.Main -> resetBackStack(entry)
+            EntryType.SubMenu -> eventBus.push(backStack.apply { push(entry) }.toList())
         }
     }
 
+    /**
+     * Sets callback which will be invoked before every navigation.
+     */
     fun setNavigationCallback(callback: (String) -> Unit) {
         this.callback = callback
     }
 
+    /**
+     * Saves state and puts it into bundle. Used only in
+     * [Navigation Saver][com.varpihovsky.core_nav.dsl.navigationControllerSaver].
+     */
     fun saveState(): Bundle {
         return bundleOf(
             ENTRIES_KEY to entries.toTypedArray(),
-            DEFAULT_ROUTE_KEY to defaultRoute
+            DEFAULT_ROUTE_KEY to defaultRoute,
+            BACKSTACK_KEY to backStack.toTypedArray()
         )
     }
 
+    /**
+     * Restores state from gained bundle. Used only in
+     * [Navigation Saver][com.varpihovsky.core_nav.dsl.navigationControllerSaver].
+     */
     fun restoreState(bundle: Bundle?) {
         bundle?.apply {
             getParcelableArray(ENTRIES_KEY)?.toList()?.let {
@@ -99,7 +139,22 @@ class NavigationController(
             getString(DEFAULT_ROUTE_KEY)?.let {
                 defaultRoute = it
             }
+            getParcelableArray(BACKSTACK_KEY)?.let { saved ->
+                saved.forEach { backStack.push(it as NavigationEntry) }
+                previousEntry =
+                    if (backStack.size >= 2) backStack.elementAt(backStack.size - 2) else null
+                backStackSize = backStack.size
+                eventBus.push(backStack.toList())
+            }
         }
+    }
+
+    private fun getDefault() = entries.find { it.route == defaultRoute }
+
+    private fun resetBackStack(entry: NavigationEntry) {
+        backStack.clear()
+        backStack.push(entry)
+        eventBus.push(listOf(entry))
     }
 
     private fun onFinished() {
@@ -109,5 +164,6 @@ class NavigationController(
     companion object {
         private const val ENTRIES_KEY = "entries"
         private const val DEFAULT_ROUTE_KEY = "route"
+        private const val BACKSTACK_KEY = "backstack"
     }
 }
