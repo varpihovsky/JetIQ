@@ -16,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.varpihovsky.core.appbar.AppbarManager
+import com.varpihovsky.core.eventBus.EventBus
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.navigation.BottomNavigationItem
 import com.varpihovsky.core.navigation.NavigationDirections
@@ -44,7 +45,8 @@ fun Root(
     navigationViewModel: NavigationViewModel,
     navigationControllerStorage: NavigationControllerStorage,
     appbarManager: AppbarManager,
-    exceptionEventManager: ExceptionEventManager
+    exceptionEventManager: ExceptionEventManager,
+    eventBus: EventBus
 ) {
     val scaffoldState = rememberScaffoldState()
 
@@ -77,7 +79,10 @@ fun Root(
     ) { paddingValues ->
         ExceptionProcessor(exceptionEventManager = exceptionEventManager)
 
-        val navigationController = initNavigation(navigationViewModel = navigationViewModel)
+        val navigationController = initNavigation(
+            navigationViewModel = navigationViewModel,
+            eventBus = eventBus
+        )
 
         navigationController.setNavigationCallback(navigationViewModel::onDestinationChange)
 
@@ -93,10 +98,16 @@ fun Root(
 @ExperimentalAnimationApi
 @Composable
 @ExperimentalFoundationApi
-fun initNavigation(navigationViewModel: NavigationViewModel): NavigationController {
+fun initNavigation(
+    navigationViewModel: NavigationViewModel,
+    eventBus: EventBus
+): NavigationController {
     val startDestination = remember { navigationViewModel.getStartDestination() }
 
-    return rememberNavigationController(startDestination) {
+    return rememberNavigationController(
+        eventBus = eventBus,
+        defaultRoute = startDestination
+    ) {
         entry {
             composable =
                 { Auth(viewModel = viewModel(key = NavigationDirections.authentication.destination)) }
