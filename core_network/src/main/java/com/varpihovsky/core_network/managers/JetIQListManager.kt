@@ -8,13 +8,45 @@ import com.varpihovsky.core_network.parsers.deserializeTeachers
 import com.varpihovsky.core_network.result.Result
 import com.varpihovsky.repo_data.ListItemDTO
 
+/**
+ * Interface with which you can get public VNTU data like faculties, student groups, students or teachers.
+ *
+ * @author Vladyslav Podrezenko
+ */
 interface JetIQListManager {
+    /**
+     * Returns list of faculties.
+     *
+     * @return list of [ListItemDTO]
+     */
     suspend fun getFaculties(): Result<List<ListItemDTO>>
 
+    /**
+     * Returns list of student groups by faculty.
+     *
+     * @param facultyId id of faculty got in [getFaculties]
+     *
+     * @return list of [ListItemDTO]
+     */
     suspend fun getGroupsByFaculty(facultyId: Int): Result<List<ListItemDTO>>
 
+    /**
+     * Returns list of students by group.
+     *
+     * @param groupId id of group got in [getGroupsByFaculty]
+     *
+     * @return list of [ListItemDTO]
+     */
     suspend fun getStudentsByGroup(groupId: Int): Result<List<ListItemDTO>>
 
+    /**
+     * Returns list of teachers by query. If there are no teacher with name containing specified query
+     * returns empty list.
+     *
+     * @param query should contain teacher name.
+     *
+     * @return list of [ListItemDTO]
+     */
     suspend fun getTeacherByQuery(query: String): Result<List<ListItemDTO>>
 
     companion object {

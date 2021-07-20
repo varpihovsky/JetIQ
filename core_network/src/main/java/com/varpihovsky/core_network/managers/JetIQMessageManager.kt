@@ -8,11 +8,40 @@ import com.varpihovsky.repo_data.CSRF
 import com.varpihovsky.repo_data.MessageDTO
 import com.varpihovsky.repo_data.MessageToSendDTO
 
+/**
+ * Interface with which you can send or receive messages.
+ *
+ * @author Vladyslav Podrezenko
+ */
 interface JetIQMessageManager {
+    /**
+     * Returns list of messages.
+     *
+     * @param session session of current user.
+     *
+     * @return list of [MessageDTO]
+     */
     suspend fun getMessages(session: String): Result<List<MessageDTO>>
 
+    /**
+     * Returns [csrf][CSRF] that is needed for message sending.
+     *
+     * @param session session of current user.
+     *
+     * @return [csrf][CSRF]
+     */
     suspend fun getCsrf(session: String): Result<CSRF>
 
+    /**
+     * Sends message to receiver specified in [message class][MessageToSendDTO]. To send need to
+     * get [csrf][CSRF].
+     *
+     * @param session session of current user
+     * @param csrf parameter needed to message sending by server.
+     * @param message message which should contain all field needed for sending.
+     *
+     * @return [EmptyResult]
+     */
     suspend fun sendMessage(session: String, csrf: CSRF, message: MessageToSendDTO): EmptyResult
 
     companion object {

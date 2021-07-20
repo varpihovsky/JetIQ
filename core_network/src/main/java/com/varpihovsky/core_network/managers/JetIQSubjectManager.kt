@@ -11,11 +11,38 @@ import com.varpihovsky.repo_data.MarkbookSubjectDTO
 import com.varpihovsky.repo_data.SubjectDTO
 import com.varpihovsky.repo_data.relations.SubjectDetailsWithTasks
 
+/**
+ * Interface with which you can get information about current user's subjects.
+ *
+ * @author Vladyslav Podrezenko
+ */
 interface JetIQSubjectManager {
+    /**
+     * Returns list of subjects specified in success journal.
+     *
+     * @param session session of current user.
+     *
+     * @return list of [SubjectDTO]
+     */
     suspend fun getSuccessJournal(session: String): Result<List<SubjectDTO>>
 
+    /**
+     * Returns details of subject which you got in [getSuccessJournal].
+     *
+     * @param session session of current user.
+     * @param cardId id of subject got in [getSuccessJournal]
+     *
+     * @return [SubjectDetailsWithTasks]
+     */
     suspend fun getSubjectDetails(session: String, cardId: Int): Result<SubjectDetailsWithTasks>
 
+    /**
+     * Returns list of subjects specified in markbook.
+     *
+     * @param session session of current user.
+     *
+     * @return list of [MarkbookSubjectDTO]
+     */
     suspend fun getMarkbookSubjects(session: String): Result<List<MarkbookSubjectDTO>>
 
     companion object {
