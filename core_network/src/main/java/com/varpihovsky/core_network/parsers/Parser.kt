@@ -44,6 +44,10 @@ fun deserializeSubjectDetails(json: String): SubjectDetailsDTO {
 }
 
 fun deserializeSubjects(json: String): List<SubjectDTO> {
+    if (json.contains("st_group is empty")) {
+        return emptyList()
+    }
+
     val gson = Gson()
     val parser = JsonParser()
     val jsonObj = parser.parse(json).asJsonObject
