@@ -1,7 +1,6 @@
 package com.varpihovsky.jetiq.screens.messages.main
 
 import androidx.compose.runtime.State
-import com.varpihovsky.core.ConnectionManager
 import com.varpihovsky.core.Refreshable
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
@@ -23,7 +22,6 @@ class MessagesViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val navigationManager: NavigationController,
     private val messagesModel: MessagesRepo,
-    private val connectionController: ConnectionManager,
     appbarManager: AppbarManager,
     exceptionEventManager: ExceptionEventManager,
 ) : JetIQViewModel(appbarManager, navigationManager, exceptionEventManager), Refreshable {

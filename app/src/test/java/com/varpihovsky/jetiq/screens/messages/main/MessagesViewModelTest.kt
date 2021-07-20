@@ -1,6 +1,5 @@
 package com.varpihovsky.jetiq.screens.messages.main
 
-import com.varpihovsky.core.ConnectionManager
 import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.jetiq.testCore.ViewModelTest
@@ -18,7 +17,6 @@ import org.junit.Test
 class MessagesViewModelTest : ViewModelTest() {
     private lateinit var messagesViewModel: MessagesViewModel
     private val messagesModel: MessagesRepo = mockk(relaxed = true)
-    private val connectionManager: ConnectionManager = mockk(relaxed = true)
 
     @ExperimentalCoroutinesApi
     override fun setup() = runBlockingTest {
@@ -32,7 +30,6 @@ class MessagesViewModelTest : ViewModelTest() {
             viewModelDispatchers,
             navigationController,
             messagesModel,
-            connectionManager,
             appbarManager,
             exceptionEventManager
         )
@@ -49,22 +46,6 @@ class MessagesViewModelTest : ViewModelTest() {
     fun `Test navigates to new messages screen on new message button click`() = runBlockingTest {
         messagesViewModel.onNewMessageButtonClick()
         verify(exactly = 1) { navigationController.manage(NavigationDirections.newMessage.destination) }
-    }
-
-    @ExperimentalCoroutinesApi
-    @Test
-    fun `When internet available refreshing is called`() = runBlockingTest {
-        every { connectionManager.isConnected(any()) } returns true
-        messagesViewModel.onRefresh()
-        verify(exactly = 1) { messagesModel.onRefresh() }
-    }
-
-    @ExperimentalCoroutinesApi
-    @Test
-    fun `When internet unavailable shows exception`() = runBlockingTest {
-        every { connectionManager.isConnected(any()) } returns false
-        messagesViewModel.onRefresh()
-        verify { exceptionEventManager.pushException(any()) }
     }
 
     companion object {
