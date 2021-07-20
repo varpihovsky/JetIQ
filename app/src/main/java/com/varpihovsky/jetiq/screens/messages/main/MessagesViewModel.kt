@@ -5,7 +5,6 @@ import com.varpihovsky.core.ConnectionManager
 import com.varpihovsky.core.Refreshable
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
-import com.varpihovsky.core.exceptions.Values
 import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core.util.ReactiveTask
@@ -56,11 +55,7 @@ class MessagesViewModel @Inject constructor(
     }
 
     override fun onRefresh() {
-        if (connectionController.isConnected()) {
-            messagesModel.onRefresh()
-        } else {
-            redirectExceptionToUI(RuntimeException(Values.INTERNET_UNAVAILABLE))
-        }
+        messagesModel.onRefresh()
     }
 
     fun onContactsClick() {
