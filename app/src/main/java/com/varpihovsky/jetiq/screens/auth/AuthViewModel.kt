@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.exceptions.Values
-import com.varpihovsky.core.exceptions.WrongDataException
 import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core.util.Validator
@@ -68,11 +67,11 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun isInputInvalid(): Boolean =
-        if (!loginValidator.validate(login.value) && !passwordValidator.validate(password.value)) {
-            redirectExceptionToUI(WrongDataException(Values.LOGIN_OR_PASS_IS_NOT_RIGHT))
-            true
-        } else {
-            false
+        (!loginValidator.validate(login.value) && !passwordValidator.validate(password.value)).also {
+            // if invalid - show on ui.
+            if (it) {
+                redirectExceptionToUI(RuntimeException(Values.LOGIN_OR_PASS_IS_NOT_RIGHT))
+            }
         }
 
     private fun processLogin() {

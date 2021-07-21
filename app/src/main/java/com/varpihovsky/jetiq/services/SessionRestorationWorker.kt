@@ -9,32 +9,33 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 
+/**
+ * Due to JetIQ server deletes session every 10 hours, we need to restore it.
+ * This service reauthorizes on server periodically.
+ *
+ * @author Vladyslav Podrezenko
+ */
 @HiltWorker
 class SessionRestorationWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
     private val profileModel: ProfileRepo
 ) : Worker(context, workerParameters) {
-    private val scope = CoroutineScope(Dispatchers.IO)
-
-    private lateinit var job: Job
-
     override fun doWork(): Result {
-
-        job = scope.launch {
-            profileModel.getConfidential().collect {
-                profileModel.logout()
-                profileModel.login(it.login, it.password)
-                job.cancel()
-            }
+        CoroutineScope(Dispatchers.IO).launch {
+            reauthorize()
         }
 
         return Result.success()
     }
 
-
+    private suspend fun reauthorize() {
+        profileModel.getConfidential().last().let {
+            profileModel.logout()
+            profileModel.login(it.login, it.password)
+        }
+    }
 }

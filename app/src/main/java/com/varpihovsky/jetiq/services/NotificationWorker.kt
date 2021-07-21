@@ -13,29 +13,39 @@ import androidx.work.WorkerParameters
 import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.jetiq.R
 import com.varpihovsky.repo_data.MessageDTO
+import com.varpihovsky.ui_data.UIMessageDTO
+import com.varpihovsky.ui_data.mappers.toUIDTO
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.launch
 
+/**
+ * Background service which notifies user about new messages.
+ *
+ * @author Vladyslav Podrezenko
+ */
 @HiltWorker
 class NotificationWorker @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted workerParameters: WorkerParameters,
     private val messagesModel: MessagesRepo
 ) : Worker(context, workerParameters) {
-    private var currentMessages: List<MessageDTO> = listOf()
-    private val scope = CoroutineScope(Dispatchers.IO)
-    private lateinit var job: Job
+    private lateinit var currentMessages: List<MessageDTO>
 
+    /**
+     * Creates notification channel if required.
+     * Notifies user about message if it isn't in database.
+     */
     override fun doWork(): Result {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel()
         }
 
-        runBlocking {
-            job = scope.launch { handleMessages() }
-            job.join()
+        CoroutineScope(Dispatchers.IO).launch {
+            handleMessages()
         }
 
         return Result.success()
@@ -54,35 +64,32 @@ class NotificationWorker @AssistedInject constructor(
     }
 
     private suspend fun handleMessages() {
-        messagesModel.getMessages().collect {
-            if (currentMessages.isEmpty()) {
-                currentMessages = it
-            } else {
-                notifyNewMessages(it)
-            }
-        }
+        currentMessages = messagesModel.getMessages().last()
+
+        messagesModel.loadMessages()
+        messagesModel.getMessages().last().let { notifyNewMessages(it) }
     }
 
     private fun notifyNewMessages(newMessages: List<MessageDTO>) {
-        val builder = initBuilder()
-        newMessages.filter { !currentMessages.contains(it) }
+        val builder = createBuilder()
+        newMessages
+            .filter { !currentMessages.contains(it) }
+            .map { it.toUIDTO() }
             .forEach { createNotification(builder, it) }
-        job.cancel()
     }
 
-    private fun initBuilder() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    private fun createBuilder() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         Notification.Builder(context, CHANNEL_ID)
     } else {
         Notification.Builder(context)
     }
 
-    private fun createNotification(builder: Notification.Builder, messageDTO: MessageDTO) =
+    private fun createNotification(builder: Notification.Builder, message: UIMessageDTO) =
         builder.setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle(NOTIFICATION_TITLE)
-            .setContentText("${messageDTO.body}")
+            .setContentText("${message.sender}: ${message.message}")
             .let {
-                NotificationManagerCompat.from(context)
-                    .notify(messageDTO.msg_id.toInt(), it.build())
+                NotificationManagerCompat.from(context).notify(message.id, it.build())
             }
 
 

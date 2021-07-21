@@ -28,7 +28,7 @@ class NavigationController(
 
     private var previousEntry: NavigationEntry? = null
 
-    private var callback: ((String) -> Unit)? = null
+    private var callback: ((NavigationEntry) -> Unit)? = null
 
     init {
         val default = getDefault()
@@ -88,7 +88,7 @@ class NavigationController(
         backStack.pop()
         eventBus.push(backStack.toList())
 
-        backStack.lastOrNull()?.route?.let { callback?.invoke(it) }
+        backStack.lastOrNull()?.let { callback?.invoke(it) }
     }
 
     /**
@@ -100,7 +100,7 @@ class NavigationController(
     fun manage(route: String) {
         val entry = checkNotNull(entries.find { route == it.route })
 
-        callback?.invoke(route)
+        callback?.invoke(entry)
 
         when (entry.type) {
             EntryType.Main -> resetBackStack(entry)
@@ -111,7 +111,7 @@ class NavigationController(
     /**
      * Sets callback which will be invoked before every navigation.
      */
-    fun setNavigationCallback(callback: (String) -> Unit) {
+    fun setNavigationCallback(callback: (NavigationEntry) -> Unit) {
         this.callback = callback
     }
 
