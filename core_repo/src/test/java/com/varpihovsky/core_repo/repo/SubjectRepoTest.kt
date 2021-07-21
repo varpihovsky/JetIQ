@@ -1,5 +1,22 @@
 package com.varpihovsky.core_repo.repo
 
+/* JetIQ
+ * Copyright © 2021 Vladyslav Podrezenko
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import com.varpihovsky.core_db.dao.SubjectDAO
 import com.varpihovsky.core_db.dao.SubjectDetailsDAO
 import com.varpihovsky.core_network.managers.JetIQSubjectManager
@@ -22,6 +39,7 @@ class SubjectRepoTest : ConfidentRepoTest() {
     private val subjectDAO: SubjectDAO = mockk(relaxed = true)
     private val subjectDetailsDAO: SubjectDetailsDAO = mockk(relaxed = true)
     private val jetIQSubjectManager: JetIQSubjectManager = mockk(relaxed = true)
+    private val profileRepo: ProfileRepo = mockk(relaxed = true)
 
     @ExperimentalCoroutinesApi
     override fun setup() {
@@ -37,7 +55,9 @@ class SubjectRepoTest : ConfidentRepoTest() {
             subjectDetailsDAO,
             jetIQSubjectManager,
             confidentialDAO,
-            profileDAO
+            profileDAO,
+            exceptionEventManager,
+            profileRepo
         )
     }
 

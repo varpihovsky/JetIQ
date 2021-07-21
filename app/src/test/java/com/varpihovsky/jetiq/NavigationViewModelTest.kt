@@ -1,5 +1,22 @@
 package com.varpihovsky.jetiq
 
+/* JetIQ
+ * Copyright © 2021 Vladyslav Podrezenko
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import com.varpihovsky.core.navigation.BottomNavigationItem
 import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.ProfileRepo
@@ -14,23 +31,9 @@ import kotlinx.coroutines.flow.flow
 import org.junit.Before
 import org.junit.Test
 
-
 class NavigationViewModelTest : ViewModelTest() {
     private lateinit var sharedViewModel: NavigationViewModel
     private val profileModel: ProfileRepo = mockk()
-
-    private val mainScreens = listOf(
-        NavigationDirections.profile.destination,
-        NavigationDirections.messages.destination
-    )
-
-    private val subScreens = listOf(
-        NavigationDirections.authentication.destination,
-        NavigationDirections.aboutSettings.destination,
-        NavigationDirections.mainSettings.destination,
-        NavigationDirections.newMessage.destination,
-        NavigationDirections.contacts.destination,
-    )
 
     @ExperimentalCoroutinesApi
     @Before
@@ -39,8 +42,7 @@ class NavigationViewModelTest : ViewModelTest() {
 
         sharedViewModel = NavigationViewModel(
             viewModelDispatchers,
-            profileModel,
-            appbarManager
+            profileModel
         )
     }
 
