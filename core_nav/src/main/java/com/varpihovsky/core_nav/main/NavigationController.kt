@@ -138,9 +138,8 @@ class NavigationController(
      */
     fun saveState(): Bundle {
         return bundleOf(
-            ENTRIES_KEY to entries.toTypedArray(),
             DEFAULT_ROUTE_KEY to defaultRoute,
-            BACKSTACK_KEY to backStack.toTypedArray()
+            BACKSTACK_KEY to backStack.map { it.route }.toTypedArray()
         )
     }
 
@@ -150,20 +149,24 @@ class NavigationController(
      */
     fun restoreState(bundle: Bundle?) {
         bundle?.apply {
-            getParcelableArray(ENTRIES_KEY)?.toList()?.let {
-                entries = it as List<NavigationEntry>
-            }
             getString(DEFAULT_ROUTE_KEY)?.let {
                 defaultRoute = it
             }
             getParcelableArray(BACKSTACK_KEY)?.let { saved ->
-                saved.forEach { backStack.push(it as NavigationEntry) }
+                mapRoutesToEntries(saved as Array<String>).forEach { backStack.push(it) }
                 previousEntry =
                     if (backStack.size >= 2) backStack.elementAt(backStack.size - 2) else null
                 backStackSize = backStack.size
                 eventBus.push(backStack.toList())
             }
         }
+    }
+
+    private fun mapRoutesToEntries(savedStack: Array<String>): List<NavigationEntry> {
+        return savedStack
+            .map { route -> entries.find { it.route == route } }
+            .onEach { if (it == null) throw IllegalStateException() }
+            .toList() as List<NavigationEntry>
     }
 
     private fun getDefault() = entries.find { it.route == defaultRoute }

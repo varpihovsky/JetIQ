@@ -45,6 +45,9 @@ fun navigationController(
 
 /**
  * Creates navigation controller in composable functions and remembers it.
+ * Should be invoked on every Activity creation, because
+ * [NavigationEntry][com.varpihovsky.core_nav.main.NavigationEntry] can't be parcelized.
+ * Backstack is saved. You haven't to restore it manually.
  *
  * @see [NavigationControllerBuilder]
  *

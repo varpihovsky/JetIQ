@@ -27,6 +27,18 @@ import soup.compose.material.motion.MotionSpec
 /**
  * Class that used to create [NavigationEntry].
  *
+ * There is five values you have to specify:
+ *
+ * 1. [composable][NavigationEntry.composable]
+ *
+ * 2. [route][NavigationEntry.route]
+ *
+ * 3. [entryType][NavigationEntry.type]
+ *
+ * 4. [inAnimation][NavigationEntry.inAnimation]
+ *
+ * 5. [outAnimation][NavigationEntry.outAnimation]
+ *
  * @see [NavigationEntry]
  *
  * @author Vladyslav Podrezenko

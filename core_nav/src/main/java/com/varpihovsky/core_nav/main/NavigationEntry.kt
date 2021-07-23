@@ -17,10 +17,7 @@ package com.varpihovsky.core_nav.main
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import android.os.Parcelable
 import androidx.compose.runtime.Composable
-import kotlinx.parcelize.Parcelize
-import kotlinx.parcelize.RawValue
 import soup.compose.material.motion.MotionSpec
 
 /**
@@ -28,13 +25,11 @@ import soup.compose.material.motion.MotionSpec
  *
  * @author Vladyslav Podrezenko
  */
-@Parcelize
 class NavigationEntry(
     /**
      * Specifies composable of entry. On one controller can be shown only one composable.
      */
-    val composable: @RawValue @Composable () -> Unit,
-
+    var composable: @Composable () -> Unit,
     /**
      * Specifies route of entry.
      */
@@ -45,16 +40,16 @@ class NavigationEntry(
      *
      * @see EntryType
      */
-    val type: @RawValue EntryType,
+    val type: EntryType,
 
     /**
      * Specifies animation that will be played when composable appears.
      */
-    val inAnimation: @RawValue MotionSpec,
+    val inAnimation: MotionSpec,
 
     /**
      * Specifies animation that will be played when composable removed from stack.
      */
-    val outAnimation: @RawValue MotionSpec
-) : Parcelable
+    val outAnimation: MotionSpec
+)
 
