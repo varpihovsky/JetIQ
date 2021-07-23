@@ -1,5 +1,7 @@
 package com.varpihovsky.core_network
 
+import com.google.gson.annotations.SerializedName
+
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -18,17 +20,28 @@ package com.varpihovsky.core_network
  */
 
 data class NullableProfile(
-    val course_num: Int?,
-    val d_id: String?,
-    val d_name: String?,
-    val dob: String?,
+    @SerializedName("course_num")
+    val course: Int?,
+    @SerializedName("d_id")
+    val departmentId: String?,
+    @SerializedName("d_name")
+    val departmentName: String?,
+    @SerializedName("email")
     val email: String?,
-    val f_id: String?,
-    val gr_id: String?,
-    val gr_name: String?,
+    @SerializedName("f_id")
+    val facultyId: String?,
+    @SerializedName("gr_id")
+    val groupId: String?,
+    @SerializedName("gr_name")
+    val groupName: String?,
+    @SerializedName("id")
     val id: String?,
-    val photo_url: String?,
+    @SerializedName("photo_url")
+    val photoUrl: String?,
+    @SerializedName("session")
     val session: String?,
-    val spec_id: String?,
-    val u_name: String?
+    @SerializedName("spec_id")
+    val specId: String?,
+    @SerializedName("u_name")
+    val fullName: String?
 )

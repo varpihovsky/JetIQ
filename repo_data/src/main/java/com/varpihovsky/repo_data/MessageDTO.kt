@@ -19,12 +19,19 @@ package com.varpihovsky.repo_data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
 @Entity
 data class MessageDTO(
+    @SerializedName("body")
     val body: String?,
-    val id_from: String,
-    val is_t_from: String,
-    @PrimaryKey(autoGenerate = false) val msg_id: String,
+    @SerializedName("id_from")
+    val idFrom: String,
+    @SerializedName("is_t_from")
+    val isTeacher: String,
+    @SerializedName("msg_id")
+    @PrimaryKey(autoGenerate = false)
+    val id: String,
+    @SerializedName("time")
     val time: String
 )

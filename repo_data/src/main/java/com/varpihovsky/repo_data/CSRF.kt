@@ -1,5 +1,7 @@
 package com.varpihovsky.repo_data
 
+import com.google.gson.annotations.SerializedName
+
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -17,4 +19,4 @@ package com.varpihovsky.repo_data
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-data class CSRF(val body: String)
+data class CSRF(@SerializedName("body") val body: String)

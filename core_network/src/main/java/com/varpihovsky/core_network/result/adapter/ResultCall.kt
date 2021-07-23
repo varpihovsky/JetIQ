@@ -17,6 +17,7 @@ package com.varpihovsky.core_network.result.adapter
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import android.util.Log
 import com.varpihovsky.core_network.result.HttpException
 import com.varpihovsky.core_network.result.Result
 import okio.Timeout
@@ -59,6 +60,8 @@ internal class ResultCall<T>(proxy: Call<T>) : CallDelegate<T, Result<T>>(proxy)
                     )
                 )
             }
+            Log.d("Network", result.toString())
+
             callback.onResponse(proxy, Response.success(result))
         }
 
