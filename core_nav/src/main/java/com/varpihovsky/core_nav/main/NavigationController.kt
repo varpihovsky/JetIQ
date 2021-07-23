@@ -126,28 +126,21 @@ class NavigationController(
     }
 
     /**
-     * Sets callback which will be invoked before every navigation.
+     * Sets callback which will be invoked before every navigation. Callback can't be saved.
+     * You have to specify it on every activity recreation.
      */
     fun setNavigationCallback(callback: (NavigationEntry) -> Unit) {
         this.callback = callback
     }
 
-    /**
-     * Saves state and puts it into bundle. Used only in
-     * [Navigation Saver][com.varpihovsky.core_nav.dsl.navigationControllerSaver].
-     */
-    fun saveState(): Bundle {
+    internal fun saveState(): Bundle {
         return bundleOf(
             DEFAULT_ROUTE_KEY to defaultRoute,
             BACKSTACK_KEY to backStack.map { it.route }.toTypedArray()
         )
     }
 
-    /**
-     * Restores state from gained bundle. Used only in
-     * [Navigation Saver][com.varpihovsky.core_nav.dsl.navigationControllerSaver].
-     */
-    fun restoreState(bundle: Bundle?) {
+    internal fun restoreState(bundle: Bundle?) {
         bundle?.apply {
             getString(DEFAULT_ROUTE_KEY)?.let {
                 defaultRoute = it
