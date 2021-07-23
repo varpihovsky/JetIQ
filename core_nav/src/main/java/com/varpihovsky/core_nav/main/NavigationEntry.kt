@@ -33,7 +33,7 @@ class NavigationEntry(
     /**
      * Specifies composable of entry. On one controller can be shown only one composable.
      */
-    val composable: @Composable () -> Unit,
+    val composable: @RawValue @Composable () -> Unit,
 
     /**
      * Specifies route of entry.
