@@ -22,6 +22,8 @@ The aim of this app to provide stable and modern-looking application of JetIQ fo
 
 ![](./img/profile.png)
 
+![](./img/profile_lists.png)
+
 ### Messages
 
 ![](./img/messages.png)
