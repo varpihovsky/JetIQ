@@ -26,7 +26,7 @@ interface MessageDAO {
     @Query("SELECT * FROM MessageDTO")
     fun getMessages(): Flow<List<MessageDTO>>
 
-    @Query("SELECT * FROM MessageDTO WHERE msg_id=:id")
+    @Query("SELECT * FROM MessageDTO WHERE id=:id")
     fun getMessageById(id: Int): Flow<MessageDTO>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

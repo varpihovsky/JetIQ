@@ -33,7 +33,7 @@ import com.varpihovsky.repo_data.*
         MessageDTO::class,
         ContactDTO::class
     ],
-    version = 10
+    version = 11
 )
 abstract class JetIQDatabase : RoomDatabase() {
     abstract fun profileDAO(): ProfileDAO
