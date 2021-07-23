@@ -19,13 +19,21 @@ package com.varpihovsky.jetiq.ui.compose
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +48,10 @@ import com.varpihovsky.jetiq.R
 import com.varpihovsky.ui_data.MarksInfo
 import com.varpihovsky.ui_data.UIProfileDTO
 import com.varpihovsky.ui_data.UISubjectDTO
+import soup.compose.material.motion.Axis
+import soup.compose.material.motion.MaterialSharedAxis
+
+private const val DEFAULT_DRAG_VELOCITY = 100
 
 @Composable
 fun ProfileName(modifier: Modifier = Modifier, text: String) {
@@ -142,6 +154,85 @@ fun MarksList(
         }
     }
 }
+
+@Composable
+fun SubjectListPart(subjects: List<UISubjectDTO>) {
+    val maxSemester = rememberMaxSemester(subjects)
+    val semesterState = rememberSaveable { mutableStateOf(1) }
+    val listToShow =
+        remember { mutableStateOf(filterBySemester(subjects, semesterState.value)) }
+    val forward = rememberSaveable { mutableStateOf(true) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .draggable(
+                state = rememberDraggableState {},
+                orientation = Orientation.Horizontal,
+                onDragStopped = { velocity ->
+                    if (velocity > DEFAULT_DRAG_VELOCITY && semesterState.value != 1) {
+                        semesterState.value--
+                        listToShow.value = filterBySemester(subjects, semesterState.value)
+                        forward.value = false
+                    } else if (velocity < -DEFAULT_DRAG_VELOCITY && semesterState.value < maxSemester) {
+                        semesterState.value++
+                        listToShow.value = filterBySemester(subjects, semesterState.value)
+                        forward.value = true
+                    }
+                }
+            )
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            IconButton(icon = Icons.Default.KeyboardArrowLeft) {
+                if (semesterState.value != 1) {
+                    semesterState.value--
+                    listToShow.value = filterBySemester(subjects, semesterState.value)
+                    forward.value = false
+                }
+            }
+            Text(
+                text = "Семестр ${semesterState.value}",
+                style = MaterialTheme.typography.h5
+            )
+            IconButton(icon = Icons.Default.KeyboardArrowRight) {
+                if (semesterState.value < maxSemester) {
+                    semesterState.value++
+                    listToShow.value = filterBySemester(subjects, semesterState.value)
+                    forward.value = true
+                }
+            }
+        }
+        MaterialSharedAxis(
+            targetState = semesterState.value,
+            axis = Axis.X,
+            forward = forward.value
+        ) {
+            Column {
+                for (subject in listToShow.value) {
+                    Subject(uiSubjectDTO = subject)
+                    Divider(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 3.dp, bottom = 3.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun rememberMaxSemester(subjects: List<UISubjectDTO>) = remember {
+    var counter = 0
+    subjects.forEach { if (it.semester > counter) counter++ }
+    counter
+}
+
+private fun filterBySemester(subjects: List<UISubjectDTO>, semester: Int) =
+    subjects.filter { it.semester == semester }
 
 @Composable
 fun SubjectList(

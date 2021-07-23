@@ -17,6 +17,7 @@ package com.varpihovsky.jetiq.screens.profile
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.State
 import com.varpihovsky.core.Refreshable
@@ -51,6 +52,10 @@ class ProfileViewModel @Inject constructor(
 
     private val successChecked = mutableStateOf(false)
     private val markbookChecked = mutableStateOf(false)
+
+    init {
+        Log.d(null, "Created")
+    }
 
     inner class Data {
         val successChecked: State<Boolean> = this@ProfileViewModel.successChecked

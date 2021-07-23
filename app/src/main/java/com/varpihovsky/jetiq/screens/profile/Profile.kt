@@ -74,6 +74,14 @@ fun Profile(
 
     profileViewModel.emptyAppbar()
 
+    // collectAsState provides empty value on first composition and than recompose with right one
+    // That's producing bug that breaks lists visibility animation and current list semester state.
+    // This is pretty bad fix of this bug. The better one is to make implementation of produceState
+    // which saves state via rememberSavable command.
+    if (markbookSubjects.isEmpty() && !profileViewModel.isLoading.value) {
+        return
+    }
+
     Profile(
         profile = profileState,
         scrollState = scrollState,
@@ -201,7 +209,7 @@ fun Markbook(
                     .fillMaxWidth()
                     .wrapContentHeight()
             ) {
-                SubjectList(subjects = markbookSubjects)
+                SubjectListPart(subjects = markbookSubjects)
             }
         }
     )
@@ -226,7 +234,7 @@ fun Success(
                     .fillMaxWidth()
                     .wrapContentHeight()
             ) {
-                SubjectList(subjects = subjects)
+                SubjectListPart(subjects = subjects)
             }
         }, checked = checked, onToggle = onToggle
     )

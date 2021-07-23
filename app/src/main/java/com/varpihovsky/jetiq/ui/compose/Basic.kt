@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -158,42 +159,34 @@ fun InfoList(
                 moreInfoContent()
             }
         }
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight(),
-            elevation = 5.dp
+        CenterLayoutItem(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-
-
-            CenterLayoutItem(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            Text(
+                modifier = Modifier
+                    .weight(4f)
+                    .padding(titlePadding),
+                text = moreInfoTitle,
+                style = MaterialTheme.typography.h6,
+            )
+            IconToggleButton(
+                modifier = Modifier.weight(1f),
+                checked = checked,
+                onCheckedChange = onToggle
             ) {
-                Text(
-                    modifier = Modifier
-                        .weight(4f)
-                        .padding(titlePadding),
-                    text = moreInfoTitle,
-                    style = MaterialTheme.typography.h6,
+                val animatedRotation =
+                    animateFloatAsState(targetValue = if (checked) 180f else 0f)
+                Icon(
+                    modifier = Modifier.rotate(animatedRotation.value),
+                    imageVector = Icons.Default.KeyboardArrowDown,
+                    contentDescription = null
                 )
-                IconToggleButton(
-                    modifier = Modifier.weight(1f),
-                    checked = checked,
-                    onCheckedChange = onToggle
-                ) {
-                    val animatedRotation =
-                        animateFloatAsState(targetValue = if (checked) 180f else 0f)
-                    Icon(
-                        modifier = Modifier.rotate(animatedRotation.value),
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = null
-                    )
-                }
             }
         }
     }
 }
+
 
 @Preview
 @Composable
@@ -283,6 +276,18 @@ fun BasicTextButton(
 ) {
     TextButton(modifier = modifier, onClick = onClick) {
         Text(text = text)
+    }
+}
+
+@Composable
+fun IconButton(
+    modifier: Modifier = Modifier,
+    icon: ImageVector,
+    contentDescription: String? = null,
+    onClick: () -> Unit
+) {
+    IconButton(modifier = modifier, onClick = onClick) {
+        Icon(imageVector = icon, contentDescription = contentDescription)
     }
 }
 
