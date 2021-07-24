@@ -221,7 +221,7 @@ interface JetIQApi {
     suspend fun getMessages(
         @Header("Cookie") cookie: String,
         @Query("get_mess") getMessage: Int = 1
-    ): Result<List<MessageDTO>>
+    ): Result<List<MessageDTO>?>
 
     /**
      * Returns list of faculties. Each faculty has id key and faculty name value.

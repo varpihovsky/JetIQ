@@ -70,7 +70,9 @@ interface JetIQMessageManager {
 class JetIQMessageManagerImpl(private val jetIQApi: JetIQApi) : JetIQManager(),
     JetIQMessageManager {
     override suspend fun getMessages(session: String): Result<List<MessageDTO>> {
-        return jetIQApi.getMessages(cookie = session)
+        return mapResult(jetIQApi.getMessages(cookie = session)){
+            if(it.value != null) Result.Success.Value(it.value!!) else Result.Success.Value(listOf())
+        }
     }
 
     override suspend fun getCsrf(session: String): Result<CSRF> {
