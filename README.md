@@ -42,8 +42,9 @@ The aim of this app to provide stable and modern-looking application of JetIQ fo
 
 ## Installation
 
-While first release wasn't published, the only way to install the application is to build it by your
-own.
+Minimum required android version: Android 6.0
+
+To install download apk from releases.
 
 ## Contributions
 
