@@ -82,7 +82,7 @@ private class UserPreferencesRepoImpl(private val dataStore: DataStore<Preferenc
                 preferences[UserPreferencesRepo.PreferencesKeys.SUCCESS_LIST_TYPE]
             )
 
-            UserPreferences(showNotification, markbookListType, successListType)
+            UserPreferences(showNotification, successListType, markbookListType)
         }
 
     override suspend fun <T> set(key: Preferences.Key<T>, value: T) {
