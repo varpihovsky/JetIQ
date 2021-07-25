@@ -43,11 +43,12 @@ class ContactAdditionViewModel @Inject constructor(
     val data by lazy { Data() }
     lateinit var callback: (List<UIReceiverDTO>) -> Unit
 
-    private val selectedContactType = mutableStateOf(ContactTypeDropDownItem.STUDENT)
-    private val faculties = mutableStateOf(listOf<IdDropDownItem>())
-    private val selectedFaculty = mutableStateOf(IdDropDownItem())
-    private val groups = mutableStateOf<List<IdDropDownItem>>(listOf())
-    private val selectedGroup = mutableStateOf(IdDropDownItem())
+    private val selectedContactType =
+        mutableStateOf<ContactTypeDropDownItem>(ContactTypeDropDownItem.STUDENT)
+    private val faculties = mutableStateOf(listOf<DropDownItem.WithID>())
+    private val selectedFaculty = mutableStateOf(DropDownItem.WithID())
+    private val groups = mutableStateOf<List<DropDownItem.WithID>>(listOf())
+    private val selectedGroup = mutableStateOf(DropDownItem.WithID())
     private val searchFieldValue = mutableStateOf("")
 
     //TODO: Replace with selection engine.
@@ -56,11 +57,11 @@ class ContactAdditionViewModel @Inject constructor(
     inner class Data {
         val selectedContactType: State<ContactTypeDropDownItem> =
             this@ContactAdditionViewModel.selectedContactType
-        val faculties: State<List<IdDropDownItem>> = this@ContactAdditionViewModel.faculties
-        val selectedFaculty: State<IdDropDownItem> =
+        val faculties: State<List<DropDownItem.WithID>> = this@ContactAdditionViewModel.faculties
+        val selectedFaculty: State<DropDownItem.WithID> =
             this@ContactAdditionViewModel.selectedFaculty
-        val groups: State<List<IdDropDownItem>> = this@ContactAdditionViewModel.groups
-        val selectedGroup: State<IdDropDownItem> = this@ContactAdditionViewModel.selectedGroup
+        val groups: State<List<DropDownItem.WithID>> = this@ContactAdditionViewModel.groups
+        val selectedGroup: State<DropDownItem.WithID> = this@ContactAdditionViewModel.selectedGroup
         val searchFieldValue: State<String> = this@ContactAdditionViewModel.searchFieldValue
         val contacts: State<List<Selectable<UIReceiverDTO>>> =
             this@ContactAdditionViewModel.contacts
@@ -68,7 +69,7 @@ class ContactAdditionViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(dispatchers.IO) {
-            faculties.value = listRepo.getFaculties().map { IdDropDownItem(it.id, it.text) }
+            faculties.value = listRepo.getFaculties().map { DropDownItem.WithID(it.id, it.text) }
         }
     }
 
@@ -90,15 +91,15 @@ class ContactAdditionViewModel @Inject constructor(
     }
 
     fun onFacultySelect(faculty: DropDownItem) {
-        selectedFaculty.value = faculty as IdDropDownItem
+        selectedFaculty.value = faculty as DropDownItem.WithID
         viewModelScope.launch(dispatchers.IO) {
             groups.value =
-                listRepo.getGroupByFaculty(faculty.id).map { IdDropDownItem(it.id, it.text) }
+                listRepo.getGroupByFaculty(faculty.id).map { DropDownItem.WithID(it.id, it.text) }
         }
     }
 
     fun onGroupSelect(group: DropDownItem) {
-        selectedGroup.value = group as IdDropDownItem
+        selectedGroup.value = group as DropDownItem.WithID
         viewModelScope.launch(dispatchers.IO) {
             contacts.value = listRepo.getStudentsByGroup(group.id)
                 .map { Selectable(UIReceiverDTO(it.id, it.text, ReceiverType.STUDENT), false) }
@@ -122,8 +123,8 @@ class ContactAdditionViewModel @Inject constructor(
     private fun clearFields() {
         contacts.value = listOf()
         searchFieldValue.value = ""
-        selectedGroup.value = IdDropDownItem()
+        selectedGroup.value = DropDownItem.WithID()
         groups.value = listOf()
-        selectedFaculty.value = IdDropDownItem()
+        selectedFaculty.value = DropDownItem.WithID()
     }
 }

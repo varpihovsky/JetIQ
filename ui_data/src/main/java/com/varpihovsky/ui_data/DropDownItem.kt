@@ -17,26 +17,13 @@ package com.varpihovsky.ui_data
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface DropDownItem {
-    val text: String
+sealed class DropDownItem(val text: String) {
+    object Empty : DropDownItem("")
+    class Simple(text: String) : DropDownItem(text)
+    class WithID(val id: Int = -1, text: String = "") : DropDownItem(text)
 }
 
-class EmptyDropDownItem : DropDownItem {
-    override val text: String
-        get() = ""
-
-}
-
-class IdDropDownItem(val id: Int = -1, override val text: String = "") : DropDownItem
-
-enum class ContactTypeDropDownItem : DropDownItem {
-    STUDENT {
-        override val text: String
-            get() = "Студент"
-    },
-    TEACHER {
-        override val text: String
-            get() = "Викладач"
-
-    }
+sealed class ContactTypeDropDownItem(text: String) : DropDownItem(text) {
+    object STUDENT : ContactTypeDropDownItem("Студент")
+    object TEACHER : ContactTypeDropDownItem("Викладач")
 }
