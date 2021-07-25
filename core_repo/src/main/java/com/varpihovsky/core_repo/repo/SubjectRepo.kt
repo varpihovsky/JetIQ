@@ -106,13 +106,13 @@ private class SubjectRepoImpl @Inject constructor(
     override val isLoading = mutableStateOf(false)
 
     override fun onRefresh() {
-        modelScope.launch(Dispatchers.IO) {
+        repoScope.launch(Dispatchers.IO) {
             load()
         }
     }
 
     override suspend fun load() {
-        modelScope.launch {
+        repoScope.launch {
             isLoading.value = true
 
             val successJob = launch { loadSuccessJournal() }

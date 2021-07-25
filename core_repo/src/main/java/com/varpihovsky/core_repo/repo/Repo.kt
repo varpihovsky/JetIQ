@@ -34,7 +34,7 @@ abstract class Repo(val exceptionEventManager: ExceptionEventManager) {
     /**
      * Coroutine scope created specially for repo automatically.
      */
-    protected val modelScope = CoroutineScope(Dispatchers.IO)
+    protected val repoScope = CoroutineScope(Dispatchers.IO)
 
     /**
      * Doesn't process any case of [Result]. Only pushes exception event into event bus if there was
@@ -103,5 +103,5 @@ abstract class Repo(val exceptionEventManager: ExceptionEventManager) {
      *
      * @return [ThreadSafeMutableState]
      */
-    protected fun <T> mutableStateOf(value: T) = ThreadSafeMutableState(value, modelScope)
+    protected fun <T> mutableStateOf(value: T) = ThreadSafeMutableState(value, repoScope)
 }

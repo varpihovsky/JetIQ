@@ -94,7 +94,7 @@ private class MessagesRepoImpl @Inject constructor(
 
     override fun loadMessages() {
         _isLoading.value = true
-        modelScope.launch { processMessagesLoading() }
+        repoScope.launch { processMessagesLoading() }
     }
 
     override fun getMessages() = messageDAO.getMessages()

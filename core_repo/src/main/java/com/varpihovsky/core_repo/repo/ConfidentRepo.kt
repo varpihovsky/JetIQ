@@ -44,7 +44,7 @@ abstract class ConfidentRepo internal constructor(
     }
 
     private fun launchCollection() {
-        modelScope.launch {
+        repoScope.launch {
             launch { collectConfidential() }
             launch { collectSession() }
         }
