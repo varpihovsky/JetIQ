@@ -123,5 +123,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     implementation 'com.github.fornewid:material-motion-compose:0.5.1'
+    implementation "androidx.datastore:datastore-preferences:1.0.0-rc02"
 
 }

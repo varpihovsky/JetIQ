@@ -49,6 +49,7 @@ import com.varpihovsky.jetiq.screens.messages.create.NewMessageScreen
 import com.varpihovsky.jetiq.screens.messages.main.MessagesScreen
 import com.varpihovsky.jetiq.screens.profile.Profile
 import com.varpihovsky.jetiq.screens.settings.about.AboutSettingsScreen
+import com.varpihovsky.jetiq.screens.settings.general.GeneralSettingsScreen
 import com.varpihovsky.jetiq.screens.settings.main.MainSettingsScreen
 import soup.compose.material.motion.Axis
 import soup.compose.material.motion.materialElevationScale
@@ -170,6 +171,14 @@ fun initNavigation(
             entryType = EntryType.SubMenu
             inAnimation = materialElevationScale(false)
             outAnimation = materialElevationScale(true)
+        }
+        entry {
+            composable =
+                { GeneralSettingsScreen(generalSettingsViewModel = viewModel(key = NavigationDirections.generalSettings.destination)) }
+            route = NavigationDirections.generalSettings.destination
+            entryType = EntryType.SubMenu
+            inAnimation = materialElevationScale(false)
+            outAnimation = materialElevationScale(false)
         }
         entry {
             composable =

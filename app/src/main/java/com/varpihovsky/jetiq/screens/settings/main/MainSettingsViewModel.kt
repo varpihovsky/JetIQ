@@ -43,6 +43,10 @@ class MainSettingsViewModel @Inject constructor(
     appbarManager: AppbarManager,
     exceptionEventManager: ExceptionEventManager,
 ) : JetIQViewModel(appbarManager, navigationManager, exceptionEventManager) {
+    fun onGeneralClick() {
+        navigationManager.manage(NavigationDirections.generalSettings.destination)
+    }
+
     fun onAboutClick() {
         navigationManager.manage(NavigationDirections.aboutSettings.destination)
     }

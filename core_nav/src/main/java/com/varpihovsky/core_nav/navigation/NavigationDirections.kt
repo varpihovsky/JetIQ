@@ -46,6 +46,10 @@ object NavigationDirections {
         override val destination = "settings_main"
     }
 
+    val generalSettings = object : NavigationCommand {
+        override val destination = "settings_general"
+    }
+
     val aboutSettings = object : NavigationCommand {
         override val destination = "settings_about"
     }

@@ -22,6 +22,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
@@ -81,5 +82,21 @@ fun SettingsButton(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun SettingsSwitch(
+    modifier: Modifier = Modifier,
+    text: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(modifier = Modifier.weight(2f), text = text, style = MaterialTheme.typography.h6)
+        Switch(modifier = Modifier.weight(1f), checked = checked, onCheckedChange = onCheckedChange)
     }
 }
