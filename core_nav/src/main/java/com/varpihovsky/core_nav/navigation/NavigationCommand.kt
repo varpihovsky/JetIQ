@@ -1,4 +1,4 @@
-package com.varpihovsky.core.navigation
+package com.varpihovsky.core_nav.navigation
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko

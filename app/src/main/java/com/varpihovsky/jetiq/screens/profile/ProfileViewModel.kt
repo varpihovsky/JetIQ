@@ -23,8 +23,8 @@ import androidx.compose.runtime.State
 import com.varpihovsky.core.Refreshable
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
-import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core_nav.main.NavigationController
+import com.varpihovsky.core_nav.navigation.NavigationDirections
 import com.varpihovsky.jetiq.screens.JetIQViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.map

@@ -35,13 +35,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.eventBus.EventBus
 import com.varpihovsky.core.exceptions.ExceptionEventManager
-import com.varpihovsky.core.navigation.BottomNavigationItem
-import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core_nav.dsl.DisplayNavigation
 import com.varpihovsky.core_nav.dsl.rememberNavigationController
 import com.varpihovsky.core_nav.main.EntryType
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.main.NavigationControllerStorage
+import com.varpihovsky.core_nav.navigation.BottomNavigationItem
+import com.varpihovsky.core_nav.navigation.NavigationDirections
 import com.varpihovsky.jetiq.NavigationViewModel
 import com.varpihovsky.jetiq.screens.auth.Auth
 import com.varpihovsky.jetiq.screens.messages.contacts.ContactsScreen

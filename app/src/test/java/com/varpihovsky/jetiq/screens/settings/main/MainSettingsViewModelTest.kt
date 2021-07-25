@@ -17,7 +17,7 @@ package com.varpihovsky.jetiq.screens.settings.main
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import com.varpihovsky.core.navigation.NavigationDirections
+import com.varpihovsky.core_nav.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.ListRepo
 import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.core_repo.repo.ProfileRepo

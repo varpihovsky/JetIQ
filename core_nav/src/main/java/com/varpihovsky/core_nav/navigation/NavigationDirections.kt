@@ -1,4 +1,4 @@
-package com.varpihovsky.core.navigation
+package com.varpihovsky.core_nav.navigation
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
@@ -19,10 +19,6 @@ package com.varpihovsky.core.navigation
 
 object NavigationDirections {
     val empty = object : NavigationCommand {
-        override val destination = ""
-    }
-
-    val back = object : NavigationCommand {
         override val destination = ""
     }
 

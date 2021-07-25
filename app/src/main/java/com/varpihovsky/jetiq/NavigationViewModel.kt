@@ -22,11 +22,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.varpihovsky.core.navigation.*
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core_nav.main.EntryType
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.main.NavigationEntry
+import com.varpihovsky.core_nav.navigation.*
 import com.varpihovsky.core_repo.repo.ProfileRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.firstOrNull

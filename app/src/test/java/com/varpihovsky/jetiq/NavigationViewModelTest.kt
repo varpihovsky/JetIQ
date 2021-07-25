@@ -17,8 +17,8 @@ package com.varpihovsky.jetiq
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import com.varpihovsky.core.navigation.BottomNavigationItem
-import com.varpihovsky.core.navigation.NavigationDirections
+import com.varpihovsky.core_nav.navigation.BottomNavigationItem
+import com.varpihovsky.core_nav.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.ProfileRepo
 import com.varpihovsky.jetiq.testCore.ViewModelTest
 import com.varpihovsky.repo_data.Confidential

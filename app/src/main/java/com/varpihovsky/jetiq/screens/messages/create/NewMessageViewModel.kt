@@ -23,11 +23,11 @@ import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.exceptions.Values
-import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core.util.ReactiveTask
 import com.varpihovsky.core.util.remove
 import com.varpihovsky.core_nav.main.NavigationController
+import com.varpihovsky.core_nav.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.jetiq.screens.JetIQViewModel
 import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModel

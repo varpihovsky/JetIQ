@@ -22,10 +22,10 @@ import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.exceptions.Values
-import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core.util.Validator
 import com.varpihovsky.core_nav.main.NavigationController
+import com.varpihovsky.core_nav.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.ProfileRepo
 import com.varpihovsky.jetiq.screens.JetIQViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

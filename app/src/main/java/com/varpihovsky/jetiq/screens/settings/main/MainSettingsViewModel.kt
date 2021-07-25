@@ -20,9 +20,9 @@ package com.varpihovsky.jetiq.screens.settings.main
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
-import com.varpihovsky.core.navigation.NavigationDirections
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core_nav.main.NavigationController
+import com.varpihovsky.core_nav.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.ListRepo
 import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.core_repo.repo.ProfileRepo
