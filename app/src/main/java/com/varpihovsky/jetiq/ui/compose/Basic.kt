@@ -325,10 +325,10 @@ fun SubscribedExposedDropDownList(
     selected: DropDownItem,
     onSelect: (DropDownItem) -> Unit
 ) {
-    Row {
-        Text(text = text)
+    Row(modifier = modifier.fillMaxWidth()) {
+        Text(modifier = Modifier.weight(1.5f), text = text)
         ExposedDropDownList(
-            modifier = modifier,
+            modifier = Modifier.weight(3f),
             expanded = expanded,
             onExpandedChange = onExpandedChange,
             suggestions = suggestions,
@@ -336,6 +336,28 @@ fun SubscribedExposedDropDownList(
             onSelect = onSelect
         )
     }
+}
+
+@Composable
+fun ExposedDropDownList(
+    modifier: Modifier = Modifier,
+    suggestions: List<DropDownItem>,
+    selected: DropDownItem,
+    onSelect: (DropDownItem) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropDownList(
+        modifier = modifier,
+        expanded = expanded,
+        onExpandedChange = { expanded = it },
+        suggestions = suggestions,
+        selected = selected,
+        onSelect = {
+            expanded = false
+            onSelect(it)
+        }
+    )
 }
 
 @Composable
@@ -353,6 +375,8 @@ fun ExposedDropDownList(
     Column(modifier = modifier) {
         OutlinedTextField(
             value = selected.text,
+            enabled = false,
+            maxLines = 3,
             onValueChange = { },
             modifier = Modifier
                 .fillMaxWidth()
@@ -373,8 +397,7 @@ fun ExposedDropDownList(
         )
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { onExpandedChange(false) },
-            modifier = Modifier.fillMaxWidth()
+            onDismissRequest = { onExpandedChange(false) }
         ) {
             suggestions.forEach { label ->
                 DropdownMenuItem(onClick = { onSelect(label) }) {

@@ -20,12 +20,14 @@ package com.varpihovsky.jetiq.screens.messages.contacts.addition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.varpihovsky.core.util.Selectable
 import com.varpihovsky.jetiq.screens.messages.contacts.Contact
 import com.varpihovsky.jetiq.screens.messages.contacts.SearchBar
@@ -56,7 +58,7 @@ fun AdditionDialog(
         },
         onConfirmButtonClick = contactAdditionViewModel::onConfirm,
         selectedContactType = contactAdditionViewModel.data.selectedContactType.value,
-        onContactTypeSelected = contactAdditionViewModel::onContactTypeSelected,
+        onContactTypeSelected = { contactAdditionViewModel.onContactTypeSelected(it) },
         faculties = contactAdditionViewModel.data.faculties.value,
         selectedFaculty = contactAdditionViewModel.data.selectedFaculty.value,
         onFacultySelect = contactAdditionViewModel::onFacultySelect,
@@ -89,6 +91,7 @@ fun AdditionDialog(
     onContactSelected: (Selectable<UIReceiverDTO>) -> Unit
 ) {
     AlertDialog(
+        modifier = Modifier.padding(20.dp),
         onDismissRequest = onDismissRequest,
         confirmButton = {
             BasicTextButton(
@@ -106,6 +109,7 @@ fun AdditionDialog(
         text = {
             Column {
                 SubscribedExposedDropDownList(
+                    modifier = Modifier.padding(bottom = 7.dp),
                     text = "Тип: ",
                     suggestions = listOf(
                         ContactTypeDropDownItem.TEACHER,
@@ -126,6 +130,7 @@ fun AdditionDialog(
                         ContactTypeDropDownItem.STUDENT -> @Composable {
                             Column {
                                 SubscribedExposedDropDownList(
+                                    modifier = Modifier.padding(top = 7.dp, bottom = 7.dp),
                                     text = "Факультет/Інститут: ",
                                     suggestions = faculties,
                                     selected = selectedFaculty,
@@ -133,6 +138,7 @@ fun AdditionDialog(
                                 )
 
                                 SubscribedExposedDropDownList(
+                                    modifier = Modifier.padding(top = 7.dp, bottom = 7.dp),
                                     text = "Група: ",
                                     suggestions = groups,
                                     selected = selectedGroup,
