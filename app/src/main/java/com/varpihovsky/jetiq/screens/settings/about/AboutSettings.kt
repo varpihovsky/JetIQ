@@ -22,6 +22,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -51,7 +53,11 @@ fun AboutSettingsScreen(
         aboutSettingsViewModel.onPageOpened()
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = "JetIQ",
@@ -60,7 +66,9 @@ fun AboutSettingsScreen(
             color = MaterialTheme.colors.onBackground
         )
         Text(
-            modifier = Modifier.padding(horizontal = 40.dp, vertical = 10.dp),
+            modifier = Modifier
+                .padding(horizontal = 40.dp, vertical = 10.dp)
+                .fillMaxWidth(),
             text = "Неофіційний клієнт для JetIQ.",
             style = MaterialTheme.typography.h5,
             textAlign = TextAlign.Center
