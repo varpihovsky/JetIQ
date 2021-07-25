@@ -76,9 +76,9 @@ private class UserPreferencesRepoImpl(private val dataStore: DataStore<Preferenc
                 preferences[UserPreferencesRepo.PreferencesKeys.SHOW_NOTIFICATIONS] ?: true
 
             val markbookListType =
-                SubjectListType.ofString(preferences[UserPreferencesRepo.PreferencesKeys.MARKBOOK_LIST_TYPE])
+                SubjectListType.ofName(preferences[UserPreferencesRepo.PreferencesKeys.MARKBOOK_LIST_TYPE])
 
-            val successListType = SubjectListType.ofString(
+            val successListType = SubjectListType.ofName(
                 preferences[UserPreferencesRepo.PreferencesKeys.SUCCESS_LIST_TYPE]
             )
 

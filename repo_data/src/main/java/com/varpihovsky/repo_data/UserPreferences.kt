@@ -24,10 +24,26 @@ data class UserPreferences(
 )
 
 enum class SubjectListType {
-    FULL,
-    PARTIAL;
+    FULL {
+        override fun toString(): String = FULL_STRING
+
+    },
+    PARTIAL {
+        override fun toString(): String = PARTIAL_STRING
+    };
+
+    abstract override fun toString(): String
 
     companion object {
-        fun ofString(name: String?) = valueOf(name ?: PARTIAL.name)
+        private const val FULL_STRING = "Повний"
+        private const val PARTIAL_STRING = "По семестру"
+
+        fun ofName(name: String?) = valueOf(name ?: PARTIAL.name)
+
+        fun ofString(string: String) = when (string) {
+            FULL_STRING -> FULL
+            PARTIAL_STRING -> PARTIAL
+            else -> throw IllegalStateException("Wrong string!")
+        }
     }
 }
