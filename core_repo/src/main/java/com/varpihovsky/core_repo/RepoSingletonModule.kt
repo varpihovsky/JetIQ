@@ -17,6 +17,11 @@ package com.varpihovsky.core_repo
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core_db.dao.ConfidentialDAO
 import com.varpihovsky.core_db.dao.MessageDAO
@@ -28,12 +33,16 @@ import com.varpihovsky.core_repo.repo.ProfileRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object RepoSingletonModule {
+    internal const val USER_DATA_STORE = "UserDataSource"
+
     @Provides
     @Singleton
     fun provideMessagesRepo(
@@ -63,4 +72,10 @@ object RepoSingletonModule {
         jetIQProfileManager,
         exceptionEventManager
     )
+
+    @Named(USER_DATA_STORE)
+    @Provides
+    @Singleton
+    fun provideUserDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+        PreferenceDataStoreFactory.create { context.preferencesDataStoreFile(USER_DATA_STORE) }
 }

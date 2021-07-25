@@ -40,7 +40,7 @@ dependencies {
     implementation project(":core_db")
     implementation project(":repo_data")
 
-    //Dagger
+    // Dagger
     implementation "com.google.dagger:hilt-android:$dagger_version"
     kapt "com.google.dagger:hilt-compiler:$dagger_version"
     kapt 'androidx.hilt:hilt-compiler:1.0.0'
@@ -55,6 +55,10 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.0.0-rc01"
     testImplementation "androidx.arch.core:core-testing:2.1.0"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.0"
+
+    // Preferences
+    implementation "androidx.datastore:datastore-preferences:1.0.0-rc02"
+
 
     // Mockk
     testImplementation "io.mockk:mockk:$mockk_version"
