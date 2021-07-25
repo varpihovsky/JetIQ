@@ -20,12 +20,14 @@ package com.varpihovsky.core_nav.dsl
 import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.varpihovsky.core.eventBus.EventBus
 import com.varpihovsky.core_nav.main.NavigationController
+import com.varpihovsky.core_nav.main.NavigationEntry
 import com.varpihovsky.core_nav.main.NavigationOperation
 import soup.compose.material.motion.MaterialMotion
 
@@ -58,15 +60,25 @@ fun rememberNavigationController(
     eventBus: EventBus,
     defaultRoute: String,
     block: NavigationControllerBuilder.() -> Unit
-) = rememberSaveable(saver = navigationControllerSaver(eventBus)) {
-    NavigationControllerBuilder(eventBus, defaultRoute).apply(block).build()
+): NavigationController {
+    val controller = remember {
+        NavigationControllerBuilder(eventBus, defaultRoute).apply(block).build()
+    }
+
+    return rememberSaveable(saver = navigationControllerSaver(eventBus, controller.entries)) {
+        NavigationControllerBuilder(eventBus, defaultRoute).apply(block).build()
+    }
 }
 
 @Composable
-private fun navigationControllerSaver(eventBus: EventBus): Saver<NavigationController, *> = Saver(
-    save = { it.saveState() },
-    restore = { NavigationController(eventBus, listOf(), "").apply { restoreState(it) } }
-)
+private fun navigationControllerSaver(
+    eventBus: EventBus,
+    entries: List<NavigationEntry>
+): Saver<NavigationController, *> =
+    Saver(
+        save = { it.saveState() },
+        restore = { NavigationController(eventBus, entries, "").apply { restoreState(it) } }
+    )
 
 /**
  * Receives events from navigation controller and shows current composable.
