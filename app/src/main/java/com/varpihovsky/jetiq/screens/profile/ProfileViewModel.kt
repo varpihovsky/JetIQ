@@ -25,8 +25,10 @@ import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.navigation.NavigationDirections
+import com.varpihovsky.core_repo.repo.UserPreferencesRepo
 import com.varpihovsky.jetiq.screens.JetIQViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -36,6 +38,7 @@ class ProfileViewModel @Inject constructor(
     private val navigationController: NavigationController,
     appbarManager: AppbarManager,
     exceptionEventManager: ExceptionEventManager,
+    private val userPreferencesRepo: UserPreferencesRepo
 ) : JetIQViewModel(appbarManager, navigationController, exceptionEventManager), Refreshable {
     val data by lazy { Data() }
     val scrollState = ScrollState(0)
@@ -52,6 +55,14 @@ class ProfileViewModel @Inject constructor(
 
     private val successChecked = mutableStateOf(false)
     private val markbookChecked = mutableStateOf(false)
+
+    val successListType = userPreferencesRepo.flow
+        .map { it.successListType }
+        .distinctUntilChanged()
+
+    val markbookListType = userPreferencesRepo.flow
+        .map { it.markbookListType }
+        .distinctUntilChanged()
 
     init {
         Log.d(null, "Created")

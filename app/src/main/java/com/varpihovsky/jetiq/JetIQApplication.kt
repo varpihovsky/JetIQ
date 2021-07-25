@@ -20,8 +20,14 @@ package com.varpihovsky.jetiq
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.*
+import com.varpihovsky.core_repo.repo.UserPreferencesRepo
 import com.varpihovsky.jetiq.services.SessionRestorationWorker
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -30,6 +36,9 @@ class JetIQApplication : Application(), Configuration.Provider {
     // Hilt work manager integration
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
+
+    @Inject
+    lateinit var userPreferencesRepo: UserPreferencesRepo
 
     private val workManager by lazy { WorkManager.getInstance(this) }
 
@@ -42,6 +51,17 @@ class JetIQApplication : Application(), Configuration.Provider {
         super.onCreate()
 
         scheduleBackgroundWork()
+        CoroutineScope(Dispatchers.IO).launch { collectNotificationSettings() }
+    }
+
+    private suspend fun collectNotificationSettings() {
+        userPreferencesRepo.flow.map { it.showNotifications }.collect {
+            if (it) {
+                scheduleBackgroundWork()
+            } else {
+                workManager.cancelAllWorkByTag(NOTIFICATION_WORK_TAG)
+            }
+        }
     }
 
     private fun scheduleBackgroundWork() {

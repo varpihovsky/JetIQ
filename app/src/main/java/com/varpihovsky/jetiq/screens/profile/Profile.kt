@@ -43,6 +43,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.varpihovsky.jetiq.ui.compose.*
+import com.varpihovsky.repo_data.SubjectListType
 import com.varpihovsky.ui_data.MarksInfo
 import com.varpihovsky.ui_data.UIProfileDTO
 import com.varpihovsky.ui_data.UISubjectDTO
@@ -55,18 +56,18 @@ const val SCROLL_OFFSET = -177
 
 @ExperimentalAnimationApi
 @Composable
-fun Profile(
-    profileViewModel: ProfileViewModel
-) {
+fun Profile(profileViewModel: ProfileViewModel) {
     val scrollState = profileViewModel.scrollState
 
     val profileState by profileViewModel.profile.collectAsState(UIProfileDTO())
 
     val successMarksInfoState by profileViewModel.successMarksInfo.collectAsState(listOf())
     val successSubjectsState by profileViewModel.successSubjects.collectAsState(listOf())
+    val successListType by profileViewModel.successListType.collectAsState(initial = SubjectListType.PARTIAL)
 
     val markbookInfo by profileViewModel.markbookMarksInfo.collectAsState(listOf())
     val markbookSubjects by profileViewModel.markbookSubjects.collectAsState(listOf())
+    val markbookListType by profileViewModel.markbookListType.collectAsState(initial = SubjectListType.PARTIAL)
 
     MapLifecycle(viewModel = profileViewModel)
 
@@ -86,9 +87,11 @@ fun Profile(
         profile = profileState,
         scrollState = scrollState,
         successMarksInfo = successMarksInfoState,
-        subjects = successSubjectsState,
+        successSubjects = successSubjectsState,
+        successListType = successListType,
         markbookInfo = markbookInfo,
         markbookSubjects = markbookSubjects,
+        markbookListType = markbookListType,
         successChecked = profileViewModel.data.successChecked.value,
         onSuccessToggle = profileViewModel::onSuccessToggle,
         markbookChecked = profileViewModel.data.markbookChecked.value,
@@ -99,19 +102,22 @@ fun Profile(
     )
 }
 
+//TODO: Move params into class.
 @ExperimentalAnimationApi
 @Composable
 fun Profile(
     profile: UIProfileDTO,
     scrollState: ScrollState,
-    successMarksInfo: List<MarksInfo>,
-    subjects: List<UISubjectDTO>,
+    markbookChecked: Boolean,
     markbookInfo: List<MarksInfo>,
     markbookSubjects: List<UISubjectDTO>,
+    onMarkbookToggle: (Boolean) -> Unit,
+    markbookListType: SubjectListType,
     successChecked: Boolean,
     onSuccessToggle: (Boolean) -> Unit,
-    markbookChecked: Boolean,
-    onMarkbookToggle: (Boolean) -> Unit,
+    successMarksInfo: List<MarksInfo>,
+    successSubjects: List<UISubjectDTO>,
+    successListType: SubjectListType,
     refreshState: SwipeRefreshState,
     onRefresh: () -> Unit,
     onSettingsClick: () -> Unit
@@ -151,8 +157,9 @@ fun Profile(
                         successPosition = scrollState.value + it.positionInRoot().y + SCROLL_OFFSET
                     },
                     successMarksInfo = successMarksInfo,
-                    subjects = subjects,
-                    checked = successChecked
+                    subjects = successSubjects,
+                    checked = successChecked,
+                    listType = successListType
                 ) {
                     onSuccessToggle(it)
                     if (!it) {
@@ -172,7 +179,8 @@ fun Profile(
                     },
                     checked = markbookChecked,
                     markbookSubjects = markbookSubjects,
-                    marksInfo = markbookInfo
+                    marksInfo = markbookInfo,
+                    listType = markbookListType
                 ) {
                     onMarkbookToggle(it)
                     if (!it) {
@@ -194,6 +202,7 @@ fun Markbook(
     markbookSubjects: List<UISubjectDTO>,
     marksInfo: List<MarksInfo>,
     checked: Boolean,
+    listType: SubjectListType,
     onToggle: (Boolean) -> Unit
 ) {
     InfoList(
@@ -204,12 +213,8 @@ fun Markbook(
         checked = checked,
         onToggle = onToggle,
         moreInfoContent = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-            ) {
-                SubjectListPart(subjects = markbookSubjects)
+            Column(modifier = Modifier.fillMaxWidth()) {
+                ShowListByType(listType = listType, list = markbookSubjects)
             }
         }
     )
@@ -222,22 +227,29 @@ fun Success(
     successMarksInfo: List<MarksInfo>,
     subjects: List<UISubjectDTO>,
     checked: Boolean,
+    listType: SubjectListType,
     onToggle: (Boolean) -> Unit
 ) {
     InfoList(
         modifier = modifier,
         title = "Успішність:", info = { MarksList(marks = successMarksInfo) },
         moreInfoTitle = "Більше...",
+        checked = checked,
+        onToggle = onToggle,
         moreInfoContent = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-            ) {
-                SubjectListPart(subjects = subjects)
+            Column(modifier = Modifier.fillMaxWidth()) {
+                ShowListByType(listType = listType, list = subjects)
             }
-        }, checked = checked, onToggle = onToggle
+        }
     )
+}
+
+@Composable
+private fun ShowListByType(listType: SubjectListType, list: List<UISubjectDTO>) {
+    when (listType) {
+        SubjectListType.FULL -> SubjectList(subjects = list)
+        SubjectListType.PARTIAL -> SubjectListPart(subjects = list)
+    }
 }
 
 @Composable
