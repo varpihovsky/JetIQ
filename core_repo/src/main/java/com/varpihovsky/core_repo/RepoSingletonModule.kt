@@ -30,6 +30,7 @@ import com.varpihovsky.core_network.managers.JetIQMessageManager
 import com.varpihovsky.core_network.managers.JetIQProfileManager
 import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.core_repo.repo.ProfileRepo
+import com.varpihovsky.core_repo.repo.UserPreferencesRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -72,6 +73,12 @@ object RepoSingletonModule {
         jetIQProfileManager,
         exceptionEventManager
     )
+
+    @Provides
+    @Singleton
+    fun provideUserPreferencesRepo(
+        @Named(USER_DATA_STORE) dataStore: DataStore<Preferences>
+    ) = UserPreferencesRepo(dataStore)
 
     @Named(USER_DATA_STORE)
     @Provides

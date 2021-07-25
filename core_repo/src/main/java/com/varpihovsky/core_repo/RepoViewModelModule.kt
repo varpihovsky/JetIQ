@@ -17,23 +17,18 @@ package com.varpihovsky.core_repo
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core_db.dao.*
 import com.varpihovsky.core_network.managers.JetIQListManager
 import com.varpihovsky.core_network.managers.JetIQSubjectManager
-import com.varpihovsky.core_repo.RepoSingletonModule.USER_DATA_STORE
 import com.varpihovsky.core_repo.repo.ListRepo
 import com.varpihovsky.core_repo.repo.ProfileRepo
 import com.varpihovsky.core_repo.repo.SubjectRepo
-import com.varpihovsky.core_repo.repo.UserPreferencesRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
-import javax.inject.Named
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -69,10 +64,4 @@ object RepoViewModelModule {
         exceptionEventManager,
         profileRepo
     )
-
-    @Provides
-    @ViewModelScoped
-    fun provideUserPreferencesRepo(
-        @Named(USER_DATA_STORE) dataStore: DataStore<Preferences>
-    ) = UserPreferencesRepo(dataStore)
 }
