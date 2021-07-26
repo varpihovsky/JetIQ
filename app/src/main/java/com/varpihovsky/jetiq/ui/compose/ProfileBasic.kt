@@ -39,11 +39,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import coil.transform.Transformation
-import com.google.accompanist.coil.rememberCoilPainter
 import com.varpihovsky.jetiq.R
 import com.varpihovsky.ui_data.MarksInfo
 import com.varpihovsky.ui_data.UIProfileDTO
@@ -67,30 +68,33 @@ fun Avatar(
     modifier: Modifier = Modifier,
     url: String,
     colorFilter: ColorFilter? = null,
+    size: Int? = null,
     transformation: Transformation? = CircleCropTransformation(),
     placeholderEnabled: Boolean = true,
     contentScale: ContentScale = ContentScale.Fit
 ) {
     Image(
         modifier = modifier,
-        painter = rememberCoilPainter(
-            request = url,
-            fadeIn = true,
-            requestBuilder = {
-                transformation?.let { transformations(it) }
+        painter = rememberImagePainter(
+            data = url,
+            builder = {
                 if (placeholderEnabled) {
                     placeholder(R.drawable.ic_baseline_person_24)
                     error(R.drawable.ic_baseline_person_24)
                 }
-                this
-            },
-            previewPlaceholder = R.drawable.ic_baseline_person_24
+                placeholderMemoryCacheKey(url)
+                size?.let { size(it) }
+                transformation?.let { transformations(it) }
+            }
         ),
         contentDescription = null,
         colorFilter = colorFilter,
         contentScale = contentScale
     )
 }
+
+@Composable
+fun getSizeByDensity(size: Int) = (size * LocalDensity.current.density / 2).toInt()
 
 @Composable
 fun StudentInfo(
@@ -114,7 +118,8 @@ fun ProfileInfoBar(
             modifier = Modifier
                 .padding(horizontal = 9.dp)
                 .requiredSize(35.dp),
-            url = profile.photoURL
+            url = profile.photoURL,
+            size = getSizeByDensity(size = 30)
         )
         ProfileName(
             text = profile.name

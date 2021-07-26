@@ -18,8 +18,11 @@ package com.varpihovsky.jetiq
  */
 
 import android.app.Application
+import android.graphics.Bitmap
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.*
+import coil.Coil
+import coil.ImageLoader
 import com.varpihovsky.core_repo.repo.UserPreferencesRepo
 import com.varpihovsky.jetiq.services.SessionRestorationWorker
 import dagger.hilt.android.HiltAndroidApp
@@ -28,8 +31,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import javax.inject.Named
 
 @HiltAndroidApp
 class JetIQApplication : Application(), Configuration.Provider {
@@ -39,6 +44,10 @@ class JetIQApplication : Application(), Configuration.Provider {
 
     @Inject
     lateinit var userPreferencesRepo: UserPreferencesRepo
+
+    @Inject
+    @Named("Coil")
+    lateinit var okHttpClient: OkHttpClient
 
     private val workManager by lazy { WorkManager.getInstance(this) }
 
@@ -52,6 +61,7 @@ class JetIQApplication : Application(), Configuration.Provider {
 
         scheduleBackgroundWork()
         CoroutineScope(Dispatchers.IO).launch { collectNotificationSettings() }
+        initCoil()
     }
 
     private suspend fun collectNotificationSettings() {
@@ -114,6 +124,16 @@ class JetIQApplication : Application(), Configuration.Provider {
         flexInterval, timeUnit
     ).setConstraints(constraints)
         .build()
+
+    private fun initCoil() {
+        Coil.setImageLoader(
+            ImageLoader.Builder(this)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .okHttpClient(okHttpClient)
+                .crossfade(true)
+                .build()
+        )
+    }
 
     companion object {
         private const val SESSION_RESTORATION_INTERVAL = 4L

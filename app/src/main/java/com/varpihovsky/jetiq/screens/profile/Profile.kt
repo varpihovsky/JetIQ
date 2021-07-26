@@ -307,7 +307,8 @@ fun ProfileAppBar(
                         .padding(bottom = 30.dp)
                         .zIndex(zIndex)
                         .shadow(elevation = 10.dp, shape = CircleShape),
-                    url = profile.photoURL
+                    url = profile.photoURL,
+                    size = getSizeByDensity(size = 150)
                 )
                 Avatar(
                     modifier = Modifier
@@ -317,7 +318,7 @@ fun ProfileAppBar(
                     url = profile.photoURL,
                     transformation = BlurTransformation(LocalContext.current),
                     placeholderEnabled = false,
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
                 )
                 Spacer(
                     modifier = Modifier

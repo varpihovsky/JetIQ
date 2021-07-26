@@ -17,28 +17,27 @@ package com.varpihovsky.jetiq.di
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import com.varpihovsky.core.util.CoroutineDispatchers
-import com.varpihovsky.core_repo.repo.ProfileRepo
-import com.varpihovsky.core_repo.repo.SubjectRepo
-import com.varpihovsky.jetiq.screens.profile.ProfileInteractor
+import android.content.Context
+import coil.util.CoilUtils
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import java.util.concurrent.TimeUnit
+import javax.inject.Named
+import javax.inject.Singleton
 
 @Module
-@InstallIn(ViewModelComponent::class)
-object InteractorsModule {
+@InstallIn(SingletonComponent::class)
+object SingletonModule {
     @Provides
-    @ViewModelScoped
-    fun provideProfileInteractor(
-        dispatchers: CoroutineDispatchers,
-        profileModel: ProfileRepo,
-        subjectModel: SubjectRepo,
-    ) = ProfileInteractor(
-        dispatchers,
-        profileModel,
-        subjectModel,
-    )
+    @Singleton
+    @Named("Coil")
+    fun provideOkHttpClient(@ApplicationContext context: Context): OkHttpClient =
+        OkHttpClient.Builder()
+            .cache(CoilUtils.createDefaultCache(context))
+            .connectTimeout(1L, TimeUnit.SECONDS)
+            .build()
 }

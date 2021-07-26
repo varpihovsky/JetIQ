@@ -49,6 +49,7 @@ import com.varpihovsky.jetiq.screens.messages.contacts.addition.AdditionDialog
 import com.varpihovsky.jetiq.ui.compose.Avatar
 import com.varpihovsky.jetiq.ui.compose.BackIconButton
 import com.varpihovsky.jetiq.ui.compose.MapLifecycle
+import com.varpihovsky.jetiq.ui.compose.getSizeByDensity
 import com.varpihovsky.ui_data.UIReceiverDTO
 
 @ExperimentalFoundationApi
@@ -224,7 +225,8 @@ fun Contact(
             }
             Avatar(
                 modifier = Modifier.fillMaxSize(),
-                url = contact.dto.getPhotoURL()
+                url = contact.dto.getPhotoURL(),
+                size = getSizeByDensity(size = 45)
             )
         }
         Text(
