@@ -216,7 +216,7 @@ fun SubjectListPart(subjects: List<UISubjectDTO>) {
                     Divider(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 3.dp, bottom = 3.dp)
+                            .padding(top = 3.dp)
                     )
                 }
             }
