@@ -52,6 +52,7 @@ fun GeneralSettingsScreen(generalSettingsViewModel: GeneralSettingsViewModel) {
     val showNotifications by generalSettingsViewModel.showNotifications.collectAsState(initial = true)
     val successListType by generalSettingsViewModel.successListType.collectAsState(initial = DropDownItem.Empty)
     val markbookListType by generalSettingsViewModel.markbookListType.collectAsState(initial = DropDownItem.Empty)
+    val buttonLocation by generalSettingsViewModel.buttonLocation.collectAsState(initial = DropDownItem.Empty)
 
     Column(
         modifier = Modifier
@@ -82,16 +83,23 @@ fun GeneralSettingsScreen(generalSettingsViewModel: GeneralSettingsViewModel) {
         SubscribedExposedDropDownList(
             modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
             text = "Відображення списку журналу успішності.",
-            suggestions = generalSettingsViewModel.suggestions,
+            suggestions = generalSettingsViewModel.listTypeSuggestions,
             selected = successListType,
             onSelect = { generalSettingsViewModel.onSuccessListTypeChange(it as DropDownItem.Simple) }
         )
         SubscribedExposedDropDownList(
             modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
             text = "Відображення списку залікової книжки.",
-            suggestions = generalSettingsViewModel.suggestions,
+            suggestions = generalSettingsViewModel.listTypeSuggestions,
             selected = markbookListType,
             onSelect = { generalSettingsViewModel.onMarkbookListTypeChange(it as DropDownItem.Simple) }
+        )
+        SubscribedExposedDropDownList(
+            modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
+            text = "Місцеположення кнопки розширення в списках у профілі.",
+            suggestions = generalSettingsViewModel.buttonLocationSuggestions,
+            selected = buttonLocation,
+            onSelect = { generalSettingsViewModel.onButtonLocationChange(it as DropDownItem.Simple) }
         )
         Divider(Modifier.fillMaxWidth())
     }

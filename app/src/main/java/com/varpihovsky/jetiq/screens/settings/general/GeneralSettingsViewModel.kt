@@ -24,6 +24,7 @@ import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.UserPreferencesRepo
 import com.varpihovsky.jetiq.screens.JetIQViewModel
+import com.varpihovsky.repo_data.ExpandButtonLocation
 import com.varpihovsky.repo_data.SubjectListType
 import com.varpihovsky.ui_data.DropDownItem
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -51,8 +52,16 @@ class GeneralSettingsViewModel @Inject constructor(
         .map { DropDownItem.Simple(it.markbookListType.toString()) }
         .distinctUntilChanged()
 
-    val suggestions = listOf(SubjectListType.PARTIAL, SubjectListType.FULL)
+    val buttonLocation = userPreferencesRepo.flow
+        .map { DropDownItem.Simple(it.profileListExpandButtonLocation.toString()) }
+        .distinctUntilChanged()
+
+    val listTypeSuggestions = listOf(SubjectListType.PARTIAL, SubjectListType.FULL)
         .map { DropDownItem.Simple(it.toString()) }
+
+    val buttonLocationSuggestions = listOf(
+        ExpandButtonLocation.LOWER, ExpandButtonLocation.UPPER
+    ).map { DropDownItem.Simple(it.toString()) }
 
     fun onShowNotificationsSwitched(switched: Boolean) {
         viewModelScope.launch(dispatchers.IO) {
@@ -77,6 +86,15 @@ class GeneralSettingsViewModel @Inject constructor(
             userPreferencesRepo.set(
                 UserPreferencesRepo.PreferencesKeys.MARKBOOK_LIST_TYPE,
                 SubjectListType.ofString(markbookListType.text).name
+            )
+        }
+    }
+
+    fun onButtonLocationChange(buttonLocation: DropDownItem.Simple) {
+        viewModelScope.launch {
+            userPreferencesRepo.set(
+                UserPreferencesRepo.PreferencesKeys.EXPAND_BUTTON_LOCATION,
+                ExpandButtonLocation.ofString(buttonLocation.text).name
             )
         }
     }
