@@ -27,7 +27,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -93,7 +92,6 @@ fun MessagesScreen(
 @ExperimentalAnimationApi
 @Composable
 fun MessagesList(messages: List<UIMessageDTO>) {
-    val scope = rememberCoroutineScope()
     val state = rememberLazyListState()
 
     LazyColumn(
@@ -101,10 +99,18 @@ fun MessagesList(messages: List<UIMessageDTO>) {
         verticalArrangement = Arrangement.Top,
         state = state
     ) {
+        if (messages.isEmpty()) {
+            item {
+                AnimatedMessageItem(
+                    message = UIMessageDTO(0, "JetIQ", "Повідомлення відсутні.", ""),
+                    visibility = true
+                )
+            }
+        }
         items(messages.size) {
             AnimatedMessageItem(
                 message = messages[it],
-                true
+                visibility = true
             )
         }
     }
