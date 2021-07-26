@@ -25,6 +25,7 @@ import com.varpihovsky.core_db.dao.ProfileDAO
 import com.varpihovsky.core_network.managers.JetIQMessageManager
 import com.varpihovsky.repo_data.MessageDTO
 import com.varpihovsky.repo_data.MessageToSendDTO
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -104,6 +105,7 @@ private class MessagesRepoImpl @Inject constructor(
             result = jetIQMessageManager.getMessages(requireSession()),
             onSuccess = { addMessagesToDatabase(it.value) },
         )
+        delay(LOADING_DELAY)
         isLoading.value = false
     }
 
@@ -128,5 +130,9 @@ private class MessagesRepoImpl @Inject constructor(
             )
             wrapException(result = jetIQMessageManager.sendMessage(session, csrf, messageToSendDTO))
         }
+    }
+
+    companion object {
+        private const val LOADING_DELAY = 500L
     }
 }
