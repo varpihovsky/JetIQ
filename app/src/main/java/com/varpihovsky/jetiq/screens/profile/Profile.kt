@@ -43,6 +43,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.varpihovsky.jetiq.ui.compose.*
+import com.varpihovsky.repo_data.ExpandButtonLocation
 import com.varpihovsky.repo_data.SubjectListType
 import com.varpihovsky.ui_data.MarksInfo
 import com.varpihovsky.ui_data.UIProfileDTO
@@ -68,6 +69,8 @@ fun Profile(profileViewModel: ProfileViewModel) {
     val markbookInfo by profileViewModel.markbookMarksInfo.collectAsState(listOf())
     val markbookSubjects by profileViewModel.markbookSubjects.collectAsState(listOf())
     val markbookListType by profileViewModel.markbookListType.collectAsState(initial = SubjectListType.PARTIAL)
+
+    val buttonLocation by profileViewModel.expandButtonLocation.collectAsState(initial = ExpandButtonLocation.LOWER)
 
     MapLifecycle(viewModel = profileViewModel)
 
@@ -98,7 +101,8 @@ fun Profile(profileViewModel: ProfileViewModel) {
         onMarkbookToggle = profileViewModel::onMarkbookToggle,
         refreshState = rememberSwipeRefreshState(isRefreshing = profileViewModel.isLoading.value),
         onRefresh = profileViewModel::onRefresh,
-        onSettingsClick = profileViewModel::onSettingsClick
+        onSettingsClick = profileViewModel::onSettingsClick,
+        buttonLocation = buttonLocation
     )
 }
 
@@ -120,7 +124,8 @@ fun Profile(
     successListType: SubjectListType,
     refreshState: SwipeRefreshState,
     onRefresh: () -> Unit,
-    onSettingsClick: () -> Unit
+    onSettingsClick: () -> Unit,
+    buttonLocation: ExpandButtonLocation
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -159,7 +164,8 @@ fun Profile(
                     successMarksInfo = successMarksInfo,
                     subjects = successSubjects,
                     checked = successChecked,
-                    listType = successListType
+                    listType = successListType,
+                    buttonLocation = buttonLocation,
                 ) {
                     onSuccessToggle(it)
                     if (!it) {
@@ -180,7 +186,8 @@ fun Profile(
                     checked = markbookChecked,
                     markbookSubjects = markbookSubjects,
                     marksInfo = markbookInfo,
-                    listType = markbookListType
+                    listType = markbookListType,
+                    buttonLocation = buttonLocation,
                 ) {
                     onMarkbookToggle(it)
                     if (!it) {
@@ -202,6 +209,7 @@ fun Markbook(
     markbookSubjects: List<UISubjectDTO>,
     marksInfo: List<MarksInfo>,
     checked: Boolean,
+    buttonLocation: ExpandButtonLocation,
     listType: SubjectListType,
     onToggle: (Boolean) -> Unit
 ) {
@@ -212,6 +220,7 @@ fun Markbook(
         moreInfoTitle = "Більше...",
         checked = checked,
         onToggle = onToggle,
+        buttonLocation = buttonLocation,
         moreInfoContent = {
             Column(modifier = Modifier.fillMaxWidth()) {
                 ShowListByType(listType = listType, list = markbookSubjects)
@@ -227,6 +236,7 @@ fun Success(
     successMarksInfo: List<MarksInfo>,
     subjects: List<UISubjectDTO>,
     checked: Boolean,
+    buttonLocation: ExpandButtonLocation,
     listType: SubjectListType,
     onToggle: (Boolean) -> Unit
 ) {
@@ -236,6 +246,7 @@ fun Success(
         moreInfoTitle = "Більше...",
         checked = checked,
         onToggle = onToggle,
+        buttonLocation = buttonLocation,
         moreInfoContent = {
             Column(modifier = Modifier.fillMaxWidth()) {
                 ShowListByType(listType = listType, list = subjects)

@@ -64,6 +64,10 @@ class ProfileViewModel @Inject constructor(
         .map { it.markbookListType }
         .distinctUntilChanged()
 
+    val expandButtonLocation = userPreferencesRepo.flow
+        .map { it.profileListExpandButtonLocation }
+        .distinctUntilChanged()
+
     init {
         Log.d(null, "Created")
     }
