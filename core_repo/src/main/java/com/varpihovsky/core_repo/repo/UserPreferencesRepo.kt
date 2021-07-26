@@ -20,9 +20,12 @@ package com.varpihovsky.core_repo.repo
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
+import com.varpihovsky.core.exceptions.ExceptionEventManager
+import com.varpihovsky.repo_data.ExpandButtonLocation
 import com.varpihovsky.repo_data.SubjectListType
 import com.varpihovsky.repo_data.UserPreferences
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
@@ -52,38 +55,56 @@ interface UserPreferencesRepo {
         val SHOW_NOTIFICATIONS = booleanPreferencesKey("show_notifications")
         val MARKBOOK_LIST_TYPE = stringPreferencesKey("markbook_list_type")
         val SUCCESS_LIST_TYPE = stringPreferencesKey("success_list_type")
+        val EXPAND_BUTTON_LOCATION = stringPreferencesKey("expand_button_location")
     }
 
     companion object {
-        operator fun invoke(dataStore: DataStore<Preferences>): UserPreferencesRepo =
-            UserPreferencesRepoImpl(dataStore)
+        operator fun invoke(
+            dataStore: DataStore<Preferences>,
+            exceptionEventManager: ExceptionEventManager
+        ): UserPreferencesRepo = UserPreferencesRepoImpl(dataStore, exceptionEventManager)
     }
 }
 
-private class UserPreferencesRepoImpl(private val dataStore: DataStore<Preferences>) :
-    UserPreferencesRepo {
+private class UserPreferencesRepoImpl(
+    private val dataStore: DataStore<Preferences>,
+    private val exceptionEventManager: ExceptionEventManager
+) : UserPreferencesRepo {
 
-    override val flow = dataStore.data
-        .catch { exception ->
-            if (exception is IOException) {
-                Log.e("UserPreferencesRepo", "Failed load preferences.", exception)
-                emit(emptyPreferences())
-            } else {
-                throw exception
-            }
-        }.map { preferences ->
-            val showNotification =
-                preferences[UserPreferencesRepo.PreferencesKeys.SHOW_NOTIFICATIONS] ?: true
+    override val flow = dataStore.data.catch { manageException(it) }.map(this::mapPreferences)
 
-            val markbookListType =
-                SubjectListType.ofName(preferences[UserPreferencesRepo.PreferencesKeys.MARKBOOK_LIST_TYPE])
-
-            val successListType = SubjectListType.ofName(
-                preferences[UserPreferencesRepo.PreferencesKeys.SUCCESS_LIST_TYPE]
-            )
-
-            UserPreferences(showNotification, successListType, markbookListType)
+    private suspend fun FlowCollector<Preferences>.manageException(exception: Throwable) {
+        if (exception is IOException) {
+            Log.e("UserPreferencesRepo", "Failed load preferences.", exception)
+            emit(emptyPreferences())
+        } else {
+            exceptionEventManager.pushException(exception)
         }
+    }
+
+    private fun mapPreferences(preferences: Preferences): UserPreferences {
+        val showNotification =
+            preferences[UserPreferencesRepo.PreferencesKeys.SHOW_NOTIFICATIONS] ?: true
+
+        val markbookListType = SubjectListType.ofName(
+            preferences[UserPreferencesRepo.PreferencesKeys.MARKBOOK_LIST_TYPE]
+        )
+
+        val successListType = SubjectListType.ofName(
+            preferences[UserPreferencesRepo.PreferencesKeys.SUCCESS_LIST_TYPE]
+        )
+
+        val expandButtonLocation = ExpandButtonLocation.ofName(
+            preferences[UserPreferencesRepo.PreferencesKeys.EXPAND_BUTTON_LOCATION]
+        )
+
+        return UserPreferences(
+            showNotification,
+            successListType,
+            markbookListType,
+            expandButtonLocation
+        )
+    }
 
     override suspend fun <T> set(key: Preferences.Key<T>, value: T) {
         dataStore.edit { preferences -> preferences[key] = value }

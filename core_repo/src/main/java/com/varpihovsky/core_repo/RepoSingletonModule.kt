@@ -42,7 +42,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object RepoSingletonModule {
-    internal const val USER_DATA_STORE = "UserDataSource"
+    private const val USER_DATA_STORE = "UserDataSource"
 
     @Provides
     @Singleton
@@ -77,8 +77,9 @@ object RepoSingletonModule {
     @Provides
     @Singleton
     fun provideUserPreferencesRepo(
-        @Named(USER_DATA_STORE) dataStore: DataStore<Preferences>
-    ) = UserPreferencesRepo(dataStore)
+        @Named(USER_DATA_STORE) dataStore: DataStore<Preferences>,
+        exceptionEventManager: ExceptionEventManager
+    ) = UserPreferencesRepo(dataStore, exceptionEventManager)
 
     @Named(USER_DATA_STORE)
     @Provides

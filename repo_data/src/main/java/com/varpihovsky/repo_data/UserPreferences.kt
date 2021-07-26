@@ -20,7 +20,8 @@ package com.varpihovsky.repo_data
 data class UserPreferences(
     val showNotifications: Boolean = true,
     val successListType: SubjectListType = SubjectListType.PARTIAL,
-    val markbookListType: SubjectListType = SubjectListType.PARTIAL
+    val markbookListType: SubjectListType = SubjectListType.PARTIAL,
+    val profileListExpandButtonLocation: ExpandButtonLocation = ExpandButtonLocation.LOWER
 )
 
 enum class SubjectListType {
@@ -43,6 +44,31 @@ enum class SubjectListType {
         fun ofString(string: String) = when (string) {
             FULL_STRING -> FULL
             PARTIAL_STRING -> PARTIAL
+            else -> throw IllegalStateException("Wrong string!")
+        }
+    }
+}
+
+enum class ExpandButtonLocation {
+    LOWER {
+        override fun toString(): String = LOWER_STRING
+    },
+    UPPER {
+        override fun toString(): String = UPPER_STRING
+
+    };
+
+    abstract override fun toString(): String
+
+    companion object {
+        private const val UPPER_STRING = "Над списком"
+        private const val LOWER_STRING = "Під списком"
+
+        fun ofName(name: String?) = valueOf(name ?: LOWER.name)
+
+        fun ofString(string: String) = when (string) {
+            LOWER_STRING -> LOWER
+            UPPER_STRING -> UPPER
             else -> throw IllegalStateException("Wrong string!")
         }
     }
