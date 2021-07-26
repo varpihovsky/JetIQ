@@ -19,4 +19,4 @@ import com.google.gson.annotations.SerializedName
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-data class CSRF(@SerializedName("body") val body: String)
+data class CSRF(@SerializedName("csrf") val body: String)
