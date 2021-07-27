@@ -21,9 +21,11 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.Query
+import androidx.room.Transaction
 import com.varpihovsky.repo_data.MarkbookSubjectDTO
 import com.varpihovsky.repo_data.SubjectDetailsDTO
 import com.varpihovsky.repo_data.SubjectTaskDTO
+import com.varpihovsky.repo_data.relations.SubjectDetailsWithTasks
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -49,9 +51,16 @@ interface SubjectDetailsDAO {
     @Query("SELECT * FROM SubjectDetailsDTO")
     fun getDetailsOnly(): Flow<List<SubjectDetailsDTO>>
 
+    @Transaction
+    @Query("SELECT * FROM SubjectDetailsDTO WHERE id=:id")
+    fun getDetailsById(id: Int): Flow<SubjectDetailsWithTasks>
+
     @Query("SELECT * FROM MarkbookSubjectDTO")
     fun getMarkbookSubjects(): Flow<List<MarkbookSubjectDTO>>
 
     @Query("SELECT * FROM MarkbookSubjectDTO")
     fun getMarkbookSubjectsList(): List<MarkbookSubjectDTO>
+
+    @Query("SELECT * FROM MarkbookSubjectDTO WHERE id=:id")
+    fun getMarkbookSubjectById(id: Int): Flow<MarkbookSubjectDTO>
 }

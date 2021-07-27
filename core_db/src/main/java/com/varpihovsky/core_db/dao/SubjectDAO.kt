@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SubjectDAO {
     @Query("SELECT * FROM SubjectDTO WHERE card_id=:id")
-    fun getSubjectById(id: Int): Flow<SubjectDTO>
+    fun getSubjectById(id: String): Flow<SubjectDTO>
 
     @Query("SELECT * FROM SubjectDTO")
     fun getAllSubjects(): Flow<List<SubjectDTO>>
