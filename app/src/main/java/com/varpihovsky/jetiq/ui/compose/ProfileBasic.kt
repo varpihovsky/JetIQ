@@ -19,6 +19,7 @@ package com.varpihovsky.jetiq.ui.compose
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -161,7 +162,7 @@ fun MarksList(
 }
 
 @Composable
-fun SubjectListPart(subjects: List<UISubjectDTO>) {
+fun SubjectListPart(subjects: List<UISubjectDTO>, onClick: (UISubjectDTO) -> Unit) {
     val maxSemester = rememberMaxSemester(subjects)
     val semesterState = rememberSaveable { mutableStateOf(1) }
     val listToShow =
@@ -217,7 +218,7 @@ fun SubjectListPart(subjects: List<UISubjectDTO>) {
         ) {
             Column {
                 for (subject in listToShow.value) {
-                    Subject(uiSubjectDTO = subject)
+                    Subject(uiSubjectDTO = subject, onClick = onClick)
                     Divider(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -241,7 +242,8 @@ private fun filterBySemester(subjects: List<UISubjectDTO>, semester: Int) =
 
 @Composable
 fun SubjectList(
-    subjects: List<UISubjectDTO>
+    subjects: List<UISubjectDTO>,
+    onClick: (UISubjectDTO) -> Unit
 ) {
     var currentSemester = 0
     for (subject in subjects) {
@@ -261,17 +263,18 @@ fun SubjectList(
                 .padding(vertical = 2.dp),
             elevation = 1.dp
         ) {
-            Subject(uiSubjectDTO = subject)
+            Subject(uiSubjectDTO = subject, onClick = onClick)
         }
     }
 }
 
 @Composable
-fun Subject(uiSubjectDTO: UISubjectDTO) {
+fun Subject(uiSubjectDTO: UISubjectDTO, onClick: (UISubjectDTO) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .clickable { onClick(uiSubjectDTO) }
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),

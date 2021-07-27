@@ -102,7 +102,9 @@ fun Profile(profileViewModel: ProfileViewModel) {
         refreshState = rememberSwipeRefreshState(isRefreshing = profileViewModel.isLoading.value),
         onRefresh = profileViewModel::onRefresh,
         onSettingsClick = profileViewModel::onSettingsClick,
-        buttonLocation = buttonLocation
+        buttonLocation = buttonLocation,
+        onSubjectClick = profileViewModel::onSubjectClick,
+        onMarkbookClick = profileViewModel::onMarkbookClick
     )
 }
 
@@ -125,7 +127,9 @@ fun Profile(
     refreshState: SwipeRefreshState,
     onRefresh: () -> Unit,
     onSettingsClick: () -> Unit,
-    buttonLocation: ExpandButtonLocation
+    buttonLocation: ExpandButtonLocation,
+    onSubjectClick: (UISubjectDTO) -> Unit,
+    onMarkbookClick: (UISubjectDTO) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -166,6 +170,7 @@ fun Profile(
                     checked = successChecked,
                     listType = successListType,
                     buttonLocation = buttonLocation,
+                    onClick = onSubjectClick
                 ) {
                     onSuccessToggle(it)
                     if (!it) {
@@ -188,6 +193,7 @@ fun Profile(
                     marksInfo = markbookInfo,
                     listType = markbookListType,
                     buttonLocation = buttonLocation,
+                    onClick = onMarkbookClick
                 ) {
                     onMarkbookToggle(it)
                     if (!it) {
@@ -211,6 +217,7 @@ fun Markbook(
     checked: Boolean,
     buttonLocation: ExpandButtonLocation,
     listType: SubjectListType,
+    onClick: (UISubjectDTO) -> Unit,
     onToggle: (Boolean) -> Unit
 ) {
     InfoList(
@@ -223,7 +230,7 @@ fun Markbook(
         buttonLocation = buttonLocation,
         moreInfoContent = {
             Column(modifier = Modifier.fillMaxWidth()) {
-                ShowListByType(listType = listType, list = markbookSubjects)
+                ShowListByType(listType = listType, list = markbookSubjects, onClick = onClick)
             }
         }
     )
@@ -238,6 +245,7 @@ fun Success(
     checked: Boolean,
     buttonLocation: ExpandButtonLocation,
     listType: SubjectListType,
+    onClick: (UISubjectDTO) -> Unit,
     onToggle: (Boolean) -> Unit
 ) {
     InfoList(
@@ -249,17 +257,21 @@ fun Success(
         buttonLocation = buttonLocation,
         moreInfoContent = {
             Column(modifier = Modifier.fillMaxWidth()) {
-                ShowListByType(listType = listType, list = subjects)
+                ShowListByType(listType = listType, list = subjects, onClick = onClick)
             }
         }
     )
 }
 
 @Composable
-private fun ShowListByType(listType: SubjectListType, list: List<UISubjectDTO>) {
+private fun ShowListByType(
+    listType: SubjectListType,
+    list: List<UISubjectDTO>,
+    onClick: (UISubjectDTO) -> Unit
+) {
     when (listType) {
-        SubjectListType.FULL -> SubjectList(subjects = list)
-        SubjectListType.PARTIAL -> SubjectListPart(subjects = list)
+        SubjectListType.FULL -> SubjectList(subjects = list, onClick = onClick)
+        SubjectListType.PARTIAL -> SubjectListPart(subjects = list, onClick = onClick)
     }
 }
 

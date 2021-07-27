@@ -33,6 +33,7 @@ import com.varpihovsky.ui_data.mappers.toUIDTO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -131,6 +132,10 @@ class ProfileInteractor @Inject constructor(
 
     private fun formMarkbookSubjects(markbookSubjects: List<MarkbookSubjectDTO>): List<UISubjectDTO> {
         return markbookSubjects.map { it.toUIDTO() }
+    }
+
+    suspend fun getMarkbookDTOById(id: Int): MarkbookSubjectDTO? {
+        return subjectModel.getMarkbook().lastOrNull()?.find { it.id == id }
     }
 
     override fun onRefresh() {

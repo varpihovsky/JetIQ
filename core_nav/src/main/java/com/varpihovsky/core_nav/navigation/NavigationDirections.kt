@@ -53,4 +53,12 @@ object NavigationDirections {
     val aboutSettings = object : NavigationCommand {
         override val destination = "settings_about"
     }
+
+    val markbookSubject = object : NavigationCommand {
+        override val destination = "markbook_subject"
+    }
+
+    val successSubject = object : NavigationCommand {
+        override val destination = "success_subject"
+    }
 }

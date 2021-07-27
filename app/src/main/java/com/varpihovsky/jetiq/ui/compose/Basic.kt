@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.varpihovsky.repo_data.ExpandButtonLocation
@@ -176,6 +177,60 @@ fun InfoList(
 
 @ExperimentalAnimationApi
 @Composable
+fun ExpandableList(
+    modifier: Modifier = Modifier,
+    title: String,
+    content: @Composable () -> Unit
+) {
+    val checked = remember { mutableStateOf(false) }
+
+    ExpandableList(
+        modifier = modifier,
+        title = title,
+        checked = checked.value,
+        onCheckedChange = { checked.value = it }) {
+        content()
+    }
+}
+
+@ExperimentalAnimationApi
+@Composable
+fun ExpandableList(
+    modifier: Modifier = Modifier,
+    title: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    content: @Composable () -> Unit
+) {
+    val iconRotateAnimation = animateFloatAsState(targetValue = if (checked) 180f else 0f)
+
+    Column(modifier = modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                modifier = Modifier.padding(start = 10.dp),
+                text = title,
+                style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Normal)
+            )
+            IconToggleButton(checked = checked, onCheckedChange = onCheckedChange) {
+                Icon(
+                    modifier = Modifier.rotate(iconRotateAnimation.value),
+                    imageVector = Icons.Default.KeyboardArrowDown,
+                    contentDescription = null
+                )
+            }
+        }
+        AnimatedVisibilityComposable(visible = checked) {
+            content()
+        }
+    }
+}
+
+@ExperimentalAnimationApi
+@Composable
 fun AnimatedVisibilityComposable(
     modifier: Modifier = Modifier,
     visible: Boolean,
@@ -242,6 +297,17 @@ fun BoxInfo(
         Row {
             Text(text = smallText, style = MaterialTheme.typography.subtitle2, color = Color.Gray)
         }
+    }
+}
+
+@Composable
+fun SubjectInfo(modifier: Modifier = Modifier, bigText: String, smallText: String) {
+    Column(modifier = modifier.padding(start = 12.dp, top = 10.dp)) {
+        Text(
+            text = bigText,
+            style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Normal)
+        )
+        Text(text = smallText, style = MaterialTheme.typography.body1)
     }
 }
 

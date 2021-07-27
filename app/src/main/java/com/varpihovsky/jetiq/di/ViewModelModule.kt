@@ -30,5 +30,6 @@ import kotlinx.coroutines.Dispatchers
 object ViewModelModule {
     @Provides
     @ViewModelScoped
-    fun provideDispatchers() = CoroutineDispatchers(Dispatchers.IO)
+    fun provideDispatchers() =
+        CoroutineDispatchers(Dispatchers.IO, Dispatchers.Default, Dispatchers.Unconfined)
 }

@@ -51,6 +51,8 @@ import com.varpihovsky.jetiq.screens.profile.Profile
 import com.varpihovsky.jetiq.screens.settings.about.AboutSettingsScreen
 import com.varpihovsky.jetiq.screens.settings.general.GeneralSettingsScreen
 import com.varpihovsky.jetiq.screens.settings.main.MainSettingsScreen
+import com.varpihovsky.jetiq.screens.subjects.markbook.MarkbookSubjectScreen
+import com.varpihovsky.jetiq.screens.subjects.success.SuccessSubjectScreen
 import soup.compose.material.motion.Axis
 import soup.compose.material.motion.materialElevationScale
 import soup.compose.material.motion.materialFadeThrough
@@ -127,9 +129,9 @@ fun initNavigation(
         defaultRoute = startDestination
     ) {
         entry {
-            composable =
-                { Auth(viewModel = viewModel(key = NavigationDirections.authentication.destination)) }
-            route = NavigationDirections.authentication.destination
+            val entryRoute = NavigationDirections.authentication.destination
+            composable = { Auth(viewModel = viewModel(key = entryRoute)) }
+            route = entryRoute
             entryType = EntryType.SubMenu
             inAnimation = materialSharedAxis(
                 axis = Axis.Y,
@@ -141,49 +143,81 @@ fun initNavigation(
             )
         }
         entry {
-            composable =
-                { NewMessageScreen(newMessageViewModel = viewModel(key = NavigationDirections.newMessage.destination)) }
-            route = NavigationDirections.newMessage.destination
+            val entryRoute = NavigationDirections.newMessage.destination
+            composable = { NewMessageScreen(newMessageViewModel = viewModel(key = entryRoute)) }
+            route = entryRoute
             entryType = EntryType.SubMenu
             inAnimation = materialElevationScale(false)
             outAnimation = materialElevationScale(true)
         }
         entry {
-            composable =
-                { ContactsScreen(contactsViewModel = viewModel(key = NavigationDirections.contacts.destination)) }
-            route = NavigationDirections.contacts.destination
+            val entryRoute = NavigationDirections.contacts.destination
+            composable = { ContactsScreen(contactsViewModel = viewModel(key = entryRoute)) }
+            route = entryRoute
             entryType = EntryType.SubMenu
             inAnimation = materialFadeThrough()
             outAnimation = materialFadeThrough()
         }
         entry {
-            composable =
-                { MainSettingsScreen(mainSettingsViewModel = viewModel(key = NavigationDirections.mainSettings.destination)) }
-            route = NavigationDirections.mainSettings.destination
+            val entryRoute = NavigationDirections.mainSettings.destination
+            composable = { MainSettingsScreen(mainSettingsViewModel = viewModel(key = entryRoute)) }
+            route = entryRoute
             entryType = EntryType.SubMenu
             inAnimation = materialFadeThrough()
             outAnimation = materialFadeThrough()
         }
         entry {
+            val entryRoute = NavigationDirections.aboutSettings.destination
             composable =
-                { AboutSettingsScreen(aboutSettingsViewModel = viewModel(key = NavigationDirections.aboutSettings.destination)) }
-            route = NavigationDirections.aboutSettings.destination
+                { AboutSettingsScreen(aboutSettingsViewModel = viewModel(key = entryRoute)) }
+            route = entryRoute
             entryType = EntryType.SubMenu
             inAnimation = materialElevationScale(false)
             outAnimation = materialElevationScale(true)
         }
         entry {
+            val entryRoute = NavigationDirections.generalSettings.destination
             composable =
-                { GeneralSettingsScreen(generalSettingsViewModel = viewModel(key = NavigationDirections.generalSettings.destination)) }
-            route = NavigationDirections.generalSettings.destination
+                { GeneralSettingsScreen(generalSettingsViewModel = viewModel(key = entryRoute)) }
+            route = entryRoute
             entryType = EntryType.SubMenu
             inAnimation = materialElevationScale(false)
-            outAnimation = materialElevationScale(false)
+            outAnimation = materialElevationScale(true)
         }
         entry {
+            val entryRoute = NavigationDirections.markbookSubject.destination
             composable =
-                { MessagesScreen(viewModel = viewModel(key = NavigationDirections.messages.destination)) }
-            route = NavigationDirections.messages.destination
+                { MarkbookSubjectScreen(markbookSubjectViewModel = viewModel(key = entryRoute)) }
+            route = entryRoute
+            entryType = EntryType.SubMenu
+            inAnimation = materialSharedAxis(
+                axis = Axis.Y,
+                forward = true
+            )
+            outAnimation = materialSharedAxis(
+                axis = Axis.Y,
+                forward = false
+            )
+        }
+        entry {
+            val entryRoute = NavigationDirections.successSubject.destination
+            composable =
+                { SuccessSubjectScreen(markbookSubjectViewModel = viewModel(key = entryRoute)) }
+            route = entryRoute
+            entryType = EntryType.SubMenu
+            inAnimation = materialSharedAxis(
+                axis = Axis.Y,
+                forward = true
+            )
+            outAnimation = materialSharedAxis(
+                axis = Axis.Y,
+                forward = false
+            )
+        }
+        entry {
+            val entryRoute = NavigationDirections.messages.destination
+            composable = { MessagesScreen(viewModel = viewModel(key = entryRoute)) }
+            route = entryRoute
             entryType = EntryType.Main
             inAnimation = materialSharedAxis(
                 axis = Axis.X,
@@ -195,9 +229,9 @@ fun initNavigation(
             )
         }
         entry {
-            composable =
-                { Profile(profileViewModel = viewModel(key = NavigationDirections.profile.destination)) }
-            route = NavigationDirections.profile.destination
+            val entryRoute = NavigationDirections.profile.destination
+            composable = { Profile(profileViewModel = viewModel(key = entryRoute)) }
+            route = entryRoute
             entryType = EntryType.Main
             inAnimation = materialSharedAxis(
                 axis = Axis.X,
