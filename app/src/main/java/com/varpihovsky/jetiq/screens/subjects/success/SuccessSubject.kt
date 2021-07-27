@@ -29,8 +29,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.varpihovsky.jetiq.ui.compose.BackIconButton
 import com.varpihovsky.jetiq.ui.compose.ExpandableList
@@ -100,7 +102,6 @@ private fun MarkbookSubjectScreen(
             }
         }
         SubjectInfo(bigText = "Викладач", smallText = subject.t_name)
-        SubjectInfo(bigText = "Кредитів", smallText = subject.scale)
         SubjectInfo(
             bigText = "Всього",
             smallText = subjectDetailsWithTasks.subjectDetailsDTO.total.toString()
@@ -154,7 +155,8 @@ fun TaskList(
 fun Task(modifier: Modifier = Modifier, legend: String, points: String) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             modifier = Modifier
@@ -166,9 +168,10 @@ fun Task(modifier: Modifier = Modifier, legend: String, points: String) {
         Text(
             modifier = Modifier
                 .padding(start = 5.dp, end = 10.dp)
-                .weight(1f),
+                .weight(1f, true),
             text = points,
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.h6,
+            textAlign = TextAlign.Center
         )
     }
 }
