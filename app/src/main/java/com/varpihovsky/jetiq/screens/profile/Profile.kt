@@ -63,11 +63,11 @@ fun Profile(profileViewModel: ProfileViewModel) {
     val profileState by profileViewModel.profile.collectAsState(UIProfileDTO())
 
     val successMarksInfoState by profileViewModel.successMarksInfo.collectAsState(listOf())
-    val successSubjectsState by profileViewModel.successSubjects.collectAsState(listOf())
+    val successSubjectsState by profileViewModel.successSubjects.collectAsState()
     val successListType by profileViewModel.successListType.collectAsState(initial = SubjectListType.PARTIAL)
 
     val markbookInfo by profileViewModel.markbookMarksInfo.collectAsState(listOf())
-    val markbookSubjects by profileViewModel.markbookSubjects.collectAsState(listOf())
+    val markbookSubjects by profileViewModel.markbookSubjects.collectAsState()
     val markbookListType by profileViewModel.markbookListType.collectAsState(initial = SubjectListType.PARTIAL)
 
     val buttonLocation by profileViewModel.expandButtonLocation.collectAsState(initial = ExpandButtonLocation.LOWER)
@@ -77,14 +77,6 @@ fun Profile(profileViewModel: ProfileViewModel) {
     BackHandler(true, onBack = profileViewModel::onBackNavButtonClick)
 
     profileViewModel.emptyAppbar()
-
-    // collectAsState provides empty value on first composition and than recompose with right one
-    // That's producing bug that breaks lists visibility animation and current list semester state.
-    // This is pretty bad fix of this bug. The better one is to make implementation of produceState
-    // which saves state via rememberSavable command.
-    if (markbookSubjects.isEmpty() && !profileViewModel.isLoading.value) {
-        return
-    }
 
     Profile(
         profile = profileState,

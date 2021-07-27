@@ -17,7 +17,6 @@ package com.varpihovsky.jetiq.screens.profile
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
@@ -35,9 +34,9 @@ import com.varpihovsky.jetiq.screens.subjects.markbook.MarkbookSubjectViewModel
 import com.varpihovsky.jetiq.screens.subjects.success.SuccessSubjectViewModel
 import com.varpihovsky.ui_data.UISubjectDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -58,10 +57,10 @@ class ProfileViewModel @Inject constructor(
     val profile = profileInteractor.profileData.distinctUntilChanged()
 
     val successMarksInfo = profileInteractor.successData.map { it.first }.distinctUntilChanged()
-    val successSubjects = profileInteractor.successData.map { it.second }.distinctUntilChanged()
+    lateinit var successSubjects: StateFlow<List<UISubjectDTO>>
 
     val markbookMarksInfo = profileInteractor.markbookData.map { it.first }.distinctUntilChanged()
-    val markbookSubjects = profileInteractor.markbookData.map { it.second }.distinctUntilChanged()
+    lateinit var markbookSubjects: StateFlow<List<UISubjectDTO>>
 
     private val successChecked = mutableStateOf(false)
     private val markbookChecked = mutableStateOf(false)
@@ -85,7 +84,16 @@ class ProfileViewModel @Inject constructor(
         .distinctUntilChanged()
 
     init {
-        Log.d(null, "Created")
+        runBlocking {
+            viewModelScope.launch {
+                successSubjects =
+                    profileInteractor.successData.map { it.second }.distinctUntilChanged()
+                        .stateIn(viewModelScope, SharingStarted.Eagerly, listOf())
+                markbookSubjects =
+                    profileInteractor.markbookData.map { it.second }.distinctUntilChanged()
+                        .stateIn(viewModelScope, SharingStarted.Eagerly, listOf())
+            }.join()
+        }
     }
 
     inner class Data {
