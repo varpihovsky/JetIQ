@@ -18,6 +18,7 @@ package com.varpihovsky.core.util
  */
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 /**
  * Class that used for dispatcher injection. Needed for tests.
@@ -25,5 +26,16 @@ import kotlinx.coroutines.CoroutineDispatcher
  * @author Vladyslav Podrezenko
  */
 data class CoroutineDispatchers(
-    val IO: CoroutineDispatcher
+    /**
+     * @see [Dispatchers.IO]
+     */
+    val IO: CoroutineDispatcher,
+    /**
+     * @see [Dispatchers.Default]
+     */
+    val Default: CoroutineDispatcher,
+    /**
+     * @see [Dispatchers.Unconfined]
+     */
+    val Unconfined: CoroutineDispatcher,
 )
