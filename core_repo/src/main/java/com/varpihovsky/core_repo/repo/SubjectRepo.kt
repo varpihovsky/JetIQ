@@ -30,6 +30,7 @@ import com.varpihovsky.repo_data.SubjectDetailsDTO
 import com.varpihovsky.repo_data.relations.SubjectDetailsWithTasks
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -53,6 +54,15 @@ interface SubjectRepo : Refreshable {
     fun getSubjects(): Flow<List<SubjectDTO>>
 
     /**
+     * Returns flow of subject with specified id.
+     *
+     * @param id id of [SubjectDTO]
+     *
+     * @return [SubjectDTO]
+     */
+    fun getSubjectById(id: Int): Flow<SubjectDTO>
+
+    /**
      * Returns flow of subject details from subject provided by success journal.
      * Every detail has same id as [SubjectDTO] from [getSubjects] method. Always sorted same as
      * result from [getSubjects] method.
@@ -62,11 +72,29 @@ interface SubjectRepo : Refreshable {
     fun getSubjectsDetails(): Flow<List<SubjectDetailsDTO>>
 
     /**
+     * Returns flow of subject details with specified id.
+     *
+     * @param id id of requested [SubjectDetailsWithTasks]
+     *
+     * @return [SubjectDetailsWithTasks]
+     */
+    fun getDetailsById(id: Int): Flow<SubjectDetailsWithTasks>
+
+    /**
      * Returns flow of markbook subjects.
      *
      * @return list of [MarkbookSubjectDTO]
      */
     fun getMarkbook(): Flow<List<MarkbookSubjectDTO>>
+
+    /**
+     * Returns flow of markbook subject related to id.
+     *
+     * @param id id of [MarkbookSubjectDTO]
+     *
+     * @return [MarkbookSubjectDTO]
+     */
+    fun getMarkbookById(id: Int): Flow<MarkbookSubjectDTO>
 
     /**
      * Clears database.
@@ -129,6 +157,10 @@ private class SubjectRepoImpl @Inject constructor(
         return subjectDAO.getAllSubjects()
     }
 
+    override fun getSubjectById(id: Int): Flow<SubjectDTO> {
+        return subjectDAO.getSubjectById(id.toString()).distinctUntilChanged()
+    }
+
     private suspend fun loadSuccessJournal() {
         val session = requireSession()
         wrapException(
@@ -162,15 +194,27 @@ private class SubjectRepoImpl @Inject constructor(
 
     private fun processSubjectDetails(subjectDetailsWithTasks: SubjectDetailsWithTasks, id: Int) {
         subjectDetailsDAO.insertDetails(subjectDetailsWithTasks.subjectDetailsDTO.copy(id = id))
-        subjectDetailsWithTasks.subjectTasks.forEach { subjectDetailsDAO.insertTask(it) }
+        subjectDetailsWithTasks.subjectTasks.forEachIndexed { taskId, task ->
+            subjectDetailsDAO.insertTask(
+                task.copy(subjectDetailsId = id, id = taskId)
+            )
+        }
     }
 
     override fun getSubjectsDetails(): Flow<List<SubjectDetailsDTO>> {
         return subjectDetailsDAO.getDetailsOnly()
     }
 
+    override fun getDetailsById(id: Int): Flow<SubjectDetailsWithTasks> {
+        return subjectDetailsDAO.getDetailsById(id).distinctUntilChanged()
+    }
+
     override fun getMarkbook(): Flow<List<MarkbookSubjectDTO>> {
         return subjectDetailsDAO.getMarkbookSubjects()
+    }
+
+    override fun getMarkbookById(id: Int): Flow<MarkbookSubjectDTO> {
+        return subjectDetailsDAO.getMarkbookSubjectById(id).distinctUntilChanged()
     }
 
     private suspend fun loadMarkbookSubjects() {
