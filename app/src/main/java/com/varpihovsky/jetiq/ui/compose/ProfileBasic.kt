@@ -43,6 +43,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import coil.transform.Transformation
@@ -162,9 +163,19 @@ fun MarksList(
 }
 
 @Composable
-fun SubjectListPart(subjects: List<UISubjectDTO>, onClick: (UISubjectDTO) -> Unit) {
+fun SubjectListPart(
+    subjects: List<UISubjectDTO>,
+    onClick: (UISubjectDTO) -> Unit,
+    semesterStateKey: String
+) {
     val maxSemester = rememberMaxSemester(subjects)
-    val semesterState = rememberSaveable { mutableStateOf(1) }
+    val semesterState =
+    // We have to do that thing because rememberSaveable creates new state on every navigation
+        // to profile
+        viewModel<ViewModelStateHolder<Int>>(
+            factory = ViewModelStateHolderFactory(1),
+            key = semesterStateKey
+        ).state
     val listToShow =
         remember { mutableStateOf(filterBySemester(subjects, semesterState.value)) }
     val forward = rememberSaveable { mutableStateOf(true) }

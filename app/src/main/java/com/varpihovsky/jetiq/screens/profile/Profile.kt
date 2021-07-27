@@ -222,7 +222,12 @@ fun Markbook(
         buttonLocation = buttonLocation,
         moreInfoContent = {
             Column(modifier = Modifier.fillMaxWidth()) {
-                ShowListByType(listType = listType, list = markbookSubjects, onClick = onClick)
+                ShowListByType(
+                    listType = listType,
+                    list = markbookSubjects,
+                    onClick = onClick,
+                    key = "markbook"
+                )
             }
         }
     )
@@ -249,7 +254,12 @@ fun Success(
         buttonLocation = buttonLocation,
         moreInfoContent = {
             Column(modifier = Modifier.fillMaxWidth()) {
-                ShowListByType(listType = listType, list = subjects, onClick = onClick)
+                ShowListByType(
+                    listType = listType,
+                    list = subjects,
+                    onClick = onClick,
+                    key = "success"
+                )
             }
         }
     )
@@ -259,11 +269,16 @@ fun Success(
 private fun ShowListByType(
     listType: SubjectListType,
     list: List<UISubjectDTO>,
-    onClick: (UISubjectDTO) -> Unit
+    onClick: (UISubjectDTO) -> Unit,
+    key: String
 ) {
     when (listType) {
         SubjectListType.FULL -> SubjectList(subjects = list, onClick = onClick)
-        SubjectListType.PARTIAL -> SubjectListPart(subjects = list, onClick = onClick)
+        SubjectListType.PARTIAL -> SubjectListPart(
+            subjects = list,
+            onClick = onClick,
+            semesterStateKey = key
+        )
     }
 }
 
