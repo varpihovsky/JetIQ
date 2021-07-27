@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.varpihovsky.jetiq.BuildConfig
 import com.varpihovsky.jetiq.screens.settings.SettingsButton
 import com.varpihovsky.jetiq.ui.compose.BackIconButton
 import com.varpihovsky.jetiq.ui.compose.MapLifecycle
@@ -69,7 +70,7 @@ fun AboutSettingsScreen(
             modifier = Modifier
                 .padding(horizontal = 40.dp, vertical = 10.dp)
                 .fillMaxWidth(),
-            text = "Неофіційний клієнт для JetIQ.",
+            text = "Неофіційний клієнт для JetIQ v${BuildConfig.VERSION_NAME}.",
             style = MaterialTheme.typography.h5,
             textAlign = TextAlign.Center
         )
