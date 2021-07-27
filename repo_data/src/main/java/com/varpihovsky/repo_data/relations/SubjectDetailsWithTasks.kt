@@ -23,7 +23,7 @@ import com.varpihovsky.repo_data.SubjectDetailsDTO
 import com.varpihovsky.repo_data.SubjectTaskDTO
 
 data class SubjectDetailsWithTasks(
-    @Embedded val subjectDetailsDTO: SubjectDetailsDTO,
+    @Embedded val subjectDetailsDTO: SubjectDetailsDTO = SubjectDetailsDTO(),
     @Relation(
         parentColumn = "id",
         entityColumn = "subjectDetailsId"
