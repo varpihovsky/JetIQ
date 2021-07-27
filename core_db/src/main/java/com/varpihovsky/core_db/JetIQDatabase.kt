@@ -17,6 +17,7 @@ package com.varpihovsky.core_db
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.varpihovsky.core_db.dao.*
@@ -33,7 +34,11 @@ import com.varpihovsky.repo_data.*
         MessageDTO::class,
         ContactDTO::class
     ],
-    version = 11
+    version = 13,
+    exportSchema = true,
+    autoMigrations = [
+        AutoMigration(from = 12, to = 13)
+    ]
 )
 abstract class JetIQDatabase : RoomDatabase() {
     abstract fun profileDAO(): ProfileDAO

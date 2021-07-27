@@ -5,7 +5,7 @@ buildscript {
         kotlin_version = '1.5.10'
         compose_version = '1.0.0-rc01'
         mockk_version = '1.12.0'
-        room_version = '2.3.0'
+        room_version = '2.4.0-alpha04'
         dagger_version = 2.37
         accompanist_version = '0.13.0'
         retrofit_version = '2.9.0'

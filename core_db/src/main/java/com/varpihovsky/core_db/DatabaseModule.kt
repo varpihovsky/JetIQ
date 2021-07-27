@@ -61,6 +61,5 @@ object DatabaseModule {
             context,
             JetIQDatabase::class.java,
             "JetIQ_Student_Neon"
-        ).fallbackToDestructiveMigration()
-            .build()
+        ).fallbackToDestructiveMigration().build()
 }
