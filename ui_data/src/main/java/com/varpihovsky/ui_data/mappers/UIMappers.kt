@@ -43,7 +43,7 @@ fun MarkbookSubjectDTO.toUIDTO() = UISubjectDTO(
 )
 
 fun MessageDTO.toUIDTO(): UIMessageDTO {
-    val split = body!!.split("<b>", "</b>:<br>")
+    val split = body!!.split("<b>", "</b>:<br>", "</b>")
     return UIMessageDTO(
         id.toInt(),
         split[1],
