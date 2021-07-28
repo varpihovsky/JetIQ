@@ -27,6 +27,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -67,7 +68,7 @@ fun MessagesScreen(viewModel: MessagesViewModel) {
     )
 
     MessagesScreen(
-        messages = viewModel.data.messages.value,
+        messages = viewModel.messages.collectAsState(initial = listOf()).value,
         onClick = viewModel::onNewMessageButtonClick,
         refreshState = rememberSwipeRefreshState(isRefreshing = viewModel.isLoading.value),
         onRefresh = viewModel::onRefresh

@@ -1,20 +1,15 @@
 package com.varpihovsky.jetiq.screens.messages.main
 
-import androidx.compose.runtime.State
 import com.varpihovsky.core.Refreshable
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
-import com.varpihovsky.core.util.CoroutineDispatchers
-import com.varpihovsky.core.util.ReactiveTask
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.jetiq.screens.JetIQViewModel
-import com.varpihovsky.ui_data.UIMessageDTO
 import com.varpihovsky.ui_data.mappers.toUIDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
-import java.util.*
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 /* JetIQ
@@ -36,33 +31,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MessagesViewModel @Inject constructor(
-    private val dispatchers: CoroutineDispatchers,
     private val navigationManager: NavigationController,
     private val messagesModel: MessagesRepo,
     appbarManager: AppbarManager,
     exceptionEventManager: ExceptionEventManager,
 ) : JetIQViewModel(appbarManager, navigationManager, exceptionEventManager), Refreshable {
-    val data by lazy { Data() }
     override val isLoading
         get() = messagesModel.isLoading
 
-    private val messages = mutableStateOf(listOf<UIMessageDTO>())
-    private val messagesTask =
-        ReactiveTask(task = this::collectMessages, dispatcher = dispatchers.IO)
-
-    inner class Data {
-        val messages: State<List<UIMessageDTO>> = this@MessagesViewModel.messages
-    }
+    val messages = messagesModel.getMessages()
+        .map { messages -> messages.sortedByDescending { it.time.toLong() }.map { it.toUIDTO() } }
 
     init {
-        messagesTask.start()
         messagesModel.loadMessages()
-    }
-
-    private suspend fun collectMessages() {
-        messagesModel.getMessages().collect { DTOMessages ->
-            DTOMessages.map { it.toUIDTO() }.also { messages.value = it }
-        }
     }
 
     fun onNewMessageButtonClick() {
