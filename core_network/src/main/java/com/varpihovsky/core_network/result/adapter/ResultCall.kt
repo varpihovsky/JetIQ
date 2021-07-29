@@ -20,6 +20,7 @@ package com.varpihovsky.core_network.result.adapter
 import android.util.Log
 import com.varpihovsky.core_network.result.HttpException
 import com.varpihovsky.core_network.result.Result
+import okhttp3.Request
 import okio.Timeout
 import retrofit2.Call
 import retrofit2.Callback
@@ -48,7 +49,7 @@ internal class ResultCall<T>(proxy: Call<T>) : CallDelegate<T, Result<T>>(proxy)
                     value = response.body() as T,
                     statusCode = response.code(),
                     statusMessage = response.message(),
-                    url = call.request().url().toString(),
+                    url = (call.request() as Request).url.toString(),
                     headers = response.headers()
                 )
             } else {
@@ -56,7 +57,7 @@ internal class ResultCall<T>(proxy: Call<T>) : CallDelegate<T, Result<T>>(proxy)
                     HttpException(
                         statusCode = response.code(),
                         statusMessage = response.message(),
-                        url = call.request().url().toString(),
+                        url = (call.request() as Request).url.toString(),
                     )
                 )
             }
