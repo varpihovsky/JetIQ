@@ -17,17 +17,20 @@ package com.varpihovsky.jetiq.screens.messages.contacts.addition
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.SecureFlagPolicy
 import com.varpihovsky.core.util.Selectable
 import com.varpihovsky.jetiq.screens.messages.contacts.Contact
 import com.varpihovsky.jetiq.screens.messages.contacts.SearchBar
@@ -40,6 +43,7 @@ import com.varpihovsky.ui_data.UIReceiverDTO
 import soup.compose.material.motion.Axis
 import soup.compose.material.motion.MaterialSharedAxis
 
+@ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @Composable
 fun AdditionDialog(
@@ -67,11 +71,12 @@ fun AdditionDialog(
         onGroupSelect = contactAdditionViewModel::onGroupSelect,
         searchFieldValue = contactAdditionViewModel.data.searchFieldValue.value,
         onSearchFieldValueChange = contactAdditionViewModel::onSearchFieldValueChange,
-        contacts = contactAdditionViewModel.data.contacts.value,
+        contacts = contactAdditionViewModel.data.contacts.collectAsState(listOf()).value,
         onContactSelected = contactAdditionViewModel::onContactSelected
     )
 }
 
+@ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @Composable
 fun AdditionDialog(
@@ -91,7 +96,14 @@ fun AdditionDialog(
     onContactSelected: (Selectable<UIReceiverDTO>) -> Unit
 ) {
     AlertDialog(
-        modifier = Modifier.padding(20.dp),
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            securePolicy = SecureFlagPolicy.SecureOff
+        ),
+        modifier = Modifier
+            .wrapContentSize()
+            .animateContentSize()
+            .padding(20.dp),
         onDismissRequest = onDismissRequest,
         confirmButton = {
             BasicTextButton(
@@ -105,7 +117,7 @@ fun AdditionDialog(
                 text = "Відхилити"
             )
         },
-        title = { Text(text = "Новий контакт") },
+        title = { Text(modifier = Modifier.padding(10.dp), text = "Новий контакт") },
         text = {
             Column {
                 SubscribedExposedDropDownList(
@@ -155,8 +167,8 @@ fun AdditionDialog(
                     }
                 }
 
-                LazyColumn {
-                    items(count = contacts.size, key = { contacts[it] }) {
+                LazyColumn(modifier = Modifier.heightIn(min = 0.dp, max = 300.dp)) {
+                    items(count = contacts.size, key = { contacts[it].dto }) {
                         Contact(
                             contact = contacts[it],
                             isLongClickEnabled = false,
