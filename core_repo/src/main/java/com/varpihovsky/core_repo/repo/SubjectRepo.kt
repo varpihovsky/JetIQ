@@ -133,6 +133,8 @@ private class SubjectRepoImpl @Inject constructor(
 ) : ConfidentRepo(confidentialDAO, profileDAO, exceptionEventManager), SubjectRepo {
     override val isLoading = mutableStateOf(false)
 
+    private var taskIndex = 0
+
     override fun onRefresh() {
         repoScope.launch(Dispatchers.IO) {
             load()
@@ -179,6 +181,7 @@ private class SubjectRepoImpl @Inject constructor(
     }
 
     private suspend fun processSubjects(subjects: List<SubjectDTO>, session: String) {
+        taskIndex = 0
         subjects.forEach {
             subjectDAO.insert(it)
             addSubjectDetails(session, it.card_id.toInt())
@@ -194,10 +197,11 @@ private class SubjectRepoImpl @Inject constructor(
 
     private fun processSubjectDetails(subjectDetailsWithTasks: SubjectDetailsWithTasks, id: Int) {
         subjectDetailsDAO.insertDetails(subjectDetailsWithTasks.subjectDetailsDTO.copy(id = id))
-        subjectDetailsWithTasks.subjectTasks.forEachIndexed { taskId, task ->
+        subjectDetailsWithTasks.subjectTasks.forEach { task ->
             subjectDetailsDAO.insertTask(
-                task.copy(subjectDetailsId = id, id = taskId)
+                task.copy(subjectDetailsId = id, id = taskIndex)
             )
+            taskIndex++
         }
     }
 
