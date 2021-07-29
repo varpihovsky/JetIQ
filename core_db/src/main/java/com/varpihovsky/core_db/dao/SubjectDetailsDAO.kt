@@ -20,6 +20,7 @@ package com.varpihovsky.core_db.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.IGNORE
+import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
 import com.varpihovsky.repo_data.MarkbookSubjectDTO
@@ -33,7 +34,7 @@ interface SubjectDetailsDAO {
     @Insert(onConflict = IGNORE)
     fun insertDetails(subjectDetailsDTO: SubjectDetailsDTO)
 
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = REPLACE)
     fun insertTask(subjectTaskDTO: SubjectTaskDTO)
 
     @Insert(onConflict = IGNORE)
