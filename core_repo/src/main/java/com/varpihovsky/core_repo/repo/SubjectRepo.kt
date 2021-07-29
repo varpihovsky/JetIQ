@@ -17,6 +17,7 @@ package com.varpihovsky.core_repo.repo
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import android.util.Log
 import com.varpihovsky.core.Refreshable
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core_db.dao.ConfidentialDAO
@@ -29,9 +30,11 @@ import com.varpihovsky.repo_data.SubjectDTO
 import com.varpihovsky.repo_data.SubjectDetailsDTO
 import com.varpihovsky.repo_data.relations.SubjectDetailsWithTasks
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
 
 /**
@@ -145,14 +148,24 @@ private class SubjectRepoImpl @Inject constructor(
         repoScope.launch {
             isLoading.value = true
 
+            try {
+                launchAllJobsWithTimeout()
+            } catch (e: TimeoutCancellationException) {
+                Log.e("Repo", Log.getStackTraceString(e))
+            }
+
+            isLoading.value = false
+        }.join()
+    }
+
+    private suspend fun launchAllJobsWithTimeout() {
+        withTimeout(JOB_TIMEOUT) {
             val successJob = launch { loadSuccessJournal() }
             val markbookJob = launch { loadMarkbookSubjects() }
 
             successJob.join()
             markbookJob.join()
-
-            isLoading.value = false
-        }.join()
+        }
     }
 
     override fun getSubjects(): Flow<List<SubjectDTO>> {
@@ -247,5 +260,9 @@ private class SubjectRepoImpl @Inject constructor(
         subjectDetailsDAO.deleteAllDetails()
         subjectDetailsDAO.deleteAllTasks()
         subjectDetailsDAO.deleteAllMarkbookSubjects()
+    }
+
+    companion object {
+        private const val JOB_TIMEOUT = 15000L
     }
 }

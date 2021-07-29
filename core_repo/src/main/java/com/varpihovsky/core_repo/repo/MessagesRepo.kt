@@ -17,6 +17,7 @@ package com.varpihovsky.core_repo.repo
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import android.util.Log
 import com.varpihovsky.core.Refreshable
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core_db.dao.ConfidentialDAO
@@ -25,9 +26,11 @@ import com.varpihovsky.core_db.dao.ProfileDAO
 import com.varpihovsky.core_network.managers.JetIQMessageManager
 import com.varpihovsky.repo_data.MessageDTO
 import com.varpihovsky.repo_data.MessageToSendDTO
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
 
 /**
@@ -94,19 +97,32 @@ private class MessagesRepoImpl @Inject constructor(
     private val _isLoading = mutableStateOf(false)
 
     override fun loadMessages() {
-        _isLoading.value = true
-        repoScope.launch { processMessagesLoading() }
+        repoScope.launch {
+            _isLoading.value = true
+
+            try {
+                launchWithTimeout()
+            } catch (e: TimeoutCancellationException) {
+                Log.e("Application", Log.getStackTraceString(e))
+            }
+
+            delay(LOADING_DELAY)
+
+            _isLoading.value = false
+        }
     }
 
-    override fun getMessages() = messageDAO.getMessages()
+    private suspend fun launchWithTimeout() {
+        withTimeout(LOADING_TIMEOUT) {
+            processMessagesLoading()
+        }
+    }
 
     private suspend fun processMessagesLoading() {
         wrapException(
             result = jetIQMessageManager.getMessages(requireSession()),
             onSuccess = { addMessagesToDatabase(it.value) },
         )
-        delay(LOADING_DELAY)
-        isLoading.value = false
     }
 
     private fun addMessagesToDatabase(messages: List<MessageDTO>) {
@@ -116,6 +132,8 @@ private class MessagesRepoImpl @Inject constructor(
             }
         }
     }
+
+    override fun getMessages() = messageDAO.getMessages()
 
     override fun clear() {
         messageDAO.deleteAll()
@@ -134,5 +152,6 @@ private class MessagesRepoImpl @Inject constructor(
 
     companion object {
         private const val LOADING_DELAY = 500L
+        private const val LOADING_TIMEOUT = 15000L
     }
 }
