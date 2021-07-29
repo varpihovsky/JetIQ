@@ -36,7 +36,7 @@ android {
 dependencies {
     implementation project(":repo_data")
 
-    implementation "org.threeten:threetenbp:1.5.1"
+    implementation "org.threeten:threetenbp:$threetenbp_version"
 
-    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation "androidx.core:core-ktx:$androidx_core_version"
 }

@@ -44,36 +44,35 @@ android {
 dependencies {
     //Dagger
     implementation "com.google.dagger:hilt-android:$dagger_version"
-    implementation 'androidx.compose.foundation:foundation-layout:1.0.0-beta07'
+    implementation "androidx.compose.foundation:foundation-layout:$compose_version"
     kapt "com.google.dagger:hilt-compiler:$dagger_version"
-    kapt 'androidx.hilt:hilt-compiler:1.0.0'
-    implementation "androidx.hilt:hilt-navigation-compose:1.0.0-alpha03"
-    implementation 'androidx.hilt:hilt-work:1.0.0'
+    kapt "androidx.hilt:hilt-compiler:$dagger_additionals_version"
+    implementation "androidx.hilt:hilt-work:$dagger_additionals_version"
 
     // For local unit tests
     testImplementation "com.google.dagger:hilt-android-testing:$dagger_version"
     kaptTest "com.google.dagger:hilt-compiler:$dagger_version"
 
     // Core
-    implementation 'androidx.core:core-ktx:1.6.0'
-    implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation 'com.google.android.material:material:1.4.0'
+    implementation "androidx.core:core-ktx:$androidx_core_version"
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation "com.google.android.material:material:$material_version"
 
     // Architecture components
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
-    implementation 'androidx.activity:activity-compose:1.3.0-rc01'
+    implementation "androidx.activity:activity-compose:$compose_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07"
-    implementation 'androidx.compose.runtime:runtime-livedata:1.0.0-rc01'
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
 
     // Compose
     implementation "androidx.compose.ui:ui:$compose_version"
 
     // JUnit
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation "junit:junit:$junit_version"
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.0.0-rc01"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     testImplementation "androidx.arch.core:core-testing:2.1.0"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.0"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_testing_version"
 
     // Mockk
     testImplementation "io.mockk:mockk:$mockk_version"
