@@ -46,15 +46,25 @@ class SelectionEngine<T>(
 
     init {
         scope.launch(dispatcher) {
+            // Due to that we have to do operations with pretty hard logic
+            // we cant just put mappings into variable, so we need to synchronize
+            // incoming changes in that way.
             dataSource.collect { synchronizeChanges(it) }
         }
     }
 
-    private fun synchronizeChanges(changes: List<T>) {
-        // Add added and remove removed
-        _state.value = _state.value.filter { !changes.contains(it.dto) } + changes.map {
-            Selectable(it, false)
-        }
+    private fun synchronizeChanges(changed: List<T>) {
+        val current = _state.value
+        val added = changed // Filter what we already have and map it to selectable
+            .filter { added -> current.find { it.dto == added } == null }
+            .map { Selectable(it, false) }
+        // Filter what changed list doesn't contain
+        val removed = _state.value.filter { !changed.contains(it.dto) }
+
+        // This operation give us possibility to synchronize incoming changes and
+        // not reset the whole list after them. In other words we do not lose things that we
+        // already have
+        _state.value = current + added - removed
     }
 
     /**
