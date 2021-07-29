@@ -3,24 +3,24 @@ buildscript {
 
     ext {
         kotlin_version = '1.5.10'
-        compose_version = '1.0.0-rc01'
+        compose_version = '1.0.0'
         mockk_version = '1.12.0'
         room_version = '2.4.0-alpha04'
-        accompanist_version = '0.13.0'
+        accompanist_version = '0.15.0'
         retrofit_version = '2.9.0'
-        coil_version = '1.3.0'
+        coil_version = '1.3.1'
         androidx_core_version = '1.6.0'
-        appcompat_version = '1.3.0'
+        appcompat_version = '1.3.1'
         material_version = '1.4.0'
-        preferences_version = '1.0.0-rc2'
+        preferences_version = '1.0.0-rc02'
         material_motion_version = '0.5.1'
         threetenbp_version = '1.5.1'
 
-        dagger_version = 2.37
+        dagger_version = '2.38.1'
         dagger_additionals_version = '1.0.0'
 
         junit_version = '4.13.2'
-        coroutines_testing_version = '1.5.0'
+        coroutines_testing_version = '1.5.1-native-mt'
 
         application_version = '1.1.0-alpha'
         min_sdk = 23
@@ -38,7 +38,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:7.1.0-alpha02"
+        classpath 'com.android.tools.build:gradle:7.1.0-alpha04'
         classpath "com.google.dagger:hilt-android-gradle-plugin:$dagger_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
