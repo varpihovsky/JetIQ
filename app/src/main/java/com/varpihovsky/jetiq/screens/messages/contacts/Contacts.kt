@@ -38,12 +38,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.varpihovsky.core.util.Selectable
+import com.varpihovsky.core.util.selectedOnly
 import com.varpihovsky.jetiq.R
 import com.varpihovsky.jetiq.screens.messages.contacts.addition.AdditionDialog
 import com.varpihovsky.jetiq.ui.compose.Avatar
@@ -57,10 +59,13 @@ import com.varpihovsky.ui_data.UIReceiverDTO
 fun ContactsScreen(
     contactsViewModel: ContactsViewModel
 ) {
+    val contacts = contactsViewModel.data.contacts.collectAsState(listOf()).value
+
     ContactsAppbar(
         contactsViewModel = contactsViewModel,
         isChoosing = contactsViewModel.data.isChoosing.value,
-        isExternalChoosing = contactsViewModel.data.isExternalChoosing.value
+        isExternalChoosing = contactsViewModel.data.isExternalChoosing.value,
+        contacts = contacts
     )
 
     MapLifecycle(viewModel = contactsViewModel)
@@ -72,7 +77,7 @@ fun ContactsScreen(
 
     if (contactsViewModel.data.isAdding.value) {
         AdditionDialog(
-            contactAdditionViewModel = hiltViewModel(),
+            contactAdditionViewModel = viewModel(),
             onDismissRequest = contactsViewModel::onDismissRequest,
             onConfirmButtonClick = contactsViewModel::onConfirmButtonClick
         )
@@ -81,7 +86,7 @@ fun ContactsScreen(
     ContactList(
         searchFieldValue = contactsViewModel.data.searchFieldValue.collectAsState().value,
         onSearchFieldValueChange = contactsViewModel::onSearchFieldValueChange,
-        contacts = contactsViewModel.data.contacts.collectAsState(listOf()).value,
+        contacts = contacts,
         isLongClickEnabled = contactsViewModel.data.isLongClickEnabled.value,
         onLongClick = contactsViewModel::onContactLongClick,
         isClickEnabled = contactsViewModel.data.isClickEnabled.value,
@@ -93,7 +98,8 @@ fun ContactsScreen(
 fun ContactsAppbar(
     contactsViewModel: ContactsViewModel,
     isChoosing: Boolean,
-    isExternalChoosing: Boolean
+    isExternalChoosing: Boolean,
+    contacts: List<Selectable<UIReceiverDTO>>
 ) {
     val text = if (isChoosing) "Вибір контактів..." else "Контакти"
     contactsViewModel.assignAppbar(
@@ -104,7 +110,10 @@ fun ContactsAppbar(
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Додати")
             }
             if (!isExternalChoosing) {
-                IconButton(onClick = contactsViewModel::onRemoveClick) {
+                IconButton(
+                    onClick = contactsViewModel::onRemoveClick,
+                    enabled = contacts.selectedOnly().isNotEmpty()
+                ) {
                     Icon(imageVector = Icons.Default.Delete, contentDescription = "Видалити")
                 }
             }
@@ -200,6 +209,7 @@ fun Contact(
         modifier = modifier
             .fillMaxWidth()
             .combinedClickable(
+                role = Role.Button,
                 enabled = isClickEnabled || isLongClickEnabled,
                 onClick = { if (isClickEnabled) onClick(contact) },
                 onLongClick = { if (isLongClickEnabled) onLongClick(contact) }

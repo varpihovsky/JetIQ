@@ -22,7 +22,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
 import com.varpihovsky.core.eventBus.EventBus
@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val viewModel = hiltViewModel<NavigationViewModel>()
+            val viewModel = viewModel<NavigationViewModel>(key = VIEW_MODEL_TAG)
 
             JetIQTheme {
                 Root(
@@ -70,5 +70,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-
+    companion object {
+        private const val VIEW_MODEL_TAG = "NavigationViewModel"
+    }
 }
