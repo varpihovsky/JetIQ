@@ -29,6 +29,9 @@ interface ProfileDAO : SingleEntryDAO<ProfileDTO> {
     @Query("SELECT * FROM ProfileDTO LIMIT 1")
     override fun get(): Flow<ProfileDTO>
 
+    @Query("SELECT * FROM ProfileDTO LIMIT 1")
+    fun getProfile(): ProfileDTO
+
     @Insert(onConflict = REPLACE)
     override fun set(t: ProfileDTO)
 

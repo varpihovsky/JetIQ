@@ -59,6 +59,8 @@ interface ProfileRepo {
      */
     fun getProfile(): Flow<ProfileDTO>
 
+    fun getProfileDTO(): ProfileDTO
+
     /**
      * Returns current user flow of confidential.
      *
@@ -117,6 +119,8 @@ private class ProfileRepoImpl @Inject constructor(
     }
 
     override fun getProfile() = profileDAO.get()
+
+    override fun getProfileDTO(): ProfileDTO = profileDAO.getProfile()
 
     override fun getConfidential() = confidentialDAO.get()
 
