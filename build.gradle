@@ -38,7 +38,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.0-alpha04'
+        classpath 'com.android.tools.build:gradle:7.1.0-alpha03'
         classpath "com.google.dagger:hilt-android-gradle-plugin:$dagger_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
