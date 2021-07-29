@@ -21,14 +21,15 @@ import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
-import com.varpihovsky.core.util.CoroutineDispatchers
-import com.varpihovsky.core.util.Selectable
-import com.varpihovsky.core.util.replaceAndReturn
+import com.varpihovsky.core.util.*
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.ListRepo
+import com.varpihovsky.core_repo.repo.ProfileRepo
 import com.varpihovsky.jetiq.screens.JetIQViewModel
 import com.varpihovsky.ui_data.*
+import com.varpihovsky.ui_data.mappers.toUIDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,6 +37,7 @@ import javax.inject.Inject
 class ContactAdditionViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val listRepo: ListRepo,
+    private val profileRepo: ProfileRepo,
     appbarManager: AppbarManager,
     navigationController: NavigationController,
     exceptionEventManager: ExceptionEventManager
@@ -51,8 +53,9 @@ class ContactAdditionViewModel @Inject constructor(
     private val selectedGroup = mutableStateOf(DropDownItem.WithID())
     private val searchFieldValue = mutableStateOf("")
 
-    //TODO: Replace with selection engine.
-    private val contacts = mutableStateOf(listOf<Selectable<UIReceiverDTO>>())
+    private val contactsState = MutableStateFlow(listOf<UIReceiverDTO>())
+    private val selectionEngine =
+        SelectionEngine(contactsState, viewModelScope, dispatchers.Default)
 
     inner class Data {
         val selectedContactType: State<ContactTypeDropDownItem> =
@@ -63,8 +66,13 @@ class ContactAdditionViewModel @Inject constructor(
         val groups: State<List<DropDownItem.WithID>> = this@ContactAdditionViewModel.groups
         val selectedGroup: State<DropDownItem.WithID> = this@ContactAdditionViewModel.selectedGroup
         val searchFieldValue: State<String> = this@ContactAdditionViewModel.searchFieldValue
-        val contacts: State<List<Selectable<UIReceiverDTO>>> =
-            this@ContactAdditionViewModel.contacts
+        val contacts: Flow<List<Selectable<UIReceiverDTO>>> = listRepo.getContacts()
+            .map { contacts -> contacts.map { it.toUIDTO() } }
+            .combine(selectionEngine.state) { contacts, receivers ->
+                receivers.sortedBy { it.dto.text }.filter { receiver ->
+                    contacts.find { it.id == receiver.dto.id && it.type == receiver.dto.type } == null
+                }
+            }
     }
 
     init {
@@ -74,12 +82,12 @@ class ContactAdditionViewModel @Inject constructor(
     }
 
     fun onDismiss() {
-        selectedContactType.value = ContactTypeDropDownItem.STUDENT
         clearFields()
+        selectedContactType.value = ContactTypeDropDownItem.STUDENT
     }
 
     fun onConfirm() {
-        callback(contacts.value.filter { it.isSelected }.map { it.dto })
+        callback(selectionEngine.state.value.selectedOnly())
         clearFields()
     }
 
@@ -101,27 +109,28 @@ class ContactAdditionViewModel @Inject constructor(
     fun onGroupSelect(group: DropDownItem) {
         selectedGroup.value = group as DropDownItem.WithID
         viewModelScope.launch(dispatchers.IO) {
-            contacts.value = listRepo.getStudentsByGroup(group.id)
-                .map { Selectable(UIReceiverDTO(it.id, it.text, ReceiverType.STUDENT), false) }
+            val id = profileRepo.getProfileDTO().id.toInt()
+
+            contactsState.value = listRepo.getStudentsByGroup(group.id)
+                .map { UIReceiverDTO(it.id, it.text, ReceiverType.STUDENT) }
+                .filter { it.id != id }
         }
     }
 
     fun onSearchFieldValueChange(value: String) {
         searchFieldValue.value = value
         viewModelScope.launch(dispatchers.IO) {
-            contacts.value = listRepo.getTeacherByQuery(value).map {
-                Selectable(UIReceiverDTO(it.id, it.text, ReceiverType.TEACHER), false)
-            }
+            contactsState.value = listRepo.getTeacherByQuery(value)
+                .map { UIReceiverDTO(it.id, it.text, ReceiverType.TEACHER) }
         }
     }
 
     fun onContactSelected(contact: Selectable<UIReceiverDTO>) {
-        val current = contacts.value
-        contacts.value = current.replaceAndReturn(contact, contact.selectedToggle())
+        selectionEngine.toggle(contact)
     }
 
     private fun clearFields() {
-        contacts.value = listOf()
+        contactsState.value = listOf()
         searchFieldValue.value = ""
         selectedGroup.value = DropDownItem.WithID()
         groups.value = listOf()
