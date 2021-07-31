@@ -25,10 +25,10 @@ import com.varpihovsky.core_repo.repo.SubjectRepo
 import com.varpihovsky.repo_data.MarkbookSubjectDTO
 import com.varpihovsky.repo_data.SubjectDTO
 import com.varpihovsky.repo_data.SubjectDetailsDTO
-import com.varpihovsky.ui_data.MarksInfo
-import com.varpihovsky.ui_data.UIProfileDTO
-import com.varpihovsky.ui_data.UISubjectDTO
-import com.varpihovsky.ui_data.formMarksInfo
+import com.varpihovsky.ui_data.dto.MarksInfo
+import com.varpihovsky.ui_data.dto.UIProfileDTO
+import com.varpihovsky.ui_data.dto.UISubjectDTO
+import com.varpihovsky.ui_data.dto.formMarksInfo
 import com.varpihovsky.ui_data.mappers.toUIDTO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -112,7 +112,7 @@ class ProfileInteractor @Inject constructor(
     ): MutableList<UISubjectDTO> {
         val uiSubjects = mutableListOf<UISubjectDTO>()
         val subjectDetailsMutable = subjectDetails.toMutableList()
-        subjects.forEachIndexed { index, subject ->
+        subjects.forEach { subject ->
             subjectDetailsMutable.find { subject.card_id.toInt() == it.id }?.let { details ->
                 uiSubjects.add(subject.toUIDTO(details.total))
                 subjectDetailsMutable.remove(details)

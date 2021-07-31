@@ -32,7 +32,8 @@ import com.varpihovsky.core_repo.repo.UserPreferencesRepo
 import com.varpihovsky.jetiq.screens.JetIQViewModel
 import com.varpihovsky.jetiq.screens.subjects.markbook.MarkbookSubjectViewModel
 import com.varpihovsky.jetiq.screens.subjects.success.SuccessSubjectViewModel
-import com.varpihovsky.ui_data.UISubjectDTO
+import com.varpihovsky.ui_data.dto.UIProfileDTO
+import com.varpihovsky.ui_data.dto.UISubjectDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -44,17 +45,17 @@ class ProfileViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val profileInteractor: ProfileInteractor,
     private val navigationController: NavigationController,
-    private val viewModelDataTransferManager: ViewModelDataTransferManager,
+    viewModelDataTransferManager: ViewModelDataTransferManager,
     appbarManager: AppbarManager,
     exceptionEventManager: ExceptionEventManager,
-    private val userPreferencesRepo: UserPreferencesRepo
+    userPreferencesRepo: UserPreferencesRepo
 ) : JetIQViewModel(appbarManager, navigationController, exceptionEventManager), Refreshable {
     val data by lazy { Data() }
     val scrollState = ScrollState(0)
     override val isLoading: State<Boolean>
         get() = profileInteractor.isLoading
 
-    val profile = profileInteractor.profileData.distinctUntilChanged()
+    lateinit var profile: StateFlow<UIProfileDTO>
 
     val successMarksInfo = profileInteractor.successData.map { it.first }.distinctUntilChanged()
     lateinit var successSubjects: StateFlow<List<UISubjectDTO>>
@@ -86,6 +87,9 @@ class ProfileViewModel @Inject constructor(
     init {
         runBlocking {
             viewModelScope.launch {
+                profile = profileInteractor.profileData.distinctUntilChanged().stateIn(
+                    viewModelScope, SharingStarted.Eagerly, UIProfileDTO()
+                )
                 successSubjects =
                     profileInteractor.successData.map { it.second }.distinctUntilChanged()
                         .stateIn(viewModelScope, SharingStarted.Eagerly, listOf())
