@@ -17,6 +17,7 @@ package com.varpihovsky.jetiq
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -60,10 +61,12 @@ class NavigationViewModel @Inject constructor(
             return@runBlocking NavigationDirections.authentication.destination
         }
 
+    @ExperimentalAnimationApi
     fun onDestinationChange(direction: NavigationEntry) {
         isNavbarShown.value = direction.type is EntryType.Main
     }
 
+    @ExperimentalAnimationApi
     fun onBottomBarButtonClick(
         direction: NavigationCommand,
         navigationController: NavigationController

@@ -30,8 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.varpihovsky.core.appbar.AppbarCommand
 import com.varpihovsky.core.appbar.AppbarManager
-import soup.compose.material.motion.Axis
-import soup.compose.material.motion.MaterialSharedAxis
+import soup.compose.material.motion.MaterialSharedAxisY
 
 @ExperimentalAnimationApi
 @Composable
@@ -67,9 +66,8 @@ fun Appbar(appbarManager: AppbarManager) {
     ) {
         bar.value?.invoke() ?: TopAppBar(
             title = {
-                MaterialSharedAxis(
+                MaterialSharedAxisY(
                     targetState = title.value,
-                    axis = Axis.Y,
                     forward = true
                 ) {
                     it?.let { Text(text = it) }

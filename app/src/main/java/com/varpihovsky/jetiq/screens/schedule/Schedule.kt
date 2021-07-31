@@ -17,6 +17,7 @@ package com.varpihovsky.jetiq.screens.schedule
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ import com.varpihovsky.jetiq.ui.theme.JetIQTheme
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.YearMonth
 
+@ExperimentalAnimationApi
 @Preview
 @Composable
 fun Schedule() {

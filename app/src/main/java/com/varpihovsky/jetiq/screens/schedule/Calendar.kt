@@ -17,6 +17,7 @@ package com.varpihovsky.jetiq.screens.schedule
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -49,10 +50,10 @@ import be.sigmadelta.calpose.widgets.DefaultDay
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.YearMonth
 import org.threeten.bp.format.DateTimeFormatter
-import soup.compose.material.motion.Axis
-import soup.compose.material.motion.MaterialSharedAxis
+import soup.compose.material.motion.*
 import java.util.*
 
+@ExperimentalAnimationApi
 @Composable
 fun Calendar(
     month: YearMonth,
@@ -72,7 +73,7 @@ fun Calendar(
                     actions = calposeActions,
                     backgroundColor = MaterialTheme.colors.primary,
                     titleContainer = { title ->
-                        MaterialSharedAxis(targetState = month, axis = Axis.X, forward = forward) {
+                        MaterialSharedAxisX(targetState = month, forward = forward) {
                             title()
                         }
                     }
@@ -98,11 +99,26 @@ fun Calendar(
                 )
             },
             monthContainer = {
-                MaterialSharedAxis(targetState = month, axis = Axis.X, forward = forward) {
-                    Column {
-                        it()
+                MaterialMotion(
+                    targetState = month,
+                    motionSpec = when (Axis.X) {
+                        Axis.X -> materialSharedAxisX(
+                            forward = forward,
+                            slideDistance = rememberSlideDistance()
+                        )
+                        Axis.Y -> materialSharedAxisY(
+                            forward = forward,
+                            slideDistance = rememberSlideDistance()
+                        )
+                        Axis.Z -> materialSharedAxisZ(forward = forward)
+                    },
+                    modifier = Modifier,
+                    content = {
+                        Column {
+                            it()
+                        }
                     }
-                }
+                )
             }
         ),
         properties = CalposeProperties(
