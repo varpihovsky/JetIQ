@@ -1,4 +1,4 @@
-package com.varpihovsky.ui_data
+package com.varpihovsky.ui_data.dto
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
@@ -17,9 +17,10 @@ package com.varpihovsky.ui_data
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-data class UIMarkbookSubjectDTO(
-    val semester: Int,
+data class UISubjectDTO(
+    val id: Int,
     val subjectName: String,
-    val teacher: String,
-    val mark: Int
+    val teacherName: String,
+    val mark: Int,
+    val semester: Int
 )

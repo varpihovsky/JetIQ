@@ -37,7 +37,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
@@ -48,11 +47,10 @@ import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import coil.transform.Transformation
 import com.varpihovsky.jetiq.R
-import com.varpihovsky.ui_data.MarksInfo
-import com.varpihovsky.ui_data.UIProfileDTO
-import com.varpihovsky.ui_data.UISubjectDTO
-import soup.compose.material.motion.Axis
-import soup.compose.material.motion.MaterialSharedAxis
+import com.varpihovsky.ui_data.dto.MarksInfo
+import com.varpihovsky.ui_data.dto.UIProfileDTO
+import com.varpihovsky.ui_data.dto.UISubjectDTO
+import soup.compose.material.motion.MaterialSharedAxisX
 
 private const val DEFAULT_DRAG_VELOCITY = 100
 
@@ -133,7 +131,6 @@ fun ProfileInfoBar(
 fun ProfileSettingsButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    color: Color
 ) {
     IconButton(
         modifier = modifier,
@@ -142,7 +139,6 @@ fun ProfileSettingsButton(
         Icon(
             imageVector = Icons.Default.Settings,
             contentDescription = "settings",
-            tint = color
         )
     }
 }
@@ -162,6 +158,7 @@ fun MarksList(
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun SubjectListPart(
     subjects: List<UISubjectDTO>,
@@ -176,8 +173,6 @@ fun SubjectListPart(
             factory = ViewModelStateHolderFactory(1),
             key = semesterStateKey
         ).state
-    val listToShow =
-        remember { mutableStateOf(filterBySemester(subjects, semesterState.value)) }
     val forward = rememberSaveable { mutableStateOf(true) }
 
     Column(
@@ -189,11 +184,9 @@ fun SubjectListPart(
                 onDragStopped = { velocity ->
                     if (velocity > DEFAULT_DRAG_VELOCITY && semesterState.value != 1) {
                         semesterState.value--
-                        listToShow.value = filterBySemester(subjects, semesterState.value)
                         forward.value = false
                     } else if (velocity < -DEFAULT_DRAG_VELOCITY && semesterState.value < maxSemester) {
                         semesterState.value++
-                        listToShow.value = filterBySemester(subjects, semesterState.value)
                         forward.value = true
                     }
                 }
@@ -206,7 +199,6 @@ fun SubjectListPart(
             IconButton(icon = Icons.Default.KeyboardArrowLeft) {
                 if (semesterState.value != 1) {
                     semesterState.value--
-                    listToShow.value = filterBySemester(subjects, semesterState.value)
                     forward.value = false
                 }
             }
@@ -217,18 +209,16 @@ fun SubjectListPart(
             IconButton(icon = Icons.Default.KeyboardArrowRight) {
                 if (semesterState.value < maxSemester) {
                     semesterState.value++
-                    listToShow.value = filterBySemester(subjects, semesterState.value)
                     forward.value = true
                 }
             }
         }
-        MaterialSharedAxis(
+        MaterialSharedAxisX(
             targetState = semesterState.value,
-            axis = Axis.X,
             forward = forward.value
         ) {
             Column {
-                for (subject in listToShow.value) {
+                for (subject in filterBySemester(subjects, it)) {
                     Subject(uiSubjectDTO = subject, onClick = onClick)
                     Divider(
                         modifier = Modifier

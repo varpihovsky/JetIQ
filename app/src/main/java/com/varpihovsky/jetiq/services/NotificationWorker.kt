@@ -30,7 +30,7 @@ import androidx.work.WorkerParameters
 import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.jetiq.R
 import com.varpihovsky.repo_data.MessageDTO
-import com.varpihovsky.ui_data.UIMessageDTO
+import com.varpihovsky.ui_data.dto.UIMessageDTO
 import com.varpihovsky.ui_data.mappers.toUIDTO
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject

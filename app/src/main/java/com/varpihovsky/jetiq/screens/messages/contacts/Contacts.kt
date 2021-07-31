@@ -18,6 +18,7 @@ package com.varpihovsky.jetiq.screens.messages.contacts
  */
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -53,8 +54,9 @@ import com.varpihovsky.jetiq.ui.compose.Avatar
 import com.varpihovsky.jetiq.ui.compose.BackIconButton
 import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 import com.varpihovsky.jetiq.ui.compose.getSizeByDensity
-import com.varpihovsky.ui_data.UIReceiverDTO
+import com.varpihovsky.ui_data.dto.UIReceiverDTO
 
+@ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @Composable

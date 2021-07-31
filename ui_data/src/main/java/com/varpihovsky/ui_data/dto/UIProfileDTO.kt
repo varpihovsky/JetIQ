@@ -1,4 +1,4 @@
-package com.varpihovsky.ui_data
+package com.varpihovsky.ui_data.dto
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko

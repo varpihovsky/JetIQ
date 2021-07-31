@@ -17,6 +17,7 @@ package com.varpihovsky.jetiq.screens.messages.contacts.addition
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
@@ -37,12 +38,12 @@ import com.varpihovsky.jetiq.screens.messages.contacts.SearchBar
 import com.varpihovsky.jetiq.ui.compose.BasicTextButton
 import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 import com.varpihovsky.jetiq.ui.compose.SubscribedExposedDropDownList
-import com.varpihovsky.ui_data.ContactTypeDropDownItem
-import com.varpihovsky.ui_data.DropDownItem
-import com.varpihovsky.ui_data.UIReceiverDTO
-import soup.compose.material.motion.Axis
-import soup.compose.material.motion.MaterialSharedAxis
+import com.varpihovsky.ui_data.dto.ContactTypeDropDownItem
+import com.varpihovsky.ui_data.dto.DropDownItem
+import com.varpihovsky.ui_data.dto.UIReceiverDTO
+import soup.compose.material.motion.MaterialSharedAxisX
 
+@ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @Composable
@@ -76,6 +77,7 @@ fun AdditionDialog(
     )
 }
 
+@ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @Composable
@@ -133,9 +135,8 @@ fun AdditionDialog(
 
                 Divider(modifier = Modifier.fillMaxWidth())
 
-                MaterialSharedAxis(
+                MaterialSharedAxisX(
                     targetState = selectedContactType,
-                    axis = Axis.X,
                     forward = true
                 ) {
                     when (it) {

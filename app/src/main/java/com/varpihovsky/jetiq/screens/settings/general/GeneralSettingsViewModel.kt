@@ -26,7 +26,7 @@ import com.varpihovsky.core_repo.repo.UserPreferencesRepo
 import com.varpihovsky.jetiq.screens.JetIQViewModel
 import com.varpihovsky.repo_data.ExpandButtonLocation
 import com.varpihovsky.repo_data.SubjectListType
-import com.varpihovsky.ui_data.DropDownItem
+import com.varpihovsky.ui_data.dto.DropDownItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map

@@ -1,4 +1,4 @@
-package com.varpihovsky.ui_data
+package com.varpihovsky.ui_data.dto
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
@@ -17,9 +17,13 @@ package com.varpihovsky.ui_data
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-data class UIMessageDTO(
-    val id: Int,
-    val sender: String,
-    val message: String,
-    val time: String
-)
+sealed class DropDownItem(val text: String) {
+    object Empty : DropDownItem("")
+    class Simple(text: String) : DropDownItem(text)
+    class WithID(val id: Int = -1, text: String = "") : DropDownItem(text)
+}
+
+sealed class ContactTypeDropDownItem(text: String) : DropDownItem(text) {
+    object STUDENT : ContactTypeDropDownItem("Студент")
+    object TEACHER : ContactTypeDropDownItem("Викладач")
+}

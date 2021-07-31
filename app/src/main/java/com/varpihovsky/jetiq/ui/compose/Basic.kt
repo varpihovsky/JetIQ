@@ -39,7 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.varpihovsky.repo_data.ExpandButtonLocation
-import com.varpihovsky.ui_data.DropDownItem
+import com.varpihovsky.ui_data.dto.DropDownItem
 
 @Composable
 fun CenterLayout(

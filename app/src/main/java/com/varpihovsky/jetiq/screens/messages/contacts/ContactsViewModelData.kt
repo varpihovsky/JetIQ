@@ -18,7 +18,7 @@ package com.varpihovsky.jetiq.screens.messages.contacts
  */
 
 import com.varpihovsky.core.dataTransfer.ViewModelData
-import com.varpihovsky.ui_data.UIReceiverDTO
+import com.varpihovsky.ui_data.dto.UIReceiverDTO
 import kotlin.reflect.KClass
 
 class ContactsViewModelData(data: List<UIReceiverDTO>, val sender: KClass<*>) :

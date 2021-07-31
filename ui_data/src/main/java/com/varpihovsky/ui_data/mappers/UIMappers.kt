@@ -18,7 +18,7 @@ package com.varpihovsky.ui_data.mappers
  */
 
 import com.varpihovsky.repo_data.*
-import com.varpihovsky.ui_data.*
+import com.varpihovsky.ui_data.dto.*
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId

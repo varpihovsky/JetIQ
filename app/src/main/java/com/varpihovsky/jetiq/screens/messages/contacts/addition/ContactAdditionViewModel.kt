@@ -26,7 +26,7 @@ import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.ListRepo
 import com.varpihovsky.core_repo.repo.ProfileRepo
 import com.varpihovsky.jetiq.screens.JetIQViewModel
-import com.varpihovsky.ui_data.*
+import com.varpihovsky.ui_data.dto.*
 import com.varpihovsky.ui_data.mappers.toUIDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*

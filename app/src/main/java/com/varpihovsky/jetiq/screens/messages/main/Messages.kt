@@ -42,7 +42,7 @@ import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 import com.varpihovsky.jetiq.ui.loremIpsum1Paragraph
 import com.varpihovsky.jetiq.ui.loremIpsumTitle
 import com.varpihovsky.jetiq.ui.sampleDate
-import com.varpihovsky.ui_data.UIMessageDTO
+import com.varpihovsky.ui_data.dto.UIMessageDTO
 
 private val exampleMessage = UIMessageDTO(0, loremIpsumTitle, loremIpsum1Paragraph, sampleDate)
 
@@ -86,8 +86,9 @@ fun MessagesScreen(
 ) {
     SwipeRefresh(state = refreshState, onRefresh = onRefresh) {
         MessagesList(messages = messages)
+        NewMessageButton(onClick = onClick)
     }
-    NewMessageButton(onClick = onClick)
+
 }
 
 @ExperimentalAnimationApi

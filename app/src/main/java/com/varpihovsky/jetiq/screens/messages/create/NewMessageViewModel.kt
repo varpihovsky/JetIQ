@@ -33,7 +33,7 @@ import com.varpihovsky.jetiq.screens.JetIQViewModel
 import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModel
 import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModelData
 import com.varpihovsky.repo_data.MessageToSendDTO
-import com.varpihovsky.ui_data.UIReceiverDTO
+import com.varpihovsky.ui_data.dto.UIReceiverDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
