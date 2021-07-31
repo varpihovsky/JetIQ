@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -54,10 +55,7 @@ import com.varpihovsky.jetiq.screens.settings.general.GeneralSettingsScreen
 import com.varpihovsky.jetiq.screens.settings.main.MainSettingsScreen
 import com.varpihovsky.jetiq.screens.subjects.markbook.MarkbookSubjectScreen
 import com.varpihovsky.jetiq.screens.subjects.success.SuccessSubjectScreen
-import soup.compose.material.motion.Axis
-import soup.compose.material.motion.materialElevationScale
-import soup.compose.material.motion.materialFadeThrough
-import soup.compose.material.motion.materialSharedAxis
+import soup.compose.material.motion.*
 
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
@@ -110,12 +108,48 @@ fun Root(
 
         navigationControllerStorage.navigationController = navigationController
 
-        DisplayNavigation(
-            modifier = Modifier.padding(paddingValues = paddingValues),
-            controller = navigationController
-        )
+        RootLayout(appbarManager = appbarManager, paddingValues = paddingValues) {
+            DisplayNavigation(
+                modifier = Modifier.padding(paddingValues = paddingValues),
+                controller = navigationController,
+                paddingValues = it
+            )
+        }
     }
 }
+
+@ExperimentalAnimationApi
+@Composable
+fun RootLayout(
+    appbarManager: AppbarManager,
+    paddingValues: PaddingValues,
+    content: @Composable (PaddingValues) -> Unit
+) {
+    SubcomposeLayout { constraints ->
+        val looseConstraints = constraints.copy(minWidth = 0, minHeight = 0)
+
+        layout(constraints.maxWidth, constraints.maxHeight) {
+            val appbar = subcompose(RootLayout.APP_BAR) {
+                Appbar(appbarManager = appbarManager)
+            }.map { it.measure(looseConstraints) }
+
+            val appbarHeight = appbar.maxByOrNull { it.height }?.height ?: 0
+
+            subcompose(RootLayout.NAV) {
+                content(
+                    PaddingValues(
+                        top = appbarHeight.toDp(),
+                        bottom = paddingValues.calculateBottomPadding()
+                    )
+                )
+            }.map { it.measure(looseConstraints) }.forEach { it.place(0, 0) }
+
+            appbar.forEach { it.place(0, 0) }
+        }
+    }
+}
+
+private enum class RootLayout { APP_BAR, NAV }
 
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
@@ -136,38 +170,32 @@ fun initNavigation(
             composable = { Auth(viewModel = viewModel(key = entryRoute)) }
             route = entryRoute
             entryType = EntryType.SubMenu
-            inAnimation = materialSharedAxis(
-                axis = Axis.Y,
-                forward = true
-            )
-            outAnimation = materialSharedAxis(
-                axis = Axis.Y,
-                forward = false
-            )
+            inAnimation = materialSharedAxisYIn(forward = true, slideDistance = 200)
+            outAnimation = materialSharedAxisYOut(forward = false, slideDistance = 200)
         }
         entry {
             val entryRoute = NavigationDirections.newMessage.destination
             composable = { NewMessageScreen(newMessageViewModel = viewModel(key = entryRoute)) }
             route = entryRoute
             entryType = EntryType.SubMenu
-            inAnimation = materialElevationScale(false)
-            outAnimation = materialElevationScale(true)
+            inAnimation = materialElevationScaleIn()
+            outAnimation = materialElevationScaleOut()
         }
         entry {
             val entryRoute = NavigationDirections.contacts.destination
             composable = { ContactsScreen(contactsViewModel = viewModel(key = entryRoute)) }
             route = entryRoute
             entryType = EntryType.SubMenu
-            inAnimation = materialFadeThrough()
-            outAnimation = materialFadeThrough()
+            inAnimation = materialFadeThroughIn()
+            outAnimation = materialFadeThroughOut()
         }
         entry {
             val entryRoute = NavigationDirections.mainSettings.destination
             composable = { MainSettingsScreen(mainSettingsViewModel = viewModel(key = entryRoute)) }
             route = entryRoute
             entryType = EntryType.SubMenu
-            inAnimation = materialFadeThrough()
-            outAnimation = materialFadeThrough()
+            inAnimation = materialFadeThroughIn()
+            outAnimation = materialFadeThroughOut()
         }
         entry {
             val entryRoute = NavigationDirections.aboutSettings.destination
@@ -175,8 +203,8 @@ fun initNavigation(
                 { AboutSettingsScreen(aboutSettingsViewModel = viewModel(key = entryRoute)) }
             route = entryRoute
             entryType = EntryType.SubMenu
-            inAnimation = materialElevationScale(false)
-            outAnimation = materialElevationScale(true)
+            inAnimation = materialElevationScaleIn()
+            outAnimation = materialElevationScaleOut()
         }
         entry {
             val entryRoute = NavigationDirections.generalSettings.destination
@@ -184,8 +212,8 @@ fun initNavigation(
                 { GeneralSettingsScreen(generalSettingsViewModel = viewModel(key = entryRoute)) }
             route = entryRoute
             entryType = EntryType.SubMenu
-            inAnimation = materialElevationScale(false)
-            outAnimation = materialElevationScale(true)
+            inAnimation = materialElevationScaleIn()
+            outAnimation = materialElevationScaleOut()
         }
         entry {
             val entryRoute = NavigationDirections.markbookSubject.destination
@@ -193,14 +221,8 @@ fun initNavigation(
                 { MarkbookSubjectScreen(markbookSubjectViewModel = viewModel(key = entryRoute)) }
             route = entryRoute
             entryType = EntryType.SubMenu
-            inAnimation = materialSharedAxis(
-                axis = Axis.Y,
-                forward = true
-            )
-            outAnimation = materialSharedAxis(
-                axis = Axis.Y,
-                forward = false
-            )
+            inAnimation = materialSharedAxisYIn(forward = true, slideDistance = 200)
+            outAnimation = materialSharedAxisYOut(forward = false, slideDistance = 200)
         }
         entry {
             val entryRoute = NavigationDirections.successSubject.destination
@@ -208,42 +230,26 @@ fun initNavigation(
                 { SuccessSubjectScreen(markbookSubjectViewModel = viewModel(key = entryRoute)) }
             route = entryRoute
             entryType = EntryType.SubMenu
-            inAnimation = materialSharedAxis(
-                axis = Axis.Y,
-                forward = true
-            )
-            outAnimation = materialSharedAxis(
-                axis = Axis.Y,
-                forward = false
-            )
+            inAnimation = materialSharedAxisYIn(forward = true, slideDistance = 200)
+            outAnimation = materialSharedAxisYOut(forward = false, slideDistance = 200)
         }
         entry {
             val entryRoute = NavigationDirections.messages.destination
             composable = { MessagesScreen(viewModel = viewModel(key = entryRoute)) }
             route = entryRoute
             entryType = EntryType.Main
-            inAnimation = materialSharedAxis(
-                axis = Axis.X,
-                forward = true
-            )
-            outAnimation = materialSharedAxis(
-                axis = Axis.X,
-                forward = false
-            )
+            inAnimation = materialSharedAxisXIn(forward = true, slideDistance = 200)
+            outAnimation = materialSharedAxisXOut(forward = false, slideDistance = 200)
         }
         entry {
             val entryRoute = NavigationDirections.profile.destination
-            composable = { Profile(profileViewModel = viewModel(key = entryRoute)) }
+            applyPaddingValues = false
+            composable =
+                { Profile(profileViewModel = viewModel(key = entryRoute), paddingValues = it) }
             route = entryRoute
             entryType = EntryType.Main
-            inAnimation = materialSharedAxis(
-                axis = Axis.X,
-                forward = true
-            )
-            outAnimation = materialSharedAxis(
-                axis = Axis.X,
-                forward = false
-            )
+            inAnimation = materialSharedAxisXIn(forward = true, slideDistance = 200)
+            outAnimation = materialSharedAxisXOut(forward = false, slideDistance = 200)
         }
     }
 }
