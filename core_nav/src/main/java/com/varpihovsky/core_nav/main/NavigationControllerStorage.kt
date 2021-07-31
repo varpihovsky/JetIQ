@@ -1,5 +1,7 @@
 package com.varpihovsky.core_nav.main
 
+import androidx.compose.animation.ExperimentalAnimationApi
+
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -23,5 +25,6 @@ package com.varpihovsky.core_nav.main
  * @author Vladyslav Podrezenko
  */
 class NavigationControllerStorage {
+    @ExperimentalAnimationApi
     var navigationController: NavigationController? = null
 }

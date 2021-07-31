@@ -18,16 +18,22 @@ package com.varpihovsky.core_nav.main
  */
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import soup.compose.material.motion.MotionSpec
-import soup.compose.material.motion.materialFade
+import soup.compose.material.motion.materialFadeThroughIn
+import soup.compose.material.motion.materialFadeThroughOut
+import soup.compose.material.motion.with
 
 internal sealed class NavigationOperation {
 
-    class Navigate(
+    @ExperimentalAnimationApi
+    data class Navigate(
         val route: String = "",
-        val composable: @Composable () -> Unit = {},
-        val motionSpec: MotionSpec = materialFade(),
+        val composable: @Composable (PaddingValues) -> Unit = {},
+        val animation: MotionSpec = materialFadeThroughIn() with materialFadeThroughOut(),
+        val pop: Boolean = false
     ) : NavigationOperation()
 
     class Finish(private val onFinished: () -> Unit) : NavigationOperation() {

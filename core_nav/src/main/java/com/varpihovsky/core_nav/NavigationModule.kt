@@ -17,6 +17,7 @@ package com.varpihovsky.core_nav
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import com.varpihovsky.core_nav.main.NavigationControllerStorage
 import dagger.Module
 import dagger.Provides
@@ -27,6 +28,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NavigationModule {
+    @ExperimentalAnimationApi
     @Provides
     fun provideNavigationManager(navigationControllerStorage: NavigationControllerStorage) =
         checkNotNull(navigationControllerStorage.navigationController)

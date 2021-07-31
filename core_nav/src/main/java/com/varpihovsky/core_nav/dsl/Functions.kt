@@ -18,6 +18,10 @@ package com.varpihovsky.core_nav.dsl
  */
 
 import android.app.Activity
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
@@ -26,6 +30,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.varpihovsky.core.eventBus.EventBus
+import com.varpihovsky.core.util.Logger
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.main.NavigationEntry
 import com.varpihovsky.core_nav.main.NavigationOperation
@@ -38,6 +43,7 @@ import soup.compose.material.motion.MaterialMotion
  *
  * @return [NavigationController]
  */
+@ExperimentalAnimationApi
 fun navigationController(
     eventBus: EventBus,
     defaultRoute: String,
@@ -55,6 +61,7 @@ fun navigationController(
  *
  * @return [NavigationController]
  */
+@ExperimentalAnimationApi
 @Composable
 fun rememberNavigationController(
     eventBus: EventBus,
@@ -70,6 +77,7 @@ fun rememberNavigationController(
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 private fun navigationControllerSaver(
     eventBus: EventBus,
@@ -87,10 +95,12 @@ private fun navigationControllerSaver(
  * @see [navigationController]
  * @see [rememberNavigationController]
  */
+@ExperimentalAnimationApi
 @Composable
 fun DisplayNavigation(
     modifier: Modifier = Modifier,
-    controller: NavigationController
+    controller: NavigationController,
+    paddingValues: PaddingValues
 ) {
     val current = controller.operation.collectAsState(NavigationOperation.Navigate()).value
     var screen: NavigationOperation.Navigate = NavigationOperation.Navigate()
@@ -103,11 +113,23 @@ fun DisplayNavigation(
         is NavigationOperation.Navigate -> screen = current
     }
 
+    Logger.ui(current.toString())
+
     MaterialMotion(
-        modifier = modifier,
         targetState = screen.route,
-        motionSpec = screen.motionSpec
-    ) { str ->
-        controller.entries.find { it.route == str }?.composable?.invoke()
-    }
+        motionSpec = screen.animation,
+        modifier = modifier,
+        pop = screen.pop,
+        content = { str ->
+            controller.entries.find { it.route == str }?.let {
+                if (it.applyPaddingValues) {
+                    Column(Modifier.padding(paddingValues)) {
+                        it.composable(paddingValues)
+                    }
+                } else {
+                    it.composable(paddingValues)
+                }
+            }
+        }
+    )
 }

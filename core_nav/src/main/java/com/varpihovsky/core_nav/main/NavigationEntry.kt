@@ -17,19 +17,25 @@ package com.varpihovsky.core_nav.main
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import soup.compose.material.motion.MotionSpec
+import soup.compose.material.motion.EnterMotionSpec
+import soup.compose.material.motion.ExitMotionSpec
 
 /**
  * Class that stores data about entry.
  *
  * @author Vladyslav Podrezenko
  */
+@OptIn(ExperimentalAnimationApi::class)
 class NavigationEntry(
     /**
      * Specifies composable of entry. On one controller can be shown only one composable.
+     * padding values are passed by [DisplayNavigation][com.varpihovsky.core_nav.dsl.DisplayNavigation]
+     * function. If [applyPaddingValues] were set to true can be ignored.
      */
-    var composable: @Composable () -> Unit,
+    var composable: @Composable (paddingValues: PaddingValues) -> Unit,
     /**
      * Specifies route of entry.
      */
@@ -45,11 +51,17 @@ class NavigationEntry(
     /**
      * Specifies animation that will be played when composable appears.
      */
-    val inAnimation: MotionSpec,
+    val inAnimation: EnterMotionSpec,
 
     /**
      * Specifies animation that will be played when composable removed from stack.
      */
-    val outAnimation: MotionSpec
+    val outAnimation: ExitMotionSpec,
+
+    /**
+     * Specifies if [DisplayNavigation][com.varpihovsky.core_nav.dsl.DisplayNavigation] should apply
+     * padding values by yourself.
+     */
+    val applyPaddingValues: Boolean
 )
 

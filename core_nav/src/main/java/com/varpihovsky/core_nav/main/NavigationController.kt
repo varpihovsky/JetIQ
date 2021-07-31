@@ -19,10 +19,13 @@ package com.varpihovsky.core_nav.main
 
 import android.os.Bundle
 import android.util.Log
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.core.os.bundleOf
 import com.varpihovsky.core.eventBus.EventBus
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import soup.compose.material.motion.MotionSpec
+import soup.compose.material.motion.with
 import java.util.*
 
 /**
@@ -57,32 +60,43 @@ class NavigationController(
         }
     }
 
+    @OptIn(ExperimentalAnimationApi::class)
     private fun backStackToOperation(stack: List<NavigationEntry>): NavigationOperation {
         if (stack.isEmpty()) {
             return NavigationOperation.Finish(this::onFinished)
         }
 
         val entry = stack.last()
-        val motionSpec = getMotionSpecByEntry(entry, stack)
+        val (motionSpec, pop) = getMotionSpecByEntry(entry, stack)
 
         previousEntry = entry
         backStackSize = stack.size
 
-        return NavigationOperation.Navigate(entry.route, entry.composable, motionSpec)
+        return NavigationOperation.Navigate(entry.route, entry.composable, motionSpec, pop)
     }
 
-    private fun getMotionSpecByEntry(entry: NavigationEntry, stack: List<NavigationEntry>) = when {
-        isSubEntryIn(entry, stack) -> entry.inAnimation
-        isSubEntryOut(entry, stack) -> entry.outAnimation
+    @OptIn(ExperimentalAnimationApi::class)
+    private fun getMotionSpecByEntry(
+        entry: NavigationEntry,
+        stack: List<NavigationEntry>
+    ): Pair<MotionSpec, Boolean> = when {
+        isSubEntryIn(entry, stack) -> Pair(
+            entry.inAnimation with previousEntry!!.outAnimation,
+            false
+        )
+        isSubEntryOut(
+            entry,
+            stack
+        ) -> Pair(previousEntry!!.inAnimation with previousEntry!!.outAnimation, true)
         isMainEntryRightOne(entry) -> {
             if (previousEntry?.type == EntryType.SubMenu) {
-                previousEntry!!.outAnimation
+                Pair(previousEntry!!.inAnimation with previousEntry!!.outAnimation, true)
             } else {
-                entry.inAnimation
+                Pair(entry.inAnimation with entry.outAnimation, false)
             }
         }
-        isMainEntryLeftOne(entry) -> entry.outAnimation
-        else -> entry.outAnimation
+        isMainEntryLeftOne(entry) -> Pair(entry.inAnimation with entry.outAnimation, true)
+        else -> Pair(entry.inAnimation with entry.outAnimation, false)
     }
 
     private fun isMainEntryRightOne(entry: NavigationEntry) =

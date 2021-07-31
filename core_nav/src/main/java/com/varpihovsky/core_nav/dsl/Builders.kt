@@ -17,12 +17,15 @@ package com.varpihovsky.core_nav.dsl
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import com.varpihovsky.core.eventBus.EventBus
 import com.varpihovsky.core_nav.main.EntryType
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.main.NavigationEntry
-import soup.compose.material.motion.MotionSpec
+import soup.compose.material.motion.EnterMotionSpec
+import soup.compose.material.motion.ExitMotionSpec
 
 /**
  * Class that used to create [NavigationEntry].
@@ -44,11 +47,16 @@ import soup.compose.material.motion.MotionSpec
  * @author Vladyslav Podrezenko
  */
 class NavigationEntryBuilder {
-    var composable: @Composable () -> Unit = {}
+    var composable: @Composable (PaddingValues) -> Unit = {}
     var route: String = ""
     var entryType: EntryType? = null
-    var inAnimation: MotionSpec? = null
-    var outAnimation: MotionSpec? = null
+
+    @ExperimentalAnimationApi
+    var inAnimation: EnterMotionSpec? = null
+
+    @ExperimentalAnimationApi
+    var outAnimation: ExitMotionSpec? = null
+    var applyPaddingValues: Boolean = true
 
     /**
      * Builds [NavigationEntry] from specified data.
@@ -56,13 +64,15 @@ class NavigationEntryBuilder {
      *
      * @return [NavigationEntry]
      */
+    @ExperimentalAnimationApi
     fun build(): NavigationEntry =
         NavigationEntry(
             composable,
             route,
             checkNotNull(entryType),
             checkNotNull(inAnimation),
-            checkNotNull(outAnimation)
+            checkNotNull(outAnimation),
+            applyPaddingValues
         )
 }
 
@@ -80,11 +90,13 @@ class NavigationControllerBuilder(
     private val eventBus: EventBus,
     private val defaultRoute: String
 ) {
+    @ExperimentalAnimationApi
     private val entries = mutableListOf<NavigationEntry>()
 
     /**
      * Adds entry into [entries] array. Used to build [NavigationController].
      */
+    @ExperimentalAnimationApi
     fun entry(block: NavigationEntryBuilder.() -> Unit) {
         val builder = NavigationEntryBuilder().apply(block).build()
         entries.add(builder)
@@ -95,5 +107,6 @@ class NavigationControllerBuilder(
      *
      * @return [NavigationController]
      */
+    @ExperimentalAnimationApi
     fun build() = NavigationController(eventBus, entries, defaultRoute)
 }
