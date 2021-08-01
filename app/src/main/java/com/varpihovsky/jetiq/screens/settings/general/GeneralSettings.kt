@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import com.varpihovsky.jetiq.screens.settings.SettingsSwitch
 import com.varpihovsky.jetiq.ui.compose.BackIconButton
 import com.varpihovsky.jetiq.ui.compose.ExposedDropDownList
-import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 import com.varpihovsky.ui_data.dto.DropDownItem
 
 @Composable
@@ -44,8 +43,6 @@ fun GeneralSettingsScreen(generalSettingsViewModel: GeneralSettingsViewModel) {
         title = "Загальне",
         icon = { BackIconButton(generalSettingsViewModel::onBackNavButtonClick) }
     )
-
-    MapLifecycle(viewModel = generalSettingsViewModel)
 
     BackHandler(onBack = generalSettingsViewModel::onBackNavButtonClick)
 

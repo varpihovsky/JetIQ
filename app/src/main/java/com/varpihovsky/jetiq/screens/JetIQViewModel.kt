@@ -61,14 +61,6 @@ abstract class JetIQViewModel(
         navigationController.onBack()
     }
 
-    open fun onCompose() {
-
-    }
-
-    open fun onDispose() {
-
-    }
-
     protected fun redirectExceptionToUI(exception: Exception) {
         Log.d("ViewModels", Log.getStackTraceString(exception))
         exceptionEventManager.pushException(exception)

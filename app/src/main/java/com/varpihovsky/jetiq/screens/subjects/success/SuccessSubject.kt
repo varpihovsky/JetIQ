@@ -36,7 +36,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.varpihovsky.jetiq.ui.compose.BackIconButton
 import com.varpihovsky.jetiq.ui.compose.ExpandableList
-import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 import com.varpihovsky.jetiq.ui.compose.SubjectInfo
 import com.varpihovsky.repo_data.SubjectDTO
 import com.varpihovsky.repo_data.SubjectTaskDTO
@@ -59,8 +58,6 @@ fun SuccessSubjectScreen(markbookSubjectViewModel: SuccessSubjectViewModel) {
         title = subject.subject,
         icon = { BackIconButton(markbookSubjectViewModel::onBackNavButtonClick) }
     )
-
-    MapLifecycle(viewModel = markbookSubjectViewModel)
 
     BackHandler(onBack = markbookSubjectViewModel::onBackNavButtonClick)
 

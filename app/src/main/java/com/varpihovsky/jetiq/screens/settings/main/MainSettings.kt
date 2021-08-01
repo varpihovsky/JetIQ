@@ -30,7 +30,6 @@ import androidx.compose.ui.res.painterResource
 import com.varpihovsky.jetiq.R
 import com.varpihovsky.jetiq.screens.settings.SettingsButton
 import com.varpihovsky.jetiq.ui.compose.BackIconButton
-import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 
 @Composable
 fun MainSettingsScreen(
@@ -40,8 +39,6 @@ fun MainSettingsScreen(
         title = "Налаштування",
         icon = { BackIconButton(mainSettingsViewModel::onBackNavButtonClick) },
     )
-
-    MapLifecycle(viewModel = mainSettingsViewModel)
 
     BackHandler(true, onBack = mainSettingsViewModel::onBackNavButtonClick)
 

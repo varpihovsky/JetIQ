@@ -56,8 +56,6 @@ fun Profile(profileViewModel: ProfileViewModel, paddingValues: PaddingValues) {
     val buttonLocation by profileViewModel.expandButtonLocation.collectAsState(initial = ExpandButtonLocation.LOWER)
     val profile = profileViewModel.profile.collectAsState().value
 
-    MapLifecycle(viewModel = profileViewModel)
-
     BackHandler(true, onBack = profileViewModel::onBackNavButtonClick)
 
     Profile(

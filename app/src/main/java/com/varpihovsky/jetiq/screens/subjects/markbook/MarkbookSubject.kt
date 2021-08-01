@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import com.varpihovsky.jetiq.ui.compose.BackIconButton
-import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 import com.varpihovsky.jetiq.ui.compose.SubjectInfo
 import com.varpihovsky.repo_data.MarkbookSubjectDTO
 
@@ -35,8 +34,6 @@ fun MarkbookSubjectScreen(markbookSubjectViewModel: MarkbookSubjectViewModel) {
         title = subject.subj_name,
         icon = { BackIconButton(markbookSubjectViewModel::onBackNavButtonClick) }
     )
-
-    MapLifecycle(viewModel = markbookSubjectViewModel)
 
     BackHandler(onBack = markbookSubjectViewModel::onBackNavButtonClick)
 

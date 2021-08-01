@@ -38,7 +38,6 @@ import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.varpihovsky.jetiq.R
 import com.varpihovsky.jetiq.ui.compose.InfoCard
-import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 import com.varpihovsky.jetiq.ui.loremIpsum1Paragraph
 import com.varpihovsky.jetiq.ui.loremIpsumTitle
 import com.varpihovsky.jetiq.ui.sampleDate
@@ -50,8 +49,6 @@ private val exampleMessage = UIMessageDTO(0, loremIpsumTitle, loremIpsum1Paragra
 @ExperimentalFoundationApi
 @Composable
 fun MessagesScreen(viewModel: MessagesViewModel) {
-    MapLifecycle(viewModel = viewModel)
-
     BackHandler(true, onBack = viewModel::onBackNavButtonClick)
 
     viewModel.assignAppbar(

@@ -24,7 +24,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.startActivity
 import com.varpihovsky.core.exceptions.ExceptionEventManager
-import com.varpihovsky.jetiq.screens.JetIQViewModel
 
 @Composable
 fun ExceptionProcessor(exceptionEventManager: ExceptionEventManager) {
@@ -50,14 +49,6 @@ fun ExceptionProcessor(exceptionEventManager: ExceptionEventManager) {
 
 const val EMPTY_EXCEPTION_ID = "EMPTY"
 const val ON_EMPTY_EXCEPTION_MESSAGE = "Невідома помилка!"
-
-@Composable
-fun MapLifecycle(viewModel: JetIQViewModel) {
-    DisposableEffect(key1 = Unit) {
-        viewModel.onCompose()
-        onDispose { viewModel.onDispose() }
-    }
-}
 
 @Composable
 fun OpenPage(url: String) {

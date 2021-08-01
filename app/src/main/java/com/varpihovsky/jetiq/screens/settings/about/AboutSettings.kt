@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import com.varpihovsky.jetiq.BuildConfig
 import com.varpihovsky.jetiq.screens.settings.SettingsButton
 import com.varpihovsky.jetiq.ui.compose.BackIconButton
-import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 import com.varpihovsky.jetiq.ui.compose.OpenPage
 
 @Composable
@@ -44,8 +43,6 @@ fun AboutSettingsScreen(
         title = "Про додаток",
         icon = { BackIconButton(aboutSettingsViewModel::onBackNavButtonClick) }
     )
-
-    MapLifecycle(viewModel = aboutSettingsViewModel)
 
     BackHandler(true, onBack = aboutSettingsViewModel::onBackNavButtonClick)
 

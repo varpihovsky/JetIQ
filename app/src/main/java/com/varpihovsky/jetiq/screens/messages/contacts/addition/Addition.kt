@@ -36,7 +36,6 @@ import com.varpihovsky.core.util.Selectable
 import com.varpihovsky.jetiq.screens.messages.contacts.Contact
 import com.varpihovsky.jetiq.screens.messages.contacts.SearchBar
 import com.varpihovsky.jetiq.ui.compose.BasicTextButton
-import com.varpihovsky.jetiq.ui.compose.MapLifecycle
 import com.varpihovsky.jetiq.ui.compose.SubscribedExposedDropDownList
 import com.varpihovsky.ui_data.dto.ContactTypeDropDownItem
 import com.varpihovsky.ui_data.dto.DropDownItem
@@ -52,8 +51,6 @@ fun AdditionDialog(
     onDismissRequest: () -> Unit,
     onConfirmButtonClick: (List<UIReceiverDTO>) -> Unit
 ) {
-    MapLifecycle(viewModel = contactAdditionViewModel)
-
     contactAdditionViewModel.callback = onConfirmButtonClick
 
     AdditionDialog(
