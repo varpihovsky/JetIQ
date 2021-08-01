@@ -21,8 +21,11 @@ import android.util.Log
 import kotlin.reflect.KClass
 
 object Logger {
+    private const val DEFAULT_TAG = "Application"
+    private const val UI_TAG = "UI"
+
     fun d(message: String) {
-        Log.d("Application", message)
+        Log.d(DEFAULT_TAG, message)
     }
 
     fun d(clazz: KClass<*>, message: String) {
@@ -30,10 +33,46 @@ object Logger {
     }
 
     fun ui(message: String) {
-        Log.d("UI", message)
+        Log.d(UI_TAG, message)
+    }
+
+    fun e(message: String) {
+        Log.e(DEFAULT_TAG, message)
+    }
+
+    fun e(clazz: KClass<*>, message: String) {
+        Log.e(clazz.simpleName, message)
+    }
+
+    fun w(message: String) {
+        Log.w(DEFAULT_TAG, message)
+    }
+
+    fun w(clazz: KClass<*>, message: String) {
+        Log.w(clazz.simpleName, message)
+    }
+
+    fun v(message: String) {
+        Log.v(DEFAULT_TAG, message)
+    }
+
+    fun v(clazz: KClass<*>, message: String) {
+        Log.v(clazz.simpleName, message)
     }
 }
 
 fun Any.d(message: String) {
     Logger.d(this::class, message)
+}
+
+fun Any.e(message: String) {
+    Logger.e(this::class, message)
+}
+
+fun Any.w(message: String) {
+    Logger.w(this::class, message)
+}
+
+fun Any.v(message: String) {
+    Logger.v(this::class, message)
 }
