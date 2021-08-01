@@ -93,9 +93,7 @@ fun Root(
                     )
                 )
             }
-        },
-        topBar = { Appbar(appbarManager = appbarManager) }
-
+        }
     ) { paddingValues ->
         ExceptionProcessor(exceptionEventManager = exceptionEventManager)
 
@@ -108,13 +106,11 @@ fun Root(
 
         navigationControllerStorage.navigationController = navigationController
 
-        RootLayout(appbarManager = appbarManager, paddingValues = paddingValues) {
-            DisplayNavigation(
-                modifier = Modifier.padding(paddingValues = paddingValues),
-                controller = navigationController,
-                paddingValues = it
-            )
-        }
+        RootLayout(
+            appbarManager = appbarManager,
+            paddingValues = paddingValues,
+            navigationController = navigationController
+        )
     }
 }
 
@@ -123,7 +119,7 @@ fun Root(
 fun RootLayout(
     appbarManager: AppbarManager,
     paddingValues: PaddingValues,
-    content: @Composable (PaddingValues) -> Unit
+    navigationController: NavigationController
 ) {
     SubcomposeLayout { constraints ->
         val looseConstraints = constraints.copy(minWidth = 0, minHeight = 0)
@@ -136,10 +132,11 @@ fun RootLayout(
             val appbarHeight = appbar.maxByOrNull { it.height }?.height ?: 0
 
             subcompose(RootLayout.NAV) {
-                content(
-                    PaddingValues(
-                        top = appbarHeight.toDp(),
-                        bottom = paddingValues.calculateBottomPadding()
+                DisplayNavigation(
+                    modifier = Modifier.padding(paddingValues = paddingValues),
+                    controller = navigationController,
+                    paddingValues = PaddingValues(
+                        top = appbarHeight.toDp()
                     )
                 )
             }.map { it.measure(looseConstraints) }.forEach { it.place(0, 0) }
