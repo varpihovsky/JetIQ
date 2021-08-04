@@ -49,5 +49,9 @@ sealed class AppbarCommand {
         val title: String?,
         val navIcon: (@Composable () -> Unit)?,
         val actions: (@Composable RowScope.() -> Unit)?
-    ) : AppbarCommand()
+    ) : AppbarCommand() {
+        override fun toString(): String {
+            return "Configured(title=$title, navIcon=$navIcon, actions=$actions)"
+        }
+    }
 }

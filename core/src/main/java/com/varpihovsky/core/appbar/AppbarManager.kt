@@ -18,8 +18,9 @@ package com.varpihovsky.core.appbar
  */
 
 import com.varpihovsky.core.eventBus.EventBus
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 /**
@@ -28,10 +29,18 @@ import javax.inject.Inject
  * @author Vladyslav Podrezenko
  */
 class AppbarManager @Inject constructor(private val eventBus: EventBus) {
+
     /**
      * Same as [EventBus.bus] but mapped to [AppbarCommand].
      */
-    val commands = eventBus.bus.mapNotNull { it as? AppbarCommand }.distinctUntilChanged()
+    val commands: StateFlow<AppbarCommand> = eventBus.bus
+        .mapNotNull { it as? AppbarCommand }
+        .distinctUntilChanged()
+        .stateIn(
+            scope = CoroutineScope(Dispatchers.Unconfined),
+            started = SharingStarted.Eagerly,
+            initialValue = AppbarCommand.Empty
+        )
 
     /**
      * Pushes [command][AppbarCommand] into [EventBus].
