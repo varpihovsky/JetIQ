@@ -64,7 +64,6 @@ class MainActivity : ComponentActivity() {
                 Root(
                     navigationViewModel = viewModel,
                     appbarManager = appbarManager,
-                    navigationControllerStorage = navigationControllerStorage,
                     exceptionEventManager = exceptionEventManager,
                     eventBus = eventBus
                 )

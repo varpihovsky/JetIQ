@@ -107,6 +107,6 @@ class NavigationControllerBuilder(
      *
      * @return [NavigationController]
      */
-    @ExperimentalAnimationApi
+    @OptIn(ExperimentalAnimationApi::class)
     fun build() = NavigationController(eventBus, entries, defaultRoute)
 }

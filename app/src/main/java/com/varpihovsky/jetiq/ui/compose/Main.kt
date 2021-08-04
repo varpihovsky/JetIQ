@@ -38,10 +38,9 @@ import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.eventBus.EventBus
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core_nav.dsl.DisplayNavigation
-import com.varpihovsky.core_nav.dsl.rememberNavigationController
 import com.varpihovsky.core_nav.main.EntryType
+import com.varpihovsky.core_nav.main.JetNav
 import com.varpihovsky.core_nav.main.NavigationController
-import com.varpihovsky.core_nav.main.NavigationControllerStorage
 import com.varpihovsky.core_nav.navigation.BottomNavigationItem
 import com.varpihovsky.core_nav.navigation.NavigationDirections
 import com.varpihovsky.jetiq.NavigationViewModel
@@ -63,7 +62,6 @@ import soup.compose.material.motion.*
 @Composable
 fun Root(
     navigationViewModel: NavigationViewModel,
-    navigationControllerStorage: NavigationControllerStorage,
     appbarManager: AppbarManager,
     exceptionEventManager: ExceptionEventManager,
     eventBus: EventBus
@@ -81,7 +79,7 @@ fun Root(
                 BottomNavigationMenu(
                     selected = navigationViewModel.data.selectedNavbarEntry.value,
                     onClick = {
-                        navigationControllerStorage.navigationController?.let { it1 ->
+                        JetNav.getController().let { it1 ->
                             navigationViewModel.onBottomBarButtonClick(
                                 it.route,
                                 it1
@@ -103,8 +101,6 @@ fun Root(
         )
 
         navigationController.setNavigationCallback(navigationViewModel::onDestinationChange)
-
-        navigationControllerStorage.navigationController = navigationController
 
         RootLayout(
             appbarManager = appbarManager,
@@ -158,10 +154,7 @@ fun initNavigation(
 ): NavigationController {
     val startDestination = remember { navigationViewModel.getStartDestination() }
 
-    return rememberNavigationController(
-        eventBus = eventBus,
-        defaultRoute = startDestination
-    ) {
+    JetNav.createControllerIfNotCreated(eventBus, startDestination) {
         entry {
             val entryRoute = NavigationDirections.authentication.destination
             composable = { Auth(viewModel = viewModel(key = entryRoute)) }
@@ -249,6 +242,8 @@ fun initNavigation(
             outAnimation = materialSharedAxisXOut(forward = false, slideDistance = 200)
         }
     }
+
+    return JetNav.getController()
 }
 
 @ExperimentalAnimationApi

@@ -30,7 +30,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.varpihovsky.core.eventBus.EventBus
-import com.varpihovsky.core.util.Logger
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.main.NavigationEntry
 import com.varpihovsky.core_nav.main.NavigationOperation
@@ -56,6 +55,10 @@ fun navigationController(
  * Should be invoked on every Activity creation, because
  * [NavigationEntry][com.varpihovsky.core_nav.main.NavigationEntry] can't be parcelized.
  * Backstack is saved. You haven't to restore it manually.
+ *
+ * Pretty buggy way to store and restore controller.
+ * Please use [JetNav][com.varpihovsky.core_nav.main.JetNav] rather than this way because there are
+ * problems with restoring backstack.
  *
  * @see [NavigationControllerBuilder]
  *
@@ -112,8 +115,6 @@ fun DisplayNavigation(
 
         is NavigationOperation.Navigate -> screen = current
     }
-
-    Logger.ui(current.toString())
 
     MaterialMotion(
         targetState = screen.route,

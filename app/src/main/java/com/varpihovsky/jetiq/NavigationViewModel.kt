@@ -25,6 +25,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core_nav.main.EntryType
+import com.varpihovsky.core_nav.main.JetNav
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.main.NavigationEntry
 import com.varpihovsky.core_nav.navigation.*
@@ -55,11 +56,18 @@ class NavigationViewModel @Inject constructor(
     fun getStartDestination(): String =
         runBlocking(context = dispatchers.IO) {
             if (profileModel.getConfidential().firstOrNull() != null) {
-                viewModelScope.launch { isNavbarShown.value = true }
+                if (isNavbarShouldBeShown()) {
+                    viewModelScope.launch { isNavbarShown.value = true }
+                }
                 return@runBlocking NavigationDirections.profile.destination
             }
             return@runBlocking NavigationDirections.authentication.destination
         }
+
+    private fun isNavbarShouldBeShown() =
+        JetNav.getControllerOrNull()
+            ?.getCurrentDestination() == NavigationDirections.profile.destination
+                || JetNav.getControllerOrNull() == null
 
     @ExperimentalAnimationApi
     fun onDestinationChange(direction: NavigationEntry) {

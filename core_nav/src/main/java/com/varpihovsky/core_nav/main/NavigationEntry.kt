@@ -63,5 +63,16 @@ class NavigationEntry(
      * padding values by yourself.
      */
     val applyPaddingValues: Boolean
-)
+) {
+    override fun toString(): String {
+        return "NavigationEntry(" +
+                "\n\tcomposable=$composable," +
+                "\n\troute='$route'," +
+                "\n\ttype=$type," +
+                "\n\tinAnimation=$inAnimation," +
+                "\n\toutAnimation=$outAnimation," +
+                "\n\tapplyPaddingValues=$applyPaddingValues\n" +
+                ")"
+    }
+}
 

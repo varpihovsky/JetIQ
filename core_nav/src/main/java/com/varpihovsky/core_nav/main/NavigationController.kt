@@ -18,10 +18,12 @@ package com.varpihovsky.core_nav.main
  */
 
 import android.os.Bundle
-import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.core.os.bundleOf
 import com.varpihovsky.core.eventBus.EventBus
+import com.varpihovsky.core.log.Logger.d
+import com.varpihovsky.core.log.Logger.v
+import com.varpihovsky.core.log.loggedStack
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import soup.compose.material.motion.MotionSpec
@@ -42,7 +44,7 @@ class NavigationController(
         .mapNotNull { it as? List<NavigationEntry> }
         .map { backStackToOperation(it) }
 
-    private val backStack: Stack<NavigationEntry> = Stack()
+    private val backStack: Deque<NavigationEntry> = loggedStack()
 
     private var backStackSize = 1
 
@@ -56,7 +58,7 @@ class NavigationController(
         if (default != null) {
             resetBackStack(default)
         } else {
-            Log.d("NavigationController", "Haven't found default route. Probably restoring state.")
+            d("Haven't found default route. Probably restoring state.")
         }
     }
 
@@ -72,7 +74,11 @@ class NavigationController(
         previousEntry = entry
         backStackSize = stack.size
 
-        return NavigationOperation.Navigate(entry.route, entry.composable, motionSpec, pop)
+
+
+        return NavigationOperation.Navigate(entry.route, entry.composable, motionSpec, pop).also {
+            d("Having operation: $it")
+        }
     }
 
     @OptIn(ExperimentalAnimationApi::class)
@@ -84,10 +90,8 @@ class NavigationController(
             entry.inAnimation with previousEntry!!.outAnimation,
             false
         )
-        isSubEntryOut(
-            entry,
-            stack
-        ) -> Pair(previousEntry!!.inAnimation with previousEntry!!.outAnimation, true)
+        isSubEntryOut(entry, stack) ->
+            Pair(previousEntry!!.inAnimation with previousEntry!!.outAnimation, true)
         isMainEntryRightOne(entry) -> {
             if (previousEntry?.type == EntryType.SubMenu) {
                 Pair(previousEntry!!.inAnimation with previousEntry!!.outAnimation, true)
@@ -119,6 +123,8 @@ class NavigationController(
         backStack.pop()
         eventBus.push(backStack.toList())
 
+        d("Back pressed.")
+
         backStack.lastOrNull()?.let { callback?.invoke(it) }
     }
 
@@ -129,8 +135,10 @@ class NavigationController(
      * @see [EntryType]
      */
     fun manage(route: String) {
+        v("Navigating to $route")
         val entry = checkNotNull(entries.find { route == it.route })
 
+        d("Got an entry $entry")
         callback?.invoke(entry)
 
         when (entry.type) {
@@ -147,15 +155,20 @@ class NavigationController(
         this.callback = callback
     }
 
+    fun getCurrentDestination() = backStack.last().route
+
     internal fun saveState(): Bundle {
         return bundleOf(
             DEFAULT_ROUTE_KEY to defaultRoute,
             BACKSTACK_KEY to backStack.map { it.route }.toTypedArray()
-        )
+        ).also {
+            d("Saving state...\nSaved: $it")
+        }
     }
 
     internal fun restoreState(bundle: Bundle?) {
         bundle?.apply {
+            d("Restoring state...\nRestored: $this")
             getString(DEFAULT_ROUTE_KEY)?.let {
                 defaultRoute = it
             }
@@ -172,7 +185,9 @@ class NavigationController(
     private fun mapRoutesToEntries(savedStack: Array<String>): List<NavigationEntry> {
         return savedStack
             .mapNotNull { route -> entries.find { it.route == route } }
-            .toList()
+            .toList().also {
+                d("Mapped routes: $savedStack to $it")
+            }
     }
 
     private fun getDefault() = entries.find { it.route == defaultRoute }
@@ -187,8 +202,11 @@ class NavigationController(
         manage(defaultRoute)
     }
 
+    internal fun onBusClear() {
+        eventBus.push(backStack.toList())
+    }
+
     companion object {
-        private const val ENTRIES_KEY = "entries"
         private const val DEFAULT_ROUTE_KEY = "route"
         private const val BACKSTACK_KEY = "backstack"
     }
