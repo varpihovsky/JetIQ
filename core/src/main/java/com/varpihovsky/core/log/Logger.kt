@@ -1,4 +1,4 @@
-package com.varpihovsky.core.util
+package com.varpihovsky.core.log
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
@@ -18,46 +18,69 @@ package com.varpihovsky.core.util
  */
 
 import android.util.Log
+import com.varpihovsky.core.BuildConfig
 import kotlin.reflect.KClass
 
+/**
+ * Wrapper class for [Log] which automatically removes all logs when it is not debug build.
+ */
 object Logger {
     private const val DEFAULT_TAG = "Application"
     private const val UI_TAG = "UI"
 
     fun d(message: String) {
-        Log.d(DEFAULT_TAG, message)
+        if (BuildConfig.DEBUG)
+            Log.d(DEFAULT_TAG, message)
     }
 
     fun d(clazz: KClass<*>, message: String) {
-        Log.d(clazz.simpleName, message)
+        if (BuildConfig.DEBUG)
+            Log.d(clazz.simpleName, message)
     }
 
     fun ui(message: String) {
-        Log.d(UI_TAG, message)
+        if (BuildConfig.DEBUG)
+            Log.d(UI_TAG, message)
     }
 
     fun e(message: String) {
-        Log.e(DEFAULT_TAG, message)
+        if (BuildConfig.DEBUG)
+            Log.e(DEFAULT_TAG, message)
     }
 
     fun e(clazz: KClass<*>, message: String) {
-        Log.e(clazz.simpleName, message)
+        if (BuildConfig.DEBUG)
+            Log.e(clazz.simpleName, message)
     }
 
     fun w(message: String) {
-        Log.w(DEFAULT_TAG, message)
+        if (BuildConfig.DEBUG)
+            Log.w(DEFAULT_TAG, message)
     }
 
     fun w(clazz: KClass<*>, message: String) {
-        Log.w(clazz.simpleName, message)
+        if (BuildConfig.DEBUG)
+            Log.w(clazz.simpleName, message)
     }
 
     fun v(message: String) {
-        Log.v(DEFAULT_TAG, message)
+        if (BuildConfig.DEBUG)
+            Log.v(DEFAULT_TAG, message)
     }
 
     fun v(clazz: KClass<*>, message: String) {
-        Log.v(clazz.simpleName, message)
+        if (BuildConfig.DEBUG)
+            Log.v(clazz.simpleName, message)
+    }
+
+    fun i(message: String) {
+        if (BuildConfig.DEBUG)
+            Log.i(DEFAULT_TAG, message)
+    }
+
+    fun i(clazz: KClass<*>, message: String) {
+        if (BuildConfig.DEBUG)
+            Log.i(clazz.simpleName, message)
     }
 }
 
@@ -75,4 +98,8 @@ fun Any.w(message: String) {
 
 fun Any.v(message: String) {
     Logger.v(this::class, message)
+}
+
+fun Any.i(message: String) {
+    Logger.i(this::class, message)
 }
