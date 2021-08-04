@@ -35,7 +35,7 @@ import soup.compose.material.motion.MaterialSharedAxisY
 @ExperimentalAnimationApi
 @Composable
 fun Appbar(appbarManager: AppbarManager) {
-    val current = appbarManager.commands.collectAsState(initial = AppbarCommand.Empty).value
+    val current = appbarManager.commands.collectAsState().value
     val isShown = remember { mutableStateOf(true) }
 
     val title = remember { mutableStateOf<String?>(null) }

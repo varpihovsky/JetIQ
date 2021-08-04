@@ -57,7 +57,7 @@ interface ProfileRepo {
      *
      * @return flow of [ProfileDTO]
      */
-    fun getProfile(): Flow<ProfileDTO>
+    fun getProfile(): Flow<ProfileDTO?>
 
     fun getProfileDTO(): ProfileDTO
 

@@ -27,7 +27,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Named
@@ -76,7 +75,8 @@ object NetworkModule {
     @Singleton
     @Named("Retrofit")
     fun provideOkHttpClient() =
-        OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }).build()
+        OkHttpClient.Builder()
+            // Uncomment if http logs are needed
+            //.addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
+            .build()
 }

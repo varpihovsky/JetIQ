@@ -31,10 +31,7 @@ import com.varpihovsky.ui_data.dto.UISubjectDTO
 import com.varpihovsky.ui_data.dto.formMarksInfo
 import com.varpihovsky.ui_data.mappers.toUIDTO
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.lastOrNull
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -74,7 +71,7 @@ class ProfileInteractor @Inject constructor(
     }
 
     private fun initProfileMapper() {
-        profileData = profileModel.getProfile().map { it.toUIDTO() }
+        profileData = profileModel.getProfile().mapNotNull { it?.toUIDTO() }
     }
 
     private fun initSubjectListMapper() {
