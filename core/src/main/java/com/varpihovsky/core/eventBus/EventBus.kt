@@ -17,6 +17,7 @@ package com.varpihovsky.core.eventBus
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import com.varpihovsky.core.log.Logger.v
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -39,6 +40,8 @@ class EventBus {
      * @param event event to push.
      */
     fun push(event: Any) {
+        v("Received event: $event")
+
         _bus.value = event
     }
 }
