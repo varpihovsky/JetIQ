@@ -37,6 +37,8 @@ object Versions {
     const val dagger_version = "2.38.1"
     const val dagger_additionals_version = "1.0.0"
 
+    const val koin_version = "3.1.2"
+
     const val activity_compose_version = "1.3.1"
 
 
@@ -103,6 +105,10 @@ object Dependencies {
     const val retrofit_converter =
         "com.squareup.retrofit2:converter-gson:${Versions.retrofit_version}"
     const val retrofit_logging = "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2"
+}
+
+object CommonDependencies {
+    const val koin_core = "io.insert-koin:koin-core:${Versions.koin_version}"
 }
 
 object AndroidDependencies {
