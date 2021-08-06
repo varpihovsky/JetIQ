@@ -1,13 +1,53 @@
+import org.jetbrains.compose.compose
+
 plugins {
+    kotlin("multiplatform")
     id(Plugins.android_library)
-    kotlin("android")
     kotlin("kapt")
-    id(Plugins.hilt)
     parcelize()
 }
 
 group = Config.group
 version = Config.version
+
+kotlin {
+    android()
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(CommonDependencies.koin_core)
+
+                // Architecture components
+                implementation(compose.runtime)
+
+                // Compose
+                implementation(compose.ui)
+                implementation(compose.foundation)
+
+            }
+        }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+                // JUnit
+                //implementation(TestDependencies.junit)
+                //implementation(TestDependencies.coroutines_test)
+
+                // Mockk
+                implementation(TestDependencies.mockk)
+            }
+        }
+        val androidMain by getting
+        val androidTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(TestDependencies.core_testing)
+            }
+        }
+    }
+}
 
 android {
     compileSdkVersion(AndroidConfig.compile_sdk)
@@ -36,40 +76,34 @@ android {
     }
 }
 
-dependencies {
-    //Dagger
-    implementation(AndroidDependencies.hilt)
-    kapt(AndroidDependencies.hilt_compiler)
-    kapt(AndroidDependencies.hilt_androidx_compiler)
-    implementation(AndroidDependencies.hilt_work)
-
-    // For local unit tests
-    testImplementation(AndroidDependencies.hilt_testing)
-    kaptTest(AndroidDependencies.hilt_compiler)
-
-    // Core
-    implementation(AndroidDependencies.core)
-    implementation(AndroidDependencies.app_compat)
-    implementation(AndroidDependencies.material)
-
-    // Architecture components
-    implementation(Compose.lifecycle_runtime)
-    implementation(Compose.activity_compose)
-    implementation(Compose.view_model_compose)
-    implementation(Compose.compose_livedata)
-
-    // Compose
-    implementation(Compose.ui)
-    implementation(Compose.foundation_layout)
-
-    // JUnit
-    testImplementation(TestDependencies.junit)
-    androidTestImplementation(TestDependencies.junit_ext)
-    androidTestImplementation(TestDependencies.compose_test)
-    testImplementation(TestDependencies.core_testing)
-    testImplementation(TestDependencies.coroutines_test)
-
-    // Mockk
-    testImplementation(TestDependencies.mockk)
-    androidTestImplementation(TestDependencies.mockk_android)
-}
+//dependencies {
+//    //Dagger
+//    implementation(AndroidDependencies.hilt)
+//    kapt(AndroidDependencies.hilt_compiler)
+//    kapt(AndroidDependencies.hilt_androidx_compiler)
+//    implementation(AndroidDependencies.hilt_work)
+//
+//    // For local unit tests
+//    testImplementation(AndroidDependencies.hilt_testing)
+//    kaptTest(AndroidDependencies.hilt_compiler)
+//
+//    // Core
+//    implementation(AndroidDependencies.core)
+//    implementation(AndroidDependencies.app_compat)
+//    implementation(AndroidDependencies.material)
+//
+//    implementation(Compose.activity_compose)
+//    implementation(Compose.view_model_compose)
+//    implementation(Compose.compose_livedata)
+//
+//    // JUnit
+//    testImplementation(TestDependencies.junit)
+//    androidTestImplementation(TestDependencies.junit_ext)
+//    androidTestImplementation(TestDependencies.compose_test)
+//    testImplementation(TestDependencies.core_testing)
+//    testImplementation(TestDependencies.coroutines_test)
+//
+//    // Mockk
+//    testImplementation(TestDependencies.mockk)
+//    androidTestImplementation(TestDependencies.mockk_android)
+//}
