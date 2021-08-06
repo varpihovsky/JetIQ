@@ -30,6 +30,9 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = Versions.compose_version
     }
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
 }
 
 dependencies {

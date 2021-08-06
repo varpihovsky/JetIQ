@@ -39,7 +39,11 @@ abstract class ViewModelTest : JetIQTest() {
     protected var exceptionEventManager: ExceptionEventManager = mockk(relaxed = true)
 
     @ExperimentalCoroutinesApi
-    protected var viewModelDispatchers = CoroutineDispatchers(TestCoroutineDispatcher())
+    protected var viewModelDispatchers = CoroutineDispatchers(
+        TestCoroutineDispatcher(),
+        TestCoroutineDispatcher(),
+        TestCoroutineDispatcher()
+    )
 
     @ExperimentalCoroutinesApi
     private var testCoroutineDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()

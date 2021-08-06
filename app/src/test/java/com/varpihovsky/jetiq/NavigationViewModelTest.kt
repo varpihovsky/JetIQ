@@ -17,6 +17,7 @@ package com.varpihovsky.jetiq
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import com.varpihovsky.core_nav.navigation.BottomNavigationItem
 import com.varpihovsky.core_nav.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.ProfileRepo
@@ -66,6 +67,7 @@ class NavigationViewModelTest : ViewModelTest() {
         )
     }
 
+    @ExperimentalAnimationApi
     @Test
     fun `Test bottom navbar click`() {
         sharedViewModel.onBottomBarButtonClick(NavigationDirections.profile, navigationController)

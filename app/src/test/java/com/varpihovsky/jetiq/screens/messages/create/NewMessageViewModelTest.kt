@@ -22,8 +22,8 @@ import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModel
 import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModelData
 import com.varpihovsky.jetiq.testCore.ViewModelDataTransferTest
-import com.varpihovsky.ui_data.ReceiverType
-import com.varpihovsky.ui_data.UIReceiverDTO
+import com.varpihovsky.ui_data.dto.ReceiverType
+import com.varpihovsky.ui_data.dto.UIReceiverDTO
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify

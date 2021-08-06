@@ -28,6 +28,7 @@ import io.mockk.verify
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 
@@ -44,7 +45,6 @@ class MessagesViewModelTest : ViewModelTest() {
         }
 
         messagesViewModel = MessagesViewModel(
-            viewModelDispatchers,
             navigationController,
             messagesModel,
             appbarManager,
@@ -55,7 +55,7 @@ class MessagesViewModelTest : ViewModelTest() {
     @ExperimentalCoroutinesApi
     @Test
     fun `Test messages are shown`() = runBlockingTest {
-        assertEquals(TEST_MESSAGES.map { it.toUIDTO() }, messagesViewModel.data.messages.value)
+        assertEquals(TEST_MESSAGES.map { it.toUIDTO() }, messagesViewModel.messages.last())
     }
 
     @ExperimentalCoroutinesApi

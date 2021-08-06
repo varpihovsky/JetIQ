@@ -38,7 +38,11 @@ class AuthViewModelTest : ViewModelTest() {
     private val profileModel: ProfileRepo = mockk(relaxed = true)
 
     @ExperimentalCoroutinesApi
-    private val dispatchers: CoroutineDispatchers = CoroutineDispatchers(TestCoroutineDispatcher())
+    private val dispatchers: CoroutineDispatchers = CoroutineDispatchers(
+        TestCoroutineDispatcher(),
+        TestCoroutineDispatcher(),
+        TestCoroutineDispatcher()
+    )
 
     private val stubValidator: Validator<String> = object : Validator<String> {
         override fun validate(t: String): Boolean = t.isNotEmpty()

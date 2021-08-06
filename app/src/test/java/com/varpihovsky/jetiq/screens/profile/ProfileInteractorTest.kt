@@ -24,7 +24,7 @@ import com.varpihovsky.repo_data.MarkbookSubjectDTO
 import com.varpihovsky.repo_data.ProfileDTO
 import com.varpihovsky.repo_data.SubjectDTO
 import com.varpihovsky.repo_data.SubjectDetailsDTO
-import com.varpihovsky.ui_data.MarksInfo
+import com.varpihovsky.ui_data.dto.MarksInfo
 import com.varpihovsky.ui_data.mappers.toUIDTO
 import io.mockk.every
 import io.mockk.mockk
