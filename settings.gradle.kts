@@ -5,6 +5,7 @@ dependencyResolutionManagement {
         mavenCentral()
         jcenter() // Warning: this repository is going to shut down soon
         maven("https://www.jitpack.io")
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 rootProject.name = "JetIQ"
