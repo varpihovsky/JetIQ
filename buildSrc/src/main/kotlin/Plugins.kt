@@ -22,6 +22,8 @@ object Plugins {
     const val android_library = "com.android.library"
 
     const val hilt = "dagger.hilt.android.plugin"
+
+    const val compose_multiplatform = "org.jetbrains.compose"
 }
 
 fun PluginDependenciesSpec.parcelize() = id("kotlin-parcelize")
