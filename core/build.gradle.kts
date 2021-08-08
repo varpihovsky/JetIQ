@@ -29,6 +29,8 @@ kotlin {
         }
         val commonTest by getting {
             dependencies {
+                implementation(project(Modules.core_test))
+
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
                 // JUnit
@@ -40,19 +42,13 @@ kotlin {
             }
         }
         val androidMain by getting
-        val androidTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(TestDependencies.core_testing)
-            }
-        }
     }
 }
 
 android {
     compileSdkVersion(AndroidConfig.compile_sdk)
     buildToolsVersion = AndroidConfig.build_tools_version
-
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdkVersion(AndroidConfig.min_sdk)
         targetSdkVersion(AndroidConfig.target_sdk)

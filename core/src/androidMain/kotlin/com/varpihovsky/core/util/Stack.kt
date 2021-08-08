@@ -20,6 +20,9 @@ package com.varpihovsky.core.util
 actual fun <T> stack(): Stack<T> = StackImpl()
 
 private class StackImpl<T> : Stack<T> {
+    override val size: Int
+        get() = deque.size
+
     private val deque = ArrayDeque<T>()
 
     override fun push(e: T) = addLast(e)
@@ -31,6 +34,10 @@ private class StackImpl<T> : Stack<T> {
     override fun pop(): T = removeLast()
 
     override fun removeLast(): T = deque.removeLast()
+
+    override fun clear() = deque.clear()
+
+    override fun iterator(): Iterator<T> = deque.iterator()
 
     override fun toString(): String = deque.toString()
 }

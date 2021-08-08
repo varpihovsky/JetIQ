@@ -27,7 +27,9 @@ expect fun <T> stack(): Stack<T>
  *
  * @author Vladyslav Podrezenko
  */
-interface Stack<T> {
+interface Stack<T> : Iterable<T> {
+    val size: Int
+
     fun push(e: T)
 
     fun addLast(e: T)
@@ -35,4 +37,6 @@ interface Stack<T> {
     fun pop(): T
 
     fun removeLast(): T
+
+    fun clear()
 }

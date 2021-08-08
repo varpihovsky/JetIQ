@@ -17,15 +17,37 @@ package com.varpihovsky.core.dataTransfer
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import com.varpihovsky.core_test.JetIQTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotSame
 
 
-expect class ViewModelDataTransferManagerTest {
-    fun setup()
+class ViewModelDataTransferManagerTest : JetIQTest() {
+    lateinit var dataTransferManager: ViewModelDataTransferManager
+
+    override fun setup() {
+        dataTransferManager = ViewModelDataTransferManager()
+    }
 
     @Test
-    fun test_same_flow_returned_if_same_tags_provided()
+    fun test_same_flow_returned_if_same_tags_provided() {
+        assertEquals(
+            dataTransferManager.getFlowByTag(TAG_1),
+            dataTransferManager.getFlowByTag(TAG_1)
+        )
+    }
 
     @Test
-    fun test_different_flows_returned_if_different_tags_provided()
+    fun test_different_flows_returned_if_different_tags_provided() {
+        assertNotSame(
+            dataTransferManager.getFlowByTag(TAG_1),
+            dataTransferManager.getFlowByTag(TAG_2)
+        )
+    }
+
+    companion object {
+        private const val TAG_1 = "example"
+        private const val TAG_2 = "example_1"
+    }
 }
