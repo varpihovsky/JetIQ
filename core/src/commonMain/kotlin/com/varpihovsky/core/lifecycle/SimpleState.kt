@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.ui.compose
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,16 +14,17 @@ package com.varpihovsky.jetiq.ui.compose
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core.lifecycle
 
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 
-class ViewModelStateHolder<T>(initial: T) : ViewModel() {
+/**
+ * Class that holds state.
+ * Use this class when you need to hold data outside of compose world and rememberSavable is
+ * not working how it should, but creating view model is too complex.
+ *
+ * To create state use [createSimpleState][com.varpihovsky.core.lifecycle.createSimpleState] function.
+ */
+class SimpleState<T>(initial: T) {
     val state = mutableStateOf(initial)
-}
-
-class ViewModelStateHolderFactory<K>(private val initial: K) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-        ViewModelStateHolder(initial) as T
 }

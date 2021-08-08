@@ -1,5 +1,3 @@
-package com.varpihovsky.core.di
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,21 +14,22 @@ package com.varpihovsky.core.di
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core.lifecycle
 
-import com.varpihovsky.core.appbar.AppbarManager
-import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
-import com.varpihovsky.core.eventBus.EventBus
-import com.varpihovsky.core.exceptions.ExceptionEventManager
-import com.varpihovsky.core.lifecycle.SimpleStateHolder
-import org.koin.dsl.module
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import com.varpihovsky.core.di.get
 
-object CoreModule {
-    val module = module {
-        factory { ExceptionEventManager(get()) }
-        factory { AppbarManager(get()) }
-
-        single { EventBus() }
-        single { ViewModelDataTransferManager() }
-        single { SimpleStateHolder() }
+/**
+ * Creates new state in di container. Use it when rememberSavable doesn't work.
+ *
+ * @see SimpleState
+ */
+@Composable
+fun <T> createSimpleState(key: String, state: T): SimpleState<T> {
+    val stateHolder = get<SimpleStateHolder>()
+    remember(key, state) {
+        stateHolder.save(key, SimpleState(state))
     }
+    return remember(key) { stateHolder.restore(key) }
 }
