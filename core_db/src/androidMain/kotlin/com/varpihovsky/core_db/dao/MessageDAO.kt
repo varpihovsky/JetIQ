@@ -17,24 +17,24 @@ package com.varpihovsky.core_db.dao
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
-import androidx.room.Query
-import com.varpihovsky.repo_data.ProfileDTO
+import androidx.room.*
+import com.varpihovsky.repo_data.MessageDTO
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface ProfileDAO : SingleEntryDAO<ProfileDTO> {
-    @Query("SELECT * FROM ProfileDTO LIMIT 1")
-    override fun get(): Flow<ProfileDTO>
+actual interface MessageDAO {
+    @Query("SELECT * FROM MessageDTO")
+    actual fun getMessages(): Flow<List<MessageDTO>>
 
-    @Query("SELECT * FROM ProfileDTO LIMIT 1")
-    fun getProfile(): ProfileDTO
+    @Query("SELECT * FROM MessageDTO WHERE id=:id")
+    actual fun getMessageById(id: Int): Flow<MessageDTO>
 
-    @Insert(onConflict = REPLACE)
-    override fun set(t: ProfileDTO)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    actual fun addMessage(messageDTO: MessageDTO)
 
-    @Query("DELETE FROM ProfileDTO")
-    override fun delete()
+    @Delete
+    actual fun deleteMessage(messageDTO: MessageDTO)
+
+    @Query("DELETE FROM MessageDTO")
+    actual fun deleteAll()
 }

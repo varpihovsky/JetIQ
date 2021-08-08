@@ -17,24 +17,15 @@ package com.varpihovsky.core_db.dao
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import androidx.room.*
-import com.varpihovsky.repo_data.MessageDTO
+import com.varpihovsky.repo_data.ContactDTO
 import kotlinx.coroutines.flow.Flow
 
-@Dao
-interface MessageDAO {
-    @Query("SELECT * FROM MessageDTO")
-    fun getMessages(): Flow<List<MessageDTO>>
+expect interface ContactDAO {
+    fun getContacts(): Flow<List<ContactDTO>>
 
-    @Query("SELECT * FROM MessageDTO WHERE id=:id")
-    fun getMessageById(id: Int): Flow<MessageDTO>
+    fun insert(contactDTO: ContactDTO)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun addMessage(messageDTO: MessageDTO)
+    fun delete(contactDTO: ContactDTO)
 
-    @Delete
-    fun deleteMessage(messageDTO: MessageDTO)
-
-    @Query("DELETE FROM MessageDTO")
-    fun deleteAll()
+    fun clear()
 }

@@ -17,34 +17,15 @@ package com.varpihovsky.core_db.dao
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
-import androidx.room.Query
-import com.varpihovsky.repo_data.SubjectDTO
+import com.varpihovsky.repo_data.ProfileDTO
 import kotlinx.coroutines.flow.Flow
 
-@Dao
-interface SubjectDAO {
-    @Query("SELECT * FROM SubjectDTO WHERE card_id=:id")
-    fun getSubjectById(id: String): Flow<SubjectDTO>
+expect interface ProfileDAO : SingleEntryDAO<ProfileDTO> {
+    override fun get(): Flow<ProfileDTO>
 
-    @Query("SELECT * FROM SubjectDTO")
-    fun getAllSubjects(): Flow<List<SubjectDTO>>
+    fun getProfile(): ProfileDTO
 
-    @Query("SELECT * FROM SubjectDTO")
-    fun getAllSubjectsList(): List<SubjectDTO>
+    override fun set(t: ProfileDTO)
 
-    @Insert(onConflict = IGNORE)
-    fun insert(subjectDTO: SubjectDTO)
-
-    @Delete
-    fun delete(subjectDTO: SubjectDTO)
-
-    @Query("DELETE FROM SubjectDTO WHERE card_id=:id")
-    fun deleteSubjectById(id: Int)
-
-    @Query("DELETE FROM SubjectDTO")
-    fun deleteAll()
+    override fun delete()
 }

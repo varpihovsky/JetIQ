@@ -18,20 +18,24 @@ package com.varpihovsky.core_db.dao
  */
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.Query
-import com.varpihovsky.repo_data.Confidential
+import com.varpihovsky.repo_data.ContactDTO
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface ConfidentialDAO : SingleEntryDAO<Confidential> {
-    @Query("SELECT * FROM Confidential LIMIT 1")
-    override fun get(): Flow<Confidential>
+actual interface ContactDAO {
+    @Query("SELECT * FROM ContactDTO")
+    actual fun getContacts(): Flow<List<ContactDTO>>
 
-    @Insert(onConflict = REPLACE)
-    override fun set(t: Confidential)
+    @Insert(onConflict = IGNORE)
+    actual fun insert(contactDTO: ContactDTO)
 
-    @Query("DELETE FROM Confidential")
-    override fun delete()
+    @Delete
+    actual fun delete(contactDTO: ContactDTO)
+
+    @Query("DELETE FROM ContactDTO")
+    actual fun clear()
 }

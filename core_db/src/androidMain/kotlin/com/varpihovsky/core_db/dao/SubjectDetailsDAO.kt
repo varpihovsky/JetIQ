@@ -30,38 +30,38 @@ import com.varpihovsky.repo_data.relations.SubjectDetailsWithTasks
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface SubjectDetailsDAO {
+actual interface SubjectDetailsDAO {
     @Insert(onConflict = IGNORE)
-    fun insertDetails(subjectDetailsDTO: SubjectDetailsDTO)
+    actual fun insertDetails(subjectDetailsDTO: SubjectDetailsDTO)
 
     @Insert(onConflict = REPLACE)
-    fun insertTask(subjectTaskDTO: SubjectTaskDTO)
+    actual fun insertTask(subjectTaskDTO: SubjectTaskDTO)
 
     @Insert(onConflict = IGNORE)
-    fun insertMarkbookSubject(markbookSubjectDTO: MarkbookSubjectDTO)
+    actual fun insertMarkbookSubject(markbookSubjectDTO: MarkbookSubjectDTO)
 
     @Query("DELETE FROM SubjectDetailsDTO")
-    fun deleteAllDetails()
+    actual fun deleteAllDetails()
 
     @Query("DELETE FROM SubjectTaskDTO")
-    fun deleteAllTasks()
+    actual fun deleteAllTasks()
 
     @Query("DELETE FROM MarkbookSubjectDTO")
-    fun deleteAllMarkbookSubjects()
+    actual fun deleteAllMarkbookSubjects()
 
     @Query("SELECT * FROM SubjectDetailsDTO")
-    fun getDetailsOnly(): Flow<List<SubjectDetailsDTO>>
+    actual fun getDetailsOnly(): Flow<List<SubjectDetailsDTO>>
 
     @Transaction
     @Query("SELECT * FROM SubjectDetailsDTO WHERE id=:id")
-    fun getDetailsById(id: Int): Flow<SubjectDetailsWithTasks>
+    actual fun getDetailsById(id: Int): Flow<SubjectDetailsWithTasks>
 
     @Query("SELECT * FROM MarkbookSubjectDTO")
-    fun getMarkbookSubjects(): Flow<List<MarkbookSubjectDTO>>
+    actual fun getMarkbookSubjects(): Flow<List<MarkbookSubjectDTO>>
 
     @Query("SELECT * FROM MarkbookSubjectDTO")
-    fun getMarkbookSubjectsList(): List<MarkbookSubjectDTO>
+    actual fun getMarkbookSubjectsList(): List<MarkbookSubjectDTO>
 
     @Query("SELECT * FROM MarkbookSubjectDTO WHERE id=:id")
-    fun getMarkbookSubjectById(id: Int): Flow<MarkbookSubjectDTO>
+    actual fun getMarkbookSubjectById(id: Int): Flow<MarkbookSubjectDTO>
 }

@@ -1,15 +1,41 @@
+import extensions.kapt
+
 plugins {
+    kotlin("multiplatform")
     id(Plugins.android_library)
-    kotlin("android")
     kotlin("kapt")
-    id(Plugins.hilt)
 }
 
 group = Config.group
 version = Config.version
 
+kotlin {
+    android()
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(project(Modules.repo_data))
+
+                implementation(CommonDependencies.coroutines)
+
+                implementation(CommonDependencies.koin_core)
+            }
+        }
+        val androidMain by getting {
+            dependencies {
+                // Room
+                implementation(AndroidDependencies.room_runtime)
+                implementation(AndroidDependencies.room)
+                kapt(AndroidDependencies.room_compiler)
+            }
+        }
+    }
+}
+
 android {
     compileSdkVersion(AndroidConfig.compile_sdk)
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdkVersion(AndroidConfig.min_sdk)
         targetSdkVersion(AndroidConfig.target_sdk)
@@ -39,20 +65,20 @@ android {
     }
 }
 
-dependencies {
-    implementation(repoData())
-
-    //Dagger
-    implementation(AndroidDependencies.hilt)
-    kapt(AndroidDependencies.hilt_compiler)
-    kapt(AndroidDependencies.hilt_androidx_compiler)
-    implementation(AndroidDependencies.hilt_work)
-
-    // Room
-    implementation(AndroidDependencies.room_runtime)
-    implementation(AndroidDependencies.room)
-    kapt(AndroidDependencies.room_compiler)
-    testImplementation(AndroidDependencies.room_testing)
-
-    implementation(AndroidDependencies.core)
-}
+//dependencies {
+//    implementation(repoData())
+//
+//    //Dagger
+//    implementation(AndroidDependencies.hilt)
+//    kapt(AndroidDependencies.hilt_compiler)
+//    kapt(AndroidDependencies.hilt_androidx_compiler)
+//    implementation(AndroidDependencies.hilt_work)
+//
+//    // Room
+//    implementation(AndroidDependencies.room_runtime)
+//    implementation(AndroidDependencies.room)
+//    kapt(AndroidDependencies.room_compiler)
+//    testImplementation(AndroidDependencies.room_testing)
+//
+//    implementation(AndroidDependencies.core)
+//}

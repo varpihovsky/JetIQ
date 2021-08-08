@@ -1,4 +1,4 @@
-package com.varpihovsky.core_db.dao
+package com.varpihovsky.core_db
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
@@ -17,25 +17,11 @@ package com.varpihovsky.core_db.dao
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
-import androidx.room.Query
-import com.varpihovsky.repo_data.ContactDTO
-import kotlinx.coroutines.flow.Flow
+import org.koin.core.module.Module
 
-@Dao
-interface ContactDAO {
-    @Query("SELECT * FROM ContactDTO")
-    fun getContacts(): Flow<List<ContactDTO>>
 
-    @Insert(onConflict = IGNORE)
-    fun insert(contactDTO: ContactDTO)
-
-    @Delete
-    fun delete(contactDTO: ContactDTO)
-
-    @Query("DELETE FROM ContactDTO")
-    fun clear()
+object DatabaseModule {
+    val module = provideModule()
 }
+
+internal expect fun provideModule(): Module
