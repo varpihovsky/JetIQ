@@ -23,4 +23,6 @@ expect open class CoroutineTest() : JetIQTest {
     fun runBlockingTest(block: suspend CoroutineScope.() -> Unit)
 
     override fun setup()
+
+    override fun teardown()
 }

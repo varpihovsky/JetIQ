@@ -7,7 +7,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 
@@ -24,10 +26,18 @@ actual open class CoroutineTest actual constructor() : JetIQTest() {
             block(this)
         }
 
-    @ExperimentalCoroutinesApi
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     @CallSuper
     actual override fun setup() {
         Dispatchers.setMain(testDispatcher as CoroutineDispatcher)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @After
+    @CallSuper
+    actual override fun teardown() {
+        Dispatchers.resetMain()
+        super.teardown()
     }
 }
