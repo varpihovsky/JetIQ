@@ -27,6 +27,7 @@ object Modules {
     const val core_nav = ":core_nav"
     const val core_network = ":core_network"
     const val core_repo = ":core_repo"
+    const val core_test = ":core_test"
     const val repo_data = ":repo_data"
     const val ui_data = ":ui_data"
 }

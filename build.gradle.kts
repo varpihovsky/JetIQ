@@ -2,6 +2,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
         maven(Repositories.jitpack)
         maven(Repositories.jetbrains_compose)
     }

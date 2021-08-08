@@ -1,4 +1,4 @@
-package com.varpihovsky.core.testCore
+package com.varpihovsky.core_test
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
@@ -18,5 +18,7 @@ package com.varpihovsky.core.testCore
  */
 
 expect open class JetIQTest() {
+    open fun setup()
+
     open fun teardown()
 }

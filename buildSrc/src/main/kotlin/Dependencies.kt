@@ -16,7 +16,7 @@
  */
 
 object Versions {
-    const val gradle_version = "4.2.2"
+    const val gradle_version = "7.0.0"
 
     const val kotlin_version = "1.5.10"
     const val compose_version = "1.0.0"
@@ -44,7 +44,7 @@ object Versions {
 
     const val junit_version = "4.13.2"
     const val junit_ext_version = "1.1.3"
-    const val coroutines_testing_version = "1.5.1-native-mt"
+    const val coroutines_testing_version = "1.5.1"
     const val core_testing_version = "2.1.0"
 }
 
@@ -96,7 +96,7 @@ object Compose {
         "androidx.lifecycle:lifecycle-viewmodel-compose:${Versions.view_model_compose_version}"
 
     const val material_motion =
-        "com.github.fornewid:material-motion-compose:${Versions.material_motion_version}"
+        "soup.compose.material:library:0.6.4"
     const val calpose = "com.github.sigmadeltasoftware:CalPose:master-SNAPSHOT"
 }
 
@@ -109,6 +109,7 @@ object Dependencies {
 
 object CommonDependencies {
     const val koin_core = "io.insert-koin:koin-core:${Versions.koin_version}"
+    const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1"
 }
 
 object AndroidDependencies {
@@ -116,12 +117,7 @@ object AndroidDependencies {
     const val app_compat = "androidx.appcompat:appcompat:${Versions.appcompat_version}"
     const val material = "com.google.android.material:material:${Versions.material_version}"
 
-    const val hilt = "com.google.dagger:hilt-android:${Versions.dagger_version}"
-    const val hilt_compiler = "com.google.dagger:hilt-android-compiler:${Versions.dagger_version}"
-    const val hilt_androidx_compiler =
-        "androidx.hilt:hilt-compiler:${Versions.dagger_additionals_version}"
-    const val hilt_work = "androidx.hilt:hilt-work:${Versions.dagger_additionals_version}"
-    const val hilt_testing = "com.google.dagger:hilt-android-testing:${Versions.dagger_version}"
+    const val koin_android = "io.insert-koin:koin-android:${Versions.koin_version}"
 
     const val room = "androidx.room:room-ktx:${Versions.room_version}"
     const val room_runtime = "androidx.room:room-runtime:${Versions.room_version}"

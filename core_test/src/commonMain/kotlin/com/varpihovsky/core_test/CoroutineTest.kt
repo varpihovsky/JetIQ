@@ -1,4 +1,6 @@
-package com.varpihovsky.core.testCore
+package com.varpihovsky.core_test
+
+import kotlinx.coroutines.CoroutineScope
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
@@ -17,10 +19,8 @@ package com.varpihovsky.core.testCore
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import org.junit.Rule
+expect open class CoroutineTest() : JetIQTest {
+    fun runBlockingTest(block: suspend CoroutineScope.() -> Unit)
 
-open class CoroutineTest : JetIQTest() {
-    @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
+    override fun setup()
 }

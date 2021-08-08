@@ -1,4 +1,9 @@
-package com.varpihovsky.core.testCore
+package com.varpihovsky.core_test
+
+import androidx.annotation.CallSuper
+import io.mockk.unmockkAll
+import org.junit.After
+import org.junit.Before
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
@@ -17,11 +22,14 @@ package com.varpihovsky.core.testCore
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import io.mockk.unmockkAll
-import org.junit.After
+actual open class JetIQTest actual constructor() {
+    @Before
+    actual open fun setup() {
 
-actual open class JetIQTest {
+    }
+
     @After
+    @CallSuper
     actual open fun teardown() {
         unmockkAll()
     }
