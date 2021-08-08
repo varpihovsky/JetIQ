@@ -20,8 +20,8 @@ package com.varpihovsky.core_repo.repo
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.util.ThreadSafeMutableState
 import com.varpihovsky.core_network.result.*
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 /**
  * Standard class for all Repo classes. Controls exception behaviour. Has useful methods for
@@ -34,7 +34,7 @@ abstract class Repo(val exceptionEventManager: ExceptionEventManager) {
     /**
      * Coroutine scope created specially for repo automatically.
      */
-    protected val repoScope = CoroutineScope(Dispatchers.IO)
+    protected val repoScope = CoroutineScope(defaultPlatformDispatcher())
 
     /**
      * Doesn't process any case of [Result]. Only pushes exception event into event bus if there was
@@ -105,3 +105,5 @@ abstract class Repo(val exceptionEventManager: ExceptionEventManager) {
      */
     protected fun <T> mutableStateOf(value: T) = ThreadSafeMutableState(value, repoScope)
 }
+
+internal expect fun defaultPlatformDispatcher(): CoroutineDispatcher

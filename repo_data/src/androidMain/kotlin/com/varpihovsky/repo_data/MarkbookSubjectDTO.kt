@@ -21,17 +21,31 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-actual data class MarkbookSubjectDTO(
-    @PrimaryKey(autoGenerate = true) actual val id: Int = 0,
-    actual val credits: String = "",
-    actual val date: String = "",
-    actual val ects: String = "",
-    actual val form: String = "",
-    actual val hours: String = "",
-    actual val mark: String = "",
-    actual val subj_name: String = "",
-    actual val teacher: String = "",
-    actual val total: Int = 0,
-    actual val semester: Int = 0
-)
+actual data class MarkbookSubjectDTO actual constructor(
+    @PrimaryKey(autoGenerate = true) actual val id: Int,
+    actual val credits: String,
+    actual val date: String,
+    actual val ects: String,
+    actual val form: String,
+    actual val hours: String,
+    actual val mark: String,
+    actual val subj_name: String,
+    actual val teacher: String,
+    actual val total: Int,
+    actual val semester: Int
+) {
+    actual fun withID(id: Int) = MarkbookSubjectDTO(
+        id,
+        credits,
+        date,
+        ects,
+        form,
+        hours,
+        mark,
+        subj_name,
+        teacher,
+        total,
+        semester
+    )
+}
 

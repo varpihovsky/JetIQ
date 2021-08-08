@@ -29,13 +29,11 @@ import com.varpihovsky.repo_data.MarkbookSubjectDTO
 import com.varpihovsky.repo_data.SubjectDTO
 import com.varpihovsky.repo_data.SubjectDetailsDTO
 import com.varpihovsky.repo_data.relations.SubjectDetailsWithTasks
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
-import javax.inject.Inject
 
 /**
  * Interface used for providing subject data of current user.
@@ -125,7 +123,7 @@ interface SubjectRepo : Refreshable {
     }
 }
 
-private class SubjectRepoImpl @Inject constructor(
+private class SubjectRepoImpl constructor(
     private val subjectDAO: SubjectDAO,
     private val subjectDetailsDAO: SubjectDetailsDAO,
     private val jetIQSubjectManager: JetIQSubjectManager,
@@ -139,7 +137,7 @@ private class SubjectRepoImpl @Inject constructor(
     private var taskIndex = 0
 
     override fun onRefresh() {
-        repoScope.launch(Dispatchers.IO) {
+        repoScope.launch {
             load()
         }
     }
@@ -209,10 +207,10 @@ private class SubjectRepoImpl @Inject constructor(
     }
 
     private fun processSubjectDetails(subjectDetailsWithTasks: SubjectDetailsWithTasks, id: Int) {
-        subjectDetailsDAO.insertDetails(subjectDetailsWithTasks.subjectDetailsDTO.copy(id = id))
+        subjectDetailsDAO.insertDetails(subjectDetailsWithTasks.subjectDetailsDTO.withID(id))
         subjectDetailsWithTasks.subjectTasks.forEach { task ->
             subjectDetailsDAO.insertTask(
-                task.copy(subjectDetailsId = id, id = taskIndex)
+                task.withIDs(subjectDetailsId = id, id = taskIndex)
             )
             taskIndex++
         }
@@ -243,7 +241,7 @@ private class SubjectRepoImpl @Inject constructor(
     }
 
     private fun processMarkbook(markbookSubjects: List<MarkbookSubjectDTO>) {
-        val current = subjectDetailsDAO.getMarkbookSubjectsList().map { it.copy(id = 0) }
+        val current = subjectDetailsDAO.getMarkbookSubjectsList().map { it.withID(id = 0) }
         markbookSubjects.forEach {
             if (!current.contains(it)) {
                 subjectDetailsDAO.insertMarkbookSubject(it)

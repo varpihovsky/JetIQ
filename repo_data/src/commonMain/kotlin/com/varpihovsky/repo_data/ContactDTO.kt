@@ -17,7 +17,11 @@ package com.varpihovsky.repo_data
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-expect class ContactDTO {
+expect class ContactDTO(
+    id: Int,
+    text: String,
+    type: String
+) {
     val id: Int
     val text: String
     val type: String

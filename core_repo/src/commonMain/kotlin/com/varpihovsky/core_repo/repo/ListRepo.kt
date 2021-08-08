@@ -23,7 +23,6 @@ import com.varpihovsky.core_network.managers.JetIQListManager
 import com.varpihovsky.repo_data.ContactDTO
 import com.varpihovsky.repo_data.ListItemDTO
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
 /**
  * Interface used for controlling contacts-related data. To add contact you should map response from
@@ -99,7 +98,7 @@ interface ListRepo {
     }
 }
 
-private class ListRepoImpl @Inject constructor(
+private class ListRepoImpl constructor(
     private val jetIQListManager: JetIQListManager,
     private val contactDAO: ContactDAO,
     exceptionEventManager: ExceptionEventManager

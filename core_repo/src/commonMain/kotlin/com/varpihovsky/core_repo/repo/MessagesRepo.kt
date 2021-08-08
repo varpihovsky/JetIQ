@@ -31,7 +31,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
-import javax.inject.Inject
 
 /**
  * Interface used for loading and sending messages.
@@ -80,7 +79,7 @@ interface MessagesRepo : Refreshable {
     }
 }
 
-private class MessagesRepoImpl @Inject constructor(
+private class MessagesRepoImpl constructor(
     private val jetIQMessageManager: JetIQMessageManager,
     private val messageDAO: MessageDAO,
     confidentialDAO: ConfidentialDAO,

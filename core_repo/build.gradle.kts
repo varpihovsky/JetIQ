@@ -1,15 +1,62 @@
+import org.jetbrains.compose.compose
+
 plugins {
+    kotlin("multiplatform")
     id(Plugins.android_library)
-    kotlin("android")
     kotlin("kapt")
-    id(Plugins.hilt)
 }
 
 group = Config.group
 version = Config.version
 
+kotlin {
+    android()
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(project(Modules.core))
+                implementation(project(Modules.core_network))
+                implementation(project(Modules.core_db))
+                implementation(project(Modules.repo_data))
+
+                implementation(compose.ui)
+                implementation(CommonDependencies.coroutines)
+                implementation(CommonDependencies.koin_core)
+            }
+        }
+        val commonTest by getting {
+            dependencies {
+                implementation(project(":core_test"))
+
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+
+                implementation(TestDependencies.mockk)
+            }
+        }
+        val androidMain by getting {
+            dependencies {
+                implementation(AndroidDependencies.preferences)
+                implementation(AndroidDependencies.koin_android)
+            }
+        }
+        val androidTest by getting {
+            dependencies {
+                implementation(project(":core_test"))
+
+                implementation(kotlin("test"))
+                implementation(TestDependencies.core_testing)
+                implementation(TestDependencies.coroutines_test)
+                implementation(TestDependencies.mockk)
+            }
+        }
+    }
+}
+
 android {
     compileSdkVersion(AndroidConfig.compile_sdk)
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdkVersion(AndroidConfig.min_sdk)
         targetSdkVersion(AndroidConfig.target_sdk)
@@ -27,33 +74,27 @@ android {
     }
 }
 
-dependencies {
-    implementation(core())
-    implementation(coreNetwork())
-    implementation(coreDB())
-    implementation(repoData())
-
-    //Dagger
-    implementation(AndroidDependencies.hilt)
-    kapt(AndroidDependencies.hilt_compiler)
-    kapt(AndroidDependencies.hilt_androidx_compiler)
-    implementation(AndroidDependencies.hilt_work)
-
-    implementation(AndroidDependencies.core)
-
-    // JUnit
-    testImplementation(TestDependencies.junit)
-    androidTestImplementation(TestDependencies.junit_ext)
-    androidTestImplementation(TestDependencies.compose_test)
-    testImplementation(TestDependencies.core_testing)
-    testImplementation(TestDependencies.coroutines_test)
-
-    // Preferences
-    implementation(AndroidDependencies.preferences)
-
-    // Mockk
-    testImplementation(TestDependencies.mockk)
-    androidTestImplementation(TestDependencies.mockk_android)
-
-    implementation(Compose.ui)
-}
+//dependencies {
+//    implementation(core())
+//    implementation(coreNetwork())
+//    implementation(coreDB())
+//    implementation(repoData())
+//
+//    implementation(AndroidDependencies.core)
+//
+//    // JUnit
+//    testImplementation(TestDependencies.junit)
+//    androidTestImplementation(TestDependencies.junit_ext)
+//    androidTestImplementation(TestDependencies.compose_test)
+//    testImplementation(TestDependencies.core_testing)
+//    testImplementation(TestDependencies.coroutines_test)
+//
+//    // Preferences
+//    implementation(AndroidDependencies.preferences)
+//
+//    // Mockk
+//    testImplementation(TestDependencies.mockk)
+//    androidTestImplementation(TestDependencies.mockk_android)
+//
+//    implementation(Compose.ui)
+//}

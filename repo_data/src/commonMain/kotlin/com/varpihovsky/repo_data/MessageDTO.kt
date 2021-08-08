@@ -17,7 +17,13 @@ package com.varpihovsky.repo_data
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-expect class MessageDTO {
+expect class MessageDTO(
+    body: String?,
+    idFrom: String,
+    isTeacher: String,
+    id: String,
+    time: String
+) {
     val body: String?
     val idFrom: String
     val isTeacher: String

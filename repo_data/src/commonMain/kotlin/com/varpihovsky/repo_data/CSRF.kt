@@ -17,6 +17,6 @@ package com.varpihovsky.repo_data
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-expect class CSRF {
+expect class CSRF(body: String) {
     val body: String
 }

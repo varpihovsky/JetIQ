@@ -25,13 +25,12 @@ import com.varpihovsky.repo_data.CSRF
 import com.varpihovsky.repo_data.MessageDTO
 import com.varpihovsky.repo_data.MessageToSendDTO
 import io.mockk.*
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.last
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class MessagesRepoTest : ConfidentRepoTest() {
     private lateinit var messagesRepo: MessagesRepo
@@ -54,14 +53,14 @@ class MessagesRepoTest : ConfidentRepoTest() {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `Test getMessages returns messages flow`() = runBlockingTest {
+    fun test_getMessages_returns_messages_flow() = runBlockingTest {
         every { messageDAO.getMessages() } returns flow { emit(TEST_MESSAGES) }
         assertEquals(TEST_MESSAGES, messagesRepo.getMessages().last())
     }
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `Test loadMessages adds messages to database`() = runBlockingTest {
+    fun test_loadMessages_adds_messages_to_database() = runBlockingTest {
         coEvery { jetIQMessageManager.getMessages(TEST_PROFILE.session!!) } returns Result.success(
             TEST_MESSAGES
         )
@@ -71,7 +70,7 @@ class MessagesRepoTest : ConfidentRepoTest() {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `Test sendMessage sends message`() = runBlockingTest {
+    fun test_sendMessage_sends_message() = runBlockingTest {
         coEvery { jetIQMessageManager.getCsrf(TEST_PROFILE.session!!) } returns Result.success(
             TEST_CSRF
         )
@@ -87,7 +86,7 @@ class MessagesRepoTest : ConfidentRepoTest() {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `Test refreshing toggles loading state`() = runBlockingTest {
+    fun test_refreshing_toggles_loading_state() = runBlockingTest {
         coEvery { jetIQMessageManager.getMessages(TEST_PROFILE.session!!) } answers object :
             Answer<Result<List<MessageDTO>>> {
             override fun answer(call: Call): Result<List<MessageDTO>> {

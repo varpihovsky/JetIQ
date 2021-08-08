@@ -26,7 +26,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 
-open class ConfidentRepoTest : CoroutineTest() {
+open class ConfidentRepoTest : RepoTest() {
     protected val confidentialDAO: ConfidentialDAO = mockk(relaxed = true)
     protected val profileDAO: ProfileDAO = mockk(relaxed = true)
 

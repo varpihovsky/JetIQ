@@ -1,5 +1,3 @@
-package com.varpihovsky.repo_data
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,33 +14,24 @@ package com.varpihovsky.repo_data
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_repo
 
-expect class ProfileDTO(
-    course_num: Int,
-    d_id: String,
-    d_name: String,
-    dob: String?,
-    email: String,
-    f_id: String,
-    gr_id: String,
-    gr_name: String,
-    id: String,
-    photo_url: String,
-    session: String?,
-    spec_id: String,
-    u_name: String
-) {
-    val course_num: Int
-    val d_id: String
-    val d_name: String
-    val dob: String?
-    val email: String
-    val f_id: String
-    val gr_id: String
-    val gr_name: String
-    val id: String
-    val photo_url: String
-    val session: String?
-    val spec_id: String
-    val u_name: String
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.preferencesDataStoreFile
+import com.varpihovsky.core_repo.repo.providePreferences
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.Module
+
+private const val USER_DATA_STORE = "UserDataSource"
+
+internal actual fun Module.providePlatform() {
+    factory { providePreferences(get(), get()) }
+
+    single {
+        PreferenceDataStoreFactory.create {
+            androidContext().preferencesDataStoreFile(
+                USER_DATA_STORE
+            )
+        }
+    }
 }

@@ -1,5 +1,3 @@
-package com.varpihovsky.core_repo.repo
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,6 +14,7 @@ package com.varpihovsky.core_repo.repo
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_repo.repo
 
 import android.util.Log
 import androidx.datastore.core.DataStore
@@ -24,47 +23,20 @@ import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.repo_data.ExpandButtonLocation
 import com.varpihovsky.repo_data.SubjectListType
 import com.varpihovsky.repo_data.UserPreferences
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 
-/**
- * Interface used for providing preferences data of current user.
- *
- * @author Vladyslav Podrezenko
- */
-interface UserPreferencesRepo {
-    /**
-     * Value that provides actual data about current user preferences.
-     */
-    val flow: Flow<UserPreferences>
+object SHOW_NOTIFICATION : UserPreferencesRepo.PreferencesKeys()
+object MARKBOOK_LIST_TYPE : UserPreferencesRepo.PreferencesKeys()
+object SUCCESS_LIST_TYPE : UserPreferencesRepo.PreferencesKeys()
+object EXPAND_BUTTON_LOCATION : UserPreferencesRepo.PreferencesKeys()
 
-    /**
-     * Method used to set one key of preference. Later changes will be provided in [flow].
-     */
-    suspend fun <T> set(key: Preferences.Key<T>, value: T)
-
-    /**
-     * Clears all preferences.
-     */
-    suspend fun clear()
-
-    object PreferencesKeys {
-        val SHOW_NOTIFICATIONS = booleanPreferencesKey("show_notifications")
-        val MARKBOOK_LIST_TYPE = stringPreferencesKey("markbook_list_type")
-        val SUCCESS_LIST_TYPE = stringPreferencesKey("success_list_type")
-        val EXPAND_BUTTON_LOCATION = stringPreferencesKey("expand_button_location")
-    }
-
-    companion object {
-        operator fun invoke(
-            dataStore: DataStore<Preferences>,
-            exceptionEventManager: ExceptionEventManager
-        ): UserPreferencesRepo = UserPreferencesRepoImpl(dataStore, exceptionEventManager)
-    }
-}
+internal fun providePreferences(
+    dataStore: DataStore<Preferences>,
+    exceptionEventManager: ExceptionEventManager
+): UserPreferencesRepo = UserPreferencesRepoImpl(dataStore, exceptionEventManager)
 
 private class UserPreferencesRepoImpl(
     private val dataStore: DataStore<Preferences>,
@@ -83,20 +55,14 @@ private class UserPreferencesRepoImpl(
     }
 
     private fun mapPreferences(preferences: Preferences): UserPreferences {
-        val showNotification =
-            preferences[UserPreferencesRepo.PreferencesKeys.SHOW_NOTIFICATIONS] ?: true
+        val showNotification = preferences[Keys.show_notification] ?: true
 
-        val markbookListType = SubjectListType.ofName(
-            preferences[UserPreferencesRepo.PreferencesKeys.MARKBOOK_LIST_TYPE]
-        )
+        val markbookListType = SubjectListType.ofName(preferences[Keys.markbook_list_type])
 
-        val successListType = SubjectListType.ofName(
-            preferences[UserPreferencesRepo.PreferencesKeys.SUCCESS_LIST_TYPE]
-        )
+        val successListType = SubjectListType.ofName(preferences[Keys.success_list_type])
 
-        val expandButtonLocation = ExpandButtonLocation.ofName(
-            preferences[UserPreferencesRepo.PreferencesKeys.EXPAND_BUTTON_LOCATION]
-        )
+        val expandButtonLocation =
+            ExpandButtonLocation.ofName(preferences[Keys.expand_button_location])
 
         return UserPreferences(
             showNotification,
@@ -106,11 +72,29 @@ private class UserPreferencesRepoImpl(
         )
     }
 
-    override suspend fun <T> set(key: Preferences.Key<T>, value: T) {
-        dataStore.edit { preferences -> preferences[key] = value }
+    override suspend fun <T> set(key: UserPreferencesRepo.PreferencesKeys, value: T) {
+        dataStore.edit { preferences ->
+            mapKey<T>(key)?.let { preferences[it] = value }
+        }
     }
+
+    private fun <T> mapKey(key: UserPreferencesRepo.PreferencesKeys): Preferences.Key<T>? =
+        when (key) {
+            SHOW_NOTIFICATION -> Keys.show_notification as Preferences.Key<T>
+            MARKBOOK_LIST_TYPE -> Keys.markbook_list_type as Preferences.Key<T>
+            SUCCESS_LIST_TYPE -> Keys.success_list_type as Preferences.Key<T>
+            EXPAND_BUTTON_LOCATION -> Keys.expand_button_location as Preferences.Key<T>
+            else -> null
+        }
 
     override suspend fun clear() {
         dataStore.edit { preferences -> preferences.clear() }
     }
+}
+
+private object Keys {
+    val show_notification = booleanPreferencesKey("show_notifications")
+    val markbook_list_type = stringPreferencesKey("markbook_list_type")
+    val success_list_type = stringPreferencesKey("success_list_type")
+    val expand_button_location = stringPreferencesKey("expand_button_location")
 }

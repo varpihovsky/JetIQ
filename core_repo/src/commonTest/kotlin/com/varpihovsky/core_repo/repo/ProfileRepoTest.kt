@@ -24,11 +24,10 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verifyAll
-import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class ProfileRepoTest : ConfidentRepoTest() {
     private lateinit var profileRepo: ProfileRepo
@@ -48,7 +47,7 @@ class ProfileRepoTest : ConfidentRepoTest() {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `Test login resets confidential and profile`() = runBlockingTest {
+    fun test_login_resets_confidential_and_profile() = runBlockingTest {
         coEvery { jetIQProfileManager.login(TEST_LOGIN, TEST_PASSWORD) } returns Result.success(
             TEST_PROFILE
         )
@@ -63,26 +62,26 @@ class ProfileRepoTest : ConfidentRepoTest() {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `Test logout`() = runBlockingTest {
+    fun test_logout() = runBlockingTest {
         profileRepo.logout()
         coVerify { jetIQProfileManager.logout(any()) }
     }
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `Test getProfile`() = runBlockingTest {
+    fun test_getProfile() = runBlockingTest {
         assertEquals(TEST_PROFILE, profileRepo.getProfile().last())
     }
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `Test getConfidential`() = runBlockingTest {
+    fun test_getConfidential() = runBlockingTest {
         assertEquals(TEST_CONFIDENTIAL, profileRepo.getConfidential().last())
     }
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `Test clear clears databases`() = runBlockingTest {
+    fun test_clear_clears_databases() = runBlockingTest {
         profileRepo.clear()
         verifyAll {
             profileDAO.delete()

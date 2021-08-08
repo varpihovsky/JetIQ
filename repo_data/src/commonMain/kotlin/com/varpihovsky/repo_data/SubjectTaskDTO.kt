@@ -17,10 +17,18 @@ package com.varpihovsky.repo_data
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-expect class SubjectTaskDTO {
+expect class SubjectTaskDTO(
+    id: Int = 0,
+    subjectDetailsId: Int,
+    legend: String,
+    num_mod: String,
+    points: Int
+) {
     val id: Int
     val subjectDetailsId: Int
     val legend: String
     val num_mod: String
     val points: Int
+
+    fun withIDs(id: Int, subjectDetailsId: Int): SubjectTaskDTO
 }

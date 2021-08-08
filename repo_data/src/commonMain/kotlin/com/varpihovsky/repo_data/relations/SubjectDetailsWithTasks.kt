@@ -20,7 +20,10 @@ package com.varpihovsky.repo_data.relations
 import com.varpihovsky.repo_data.SubjectDetailsDTO
 import com.varpihovsky.repo_data.SubjectTaskDTO
 
-expect class SubjectDetailsWithTasks {
+expect class SubjectDetailsWithTasks(
+    subjectDetailsDTO: SubjectDetailsDTO,
+    subjectTasks: List<SubjectTaskDTO>
+) {
     val subjectDetailsDTO: SubjectDetailsDTO
     val subjectTasks: List<SubjectTaskDTO>
 }

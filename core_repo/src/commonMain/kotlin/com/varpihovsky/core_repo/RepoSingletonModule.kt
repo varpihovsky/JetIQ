@@ -1,4 +1,4 @@
-package com.varpihovsky.repo_data
+package com.varpihovsky.core_repo
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
@@ -17,32 +17,23 @@ package com.varpihovsky.repo_data
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-expect class ProfileDTO(
-    course_num: Int,
-    d_id: String,
-    d_name: String,
-    dob: String?,
-    email: String,
-    f_id: String,
-    gr_id: String,
-    gr_name: String,
-    id: String,
-    photo_url: String,
-    session: String?,
-    spec_id: String,
-    u_name: String
-) {
-    val course_num: Int
-    val d_id: String
-    val d_name: String
-    val dob: String?
-    val email: String
-    val f_id: String
-    val gr_id: String
-    val gr_name: String
-    val id: String
-    val photo_url: String
-    val session: String?
-    val spec_id: String
-    val u_name: String
+import com.varpihovsky.core_repo.repo.ListRepo
+import com.varpihovsky.core_repo.repo.MessagesRepo
+import com.varpihovsky.core_repo.repo.ProfileRepo
+import com.varpihovsky.core_repo.repo.SubjectRepo
+import org.koin.core.module.Module
+import org.koin.dsl.module
+
+object RepoModule {
+
+    val module = module {
+        factory { MessagesRepo(get(), get(), get(), get(), get()) }
+        factory { ProfileRepo(get(), get(), get(), get()) }
+        factory { ListRepo(get(), get(), get()) }
+        factory { SubjectRepo(get(), get(), get(), get(), get(), get(), get()) }
+
+        providePlatform()
+    }
 }
+
+internal expect fun Module.providePlatform()

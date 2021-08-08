@@ -21,12 +21,12 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-actual data class SubjectDTO(
-    @PrimaryKey(autoGenerate = false) actual val card_id: String = "",
-    actual val f_control: String = "",
-    actual val scale: String = "",
-    actual val sem: String = "",
-    actual val subject: String = "",
-    actual val t_name: String = ""
+actual data class SubjectDTO actual constructor(
+    @PrimaryKey(autoGenerate = false) actual val card_id: String,
+    actual val f_control: String,
+    actual val scale: String,
+    actual val sem: String,
+    actual val subject: String,
+    actual val t_name: String
 )
 

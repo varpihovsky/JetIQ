@@ -20,21 +20,20 @@ package com.varpihovsky.core_repo.repo
 import com.varpihovsky.core_db.dao.ContactDAO
 import com.varpihovsky.core_network.managers.JetIQListManager
 import com.varpihovsky.core_network.result.Result
-import com.varpihovsky.core_repo.testCore.CoroutineTest
+import com.varpihovsky.core_repo.testCore.RepoTest
 import com.varpihovsky.repo_data.ContactDTO
 import com.varpihovsky.repo_data.ListItemDTO
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.last
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-class ListRepoTest : CoroutineTest() {
+class ListRepoTest : RepoTest() {
     private lateinit var listRepo: ListRepo
 
     private val jetIQListManager: JetIQListManager = mockk(relaxed = true)
@@ -49,21 +48,21 @@ class ListRepoTest : CoroutineTest() {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `Test getFaculties returns faculties`() = runBlockingTest {
+    fun test_getFaculties_returns_faculties() = runBlockingTest {
         coEvery { jetIQListManager.getFaculties() } returns Result.success(TEST_FACULTIES)
         assertEquals(TEST_FACULTIES, listRepo.getFaculties())
     }
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `Test getGroupByFaculty returns groups by faculty id`() = runBlockingTest {
+    fun test_getGroupByFaculty_returns_groups_by_faculty_id() = runBlockingTest {
         coEvery { jetIQListManager.getGroupsByFaculty(TEST_ID) } returns Result.success(TEST_GROUPS)
         assertEquals(TEST_GROUPS, listRepo.getGroupByFaculty(TEST_ID))
     }
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `Test getStudentsByGroup returns students by group id`() = runBlockingTest {
+    fun test_getStudentsByGroup_returns_students_by_group_id() = runBlockingTest {
         coEvery { jetIQListManager.getStudentsByGroup(TEST_ID) } returns Result.success(
             TEST_STUDENTS
         )
@@ -72,7 +71,7 @@ class ListRepoTest : CoroutineTest() {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `Test getTeachersByQuery returns teachers by query`() = runBlockingTest {
+    fun test_getTeachersByQuery_returns_teachers_by_query() = runBlockingTest {
         coEvery { jetIQListManager.getTeacherByQuery(TEST_QUERY) } returns Result.success(
             TEST_TEACHERS
         )
@@ -81,7 +80,7 @@ class ListRepoTest : CoroutineTest() {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `Test getContacts returns contacts flow`() = runBlockingTest {
+    fun test_getContacts_returns_contacts_flow() = runBlockingTest {
         every { contactDAO.getContacts() } returns flow {
             emit(TEST_CONTACTS)
         }
@@ -89,19 +88,19 @@ class ListRepoTest : CoroutineTest() {
     }
 
     @Test
-    fun `Test addContact insert contact inside database`() {
+    fun test_addContact_insert_contact_inside_database() {
         listRepo.addContact(TEST_CONTACTS.first())
         verify { contactDAO.insert(TEST_CONTACTS.first()) }
     }
 
     @Test
-    fun `Test removeContact deletes contact from database`() {
+    fun test_removeContact_deletes_contact_from_database() {
         listRepo.removeContact(TEST_CONTACTS.first())
         verify { contactDAO.delete(TEST_CONTACTS.first()) }
     }
 
     @Test
-    fun `Test clear clears database`() {
+    fun test_clear_clears_database() {
         listRepo.clear()
         verify { contactDAO.clear() }
     }

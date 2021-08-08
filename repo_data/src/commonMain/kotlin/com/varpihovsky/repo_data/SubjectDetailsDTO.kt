@@ -17,7 +17,20 @@ package com.varpihovsky.repo_data
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-expect class SubjectDetailsDTO {
+expect class SubjectDetailsDTO(
+    id: Int = 0,
+    ects: String = "",
+    for_pres1: Int = 0,
+    for_pres2: Int = 0,
+    h_pres1: Int = 0,
+    h_pres2: Int = 0,
+    mark1: Int = 0,
+    mark2: Int = 0,
+    sum1: Int = 0,
+    sum2: Int = 0,
+    total: Int = 0,
+    total_prev: Int = 0,
+) {
     val id: Int
     val ects: String
     val for_pres1: Int
@@ -30,5 +43,6 @@ expect class SubjectDetailsDTO {
     val sum2: Int
     val total: Int
     val total_prev: Int
-}
 
+    fun withID(id: Int): SubjectDetailsDTO
+}

@@ -17,7 +17,19 @@ package com.varpihovsky.repo_data
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-expect class MarkbookSubjectDTO {
+expect class MarkbookSubjectDTO(
+    id: Int = 0,
+    credits: String = "",
+    date: String = "",
+    ects: String = "",
+    form: String = "",
+    hours: String = "",
+    mark: String = "",
+    subj_name: String = "",
+    teacher: String = "",
+    total: Int = 0,
+    semester: Int = 0
+) {
     val id: Int
     val credits: String
     val date: String
@@ -29,5 +41,7 @@ expect class MarkbookSubjectDTO {
     val teacher: String
     val total: Int
     val semester: Int
+
+    fun withID(id: Int): MarkbookSubjectDTO
 }
 

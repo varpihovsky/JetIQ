@@ -29,9 +29,8 @@ import com.varpihovsky.repo_data.SubjectTaskDTO
 import com.varpihovsky.repo_data.relations.SubjectDetailsWithTasks
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Ignore
-import org.junit.Test
+import kotlin.test.Ignore
+import kotlin.test.Test
 
 class SubjectRepoTest : ConfidentRepoTest() {
     private lateinit var subjectRepo: SubjectRepo
@@ -78,7 +77,7 @@ class SubjectRepoTest : ConfidentRepoTest() {
     @Ignore
     @ExperimentalCoroutinesApi
     @Test
-    fun `Test loadSuccessJournal adds subjects to database`() = runBlockingTest {
+    fun test_loadSuccessJournal_adds_subjects_to_database() = runBlockingTest {
         subjectRepo.load()
         coVerify { subjectDAO.insert(TEST_SUBJECTS.first()) }
     }
@@ -86,7 +85,7 @@ class SubjectRepoTest : ConfidentRepoTest() {
     @Ignore
     @ExperimentalCoroutinesApi
     @Test
-    fun `Test loadSuccessJournal adds subjectDetails to database`() = runBlockingTest {
+    fun test_loadSuccessJournal_adds_subjectDetails_to_database() = runBlockingTest {
         subjectRepo.load()
         coVerifyAll {
             subjectDetailsDAO.insertDetails(TEST_SUBJECT_DETAILS.subjectDetailsDTO)
@@ -97,7 +96,7 @@ class SubjectRepoTest : ConfidentRepoTest() {
     @Ignore
     @ExperimentalCoroutinesApi
     @Test
-    fun `Test loadMarkbookSubjects adds markbook subject to database`() = runBlockingTest {
+    fun test_loadMarkbookSubjects_adds_markbook_subject_to_database() = runBlockingTest {
         every { subjectDAO.getAllSubjectsList() } returns TEST_SUBJECTS
         subjectRepo.load()
         coVerify { subjectDetailsDAO.insertMarkbookSubject(TEST_MARKBOOK.first()) }

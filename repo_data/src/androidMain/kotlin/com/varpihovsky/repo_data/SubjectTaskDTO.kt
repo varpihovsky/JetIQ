@@ -21,10 +21,15 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-actual data class SubjectTaskDTO(
-    @PrimaryKey(autoGenerate = false) actual val id: Int = 0,
+actual data class SubjectTaskDTO actual constructor(
+    @PrimaryKey(autoGenerate = false) actual val id: Int,
     actual val subjectDetailsId: Int,
     actual val legend: String,
     actual val num_mod: String,
     actual val points: Int,
-)
+) {
+    actual fun withIDs(
+        id: Int,
+        subjectDetailsId: Int
+    ): SubjectTaskDTO = SubjectTaskDTO(id, subjectDetailsId, legend, num_mod, points)
+}

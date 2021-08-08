@@ -27,7 +27,6 @@ import com.varpihovsky.repo_data.Confidential
 import com.varpihovsky.repo_data.ProfileDTO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.last
-import javax.inject.Inject
 
 /**
  * Interface which used for authorization on server and saving all user-related data.
@@ -88,7 +87,7 @@ interface ProfileRepo {
     }
 }
 
-private class ProfileRepoImpl @Inject constructor(
+private class ProfileRepoImpl constructor(
     private val profileDAO: ProfileDAO,
     private val confidentialDAO: ConfidentialDAO,
     private val jetIQProfileManager: JetIQProfileManager,

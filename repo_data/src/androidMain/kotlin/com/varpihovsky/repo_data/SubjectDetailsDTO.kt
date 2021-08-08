@@ -21,18 +21,33 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-actual data class SubjectDetailsDTO(
-    @PrimaryKey(autoGenerate = false) actual val id: Int = 0,
-    actual val ects: String = "",
-    actual val for_pres1: Int = 0,
-    actual val for_pres2: Int = 0,
-    actual val h_pres1: Int = 0,
-    actual val h_pres2: Int = 0,
-    actual val mark1: Int = 0,
-    actual val mark2: Int = 0,
-    actual val sum1: Int = 0,
-    actual val sum2: Int = 0,
-    actual val total: Int = 0,
-    actual val total_prev: Int = 0
-)
+actual data class SubjectDetailsDTO actual constructor(
+    @PrimaryKey(autoGenerate = false) actual val id: Int,
+    actual val ects: String,
+    actual val for_pres1: Int,
+    actual val for_pres2: Int,
+    actual val h_pres1: Int,
+    actual val h_pres2: Int,
+    actual val mark1: Int,
+    actual val mark2: Int,
+    actual val sum1: Int,
+    actual val sum2: Int,
+    actual val total: Int,
+    actual val total_prev: Int
+) {
+    actual fun withID(id: Int) = SubjectDetailsDTO(
+        id,
+        ects,
+        for_pres1,
+        for_pres2,
+        h_pres1,
+        h_pres2,
+        mark1,
+        mark2,
+        sum1,
+        sum2,
+        total,
+        total_prev
+    )
+}
 

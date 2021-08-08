@@ -17,7 +17,14 @@ package com.varpihovsky.repo_data
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-expect class SubjectDTO {
+expect class SubjectDTO(
+    card_id: String,
+    f_control: String,
+    scale: String,
+    sem: String,
+    subject: String,
+    t_name: String,
+) {
     val card_id: String
     val f_control: String
     val scale: String
