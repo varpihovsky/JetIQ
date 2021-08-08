@@ -17,21 +17,15 @@ package com.varpihovsky.core_nav.dsl
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import android.app.Activity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import com.varpihovsky.core.eventBus.EventBus
 import com.varpihovsky.core_nav.main.NavigationController
-import com.varpihovsky.core_nav.main.NavigationEntry
 import com.varpihovsky.core_nav.main.NavigationOperation
 import soup.compose.material.motion.MaterialMotion
 
@@ -64,32 +58,32 @@ fun navigationController(
  *
  * @return [NavigationController]
  */
-@ExperimentalAnimationApi
-@Composable
-fun rememberNavigationController(
-    eventBus: EventBus,
-    defaultRoute: String,
-    block: NavigationControllerBuilder.() -> Unit
-): NavigationController {
-    val controller = remember {
-        NavigationControllerBuilder(eventBus, defaultRoute).apply(block).build()
-    }
-
-    return rememberSaveable(saver = navigationControllerSaver(eventBus, controller.entries)) {
-        NavigationControllerBuilder(eventBus, defaultRoute).apply(block).build()
-    }
-}
-
-@ExperimentalAnimationApi
-@Composable
-private fun navigationControllerSaver(
-    eventBus: EventBus,
-    entries: List<NavigationEntry>
-): Saver<NavigationController, *> =
-    Saver(
-        save = { it.saveState() },
-        restore = { NavigationController(eventBus, entries, "").apply { restoreState(it) } }
-    )
+//@ExperimentalAnimationApi
+//@Composable
+//fun rememberNavigationController(
+//    eventBus: EventBus,
+//    defaultRoute: String,
+//    block: NavigationControllerBuilder.() -> Unit
+//): NavigationController {
+//    val controller = remember {
+//        NavigationControllerBuilder(eventBus, defaultRoute).apply(block).build()
+//    }
+//
+//    return rememberSaveable(saver = navigationControllerSaver(eventBus, controller.entries)) {
+//        NavigationControllerBuilder(eventBus, defaultRoute).apply(block).build()
+//    }
+//}
+//
+//@ExperimentalAnimationApi
+//@Composable
+//private fun navigationControllerSaver(
+//    eventBus: EventBus,
+//    entries: List<NavigationEntry>
+//): Saver<NavigationController, *> =
+//    Saver(
+//        save = { it.saveState() },
+//        restore = { NavigationController(eventBus, entries, "").apply { restoreState(it) } }
+//    )
 
 /**
  * Receives events from navigation controller and shows current composable.
@@ -110,7 +104,7 @@ fun DisplayNavigation(
 
     when (current) {
         is NavigationOperation.Finish -> current.process {
-            (LocalContext.current as Activity).finish()
+            finish()
         }
 
         is NavigationOperation.Navigate -> screen = current
@@ -134,3 +128,6 @@ fun DisplayNavigation(
         }
     )
 }
+
+@Composable
+internal expect fun finish()

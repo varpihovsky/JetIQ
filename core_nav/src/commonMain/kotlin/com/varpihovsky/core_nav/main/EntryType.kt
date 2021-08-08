@@ -1,5 +1,3 @@
-package com.varpihovsky.core_nav.navigation
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,11 +14,18 @@ package com.varpihovsky.core_nav.navigation
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_nav.main
 
-object BottomNavigationItemFactory {
-    fun create(navigationCommand: NavigationCommand) = when (navigationCommand) {
-        NavigationDirections.profile -> BottomNavigationItem.ProfileItem
-        NavigationDirections.messages -> BottomNavigationItem.MessagesItem
-        else -> null
-    }
+/**
+ * Type of current entry. From entry type depends behavior of [NavigationController.manage] command.
+ * When entry is Main it deletes current navigation stack and pushes it to the top.
+ * Wen entry is SubMenu it pushes it to the top of the stack without deleting.
+ *
+ * @see [NavigationController]
+ *
+ * @author Vladyslav Podrezenko
+ */
+expect sealed class EntryType {
+    object Main : EntryType
+    object SubMenu : EntryType
 }

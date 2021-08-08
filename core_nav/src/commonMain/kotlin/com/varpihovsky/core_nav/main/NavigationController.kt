@@ -17,38 +17,36 @@ package com.varpihovsky.core_nav.main
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import android.os.Bundle
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.core.os.bundleOf
 import com.varpihovsky.core.eventBus.EventBus
-import com.varpihovsky.core.log.Logger.d
-import com.varpihovsky.core.log.Logger.v
+import com.varpihovsky.core.log.d
 import com.varpihovsky.core.log.loggedStack
+import com.varpihovsky.core.log.v
+import com.varpihovsky.core.util.Stack
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import soup.compose.material.motion.MotionSpec
 import soup.compose.material.motion.with
-import java.util.*
 
 /**
  * Class which is used to control navigation stack. Designed to work only with composable functions.
  *
  * @author Vladyslav Podrezenko
  */
-class NavigationController(
-    private val eventBus: EventBus,
+open class NavigationController(
+    protected val eventBus: EventBus,
     internal var entries: List<NavigationEntry>,
-    private var defaultRoute: String
+    protected var defaultRoute: String
 ) {
     internal val operation = eventBus.bus
         .mapNotNull { it as? List<NavigationEntry> }
         .map { backStackToOperation(it) }
 
-    private val backStack: Deque<NavigationEntry> = loggedStack()
+    protected val backStack: Stack<NavigationEntry> = loggedStack()
 
-    private var backStackSize = 1
+    protected var backStackSize = 1
 
-    private var previousEntry: NavigationEntry? = null
+    protected var previousEntry: NavigationEntry? = null
 
     private var callback: ((NavigationEntry) -> Unit)? = null
 
@@ -157,39 +155,6 @@ class NavigationController(
 
     fun getCurrentDestination() = backStack.last().route
 
-    internal fun saveState(): Bundle {
-        return bundleOf(
-            DEFAULT_ROUTE_KEY to defaultRoute,
-            BACKSTACK_KEY to backStack.map { it.route }.toTypedArray()
-        ).also {
-            d("Saving state...\nSaved: $it")
-        }
-    }
-
-    internal fun restoreState(bundle: Bundle?) {
-        bundle?.apply {
-            d("Restoring state...\nRestored: $this")
-            getString(DEFAULT_ROUTE_KEY)?.let {
-                defaultRoute = it
-            }
-            getStringArray(BACKSTACK_KEY)?.let { saved ->
-                mapRoutesToEntries(saved as Array<String>).forEach { backStack.push(it) }
-                previousEntry =
-                    if (backStack.size >= 2) backStack.elementAt(backStack.size - 2) else null
-                backStackSize = backStack.size
-                eventBus.push(backStack.toList())
-            }
-        }
-    }
-
-    private fun mapRoutesToEntries(savedStack: Array<String>): List<NavigationEntry> {
-        return savedStack
-            .mapNotNull { route -> entries.find { it.route == route } }
-            .toList().also {
-                d("Mapped routes: $savedStack to $it")
-            }
-    }
-
     private fun getDefault() = entries.find { it.route == defaultRoute }
 
     private fun resetBackStack(entry: NavigationEntry) {
@@ -207,7 +172,7 @@ class NavigationController(
     }
 
     companion object {
-        private const val DEFAULT_ROUTE_KEY = "route"
-        private const val BACKSTACK_KEY = "backstack"
+        const val DEFAULT_ROUTE_KEY = "route"
+        const val BACKSTACK_KEY = "backstack"
     }
 }

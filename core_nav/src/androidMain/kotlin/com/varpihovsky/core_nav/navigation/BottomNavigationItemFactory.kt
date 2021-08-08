@@ -1,4 +1,4 @@
-package com.varpihovsky.core_nav
+package com.varpihovsky.core_nav.navigation
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
@@ -17,22 +17,10 @@ package com.varpihovsky.core_nav
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import com.varpihovsky.core_nav.main.JetNav
-import com.varpihovsky.core_nav.main.NavigationControllerStorage
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
-
-@Module
-@InstallIn(SingletonComponent::class)
-object NavigationModule {
-    @Provides
-    @Singleton
-    fun provideNavigationManager() = JetNav.getController()
-
-    @Provides
-    @Singleton
-    fun provideStorage() = NavigationControllerStorage()
+object BottomNavigationItemFactory {
+    fun create(navigationCommand: NavigationCommand) = when (navigationCommand) {
+        NavigationDirections.profile -> com.varpihovsky.core_nav.navigation.BottomNavigationItem.ProfileItem
+        NavigationDirections.messages -> com.varpihovsky.core_nav.navigation.BottomNavigationItem.MessagesItem
+        else -> null
+    }
 }

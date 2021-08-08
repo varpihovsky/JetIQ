@@ -1,4 +1,4 @@
-package com.varpihovsky.core_nav.main
+package com.varpihovsky.core_nav
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
@@ -17,22 +17,14 @@ package com.varpihovsky.core_nav.main
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import com.varpihovsky.core_nav.main.JetNav
+import com.varpihovsky.core_nav.main.NavigationControllerStorage
+import org.koin.dsl.module
 
-/**
- * Type of current entry. From entry type depends behavior of [NavigationController.manage] command.
- * When entry is Main it deletes current navigation stack and pushes it to the top.
- * Wen entry is SubMenu it pushes it to the top of the stack without deleting.
- *
- * @see [NavigationController]
- *
- * @author Vladyslav Podrezenko
- */
-sealed class EntryType {
-    @Parcelize
-    object Main : EntryType(), Parcelable
+object NavigationModule {
+    val module = module {
+        factory { JetNav.getController() }
 
-    @Parcelize
-    object SubMenu : EntryType(), Parcelable
+        single { NavigationControllerStorage() }
+    }
 }
