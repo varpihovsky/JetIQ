@@ -18,10 +18,8 @@ kotlin {
             dependencies {
                 implementation(CommonDependencies.koin_core)
 
-                // Architecture components
                 implementation(compose.runtime)
 
-                // Compose
                 implementation(compose.ui)
                 implementation(compose.foundation)
 
@@ -41,7 +39,14 @@ kotlin {
                 implementation(TestDependencies.mockk)
             }
         }
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies {
+                implementation(AndroidDependencies.koin_android)
+
+                implementation(Compose.lifecycle_runtime)
+                implementation(Compose.view_model_compose)
+            }
+        }
     }
 }
 
