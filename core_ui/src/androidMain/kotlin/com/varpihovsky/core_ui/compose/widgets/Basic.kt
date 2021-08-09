@@ -20,8 +20,12 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Icon
+import androidx.compose.material.IconToggleButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import com.varpihovsky.core_ui.R
 
 @Composable
 actual fun DropDownMenu(
@@ -48,4 +52,27 @@ actual fun DropDownMenuItem(
         onClick = onClick,
         content = content
     )
+}
+
+@Composable
+actual fun PasswordFieldIcon(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+) {
+    IconToggleButton(
+        checked = checked,
+        onCheckedChange = onCheckedChange
+    ) {
+        if (checked) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_baseline_remove_red_eye_24),
+                contentDescription = null
+            )
+        } else {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_baseline_password_24),
+                contentDescription = null
+            )
+        }
+    }
 }

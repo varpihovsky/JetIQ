@@ -77,6 +77,12 @@ fun IconButton(
 }
 
 @Composable
+expect fun PasswordFieldIcon(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+)
+
+@Composable
 expect fun DropDownMenu(
     modifier: Modifier = Modifier,
     expanded: Boolean,
