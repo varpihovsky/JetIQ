@@ -31,17 +31,15 @@ kotlin {
 
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
-                // JUnit
-                //implementation(TestDependencies.junit)
-                //implementation(TestDependencies.coroutines_test)
 
-                // Mockk
                 implementation(TestDependencies.mockk)
             }
         }
         val androidMain by getting {
             dependencies {
                 implementation(AndroidDependencies.koin_android)
+
+                implementation(AndroidDependencies.lifecycle_view_model)
 
                 implementation(Compose.lifecycle_runtime)
                 implementation(Compose.view_model_compose)

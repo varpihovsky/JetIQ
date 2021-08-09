@@ -16,4 +16,11 @@
  */
 package com.varpihovsky.core.lifecycle
 
-actual abstract class ViewModel : androidx.lifecycle.ViewModel()
+import kotlinx.coroutines.CoroutineScope
+import androidx.lifecycle.ViewModel as VM
+import androidx.lifecycle.viewModelScope as vmScope
+
+actual abstract class ViewModel : VM()
+
+actual val ViewModel.viewModelScope: CoroutineScope
+    get() = vmScope

@@ -16,4 +16,8 @@
  */
 package com.varpihovsky.core.lifecycle
 
-expect abstract class ViewModel
+import kotlinx.coroutines.CoroutineScope
+
+expect abstract class ViewModel()
+
+expect val ViewModel.viewModelScope: CoroutineScope
