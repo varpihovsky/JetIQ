@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.ui.compose
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,14 +14,12 @@ package com.varpihovsky.jetiq.ui.compose
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_ui.compose
 
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat.startActivity
 import com.varpihovsky.core.exceptions.ExceptionEventManager
+import com.varpihovsky.core_ui.compose.foundation.ErrorDialog
 
 @Composable
 fun ExceptionProcessor(exceptionEventManager: ExceptionEventManager) {
@@ -51,6 +47,4 @@ const val EMPTY_EXCEPTION_ID = "EMPTY"
 const val ON_EMPTY_EXCEPTION_MESSAGE = "Невідома помилка!"
 
 @Composable
-fun OpenPage(url: String) {
-    startActivity(LocalContext.current, Intent(Intent.ACTION_VIEW, Uri.parse(url)), null)
-}
+expect fun OpenPage(url: String)

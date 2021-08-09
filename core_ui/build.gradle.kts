@@ -16,21 +16,35 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(Modules.core))
+                implementation(project(Modules.ui_data))
+                implementation(project(Modules.repo_data))
 
                 implementation(compose.ui)
+                implementation(compose.foundation)
+                implementation(compose.material)
+                implementation(compose.runtime)
+                implementation(Compose.material_motion)
+
+                implementation(CommonDependencies.kamel)
+
                 implementation(CommonDependencies.coroutines)
                 implementation(CommonDependencies.koin_core)
+            }
+        }
+        val androidMain by getting {
+            dependencies {
+                implementation(AndroidDependencies.app_compat)
             }
         }
     }
 }
 
 android {
-    compileSdkVersion(AndroidConfig.compile_sdk)
+    compileSdk = AndroidConfig.compile_sdk
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdkVersion(AndroidConfig.min_sdk)
-        targetSdkVersion(AndroidConfig.target_sdk)
+        minSdk = AndroidConfig.min_sdk
+        targetSdk = AndroidConfig.target_sdk
 
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -44,28 +58,3 @@ android {
         }
     }
 }
-
-//dependencies {
-//    implementation(core())
-//    implementation(coreNetwork())
-//    implementation(coreDB())
-//    implementation(repoData())
-//
-//    implementation(AndroidDependencies.core)
-//
-//    // JUnit
-//    testImplementation(TestDependencies.junit)
-//    androidTestImplementation(TestDependencies.junit_ext)
-//    androidTestImplementation(TestDependencies.compose_test)
-//    testImplementation(TestDependencies.core_testing)
-//    testImplementation(TestDependencies.coroutines_test)
-//
-//    // Preferences
-//    implementation(AndroidDependencies.preferences)
-//
-//    // Mockk
-//    testImplementation(TestDependencies.mockk)
-//    androidTestImplementation(TestDependencies.mockk_android)
-//
-//    implementation(Compose.ui)
-//}

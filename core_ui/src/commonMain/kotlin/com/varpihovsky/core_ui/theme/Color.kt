@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.ui
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,15 +14,11 @@ package com.varpihovsky.jetiq.ui
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_ui.theme
 
-const val loremIpsumTitle = "Lorem ipsum"
+import androidx.compose.ui.graphics.Color
 
-const val loremIpsum1Paragraph =
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt " +
-            "ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation " +
-            "ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor " +
-            "in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." +
-            " Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt" +
-            " mollit anim id est laborum."
-
-const val sampleDate = "10.03.2003 9:00"
+val Purple200 = Color(0xFFBB86FC)
+val Purple500 = Color(0xFF6200EE)
+val Purple700 = Color(0xFF3700B3)
+val Teal200 = Color(0xFF03DAC5)

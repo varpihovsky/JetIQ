@@ -41,11 +41,12 @@ object Versions {
 
     const val activity_compose_version = "1.3.1"
 
-
     const val junit_version = "4.13.2"
     const val junit_ext_version = "1.1.3"
     const val coroutines_testing_version = "1.5.1"
     const val core_testing_version = "2.1.0"
+
+    const val kamel_version = "0.2.2"
 }
 
 object Config {
@@ -90,6 +91,8 @@ object Compose {
     const val foundation_layout =
         "androidx.compose.foundation:foundation-layout:${Versions.compose_version}"
 
+    const val koin_compose = "io.insert-koin:koin-androidx-compose:${Versions.koin_version}"
+
     const val compiler = "androidx.compose.compiler:compiler:${Versions.compose_version}"
 
     const val view_model_compose =
@@ -110,6 +113,7 @@ object Dependencies {
 object CommonDependencies {
     const val koin_core = "io.insert-koin:koin-core:${Versions.koin_version}"
     const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1"
+    const val kamel = "com.alialbaali.kamel:kamel-image:${Versions.kamel_version}"
 }
 
 object AndroidDependencies {

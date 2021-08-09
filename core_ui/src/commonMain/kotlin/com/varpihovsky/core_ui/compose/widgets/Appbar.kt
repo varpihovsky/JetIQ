@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.ui.compose
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,6 +14,7 @@ package com.varpihovsky.jetiq.ui.compose
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_ui.compose.widgets
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.Row
@@ -86,4 +85,15 @@ fun Appbar(appbarManager: AppbarManager) {
             }
         )
     }
+}
+
+@Composable
+fun BasicAppBar(
+    title: String,
+    onBackClick: () -> Unit
+) {
+    TopAppBar(
+        title = { Text(text = title) },
+        navigationIcon = { BackIconButton(onClick = onBackClick) }
+    )
 }

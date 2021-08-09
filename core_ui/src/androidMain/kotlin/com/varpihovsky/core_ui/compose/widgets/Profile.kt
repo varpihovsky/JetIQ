@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.ui.theme
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,10 +14,24 @@ package com.varpihovsky.jetiq.ui.theme
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_ui.compose.widgets
 
-import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import com.varpihovsky.core_ui.R
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+@Composable
+internal actual fun AvatarPlaceholder(placeholderEnabled: Boolean) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (placeholderEnabled) {
+            Image(
+                painter = painterResource(R.drawable.ic_baseline_person_24),
+                contentDescription = null
+            )
+        }
+    }
+}
