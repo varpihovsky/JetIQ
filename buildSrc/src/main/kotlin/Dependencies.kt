@@ -122,6 +122,7 @@ object AndroidDependencies {
     const val material = "com.google.android.material:material:${Versions.material_version}"
 
     const val koin_android = "io.insert-koin:koin-android:${Versions.koin_version}"
+    const val koin_view_model = "io.insert-koin:koin-android-viewmodel:${Versions.koin_version}"
 
     const val room = "androidx.room:room-ktx:${Versions.room_version}"
     const val room_runtime = "androidx.room:room-runtime:${Versions.room_version}"
@@ -139,6 +140,8 @@ object AndroidDependencies {
 
     const val swipe_refresh =
         "com.google.accompanist:accompanist-swiperefresh:${Versions.accompanist_version}"
+
+    const val lifecycle_view_model = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
 }
 
 object TestDependencies {

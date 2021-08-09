@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.screens
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,16 +14,16 @@ package com.varpihovsky.jetiq.screens
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_lifecycle
 
 import android.util.Log
-import androidx.annotation.CallSuper
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.appbar.AppbarCommand
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
+import com.varpihovsky.core.lifecycle.ViewModel
+import com.varpihovsky.core.lifecycle.viewModelScope
 import com.varpihovsky.core.util.ThreadSafeMutableState
 import com.varpihovsky.core_nav.main.NavigationController
 
@@ -56,7 +54,6 @@ abstract class JetIQViewModel(
         appbarManager.manage(AppbarCommand.Empty)
     }
 
-    @CallSuper
     open fun onBackNavButtonClick() {
         navigationController.onBack()
     }
