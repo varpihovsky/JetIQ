@@ -18,6 +18,10 @@ package com.varpihovsky.core.di
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import com.varpihovsky.core.lifecycle.ViewModel
+import org.koin.core.definition.Definition
+import org.koin.core.instance.InstanceFactory
+import org.koin.core.module.Module
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.mp.KoinPlatformTools
@@ -36,3 +40,14 @@ inline fun <reified T : Any> get(
     // GlobalContext in koin sources and defaultContext are same.
     KoinPlatformTools.defaultContext().get().get()
 }
+
+inline fun <reified T : ViewModel> Module.viewModel(
+    qualifier: Qualifier? = null,
+    noinline definition: Definition<T>
+): Pair<Module, InstanceFactory<T>> = factory(qualifier, definition)
+
+@Composable
+expect inline fun <reified T : ViewModel> getViewModel(
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null,
+): T
