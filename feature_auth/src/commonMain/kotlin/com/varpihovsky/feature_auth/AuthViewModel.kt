@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.screens.auth
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,29 +14,26 @@ package com.varpihovsky.jetiq.screens.auth
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.feature_auth
 
 import androidx.compose.runtime.State
-import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.exceptions.Values
+import com.varpihovsky.core.lifecycle.viewModelScope
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core.util.Validator
+import com.varpihovsky.core_lifecycle.JetIQViewModel
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.ProfileRepo
-import com.varpihovsky.jetiq.screens.JetIQViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-import javax.inject.Named
 
-@HiltViewModel
-class AuthViewModel @Inject constructor(
+class AuthViewModel(
     private val dispatchers: CoroutineDispatchers,
     private val profileRepo: ProfileRepo,
-    @Named("login_checker") private val loginValidator: Validator<String>,
-    @Named("password_checker") private val passwordValidator: Validator<String>,
+    private val loginValidator: Validator<String>,
+    private val passwordValidator: Validator<String>,
     private val navigationController: NavigationController,
     appbarManager: AppbarManager,
     exceptionEventManager: ExceptionEventManager,

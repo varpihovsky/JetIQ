@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.screens.auth
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,6 +14,7 @@ package com.varpihovsky.jetiq.screens.auth
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.feature_auth
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,16 +23,15 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.varpihovsky.jetiq.R
-import com.varpihovsky.jetiq.ui.compose.CenterLayout
-import com.varpihovsky.jetiq.ui.compose.CenterLayoutItem
+import com.varpihovsky.core_ui.compose.foundation.CenterLayout
+import com.varpihovsky.core_ui.compose.foundation.CenterLayoutItem
+import com.varpihovsky.core_ui.compose.widgets.PasswordFieldIcon
 
 @Composable
 fun Auth(
@@ -54,7 +52,7 @@ fun Auth(
 }
 
 @Composable
-fun Auth(
+private fun Auth(
     loginValue: String,
     loginOnChange: (String) -> Unit,
     passwordValue: String,
@@ -79,7 +77,7 @@ fun Auth(
             val visualTransformation = if (passwordHidden) {
                 VisualTransformation { text ->
                     TransformedText(
-                        AnnotatedString(String(text.map { '*' }.toCharArray())),
+                        AnnotatedString(text.map { '*' }.toCharArray().concatToString()),
                         OffsetMapping.Identity
                     )
                 }
@@ -105,29 +103,6 @@ fun Auth(
                 onClick = onLoginClick,
                 text = "Увійти",
                 progressShown = progressShown
-            )
-        }
-    }
-}
-
-@Composable
-fun PasswordFieldIcon(
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-) {
-    IconToggleButton(
-        checked = checked,
-        onCheckedChange = onCheckedChange
-    ) {
-        if (checked) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_baseline_remove_red_eye_24),
-                contentDescription = null
-            )
-        } else {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_baseline_password_24),
-                contentDescription = null
             )
         }
     }
