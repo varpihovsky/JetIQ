@@ -21,7 +21,7 @@ import com.varpihovsky.repo_data.SubjectDetailsDTO
 import com.varpihovsky.repo_data.SubjectTaskDTO
 
 expect class SubjectDetailsWithTasks(
-    subjectDetailsDTO: SubjectDetailsDTO,
+    subjectDetailsDTO: SubjectDetailsDTO = SubjectDetailsDTO(),
     subjectTasks: List<SubjectTaskDTO>
 ) {
     val subjectDetailsDTO: SubjectDetailsDTO

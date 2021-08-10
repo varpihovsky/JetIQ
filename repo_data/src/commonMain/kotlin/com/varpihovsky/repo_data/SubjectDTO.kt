@@ -18,12 +18,12 @@ package com.varpihovsky.repo_data
  */
 
 expect class SubjectDTO(
-    card_id: String,
-    f_control: String,
-    scale: String,
-    sem: String,
-    subject: String,
-    t_name: String,
+    card_id: String = "",
+    f_control: String = "",
+    scale: String = "",
+    sem: String = "",
+    subject: String = "",
+    t_name: String = "",
 ) {
     val card_id: String
     val f_control: String
