@@ -1,5 +1,3 @@
-package com.varpihovsky.core_repo.repo
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,6 +14,7 @@ package com.varpihovsky.core_repo.repo
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_repo.repo
 
 import com.varpihovsky.repo_data.UserPreferences
 import kotlinx.coroutines.flow.Flow
@@ -40,9 +39,8 @@ interface UserPreferencesRepo {
      * Clears all preferences.
      */
     suspend fun clear()
-
-    // We have empty class because there can be any preferences on any platform
-    sealed class PreferencesKeys
 }
 
+// We have empty class because there can be any preferences on any platform
+expect sealed class PreferencesKeys
 

@@ -28,11 +28,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 
-object SHOW_NOTIFICATION : UserPreferencesRepo.PreferencesKeys()
-object MARKBOOK_LIST_TYPE : UserPreferencesRepo.PreferencesKeys()
-object SUCCESS_LIST_TYPE : UserPreferencesRepo.PreferencesKeys()
-object EXPAND_BUTTON_LOCATION : UserPreferencesRepo.PreferencesKeys()
-
 internal fun providePreferences(
     dataStore: DataStore<Preferences>,
     exceptionEventManager: ExceptionEventManager
@@ -72,18 +67,18 @@ private class UserPreferencesRepoImpl(
         )
     }
 
-    override suspend fun <T> set(key: UserPreferencesRepo.PreferencesKeys, value: T) {
+    override suspend fun <T> set(key: PreferencesKeys, value: T) {
         dataStore.edit { preferences ->
             mapKey<T>(key)?.let { preferences[it] = value }
         }
     }
 
-    private fun <T> mapKey(key: UserPreferencesRepo.PreferencesKeys): Preferences.Key<T>? =
+    private fun <T> mapKey(key: PreferencesKeys): Preferences.Key<T>? =
         when (key) {
-            SHOW_NOTIFICATION -> Keys.show_notification as Preferences.Key<T>
-            MARKBOOK_LIST_TYPE -> Keys.markbook_list_type as Preferences.Key<T>
-            SUCCESS_LIST_TYPE -> Keys.success_list_type as Preferences.Key<T>
-            EXPAND_BUTTON_LOCATION -> Keys.expand_button_location as Preferences.Key<T>
+            PreferencesKeys.SHOW_NOTIFICATION -> Keys.show_notification as Preferences.Key<T>
+            PreferencesKeys.MARKBOOK_LIST_TYPE -> Keys.markbook_list_type as Preferences.Key<T>
+            PreferencesKeys.SUCCESS_LIST_TYPE -> Keys.success_list_type as Preferences.Key<T>
+            PreferencesKeys.EXPAND_BUTTON_LOCATION -> Keys.expand_button_location as Preferences.Key<T>
             else -> null
         }
 
@@ -97,4 +92,11 @@ private object Keys {
     val markbook_list_type = stringPreferencesKey("markbook_list_type")
     val success_list_type = stringPreferencesKey("success_list_type")
     val expand_button_location = stringPreferencesKey("expand_button_location")
+}
+
+actual sealed class PreferencesKeys {
+    object SHOW_NOTIFICATION : PreferencesKeys()
+    object MARKBOOK_LIST_TYPE : PreferencesKeys()
+    object SUCCESS_LIST_TYPE : PreferencesKeys()
+    object EXPAND_BUTTON_LOCATION : PreferencesKeys()
 }
