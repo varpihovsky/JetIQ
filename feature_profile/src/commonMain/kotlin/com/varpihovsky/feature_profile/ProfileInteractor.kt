@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.screens.profile
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,9 +14,11 @@ package com.varpihovsky.jetiq.screens.profile
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.feature_profile
 
 import androidx.compose.runtime.State
 import com.varpihovsky.core.Refreshable
+import com.varpihovsky.core.coroutines.runBlocking
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core_repo.repo.ProfileRepo
 import com.varpihovsky.core_repo.repo.SubjectRepo
@@ -33,10 +33,8 @@ import com.varpihovsky.ui_data.mappers.toUIDTO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import javax.inject.Inject
 
-class ProfileInteractor @Inject constructor(
+class ProfileInteractor(
     private val dispatchers: CoroutineDispatchers,
     private val profileModel: ProfileRepo,
     private val subjectModel: SubjectRepo,
@@ -76,7 +74,7 @@ class ProfileInteractor @Inject constructor(
 
     private fun initSubjectListMapper() {
         successData = subjectModel.getSubjects()
-            .combine(subjectModel.getSubjectsDetails()) { subjects, details ->
+            .combine(flow = subjectModel.getSubjectsDetails()) { subjects, details ->
                 Pair(
                     formSuccessMarksInfo(subjects, details),
                     formSuccessSubjects(subjects, details)

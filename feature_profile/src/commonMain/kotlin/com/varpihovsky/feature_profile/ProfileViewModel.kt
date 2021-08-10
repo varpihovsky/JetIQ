@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.screens.profile
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,32 +14,28 @@ package com.varpihovsky.jetiq.screens.profile
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.feature_profile
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.State
-import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.Refreshable
 import com.varpihovsky.core.appbar.AppbarManager
+import com.varpihovsky.core.coroutines.runBlocking
 import com.varpihovsky.core.dataTransfer.ViewModelData
 import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
+import com.varpihovsky.core.lifecycle.viewModelScope
 import com.varpihovsky.core.util.CoroutineDispatchers
+import com.varpihovsky.core_lifecycle.JetIQViewModel
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.UserPreferencesRepo
-import com.varpihovsky.jetiq.screens.JetIQViewModel
-import com.varpihovsky.jetiq.screens.subjects.markbook.MarkbookSubjectViewModel
-import com.varpihovsky.jetiq.screens.subjects.success.SuccessSubjectViewModel
 import com.varpihovsky.ui_data.dto.UIProfileDTO
 import com.varpihovsky.ui_data.dto.UISubjectDTO
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import javax.inject.Inject
 
-@HiltViewModel
-class ProfileViewModel @Inject constructor(
+class ProfileViewModel(
     private val dispatchers: CoroutineDispatchers,
     private val profileInteractor: ProfileInteractor,
     private val navigationController: NavigationController,
