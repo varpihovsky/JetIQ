@@ -1,4 +1,4 @@
-package com.varpihovsky.jetiq.screens.settings.about
+package com.varpihovsky.feature_settings.about
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
@@ -21,16 +21,16 @@ import androidx.compose.runtime.State
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core_nav.main.NavigationController
-import com.varpihovsky.jetiq.screens.JetIQViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 
-@HiltViewModel
-class AboutSettingsViewModel @Inject constructor(
+class AboutSettingsViewModel(
     appbarManager: AppbarManager,
     navigationController: NavigationController,
     exceptionEventManager: ExceptionEventManager,
-) : JetIQViewModel(appbarManager, navigationController, exceptionEventManager) {
+) : com.varpihovsky.core_lifecycle.JetIQViewModel(
+    appbarManager,
+    navigationController,
+    exceptionEventManager
+) {
     val data by lazy { Data() }
 
     private val pageToOpen = mutableStateOf("")

@@ -1,4 +1,4 @@
-package com.varpihovsky.jetiq.screens.settings.about
+package com.varpihovsky.feature_settings.about
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
@@ -17,7 +17,6 @@ package com.varpihovsky.jetiq.screens.settings.about
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,10 +29,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.varpihovsky.jetiq.BuildConfig
-import com.varpihovsky.jetiq.screens.settings.SettingsButton
-import com.varpihovsky.jetiq.ui.compose.BackIconButton
-import com.varpihovsky.jetiq.ui.compose.OpenPage
+import com.varpihovsky.core_ui.compose.OpenPage
+import com.varpihovsky.core_ui.compose.widgets.BackIconButton
+import com.varpihovsky.core_ui.compose.widgets.FullWidthButton
 
 @Composable
 fun AboutSettingsScreen(
@@ -43,8 +41,6 @@ fun AboutSettingsScreen(
         title = "Про додаток",
         icon = { BackIconButton(aboutSettingsViewModel::onBackNavButtonClick) }
     )
-
-    BackHandler(true, onBack = aboutSettingsViewModel::onBackNavButtonClick)
 
     if (aboutSettingsViewModel.data.pageToOpen.value.isNotEmpty()) {
         OpenPage(url = aboutSettingsViewModel.data.pageToOpen.value)
@@ -67,21 +63,21 @@ fun AboutSettingsScreen(
             modifier = Modifier
                 .padding(horizontal = 40.dp, vertical = 10.dp)
                 .fillMaxWidth(),
-            text = "Неофіційний клієнт для JetIQ v${BuildConfig.VERSION_NAME}.",
+            text = "Неофіційний клієнт для JetIQ v1.1.1-alpha.",
             style = MaterialTheme.typography.h5,
             textAlign = TextAlign.Center
         )
-        SettingsButton(
+        FullWidthButton(
             title = "Розробник",
             hint = "Подрезенко Владислав",
             onClick = {}
         )
-        SettingsButton(
+        FullWidthButton(
             title = "GitHub",
             hint = "github.com/varpihovsky",
             onClick = { aboutSettingsViewModel.onUrlButtonClick("https://www.github.com/varpihovsky") }
         )
-        SettingsButton(
+        FullWidthButton(
             title = "LinkedIn",
             hint = "linkedin.com/in/varpihovsky",
             onClick = { aboutSettingsViewModel.onUrlButtonClick("https://www.linkedin.com/in/varpihovsky") }

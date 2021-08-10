@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.screens.settings.main
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,8 +14,8 @@ package com.varpihovsky.jetiq.screens.settings.main
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.feature_settings.main
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,10 +24,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import com.varpihovsky.jetiq.R
-import com.varpihovsky.jetiq.screens.settings.SettingsButton
-import com.varpihovsky.jetiq.ui.compose.BackIconButton
+import com.varpihovsky.core_ui.compose.widgets.*
 
 @Composable
 fun MainSettingsScreen(
@@ -40,8 +35,6 @@ fun MainSettingsScreen(
         icon = { BackIconButton(mainSettingsViewModel::onBackNavButtonClick) },
     )
 
-    BackHandler(true, onBack = mainSettingsViewModel::onBackNavButtonClick)
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -49,23 +42,23 @@ fun MainSettingsScreen(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top
     ) {
-        SettingsButton(
+        FullWidthButton(
             title = "Загальне",
             hint = "",
             onClick = mainSettingsViewModel::onGeneralClick,
-            icon = painterResource(id = R.drawable.ic_baseline_settings_applications_24)
+            icon = { SettingsApplicationsIcon() }
         )
-        SettingsButton(
+        FullWidthButton(
             title = "Про додаток",
             hint = "",
             onClick = mainSettingsViewModel::onAboutClick,
-            icon = painterResource(id = R.drawable.ic_baseline_help_24)
+            icon = { HelpIcon() }
         )
-        SettingsButton(
+        FullWidthButton(
             title = "Вихід",
             hint = "Вийти з облікового запису,\nБАЗА ДАНИХ БУДЕ СТЕРТА!",
             onClick = mainSettingsViewModel::onLogoutClick,
-            icon = painterResource(id = R.drawable.ic_baseline_logout_24)
+            icon = { LogoutIcon() }
         )
     }
 }

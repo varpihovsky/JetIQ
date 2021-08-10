@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.screens.settings.general
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,8 +14,8 @@ package com.varpihovsky.jetiq.screens.settings.general
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.feature_settings.general
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,24 +30,29 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.varpihovsky.jetiq.screens.settings.SettingsSwitch
-import com.varpihovsky.jetiq.ui.compose.BackIconButton
-import com.varpihovsky.jetiq.ui.compose.ExposedDropDownList
+import com.varpihovsky.core_repo.repo.PreferencesKeys
+import com.varpihovsky.core_ui.compose.widgets.FullWidthSwitch
+import com.varpihovsky.core_ui.compose.widgets.VerticalSubscribedExposedDropDownList
+import com.varpihovsky.repo_data.ExpandButtonLocation
+import com.varpihovsky.repo_data.SubjectListType
 import com.varpihovsky.ui_data.dto.DropDownItem
+import kotlinx.coroutines.flow.map
+
+private val listTypeSuggestions =
+    listOf(SubjectListType.PARTIAL, SubjectListType.FULL).map { DropDownItem.Simple(it.toString()) }
+
+private val buttonLocationSuggestions = listOf(
+    ExpandButtonLocation.LOWER,
+    ExpandButtonLocation.UPPER
+).map { DropDownItem.Simple(it.toString()) }
 
 @Composable
-fun GeneralSettingsScreen(generalSettingsViewModel: GeneralSettingsViewModel) {
-    generalSettingsViewModel.assignAppbar(
-        title = "Загальне",
-        icon = { BackIconButton(generalSettingsViewModel::onBackNavButtonClick) }
-    )
-
-    BackHandler(onBack = generalSettingsViewModel::onBackNavButtonClick)
-
-    val showNotifications by generalSettingsViewModel.showNotifications.collectAsState(initial = true)
-    val successListType by generalSettingsViewModel.successListType.collectAsState(initial = DropDownItem.Empty)
-    val markbookListType by generalSettingsViewModel.markbookListType.collectAsState(initial = DropDownItem.Empty)
-    val buttonLocation by generalSettingsViewModel.buttonLocation.collectAsState(initial = DropDownItem.Empty)
+internal actual fun GeneralSettings(generalSettingsViewModel: GeneralSettingsViewModel) {
+    val showNotifications by generalSettingsViewModel.preferenceData.map { it.showNotifications }
+        .collectAsState(initial = true)
+    val successListType by generalSettingsViewModel.preferenceData.preferenceFlowToState { successListType }
+    val markbookListType by generalSettingsViewModel.preferenceData.preferenceFlowToState { markbookListType }
+    val buttonLocation by generalSettingsViewModel.preferenceData.preferenceFlowToState { profileListExpandButtonLocation }
 
     Column(
         modifier = Modifier
@@ -61,13 +64,18 @@ fun GeneralSettingsScreen(generalSettingsViewModel: GeneralSettingsViewModel) {
             text = "Нотифікування",
             style = MaterialTheme.typography.h5
         )
-        SettingsSwitch(
+        FullWidthSwitch(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
             text = "Нотифікації про нові повідомлення.",
             checked = showNotifications,
-            onCheckedChange = generalSettingsViewModel::onShowNotificationsSwitched
+            onCheckedChange = {
+                generalSettingsViewModel.onPreferenceSet(
+                    PreferencesKeys.SHOW_NOTIFICATION,
+                    PreferenceValueMapper.map(PreferencesKeys.SHOW_NOTIFICATION, it)
+                )
+            }
         )
 
         Divider(Modifier.fillMaxWidth())
@@ -77,49 +85,51 @@ fun GeneralSettingsScreen(generalSettingsViewModel: GeneralSettingsViewModel) {
             text = "Списки",
             style = MaterialTheme.typography.h5
         )
-        SubscribedExposedDropDownList(
+        VerticalSubscribedExposedDropDownList(
             modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
             text = "Відображення списку журналу успішності.",
-            suggestions = generalSettingsViewModel.listTypeSuggestions,
+            suggestions = listTypeSuggestions,
             selected = successListType,
-            onSelect = { generalSettingsViewModel.onSuccessListTypeChange(it as DropDownItem.Simple) }
+            onSelect = {
+                generalSettingsViewModel.onPreferenceSet(
+                    PreferencesKeys.SUCCESS_LIST_TYPE,
+                    PreferenceValueMapper.map(
+                        PreferencesKeys.SUCCESS_LIST_TYPE,
+                        (it as DropDownItem.Simple).text
+                    )
+                )
+            }
         )
-        SubscribedExposedDropDownList(
+        VerticalSubscribedExposedDropDownList(
             modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
             text = "Відображення списку залікової книжки.",
-            suggestions = generalSettingsViewModel.listTypeSuggestions,
+            suggestions = listTypeSuggestions,
             selected = markbookListType,
-            onSelect = { generalSettingsViewModel.onMarkbookListTypeChange(it as DropDownItem.Simple) }
+            onSelect = {
+                generalSettingsViewModel.onPreferenceSet(
+                    PreferencesKeys.MARKBOOK_LIST_TYPE,
+                    PreferenceValueMapper.map(
+                        PreferencesKeys.MARKBOOK_LIST_TYPE,
+                        (it as DropDownItem.Simple).text
+                    )
+                )
+            }
         )
-        SubscribedExposedDropDownList(
+        VerticalSubscribedExposedDropDownList(
             modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
             text = "Місцеположення кнопки розширення в списках у профілі.",
-            suggestions = generalSettingsViewModel.buttonLocationSuggestions,
+            suggestions = buttonLocationSuggestions,
             selected = buttonLocation,
-            onSelect = { generalSettingsViewModel.onButtonLocationChange(it as DropDownItem.Simple) }
+            onSelect = {
+                generalSettingsViewModel.onPreferenceSet(
+                    PreferencesKeys.EXPAND_BUTTON_LOCATION,
+                    PreferenceValueMapper.map(
+                        PreferencesKeys.EXPAND_BUTTON_LOCATION,
+                        (it as DropDownItem.Simple).text
+                    )
+                )
+            }
         )
         Divider(Modifier.fillMaxWidth())
-    }
-}
-
-@Composable
-private fun SubscribedExposedDropDownList(
-    modifier: Modifier = Modifier,
-    text: String,
-    suggestions: List<DropDownItem>,
-    selected: DropDownItem,
-    onSelect: (DropDownItem) -> Unit
-) {
-    Column(modifier = modifier.fillMaxWidth()) {
-        Text(
-            modifier = Modifier.padding(bottom = 5.dp),
-            text = text,
-            style = MaterialTheme.typography.h6
-        )
-        ExposedDropDownList(
-            suggestions = suggestions,
-            selected = selected,
-            onSelect = onSelect
-        )
     }
 }
