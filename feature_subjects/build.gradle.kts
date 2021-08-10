@@ -1,3 +1,5 @@
+import org.jetbrains.compose.compose
+
 plugins {
     multiplatform()
     feature()
@@ -8,9 +10,24 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                //implementation(project(":app"))
+                implementation(project(Modules.core_ui))
+                implementation(project(Modules.core))
+                implementation(project(Modules.core_repo))
+                implementation(project(Modules.core_nav))
+                implementation(project(Modules.core_lifecycle))
+                implementation(project(Modules.ui_data))
+                implementation(project(Modules.repo_data))
 
                 implementation(CommonDependencies.koin_core)
+
+                implementation(compose.ui)
+                implementation(compose.material)
+                implementation(compose.foundation)
+            }
+        }
+        val androidMain by getting {
+            dependencies {
+                implementation(Compose.view_model_compose)
             }
         }
     }

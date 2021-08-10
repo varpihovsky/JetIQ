@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.screens.subjects.markbook
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,34 +14,35 @@ package com.varpihovsky.jetiq.screens.subjects.markbook
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.feature_subjects.markbook
 
 import androidx.compose.runtime.State
-import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.dataTransfer.ViewModelData
 import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
+import com.varpihovsky.core.lifecycle.viewModelScope
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.SubjectRepo
-import com.varpihovsky.jetiq.screens.JetIQViewModel
 import com.varpihovsky.repo_data.MarkbookSubjectDTO
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class MarkbookSubjectViewModel @Inject constructor(
-    private val dispatchers: CoroutineDispatchers,
+class MarkbookSubjectViewModel(
+    dispatchers: CoroutineDispatchers,
     private val viewModelDataTransferManager: ViewModelDataTransferManager,
     private val subjectRepo: SubjectRepo,
     appbarManager: AppbarManager,
     navigationController: NavigationController,
     exceptionEventManager: ExceptionEventManager
-) : JetIQViewModel(appbarManager, navigationController, exceptionEventManager) {
+) : com.varpihovsky.core_lifecycle.JetIQViewModel(
+    appbarManager,
+    navigationController,
+    exceptionEventManager
+) {
 
     private val _subject = mutableStateOf(flow<MarkbookSubjectDTO> { })
     val subject: State<Flow<MarkbookSubjectDTO>> = _subject

@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.screens.subjects.markbook
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,13 +14,13 @@ package com.varpihovsky.jetiq.screens.subjects.markbook
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.feature_subjects.markbook
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import com.varpihovsky.jetiq.ui.compose.BackIconButton
-import com.varpihovsky.jetiq.ui.compose.SubjectInfo
+import com.varpihovsky.core_ui.compose.widgets.BackIconButton
+import com.varpihovsky.core_ui.compose.widgets.SubjectInfo
 import com.varpihovsky.repo_data.MarkbookSubjectDTO
 
 @Composable
@@ -35,11 +33,7 @@ fun MarkbookSubjectScreen(markbookSubjectViewModel: MarkbookSubjectViewModel) {
         icon = { BackIconButton(markbookSubjectViewModel::onBackNavButtonClick) }
     )
 
-    BackHandler(onBack = markbookSubjectViewModel::onBackNavButtonClick)
-
-    MarkbookSubjectScreen(
-        markbookSubjectDTO = subject
-    )
+    MarkbookSubjectScreen(markbookSubjectDTO = subject)
 }
 
 @Composable
