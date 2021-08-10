@@ -17,9 +17,20 @@
 package com.varpihovsky.core_ui.compose.foundation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 
 @Composable
 expect fun ErrorDialog(
     message: String,
     onDismiss: () -> Unit
+)
+
+@Composable
+expect fun AlertDialog(
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit,
+    confirmButton: @Composable () -> Unit,
+    dismissButton: @Composable () -> Unit,
+    title: @Composable () -> Unit,
+    text: @Composable () -> Unit
 )

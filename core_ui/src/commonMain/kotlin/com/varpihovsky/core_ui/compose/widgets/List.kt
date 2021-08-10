@@ -197,7 +197,29 @@ fun ExposedDropDownList(
 }
 
 @Composable
-fun SubscribedExposedDropDownList(
+fun VerticalSubscribedExposedDropDownList(
+    modifier: Modifier = Modifier,
+    text: String,
+    suggestions: List<DropDownItem>,
+    selected: DropDownItem,
+    onSelect: (DropDownItem) -> Unit
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Text(
+            modifier = Modifier.padding(bottom = 5.dp),
+            text = text,
+            style = MaterialTheme.typography.h6
+        )
+        ExposedDropDownList(
+            suggestions = suggestions,
+            selected = selected,
+            onSelect = onSelect
+        )
+    }
+}
+
+@Composable
+fun HorizontalSubscribedExposedDropDownList(
     modifier: Modifier = Modifier,
     text: String,
     suggestions: List<DropDownItem>,
@@ -206,7 +228,7 @@ fun SubscribedExposedDropDownList(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    SubscribedExposedDropDownList(
+    HorizontalSubscribedExposedDropDownList(
         modifier = modifier,
         text = text,
         expanded = expanded,
@@ -221,7 +243,7 @@ fun SubscribedExposedDropDownList(
 }
 
 @Composable
-fun SubscribedExposedDropDownList(
+fun HorizontalSubscribedExposedDropDownList(
     modifier: Modifier = Modifier,
     text: String,
     expanded: Boolean,

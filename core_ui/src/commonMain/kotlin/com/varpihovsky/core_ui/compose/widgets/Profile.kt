@@ -16,6 +16,8 @@
  */
 package com.varpihovsky.core_ui.compose.widgets
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -66,7 +68,13 @@ fun Avatar(
 }
 
 @Composable
-internal expect fun AvatarPlaceholder(placeholderEnabled: Boolean)
+private fun AvatarPlaceholder(placeholderEnabled: Boolean) {
+    Box(Modifier.fillMaxSize()) {
+        if (placeholderEnabled) {
+            PersonIcon()
+        }
+    }
+}
 
 sealed class Transformation {
     object CircleCropTransformation : Transformation()

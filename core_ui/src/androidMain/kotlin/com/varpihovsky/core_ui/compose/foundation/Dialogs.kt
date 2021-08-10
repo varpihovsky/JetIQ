@@ -20,8 +20,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.SecureFlagPolicy
 import com.varpihovsky.core_ui.compose.widgets.BasicTextButton
 
 @Composable
@@ -50,5 +53,29 @@ actual fun ErrorDialog(
                 Text(modifier = Modifier.padding(10.dp), text = message)
             }
         }
+    )
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+actual fun AlertDialog(
+    modifier: Modifier,
+    onDismissRequest: () -> Unit,
+    confirmButton: @Composable () -> Unit,
+    dismissButton: @Composable () -> Unit,
+    title: @Composable () -> Unit,
+    text: @Composable () -> Unit
+) {
+    AlertDialog(
+        modifier = modifier,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            securePolicy = SecureFlagPolicy.SecureOff
+        ),
+        onDismissRequest = onDismissRequest,
+        confirmButton = confirmButton,
+        dismissButton = dismissButton,
+        title = title,
+        text = text
     )
 }
