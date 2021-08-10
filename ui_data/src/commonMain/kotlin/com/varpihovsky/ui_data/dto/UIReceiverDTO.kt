@@ -17,7 +17,11 @@ package com.varpihovsky.ui_data.dto
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-expect class UIReceiverDTO {
+expect class UIReceiverDTO(
+    id: Int,
+    text: String,
+    type: ReceiverType
+) {
     val id: Int
     val text: String
     val type: ReceiverType
