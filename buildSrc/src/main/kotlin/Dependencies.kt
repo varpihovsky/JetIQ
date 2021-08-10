@@ -123,15 +123,13 @@ object AndroidDependencies {
 
     const val koin_android = "io.insert-koin:koin-android:${Versions.koin_version}"
     const val koin_view_model = "io.insert-koin:koin-android-viewmodel:${Versions.koin_version}"
+    const val koin_work_manager =
+        "io.insert-koin:koin-androidx-workmanager:${Versions.koin_version}"
 
     const val room = "androidx.room:room-ktx:${Versions.room_version}"
     const val room_runtime = "androidx.room:room-runtime:${Versions.room_version}"
     const val room_compiler = "androidx.room:room-compiler:${Versions.room_version}"
     const val room_testing = "androidx.room:room-testing:${Versions.room_version}"
-
-    const val coil = "io.coil-kt:coil:${Versions.coil_version}"
-    const val coil_base = "io.coil-kt:coil-base:${Versions.coil_version}"
-    const val coil_compose = "io.coil-kt:coil-compose:${Versions.coil_version}"
 
     const val preferences =
         "androidx.datastore:datastore-preferences:${Versions.preferences_version}"
