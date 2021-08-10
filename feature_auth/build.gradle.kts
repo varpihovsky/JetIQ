@@ -17,18 +17,18 @@ kotlin {
                 implementation(project(Modules.core_nav))
                 implementation(project(Modules.core_lifecycle))
 
+                implementation(CommonDependencies.koin_core)
+
                 implementation(compose.ui)
                 implementation(compose.material)
                 implementation(compose.foundation)
-
-                implementation(CommonDependencies.koin_core)
             }
         }
     }
 }
 android {
     compileSdk = AndroidConfig.compile_sdk
-
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = AndroidConfig.min_sdk
     }
