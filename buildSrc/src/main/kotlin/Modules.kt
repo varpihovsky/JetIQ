@@ -14,10 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
-
 import org.gradle.kotlin.dsl.DependencyHandlerScope
-import org.gradle.kotlin.dsl.KotlinSettingsScript
 import org.gradle.kotlin.dsl.project
 
 object Modules {
@@ -32,18 +29,13 @@ object Modules {
     const val core_test = ":core_test"
     const val repo_data = ":repo_data"
     const val ui_data = ":ui_data"
+    const val feature_auth = ":feature_auth"
     const val feature_contacts = ":feature_contacts"
-}
-
-fun KotlinSettingsScript.includeModules() {
-    include(Modules.app)
-    include(Modules.core_repo)
-    include(Modules.core)
-    include(Modules.ui_data)
-    include(Modules.core_network)
-    include(Modules.core_db)
-    include(Modules.repo_data)
-    include(Modules.core_nav)
+    const val feature_messages = ":feature_messages"
+    const val feature_new_message = ":feature_new_message"
+    const val feature_profile = ":feature_profile"
+    const val feature_settings = ":feature_settings"
+    const val feature_subjects = ":feature_subjects"
 }
 
 fun DependencyHandlerScope.app() = project(Modules.app)
