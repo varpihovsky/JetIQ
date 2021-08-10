@@ -14,24 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.varpihovsky.core_ui.compose.widgets
+package com.varpihovsky.feature_messages
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import com.varpihovsky.core_ui.R
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshState
+import com.varpihovsky.ui_data.dto.UIMessageDTO
 
+@ExperimentalAnimationApi
+@ExperimentalFoundationApi
 @Composable
-internal actual fun AvatarPlaceholder(placeholderEnabled: Boolean) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        if (placeholderEnabled) {
-            Image(
-                painter = painterResource(R.drawable.ic_baseline_person_24),
-                contentDescription = null
-            )
-        }
+actual fun MessagesScreen(
+    messages: List<UIMessageDTO>,
+    onClick: () -> Unit,
+    loadingState: Boolean,
+    onRefresh: () -> Unit
+) {
+    SwipeRefresh(state = SwipeRefreshState(loadingState), onRefresh = onRefresh) {
+        MessagesList(messages = messages)
+        NewMessageButton(onClick = onClick)
     }
+
 }

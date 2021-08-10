@@ -1,17 +1,3 @@
-package com.varpihovsky.jetiq.screens.messages.main
-
-import com.varpihovsky.core.Refreshable
-import com.varpihovsky.core.appbar.AppbarManager
-import com.varpihovsky.core.exceptions.ExceptionEventManager
-import com.varpihovsky.core_nav.main.NavigationController
-import com.varpihovsky.core_nav.navigation.NavigationDirections
-import com.varpihovsky.core_repo.repo.MessagesRepo
-import com.varpihovsky.jetiq.screens.JetIQViewModel
-import com.varpihovsky.ui_data.mappers.toUIDTO
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.map
-import javax.inject.Inject
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -28,9 +14,19 @@ import javax.inject.Inject
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.feature_messages
 
-@HiltViewModel
-class MessagesViewModel @Inject constructor(
+import com.varpihovsky.core.Refreshable
+import com.varpihovsky.core.appbar.AppbarManager
+import com.varpihovsky.core.exceptions.ExceptionEventManager
+import com.varpihovsky.core_lifecycle.JetIQViewModel
+import com.varpihovsky.core_nav.main.NavigationController
+import com.varpihovsky.core_nav.navigation.NavigationDirections
+import com.varpihovsky.core_repo.repo.MessagesRepo
+import com.varpihovsky.ui_data.mappers.toUIDTO
+import kotlinx.coroutines.flow.map
+
+class MessagesViewModel(
     private val navigationManager: NavigationController,
     private val messagesModel: MessagesRepo,
     appbarManager: AppbarManager,
