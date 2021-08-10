@@ -32,6 +32,7 @@ object Modules {
     const val core_test = ":core_test"
     const val repo_data = ":repo_data"
     const val ui_data = ":ui_data"
+    const val feature_contacts = ":feature_contacts"
 }
 
 fun KotlinSettingsScript.includeModules() {
