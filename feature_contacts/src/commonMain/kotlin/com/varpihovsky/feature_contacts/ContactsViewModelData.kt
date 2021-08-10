@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.screens.messages.contacts
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,6 +14,7 @@ package com.varpihovsky.jetiq.screens.messages.contacts
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.feature_contacts
 
 import com.varpihovsky.core.dataTransfer.ViewModelData
 import com.varpihovsky.ui_data.dto.UIReceiverDTO

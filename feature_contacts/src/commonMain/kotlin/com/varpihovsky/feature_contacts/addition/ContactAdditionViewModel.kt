@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.screens.messages.contacts.addition
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,25 +14,23 @@ package com.varpihovsky.jetiq.screens.messages.contacts.addition
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.feature_contacts.addition
 
 import androidx.compose.runtime.State
-import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
+import com.varpihovsky.core.lifecycle.viewModelScope
 import com.varpihovsky.core.util.*
+import com.varpihovsky.core_lifecycle.JetIQViewModel
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.ListRepo
 import com.varpihovsky.core_repo.repo.ProfileRepo
-import com.varpihovsky.jetiq.screens.JetIQViewModel
 import com.varpihovsky.ui_data.dto.*
 import com.varpihovsky.ui_data.mappers.toUIDTO
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class ContactAdditionViewModel @Inject constructor(
+class ContactAdditionViewModel(
     private val dispatchers: CoroutineDispatchers,
     private val listRepo: ListRepo,
     private val profileRepo: ProfileRepo,

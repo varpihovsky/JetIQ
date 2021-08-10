@@ -1,4 +1,4 @@
-package com.varpihovsky.jetiq.screens.messages.contacts
+package com.varpihovsky.feature_contacts
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
@@ -18,25 +18,21 @@ package com.varpihovsky.jetiq.screens.messages.contacts
  */
 
 import androidx.compose.runtime.State
-import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
+import com.varpihovsky.core.lifecycle.viewModelScope
 import com.varpihovsky.core.util.*
+import com.varpihovsky.core_lifecycle.JetIQViewModel
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.ListRepo
-import com.varpihovsky.jetiq.screens.JetIQViewModel
 import com.varpihovsky.repo_data.ContactDTO
 import com.varpihovsky.ui_data.dto.UIReceiverDTO
 import com.varpihovsky.ui_data.mappers.toUIDTO
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.util.*
-import javax.inject.Inject
 
-@HiltViewModel
-class ContactsViewModel @Inject constructor(
+class ContactsViewModel(
     private val dispatchers: CoroutineDispatchers,
     appbarManager: AppbarManager,
     private val navigationController: NavigationController,
@@ -190,7 +186,7 @@ class ContactsViewModel @Inject constructor(
     fun onConfirmButtonClick(contacts: List<UIReceiverDTO>) {
         viewModelScope.launch(dispatchers.IO) {
             contacts
-                .map { ContactDTO(it.id, it.text, it.type.name.lowercase(Locale.getDefault())) }
+                .map { ContactDTO(it.id, it.text, it.type.name.lowercase()) }
                 .forEach { listModel.addContact(it) }
         }
         isAdding.value = false

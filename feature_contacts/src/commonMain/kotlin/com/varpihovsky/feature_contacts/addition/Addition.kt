@@ -1,4 +1,4 @@
-package com.varpihovsky.jetiq.screens.messages.contacts.addition
+package com.varpihovsky.feature_contacts.addition
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
@@ -22,7 +22,6 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -30,13 +29,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
-import androidx.compose.ui.window.SecureFlagPolicy
 import com.varpihovsky.core.util.Selectable
-import com.varpihovsky.jetiq.screens.messages.contacts.Contact
-import com.varpihovsky.jetiq.screens.messages.contacts.SearchBar
-import com.varpihovsky.jetiq.ui.compose.BasicTextButton
-import com.varpihovsky.jetiq.ui.compose.SubscribedExposedDropDownList
+import com.varpihovsky.core_ui.compose.entities.Contact
+import com.varpihovsky.core_ui.compose.foundation.AlertDialog
+import com.varpihovsky.core_ui.compose.widgets.BasicTextButton
+import com.varpihovsky.core_ui.compose.widgets.HorizontalSubscribedExposedDropDownList
+import com.varpihovsky.core_ui.compose.widgets.SearchBar
 import com.varpihovsky.ui_data.dto.ContactTypeDropDownItem
 import com.varpihovsky.ui_data.dto.DropDownItem
 import com.varpihovsky.ui_data.dto.UIReceiverDTO
@@ -78,7 +76,7 @@ fun AdditionDialog(
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @Composable
-fun AdditionDialog(
+private fun AdditionDialog(
     onDismissRequest: () -> Unit,
     onConfirmButtonClick: () -> Unit,
     selectedContactType: ContactTypeDropDownItem,
@@ -95,10 +93,6 @@ fun AdditionDialog(
     onContactSelected: (Selectable<UIReceiverDTO>) -> Unit
 ) {
     AlertDialog(
-        properties = DialogProperties(
-            usePlatformDefaultWidth = false,
-            securePolicy = SecureFlagPolicy.SecureOff
-        ),
         modifier = Modifier
             .wrapContentSize()
             .animateContentSize()
@@ -119,7 +113,7 @@ fun AdditionDialog(
         title = { Text(modifier = Modifier.padding(10.dp), text = "Новий контакт") },
         text = {
             Column {
-                SubscribedExposedDropDownList(
+                HorizontalSubscribedExposedDropDownList(
                     modifier = Modifier.padding(bottom = 7.dp),
                     text = "Тип: ",
                     suggestions = listOf(
@@ -139,7 +133,7 @@ fun AdditionDialog(
                     when (it) {
                         ContactTypeDropDownItem.STUDENT -> @Composable {
                             Column {
-                                SubscribedExposedDropDownList(
+                                HorizontalSubscribedExposedDropDownList(
                                     modifier = Modifier.padding(top = 7.dp, bottom = 7.dp),
                                     text = "Факультет/Інститут: ",
                                     suggestions = faculties,
@@ -147,7 +141,7 @@ fun AdditionDialog(
                                     onSelect = onFacultySelect
                                 )
 
-                                SubscribedExposedDropDownList(
+                                HorizontalSubscribedExposedDropDownList(
                                     modifier = Modifier.padding(top = 7.dp, bottom = 7.dp),
                                     text = "Група: ",
                                     suggestions = groups,
