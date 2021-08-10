@@ -3,7 +3,6 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     parcelize()
-    id(Plugins.hilt)
 }
 
 android {
@@ -33,6 +32,10 @@ android {
     testOptions {
         unitTests.isReturnDefaultValues = true
     }
+    dynamicFeatures += setOf(
+        ":feature_profile", ":feature_messages", ":feature_contacts",
+        ":feature_new_message", ":feature_auth", ":feature_settings", ":feature_subjects"
+    )
 }
 
 dependencies {
@@ -41,6 +44,14 @@ dependencies {
     implementation(coreNav())
     implementation(uiData())
     implementation(repoData())
+    implementation(project(Modules.core_ui))
+    implementation(project(Modules.feature_auth))
+    implementation(project(Modules.feature_contacts))
+    implementation(project(Modules.feature_messages))
+    implementation(project(Modules.feature_new_message))
+    implementation(project(Modules.feature_profile))
+    implementation(project(Modules.feature_settings))
+    implementation(project(Modules.feature_subjects))
 
     // Needed for dependency injection
     api(coreDB())
@@ -63,23 +74,17 @@ dependencies {
     implementation(Compose.ui_tooling)
 
     // Calpose
-    implementation(Compose.calpose)
+    //implementation(Compose.calpose)
     implementation(AndroidDependencies.threetenbp)
 
     // Retrofit
     implementation(Dependencies.retrofit)
     implementation(Dependencies.retrofit_converter)
 
-    //Dagger
-    implementation(AndroidDependencies.hilt)
-    kapt(AndroidDependencies.hilt_compiler)
-    kapt(AndroidDependencies.hilt_androidx_compiler)
-    implementation(AndroidDependencies.hilt_work)
-
-    // Coil
-    implementation(AndroidDependencies.coil)
-    implementation(AndroidDependencies.coil_base)
-    implementation(AndroidDependencies.coil_compose)
+    //koin
+    implementation(CommonDependencies.koin_core)
+    implementation(AndroidDependencies.koin_android)
+    implementation(AndroidDependencies.koin_work_manager)
 
     // Accompanist
     implementation(AndroidDependencies.swipe_refresh)
@@ -101,6 +106,6 @@ dependencies {
     // Espresso
     androidTestImplementation(TestDependencies.espresso)
 
-    implementation(Compose.material_motion)
     implementation(AndroidDependencies.preferences)
+    implementation(Compose.material_motion)
 }

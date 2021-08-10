@@ -4,6 +4,10 @@ plugins {
     multiplatform()
     feature()
 }
+
+group = Config.group
+version = Config.version
+
 kotlin {
     android()
 

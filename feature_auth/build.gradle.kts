@@ -5,6 +5,10 @@ plugins {
     feature()
     compose()
 }
+
+group = Config.group
+version = Config.version
+
 kotlin {
     android()
 

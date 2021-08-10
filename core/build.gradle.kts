@@ -38,7 +38,6 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(AndroidDependencies.koin_android)
-                implementation(AndroidDependencies.koin_view_model)
                 implementation(Compose.koin_compose)
 
                 implementation(AndroidDependencies.lifecycle_view_model)

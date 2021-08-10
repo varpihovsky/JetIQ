@@ -122,7 +122,6 @@ object AndroidDependencies {
     const val material = "com.google.android.material:material:${Versions.material_version}"
 
     const val koin_android = "io.insert-koin:koin-android:${Versions.koin_version}"
-    const val koin_view_model = "io.insert-koin:koin-android-viewmodel:${Versions.koin_version}"
     const val koin_work_manager =
         "io.insert-koin:koin-androidx-workmanager:${Versions.koin_version}"
 

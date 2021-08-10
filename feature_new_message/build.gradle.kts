@@ -4,6 +4,10 @@ plugins {
     multiplatform()
     feature()
 }
+
+group = Config.group
+version = Config.version
+
 kotlin {
     android()
 
@@ -30,7 +34,7 @@ kotlin {
 }
 android {
     compileSdk = AndroidConfig.compile_sdk
-
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = AndroidConfig.min_sdk
     }
