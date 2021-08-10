@@ -1,4 +1,4 @@
-package com.varpihovsky.jetiq.screens.messages.create
+package com.varpihovsky.feature_new_message
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
@@ -18,29 +18,26 @@ package com.varpihovsky.jetiq.screens.messages.create
  */
 
 import androidx.compose.runtime.State
-import androidx.lifecycle.viewModelScope
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.exceptions.Values
+import com.varpihovsky.core.lifecycle.viewModelScope
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core.util.ReactiveTask
 import com.varpihovsky.core.util.remove
+import com.varpihovsky.core_lifecycle.JetIQViewModel
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.MessagesRepo
-import com.varpihovsky.jetiq.screens.JetIQViewModel
-import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModel
-import com.varpihovsky.jetiq.screens.messages.contacts.ContactsViewModelData
+import com.varpihovsky.feature_contacts.ContactsViewModel
+import com.varpihovsky.feature_contacts.ContactsViewModelData
 import com.varpihovsky.repo_data.MessageToSendDTO
 import com.varpihovsky.ui_data.dto.UIReceiverDTO
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class NewMessageViewModel @Inject constructor(
+class NewMessageViewModel(
     private val dispatchers: CoroutineDispatchers,
     appbarManager: AppbarManager,
     private val navigationController: NavigationController,

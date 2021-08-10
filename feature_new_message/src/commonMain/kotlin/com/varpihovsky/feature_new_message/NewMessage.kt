@@ -1,4 +1,4 @@
-package com.varpihovsky.jetiq.screens.messages.create
+package com.varpihovsky.feature_new_message
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
@@ -17,7 +17,6 @@ package com.varpihovsky.jetiq.screens.messages.create
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
@@ -29,53 +28,17 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.varpihovsky.jetiq.ui.compose.Avatar
-import com.varpihovsky.jetiq.ui.compose.BackIconButton
-import com.varpihovsky.jetiq.ui.compose.InfoCard
-import com.varpihovsky.jetiq.ui.compose.getSizeByDensity
-import com.varpihovsky.jetiq.ui.theme.JetIQTheme
+import com.varpihovsky.core_ui.compose.widgets.Avatar
+import com.varpihovsky.core_ui.compose.widgets.BackIconButton
+import com.varpihovsky.core_ui.compose.widgets.InfoCard
 import com.varpihovsky.ui_data.dto.ReceiverType
 import com.varpihovsky.ui_data.dto.UIReceiverDTO
-
-@Preview
-@Composable
-fun NewMessageScreenPreviewLight() {
-    val messageFieldValue = remember { mutableStateOf("") }
-
-    JetIQTheme(darkTheme = false) {
-        NewMessageScreen(
-            scrollState = rememberScrollState(),
-            receivers = listOf(
-                UIReceiverDTO(1, "Some Person", ReceiverType.TEACHER),
-                UIReceiverDTO(2, "Some PersonSome Person", ReceiverType.TEACHER),
-                UIReceiverDTO(
-                    3,
-                    "Some PersonSome PersonSome PersonSome Person",
-                    ReceiverType.TEACHER
-                ),
-                UIReceiverDTO(4, "Some PersonSome Person", ReceiverType.TEACHER),
-                UIReceiverDTO(
-                    5,
-                    "Some PersonSome PersonSome PersonSome PersonSome Person",
-                    ReceiverType.TEACHER
-                )
-            ),
-            onReceiverRemove = {},
-            onNewReceiverButtonClick = {},
-            messageFieldValue = messageFieldValue.value,
-            onMessageValueChange = { messageFieldValue.value = it },
-            onSendClick = {}
-        )
-    }
-}
+import com.varpihovsky.ui_data.dto.getPhotoURL
 
 @Composable
 fun NewMessageScreen(
@@ -85,8 +48,6 @@ fun NewMessageScreen(
         title = "Нове повідомлення...",
         icon = { BackIconButton(onClick = newMessageViewModel::onBackNavButtonClick) }
     )
-
-    BackHandler(true, onBack = newMessageViewModel::onBackNavButtonClick)
 
     NewMessageScreen(
         scrollState = rememberScrollState(),
@@ -189,7 +150,6 @@ fun Receiver(
                     .size(65.dp)
                     .padding(end = 10.dp),
                 url = receiver.getPhotoURL(),
-                size = getSizeByDensity(size = 45)
             )
             Text(
                 text = receiver.text,
