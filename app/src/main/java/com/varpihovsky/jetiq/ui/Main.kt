@@ -16,6 +16,7 @@
  */
 package com.varpihovsky.jetiq.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -36,6 +37,7 @@ import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.di.get
 import com.varpihovsky.core.eventBus.EventBus
 import com.varpihovsky.core.exceptions.ExceptionEventManager
+import com.varpihovsky.core_lifecycle.JetIQViewModel
 import com.varpihovsky.core_nav.dsl.DisplayNavigation
 import com.varpihovsky.core_nav.main.EntryType
 import com.varpihovsky.core_nav.main.JetNav
@@ -46,15 +48,25 @@ import com.varpihovsky.core_ui.compose.ExceptionProcessor
 import com.varpihovsky.core_ui.compose.widgets.Appbar
 import com.varpihovsky.core_ui.compose.widgets.InfoCard
 import com.varpihovsky.feature_auth.Auth
+import com.varpihovsky.feature_auth.AuthViewModel
 import com.varpihovsky.feature_contacts.ContactsScreen
+import com.varpihovsky.feature_contacts.ContactsViewModel
 import com.varpihovsky.feature_messages.MessagesScreen
+import com.varpihovsky.feature_messages.MessagesViewModel
 import com.varpihovsky.feature_new_message.NewMessageScreen
+import com.varpihovsky.feature_new_message.NewMessageViewModel
 import com.varpihovsky.feature_profile.Profile
+import com.varpihovsky.feature_profile.ProfileViewModel
 import com.varpihovsky.feature_settings.about.AboutSettingsScreen
+import com.varpihovsky.feature_settings.about.AboutSettingsViewModel
 import com.varpihovsky.feature_settings.general.GeneralSettingsScreen
+import com.varpihovsky.feature_settings.general.GeneralSettingsViewModel
 import com.varpihovsky.feature_settings.main.MainSettingsScreen
+import com.varpihovsky.feature_settings.main.MainSettingsViewModel
 import com.varpihovsky.feature_subjects.markbook.MarkbookSubjectScreen
+import com.varpihovsky.feature_subjects.markbook.MarkbookSubjectViewModel
 import com.varpihovsky.feature_subjects.success.SuccessSubjectScreen
+import com.varpihovsky.feature_subjects.success.SuccessSubjectViewModel
 import com.varpihovsky.jetiq.NavigationViewModel
 import soup.compose.material.motion.*
 
@@ -159,7 +171,7 @@ fun initNavigation(
     JetNav.createControllerIfNotCreated(eventBus, startDestination) {
         entry {
             val entryRoute = NavigationDirections.authentication.destination
-            composable = { Auth(viewModel = get()) }
+            composable = { handleBackPress(get<AuthViewModel>()) { Auth(viewModel = it) } }
             route = entryRoute
             entryType = EntryType.SubMenu
             inAnimation = materialSharedAxisYIn(forward = true, slideDistance = 200)
@@ -167,7 +179,8 @@ fun initNavigation(
         }
         entry {
             val entryRoute = NavigationDirections.newMessage.destination
-            composable = { NewMessageScreen(newMessageViewModel = get()) }
+            composable =
+                { handleBackPress(get<NewMessageViewModel>()) { NewMessageScreen(newMessageViewModel = it) } }
             route = entryRoute
             entryType = EntryType.SubMenu
             inAnimation = materialElevationScaleIn()
@@ -175,7 +188,8 @@ fun initNavigation(
         }
         entry {
             val entryRoute = NavigationDirections.contacts.destination
-            composable = { ContactsScreen(contactsViewModel = get()) }
+            composable =
+                { handleBackPress(get<ContactsViewModel>()) { ContactsScreen(contactsViewModel = it) } }
             route = entryRoute
             entryType = EntryType.SubMenu
             inAnimation = materialFadeThroughIn()
@@ -183,7 +197,11 @@ fun initNavigation(
         }
         entry {
             val entryRoute = NavigationDirections.mainSettings.destination
-            composable = { MainSettingsScreen(mainSettingsViewModel = get()) }
+            composable = {
+                handleBackPress(get<MainSettingsViewModel>()) {
+                    MainSettingsScreen(mainSettingsViewModel = it)
+                }
+            }
             route = entryRoute
             entryType = EntryType.SubMenu
             inAnimation = materialFadeThroughIn()
@@ -191,8 +209,11 @@ fun initNavigation(
         }
         entry {
             val entryRoute = NavigationDirections.aboutSettings.destination
-            composable =
-                { AboutSettingsScreen(aboutSettingsViewModel = get()) }
+            composable = {
+                handleBackPress(get<AboutSettingsViewModel>()) {
+                    AboutSettingsScreen(aboutSettingsViewModel = it)
+                }
+            }
             route = entryRoute
             entryType = EntryType.SubMenu
             inAnimation = materialElevationScaleIn()
@@ -200,8 +221,11 @@ fun initNavigation(
         }
         entry {
             val entryRoute = NavigationDirections.generalSettings.destination
-            composable =
-                { GeneralSettingsScreen(generalSettingsViewModel = get()) }
+            composable = {
+                handleBackPress(get<GeneralSettingsViewModel>()) {
+                    GeneralSettingsScreen(generalSettingsViewModel = it)
+                }
+            }
             route = entryRoute
             entryType = EntryType.SubMenu
             inAnimation = materialElevationScaleIn()
@@ -209,8 +233,11 @@ fun initNavigation(
         }
         entry {
             val entryRoute = NavigationDirections.markbookSubject.destination
-            composable =
-                { MarkbookSubjectScreen(markbookSubjectViewModel = get()) }
+            composable = {
+                handleBackPress(get<MarkbookSubjectViewModel>()) {
+                    MarkbookSubjectScreen(markbookSubjectViewModel = it)
+                }
+            }
             route = entryRoute
             entryType = EntryType.SubMenu
             inAnimation = materialSharedAxisYIn(forward = true, slideDistance = 200)
@@ -218,8 +245,11 @@ fun initNavigation(
         }
         entry {
             val entryRoute = NavigationDirections.successSubject.destination
-            composable =
-                { SuccessSubjectScreen(markbookSubjectViewModel = get()) }
+            composable = {
+                handleBackPress(get<SuccessSubjectViewModel>()) {
+                    SuccessSubjectScreen(markbookSubjectViewModel = it)
+                }
+            }
             route = entryRoute
             entryType = EntryType.SubMenu
             inAnimation = materialSharedAxisYIn(forward = true, slideDistance = 200)
@@ -227,7 +257,8 @@ fun initNavigation(
         }
         entry {
             val entryRoute = NavigationDirections.messages.destination
-            composable = { MessagesScreen(viewModel = get()) }
+            composable =
+                { handleBackPress(get<MessagesViewModel>()) { MessagesScreen(viewModel = it) } }
             route = entryRoute
             entryType = EntryType.Main
             inAnimation = materialSharedAxisXIn(forward = true, slideDistance = 200)
@@ -236,8 +267,14 @@ fun initNavigation(
         entry {
             val entryRoute = NavigationDirections.profile.destination
             applyPaddingValues = false
-            composable =
-                { Profile(profileViewModel = get(), paddingValues = it) }
+            composable = { values ->
+                handleBackPress(get<ProfileViewModel>()) {
+                    Profile(
+                        profileViewModel = get(),
+                        paddingValues = values
+                    )
+                }
+            }
             route = entryRoute
             entryType = EntryType.Main
             inAnimation = materialSharedAxisXIn(forward = true, slideDistance = 200)
@@ -246,6 +283,15 @@ fun initNavigation(
     }
 
     return JetNav.getController()
+}
+
+@Composable
+inline fun <reified T : JetIQViewModel> handleBackPress(
+    viewModel: T,
+    screen: @Composable (T) -> Unit
+) {
+    BackHandler(true, viewModel::onBackNavButtonClick)
+    screen(viewModel)
 }
 
 @ExperimentalAnimationApi
