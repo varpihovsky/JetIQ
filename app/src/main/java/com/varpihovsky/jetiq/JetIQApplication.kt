@@ -31,6 +31,7 @@ import com.varpihovsky.feature_new_message.NewMessageModule
 import com.varpihovsky.feature_profile.ProfileModule
 import com.varpihovsky.feature_settings.SettingsModule
 import com.varpihovsky.feature_subjects.SubjectsModule
+import com.varpihovsky.jetiq.di.ApplicationModule
 import com.varpihovsky.jetiq.services.SessionRestorationWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -50,6 +51,7 @@ class JetIQApplication : Application(), KoinComponent {
     private val workManager by lazy { WorkManager.getInstance(this) }
 
     private val modules = listOf(
+        ApplicationModule.module,
         CoreModule.module,
         DatabaseModule.module,
         NavigationModule.module,
