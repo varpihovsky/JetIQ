@@ -16,34 +16,25 @@
  */
 package com.varpihovsky.jetiq.di
 
+import com.varpihovsky.core.di.viewModel
 import com.varpihovsky.core.util.CoroutineDispatchers
-import com.varpihovsky.core.util.Validator
+import com.varpihovsky.jetiq.NavigationViewModel
 import com.varpihovsky.jetiq.services.NotificationWorker
 import com.varpihovsky.jetiq.services.SessionRestorationWorker
 import kotlinx.coroutines.Dispatchers
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.dsl.worker
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 object ApplicationModule {
     val module = module {
-        factory(qualifier = named("login_checker")) { provideLoginChecker() }
-        factory(qualifier = named("password_checker")) { providePasswordChecker() }
+        viewModel { NavigationViewModel(get(), get()) }
+
         factory {
             CoroutineDispatchers(Dispatchers.IO, Dispatchers.Default, Dispatchers.Unconfined)
         }
 
-        worker { NotificationWorker(get(), get(), get()) }
+        worker { NotificationWorker(androidContext(), get(), get()) }
         worker { SessionRestorationWorker(get(), get(), get()) }
-    }
-
-    private fun provideLoginChecker() = object : Validator<String> {
-        override fun validate(t: String): Boolean =
-            t.isNotEmpty()
-    }
-
-    private fun providePasswordChecker() = object : Validator<String> {
-        override fun validate(t: String): Boolean =
-            t.isNotEmpty()
     }
 }

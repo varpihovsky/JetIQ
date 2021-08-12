@@ -17,9 +17,9 @@ package com.varpihovsky.core.util
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface Validator<T> {
+interface Validator {
     /**
      * Should return true if parameter passes checking.
      */
-    fun validate(t: T): Boolean
+    fun validate(t: String): Boolean
 }

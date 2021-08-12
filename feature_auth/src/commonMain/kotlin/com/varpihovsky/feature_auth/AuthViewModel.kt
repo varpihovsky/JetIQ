@@ -34,8 +34,8 @@ import kotlinx.coroutines.launch
 class AuthViewModel(
     private val dispatchers: CoroutineDispatchers,
     private val profileRepo: ProfileRepo,
-    private val loginValidator: Validator<String>,
-    private val passwordValidator: Validator<String>,
+    private val loginValidator: Validator,
+    private val passwordValidator: Validator,
     override val navigationController: NavigationController,
     appbarManager: AppbarManager,
     exceptionEventManager: ExceptionEventManager,
