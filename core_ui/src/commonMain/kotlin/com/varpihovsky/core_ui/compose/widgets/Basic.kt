@@ -184,16 +184,35 @@ expect fun PasswordFieldIcon(
 )
 
 @Composable
-expect fun DropDownMenu(
+fun DropDownMenu(
     modifier: Modifier = Modifier,
+    expanded: Boolean,
+    onDismissRequest: () -> Unit,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    DropDownMenuActual(modifier, expanded, onDismissRequest, content)
+}
+
+@Composable
+internal expect fun DropDownMenuActual(
+    modifier: Modifier,
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     content: @Composable ColumnScope.() -> Unit
 )
 
 @Composable
-expect fun DropDownMenuItem(
+fun DropDownMenuItem(
     modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    content: @Composable RowScope.() -> Unit
+) {
+    DropDownMenuItemActual(modifier, onClick, content)
+}
+
+@Composable
+internal expect fun DropDownMenuItemActual(
+    modifier: Modifier,
     onClick: () -> Unit,
     content: @Composable RowScope.() -> Unit
 )

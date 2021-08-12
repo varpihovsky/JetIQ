@@ -36,7 +36,8 @@ import io.kamel.image.KamelImage
 import io.kamel.image.config.Default
 import io.kamel.image.config.LocalKamelConfig
 import io.kamel.image.lazyPainterResource
-import io.ktor.client.utils.*
+import io.ktor.client.utils.CacheControl
+import io.ktor.http.*
 
 @Composable
 fun Avatar(
@@ -47,6 +48,8 @@ fun Avatar(
     placeholderEnabled: Boolean = true,
     contentScale: ContentScale = ContentScale.Fit
 ) {
+    if (url.isEmpty()) return
+
     val currentModifier = when (transformation) {
         Transformation.CircleCropTransformation -> modifier.clip(CircleShape)
         null -> modifier
@@ -60,7 +63,7 @@ fun Avatar(
             colorFilter = colorFilter,
             onLoading = { AvatarPlaceholder(placeholderEnabled) },
             onFailure = { AvatarPlaceholder(placeholderEnabled) },
-            resource = lazyPainterResource(url) {
+            resource = lazyPainterResource(data = Url(url)) {
                 this.requestBuilder {
                     cacheControl(CacheControl.MAX_AGE)
                 }

@@ -63,7 +63,7 @@ fun Appbar(appbarManager: AppbarManager) {
         enter = expandVertically(expandFrom = Alignment.CenterVertically, clip = false),
         exit = shrinkVertically(shrinkTowards = Alignment.CenterVertically)
     ) {
-        bar.value?.invoke() ?: TopAppBar(
+        TopAppBar(
             title = {
                 MaterialSharedAxisY(
                     targetState = title.value,

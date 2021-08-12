@@ -28,7 +28,7 @@ import androidx.compose.ui.res.painterResource
 import com.varpihovsky.core_ui.R
 
 @Composable
-actual fun DropDownMenu(
+internal actual fun DropDownMenuActual(
     modifier: Modifier,
     expanded: Boolean,
     onDismissRequest: () -> Unit,
@@ -42,7 +42,7 @@ actual fun DropDownMenu(
 }
 
 @Composable
-actual fun DropDownMenuItem(
+internal actual fun DropDownMenuItemActual(
     modifier: Modifier,
     onClick: () -> Unit,
     content: @Composable RowScope.() -> Unit
