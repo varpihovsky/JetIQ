@@ -19,6 +19,7 @@ package com.varpihovsky.feature_subjects.markbook
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import com.varpihovsky.core_lifecycle.assignAppbar
 import com.varpihovsky.core_ui.compose.widgets.BackIconButton
 import com.varpihovsky.core_ui.compose.widgets.SubjectInfo
 import com.varpihovsky.repo_data.MarkbookSubjectDTO

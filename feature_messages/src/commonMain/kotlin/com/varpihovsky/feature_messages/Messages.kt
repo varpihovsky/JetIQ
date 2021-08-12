@@ -25,16 +25,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Message
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.varpihovsky.core_lifecycle.assignAppbar
 import com.varpihovsky.core_ui.compose.entities.MessageItem
-import com.varpihovsky.core_ui.compose.widgets.MessageIcon
-import com.varpihovsky.core_ui.compose.widgets.PersonIcon
 import com.varpihovsky.ui_data.dto.UIMessageDTO
 
 @ExperimentalAnimationApi
@@ -46,7 +49,10 @@ fun MessagesScreen(viewModel: MessagesViewModel) {
         icon = null,
         actions = {
             IconButton(onClick = viewModel::onContactsClick) {
-                PersonIcon()
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = null
+                )
             }
         }
     )
@@ -94,7 +100,11 @@ fun MessagesList(messages: List<UIMessageDTO>) {
 fun NewMessageButton(onClick: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
         FloatingActionButton(onClick = onClick, modifier = Modifier.padding(20.dp)) {
-            MessageIcon(MaterialTheme.colors.onPrimary)
+            Icon(
+                imageVector = Icons.Default.Message,
+                contentDescription = null,
+                tint = MaterialTheme.colors.onPrimary
+            )
         }
     }
 }

@@ -17,7 +17,6 @@ package com.varpihovsky.core_nav.main
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
@@ -39,7 +38,6 @@ internal sealed class NavigationOperation {
     class Finish(private val onFinished: () -> Unit) : NavigationOperation() {
         private var isProcessed = false
 
-        @SuppressLint("ComposableNaming")
         @Composable
         fun process(block: @Composable () -> Unit) {
             if (!isProcessed) {

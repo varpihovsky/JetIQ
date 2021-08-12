@@ -22,7 +22,7 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 @Entity
-actual data class MessageDTO(
+actual data class MessageDTO actual constructor(
     @SerializedName("body")
     actual val body: String?,
     @SerializedName("id_from")

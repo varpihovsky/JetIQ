@@ -26,9 +26,10 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
-import com.varpihovsky.core.di.getViewModel
+import com.varpihovsky.core.di.get
 import com.varpihovsky.core.util.Selectable
 import com.varpihovsky.core.util.selectedOnly
+import com.varpihovsky.core_lifecycle.assignAppbar
 import com.varpihovsky.core_ui.compose.entities.ContactList
 import com.varpihovsky.core_ui.compose.widgets.BackIconButton
 import com.varpihovsky.feature_contacts.addition.AdditionDialog
@@ -52,7 +53,7 @@ fun ContactsScreen(
 
     if (contactsViewModel.data.isAdding.value) {
         AdditionDialog(
-            contactAdditionViewModel = getViewModel(),
+            contactAdditionViewModel = get(),
             onDismissRequest = contactsViewModel::onDismissRequest,
             onConfirmButtonClick = contactsViewModel::onConfirmButtonClick
         )

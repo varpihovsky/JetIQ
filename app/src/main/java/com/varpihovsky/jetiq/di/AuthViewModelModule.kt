@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.di
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,27 +14,35 @@ package com.varpihovsky.jetiq.di
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.jetiq.di
 
+import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core.util.Validator
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
-import javax.inject.Named
+import com.varpihovsky.jetiq.services.NotificationWorker
+import com.varpihovsky.jetiq.services.SessionRestorationWorker
+import kotlinx.coroutines.Dispatchers
+import org.koin.androidx.workmanager.dsl.worker
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 
-@Module
-@InstallIn(ViewModelComponent::class)
-object AuthViewModelModule {
-    @Named("login_checker")
-    @Provides
-    fun provideLoginChecker() = object : Validator<String> {
+object ApplicationModule {
+    val module = module {
+        factory(qualifier = named("login_checker")) { provideLoginChecker() }
+        factory(qualifier = named("password_checker")) { providePasswordChecker() }
+        factory {
+            CoroutineDispatchers(Dispatchers.IO, Dispatchers.Default, Dispatchers.Unconfined)
+        }
+
+        worker { NotificationWorker(get(), get(), get()) }
+        worker { SessionRestorationWorker(get(), get(), get()) }
+    }
+
+    private fun provideLoginChecker() = object : Validator<String> {
         override fun validate(t: String): Boolean =
             t.isNotEmpty()
     }
 
-    @Named("password_checker")
-    @Provides
-    fun providePasswordChecker() = object : Validator<String> {
+    private fun providePasswordChecker() = object : Validator<String> {
         override fun validate(t: String): Boolean =
             t.isNotEmpty()
     }

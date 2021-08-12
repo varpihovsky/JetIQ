@@ -1,12 +1,10 @@
 package com.varpihovsky.core_network.multiplatform
 
-import kotlin.jvm.JvmName
 
 interface Headers {
     operator fun get(name: String): String?
 
     /** Returns the number of field values. */
-    @get:JvmName("size")
     val size: Int
 
     /** Returns the field at `position`. */

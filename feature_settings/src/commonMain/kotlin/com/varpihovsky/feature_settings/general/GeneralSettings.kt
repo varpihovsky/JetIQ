@@ -18,6 +18,7 @@ package com.varpihovsky.feature_settings.general
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import com.varpihovsky.core_lifecycle.assignAppbar
 import com.varpihovsky.core_ui.compose.widgets.BackIconButton
 import com.varpihovsky.repo_data.UserPreferences
 import com.varpihovsky.ui_data.dto.DropDownItem

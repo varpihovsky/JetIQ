@@ -30,7 +30,7 @@ object Plugins {
 }
 
 fun PluginDependenciesSpec.parcelize() = id("kotlin-parcelize")
-fun PluginDependenciesSpec.feature() = id(Plugins.feature)
+fun PluginDependenciesSpec.feature() = id(Plugins.android_library)
 fun PluginDependenciesSpec.compose() = id(Plugins.compose_multiplatform)
 fun PluginDependenciesSpec.multiplatform() = kotlin("multiplatform")
 fun PluginDependenciesSpec.androidLib() = id(Plugins.android_library)

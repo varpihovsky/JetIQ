@@ -20,14 +20,24 @@ import androidx.compose.runtime.State
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.lifecycle.viewModelScope
-import com.varpihovsky.core.util.*
+import com.varpihovsky.core.util.CoroutineDispatchers
+import com.varpihovsky.core.util.Selectable
+import com.varpihovsky.core.util.SelectionEngine
+import com.varpihovsky.core.util.selectedOnly
 import com.varpihovsky.core_lifecycle.JetIQViewModel
+import com.varpihovsky.core_lifecycle.mutableStateOf
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.ListRepo
 import com.varpihovsky.core_repo.repo.ProfileRepo
-import com.varpihovsky.ui_data.dto.*
+import com.varpihovsky.ui_data.dto.ContactTypeDropDownItem
+import com.varpihovsky.ui_data.dto.DropDownItem
+import com.varpihovsky.ui_data.dto.ReceiverType
+import com.varpihovsky.ui_data.dto.UIReceiverDTO
 import com.varpihovsky.ui_data.mappers.toUIDTO
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class ContactAdditionViewModel(

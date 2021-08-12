@@ -17,9 +17,9 @@ package com.varpihovsky.core_repo.repo
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import android.util.Log
 import com.varpihovsky.core.Refreshable
 import com.varpihovsky.core.exceptions.ExceptionEventManager
+import com.varpihovsky.core.log.e
 import com.varpihovsky.core_db.dao.ConfidentialDAO
 import com.varpihovsky.core_db.dao.ProfileDAO
 import com.varpihovsky.core_db.dao.SubjectDAO
@@ -149,7 +149,7 @@ private class SubjectRepoImpl constructor(
             try {
                 launchAllJobsWithTimeout()
             } catch (e: TimeoutCancellationException) {
-                Log.e("Repo", Log.getStackTraceString(e))
+                e(e.stackTraceToString())
             }
 
             isLoading.value = false

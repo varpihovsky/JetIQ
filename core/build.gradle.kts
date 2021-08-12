@@ -5,6 +5,7 @@ plugins {
     id(Plugins.android_library)
     kotlin("kapt")
     parcelize()
+    compose()
 }
 
 group = Config.group
@@ -18,10 +19,9 @@ kotlin {
             dependencies {
                 implementation(CommonDependencies.koin_core)
 
-                implementation(compose.runtime)
-
-                implementation(compose.ui)
-                implementation(compose.foundation)
+                api(compose.runtime)
+                api(compose.ui)
+                api(compose.foundation)
 
             }
         }
@@ -41,69 +41,32 @@ kotlin {
                 implementation(Compose.koin_compose)
 
                 implementation(AndroidDependencies.lifecycle_view_model)
-
-                implementation(Compose.lifecycle_runtime)
-                implementation(Compose.view_model_compose)
             }
         }
     }
 }
 
 android {
-    compileSdkVersion(AndroidConfig.compile_sdk)
+    compileSdk = AndroidConfig.compile_sdk
     buildToolsVersion = AndroidConfig.build_tools_version
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdkVersion(AndroidConfig.min_sdk)
-        targetSdkVersion(AndroidConfig.target_sdk)
+        minSdk = AndroidConfig.min_sdk
+        targetSdk = AndroidConfig.target_sdk
 
-        consumerProguardFiles("consumer-rules.pro")
+        //      consumerProguardFiles("consumer-rules.pro")
     }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = AndroidConfig.release_minify
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = Versions.compose_version
+//    buildTypes {
+//        getByName("release") {
+//            isMinifyEnabled = AndroidConfig.release_minify
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro"
+//            )
+//        }
+//    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
-
-//dependencies {
-//    //Dagger
-//    implementation(AndroidDependencies.hilt)
-//    kapt(AndroidDependencies.hilt_compiler)
-//    kapt(AndroidDependencies.hilt_androidx_compiler)
-//    implementation(AndroidDependencies.hilt_work)
-//
-//    // For local unit tests
-//    testImplementation(AndroidDependencies.hilt_testing)
-//    kaptTest(AndroidDependencies.hilt_compiler)
-//
-//    // Core
-//    implementation(AndroidDependencies.core)
-//    implementation(AndroidDependencies.app_compat)
-//    implementation(AndroidDependencies.material)
-//
-//    implementation(Compose.activity_compose)
-//    implementation(Compose.view_model_compose)
-//    implementation(Compose.compose_livedata)
-//
-//    // JUnit
-//    testImplementation(TestDependencies.junit)
-//    androidTestImplementation(TestDependencies.junit_ext)
-//    androidTestImplementation(TestDependencies.compose_test)
-//    testImplementation(TestDependencies.core_testing)
-//    testImplementation(TestDependencies.coroutines_test)
-//
-//    // Mockk
-//    testImplementation(TestDependencies.mockk)
-//    androidTestImplementation(TestDependencies.mockk_android)
-//}

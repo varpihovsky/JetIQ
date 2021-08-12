@@ -1,4 +1,4 @@
-package com.varpihovsky.repo_data
+package com.varpihovsky.ui_data.dto
 
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
@@ -17,22 +17,12 @@ package com.varpihovsky.repo_data
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-@Entity
-actual data class ProfileDTO(
-    actual val course_num: Int,
-    actual val d_id: String,
-    actual val d_name: String,
-    actual val dob: String?,
-    actual val email: String,
-    actual val f_id: String,
-    actual val gr_id: String,
-    actual val gr_name: String,
-    @PrimaryKey(autoGenerate = false) actual val id: String,
-    actual val photo_url: String,
-    actual val session: String?,
-    actual val spec_id: String,
-    actual val u_name: String
-)
+@Parcelize
+actual data class UIReceiverDTO actual constructor(
+    actual val id: Int,
+    actual val text: String,
+    actual val type: ReceiverType
+) : Parcelable

@@ -17,9 +17,9 @@ package com.varpihovsky.core_repo.repo
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import android.util.Log
 import com.varpihovsky.core.Refreshable
 import com.varpihovsky.core.exceptions.ExceptionEventManager
+import com.varpihovsky.core.log.e
 import com.varpihovsky.core_db.dao.ConfidentialDAO
 import com.varpihovsky.core_db.dao.MessageDAO
 import com.varpihovsky.core_db.dao.ProfileDAO
@@ -102,7 +102,7 @@ private class MessagesRepoImpl constructor(
             try {
                 launchWithTimeout()
             } catch (e: TimeoutCancellationException) {
-                Log.e("Application", Log.getStackTraceString(e))
+                e(e.stackTraceToString())
             }
 
             delay(LOADING_DELAY)

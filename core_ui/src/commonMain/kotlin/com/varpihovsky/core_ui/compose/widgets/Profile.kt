@@ -19,6 +19,9 @@ package com.varpihovsky.core_ui.compose.widgets
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
@@ -71,7 +74,10 @@ fun Avatar(
 private fun AvatarPlaceholder(placeholderEnabled: Boolean) {
     Box(Modifier.fillMaxSize()) {
         if (placeholderEnabled) {
-            PersonIcon()
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = null
+            )
         }
     }
 }

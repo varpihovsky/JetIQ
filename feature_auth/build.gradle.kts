@@ -23,9 +23,14 @@ kotlin {
 
                 implementation(CommonDependencies.koin_core)
 
-                implementation(compose.ui)
-                implementation(compose.material)
-                implementation(compose.foundation)
+                api(compose.ui)
+                api(compose.material)
+                api(compose.foundation)
+            }
+        }
+        val androidMain by getting {
+            dependencies {
+                implementation(AndroidDependencies.lifecycle_view_model)
             }
         }
     }
@@ -37,13 +42,17 @@ android {
         minSdk = AndroidConfig.min_sdk
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
+//    buildTypes {
+//        release {
+//            isMinifyEnabled = false
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro"
+//            )
+//        }
+//    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }

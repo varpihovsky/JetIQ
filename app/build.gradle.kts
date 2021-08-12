@@ -1,41 +1,48 @@
+import org.jetbrains.compose.compose
+
 plugins {
     id(Plugins.android_application)
     kotlin("android")
     kotlin("kapt")
+    compose()
     parcelize()
 }
 
 android {
-    compileSdkVersion(AndroidConfig.compile_sdk)
+    compileSdk = AndroidConfig.compile_sdk
     defaultConfig {
         applicationId = AndroidConfig.application_id
-        minSdkVersion(AndroidConfig.min_sdk)
-        targetSdkVersion(AndroidConfig.target_sdk)
+        minSdk = AndroidConfig.min_sdk
+        targetSdk = AndroidConfig.target_sdk
         versionCode = AndroidConfig.version_code
         versionName = AndroidConfig.application_version
     }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = AndroidConfig.release_minify
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
+//    buildTypes {
+//        getByName("release") {
+//            isMinifyEnabled = AndroidConfig.release_minify
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro"
+//            )
+//        }
+//    }
+//    testOptions {
+//        unitTests.isReturnDefaultValues = true
+//    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
-    buildFeatures {
-        compose = true
+}
+
+configurations {
+    "implementation" {
+        exclude(group = "androidx.compose.animation")
+        exclude(group = "androidx.compose.foundation")
+        exclude(group = "androidx.compose.material")
+        exclude(group = "androidx.compose.runtime")
+        exclude(group = "androidx.compose.ui")
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = Versions.compose_version
-    }
-    testOptions {
-        unitTests.isReturnDefaultValues = true
-    }
-    dynamicFeatures += setOf(
-        ":feature_profile", ":feature_messages", ":feature_contacts",
-        ":feature_new_message", ":feature_auth", ":feature_settings", ":feature_subjects"
-    )
 }
 
 dependencies {
@@ -45,6 +52,7 @@ dependencies {
     implementation(uiData())
     implementation(repoData())
     implementation(project(Modules.core_ui))
+    implementation(project(Modules.core_lifecycle))
     implementation(project(Modules.feature_auth))
     implementation(project(Modules.feature_contacts))
     implementation(project(Modules.feature_messages))
@@ -67,27 +75,18 @@ dependencies {
     implementation(Compose.activity_compose)
     implementation(Compose.view_model_compose)
     implementation(Compose.compose_livedata)
+    implementation(AndroidDependencies.lifecycle_view_model)
 
     // Compose
-    implementation(Compose.ui)
-    implementation(Compose.material)
-    implementation(Compose.ui_tooling)
-
-    // Calpose
-    //implementation(Compose.calpose)
-    implementation(AndroidDependencies.threetenbp)
-
-    // Retrofit
-    implementation(Dependencies.retrofit)
-    implementation(Dependencies.retrofit_converter)
+    api(compose.ui)
+    api(compose.material)
+    api(compose.uiTooling)
+    implementation(Compose.material_motion)
 
     //koin
     implementation(CommonDependencies.koin_core)
     implementation(AndroidDependencies.koin_android)
     implementation(AndroidDependencies.koin_work_manager)
-
-    // Accompanist
-    implementation(AndroidDependencies.swipe_refresh)
 
     // WorkManager
     implementation(AndroidDependencies.work)
@@ -95,17 +94,10 @@ dependencies {
     // JUnit
     testImplementation(TestDependencies.junit)
     androidTestImplementation(TestDependencies.junit_ext)
-    androidTestImplementation(TestDependencies.compose_test)
     testImplementation(TestDependencies.core_testing)
     testImplementation(TestDependencies.coroutines_test)
 
     // Mockk
     testImplementation(TestDependencies.mockk)
     androidTestImplementation(TestDependencies.mockk_android)
-
-    // Espresso
-    androidTestImplementation(TestDependencies.espresso)
-
-    implementation(AndroidDependencies.preferences)
-    implementation(Compose.material_motion)
 }

@@ -15,7 +15,6 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(Dependencies.retrofit_converter)
             }
         }
         val androidMain by getting {
@@ -25,6 +24,7 @@ kotlin {
                 implementation(AndroidDependencies.room)
                 kapt(AndroidDependencies.room_compiler)
 
+                implementation(Dependencies.retrofit_converter)
                 implementation(AndroidDependencies.core)
             }
         }
@@ -38,15 +38,19 @@ android {
         minSdkVersion(AndroidConfig.min_sdk)
         targetSdkVersion(AndroidConfig.target_sdk)
 
-        consumerProguardFiles("consumer-rules.pro")
+//        consumerProguardFiles("consumer-rules.pro")
     }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = AndroidConfig.release_minify
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
+//    buildTypes {
+//        getByName("release") {
+//            isMinifyEnabled = AndroidConfig.release_minify
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro"
+//            )
+//        }
+//    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }

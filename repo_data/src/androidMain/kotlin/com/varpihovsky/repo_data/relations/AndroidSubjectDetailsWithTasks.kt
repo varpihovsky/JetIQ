@@ -22,8 +22,8 @@ import androidx.room.Relation
 import com.varpihovsky.repo_data.SubjectDetailsDTO
 import com.varpihovsky.repo_data.SubjectTaskDTO
 
-actual data class SubjectDetailsWithTasks(
-    @Embedded actual val subjectDetailsDTO: SubjectDetailsDTO = SubjectDetailsDTO(),
+actual data class SubjectDetailsWithTasks actual constructor(
+    @Embedded actual val subjectDetailsDTO: SubjectDetailsDTO,
     @Relation(
         parentColumn = "id",
         entityColumn = "subjectDetailsId"

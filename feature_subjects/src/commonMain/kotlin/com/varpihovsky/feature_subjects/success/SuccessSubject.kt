@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.varpihovsky.core_lifecycle.assignAppbar
 import com.varpihovsky.core_ui.compose.entities.TaskList
 import com.varpihovsky.core_ui.compose.widgets.BackIconButton
 import com.varpihovsky.core_ui.compose.widgets.SubjectInfo

@@ -1,5 +1,3 @@
-package com.varpihovsky.feature_contacts
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,14 +14,19 @@ package com.varpihovsky.feature_contacts
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.feature_contacts
 
 import androidx.compose.runtime.State
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.lifecycle.viewModelScope
-import com.varpihovsky.core.util.*
+import com.varpihovsky.core.util.CoroutineDispatchers
+import com.varpihovsky.core.util.Selectable
+import com.varpihovsky.core.util.SelectionEngine
+import com.varpihovsky.core.util.selectedOnly
 import com.varpihovsky.core_lifecycle.JetIQViewModel
+import com.varpihovsky.core_lifecycle.mutableStateOf
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.ListRepo
 import com.varpihovsky.repo_data.ContactDTO
@@ -35,17 +38,14 @@ import kotlinx.coroutines.launch
 class ContactsViewModel(
     private val dispatchers: CoroutineDispatchers,
     appbarManager: AppbarManager,
-    private val navigationController: NavigationController,
+    navigationController: NavigationController,
     private val listModel: ListRepo,
-    private val dataTransferManager: ViewModelDataTransferManager,
+    dataTransferManager: ViewModelDataTransferManager,
     exceptionEventManager: ExceptionEventManager
 ) : JetIQViewModel(appbarManager, navigationController, exceptionEventManager) {
     val data by lazy { Data() }
 
     private val dataTransferFlow = dataTransferManager.getFlowByTag(DATA_TRANSFER_TAG)
-
-    private val dataTransferTask =
-        ReactiveTask(task = this::collectTransferredData, dispatcher = dispatchers.IO)
 
     private val selectionEngine =
         SelectionEngine(
@@ -76,7 +76,7 @@ class ContactsViewModel(
     }
 
     init {
-        dataTransferTask.start()
+        viewModelScope.launch { collectTransferredData() }
     }
 
     private suspend fun collectTransferredData() {

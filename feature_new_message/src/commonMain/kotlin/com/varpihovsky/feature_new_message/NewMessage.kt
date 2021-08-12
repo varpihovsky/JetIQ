@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.varpihovsky.core_lifecycle.assignAppbar
 import com.varpihovsky.core_ui.compose.widgets.Avatar
 import com.varpihovsky.core_ui.compose.widgets.BackIconButton
 import com.varpihovsky.core_ui.compose.widgets.InfoCard

@@ -40,22 +40,20 @@ android {
         minSdkVersion(AndroidConfig.min_sdk)
         targetSdkVersion(AndroidConfig.target_sdk)
 
-        consumerProguardFiles("consumer-rules.pro")
+        //      consumerProguardFiles("consumer-rules.pro")
     }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = AndroidConfig.release_minify
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = Versions.compose_version
+//    buildTypes {
+//        getByName("release") {
+//            isMinifyEnabled = AndroidConfig.release_minify
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro"
+//            )
+//        }
+//    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
 

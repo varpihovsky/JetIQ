@@ -29,6 +29,7 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.varpihovsky.core_lifecycle.emptyAppbar
 import com.varpihovsky.core_ui.compose.foundation.CenterLayout
 import com.varpihovsky.core_ui.compose.foundation.CenterLayoutItem
 import com.varpihovsky.core_ui.compose.widgets.PasswordFieldIcon

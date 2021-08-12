@@ -1,7 +1,5 @@
 package com.varpihovsky.repo_data
 
-import com.google.gson.annotations.SerializedName
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -19,4 +17,17 @@ import com.google.gson.annotations.SerializedName
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-actual data class CSRF(@SerializedName("csrf") actual val body: String)
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
+actual data class ContactDTO actual constructor(
+    @PrimaryKey(autoGenerate = false) actual val id: Int,
+    actual val text: String,
+    actual val type: String
+) {
+    actual companion object {
+        actual val TYPE_STUDENT = "student"
+        actual val TYPE_TEACHER = "teacher"
+    }
+}

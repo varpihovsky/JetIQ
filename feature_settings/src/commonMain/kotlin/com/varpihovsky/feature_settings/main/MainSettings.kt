@@ -21,10 +21,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Help
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.SettingsApplications
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.varpihovsky.core_ui.compose.widgets.*
+import com.varpihovsky.core_lifecycle.assignAppbar
+import com.varpihovsky.core_ui.compose.widgets.BackIconButton
+import com.varpihovsky.core_ui.compose.widgets.FullWidthButton
 
 @Composable
 fun MainSettingsScreen(
@@ -46,19 +53,34 @@ fun MainSettingsScreen(
             title = "Загальне",
             hint = "",
             onClick = mainSettingsViewModel::onGeneralClick,
-            icon = { SettingsApplicationsIcon() }
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.SettingsApplications,
+                    contentDescription = null
+                )
+            }
         )
         FullWidthButton(
             title = "Про додаток",
             hint = "",
             onClick = mainSettingsViewModel::onAboutClick,
-            icon = { HelpIcon() }
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Help,
+                    contentDescription = null
+                )
+            }
         )
         FullWidthButton(
             title = "Вихід",
             hint = "Вийти з облікового запису,\nБАЗА ДАНИХ БУДЕ СТЕРТА!",
             onClick = mainSettingsViewModel::onLogoutClick,
-            icon = { LogoutIcon() }
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Logout,
+                    contentDescription = null
+                )
+            }
         )
     }
 }

@@ -4,6 +4,7 @@ plugins {
     kotlin("multiplatform")
     id(Plugins.android_library)
     kotlin("kapt")
+    compose()
 }
 
 group = Config.group
@@ -20,7 +21,7 @@ kotlin {
                 implementation(project(Modules.core_db))
                 implementation(project(Modules.repo_data))
 
-                implementation(compose.ui)
+                api(compose.ui)
                 implementation(CommonDependencies.coroutines)
                 implementation(CommonDependencies.koin_core)
             }
@@ -61,40 +62,19 @@ android {
         minSdkVersion(AndroidConfig.min_sdk)
         targetSdkVersion(AndroidConfig.target_sdk)
 
-        consumerProguardFiles("consumer-rules.pro")
+//        consumerProguardFiles("consumer-rules.pro")
     }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = AndroidConfig.release_minify
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
+//    buildTypes {
+//        getByName("release") {
+//            isMinifyEnabled = AndroidConfig.release_minify
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro"
+//            )
+//        }
+//    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
-
-//dependencies {
-//    implementation(core())
-//    implementation(coreNetwork())
-//    implementation(coreDB())
-//    implementation(repoData())
-//
-//    implementation(AndroidDependencies.core)
-//
-//    // JUnit
-//    testImplementation(TestDependencies.junit)
-//    androidTestImplementation(TestDependencies.junit_ext)
-//    androidTestImplementation(TestDependencies.compose_test)
-//    testImplementation(TestDependencies.core_testing)
-//    testImplementation(TestDependencies.coroutines_test)
-//
-//    // Preferences
-//    implementation(AndroidDependencies.preferences)
-//
-//    // Mockk
-//    testImplementation(TestDependencies.mockk)
-//    androidTestImplementation(TestDependencies.mockk_android)
-//
-//    implementation(Compose.ui)
-//}

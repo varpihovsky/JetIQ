@@ -27,6 +27,8 @@ import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core.util.ReactiveTask
 import com.varpihovsky.core.util.remove
 import com.varpihovsky.core_lifecycle.JetIQViewModel
+import com.varpihovsky.core_lifecycle.mutableStateOf
+import com.varpihovsky.core_lifecycle.redirectExceptionToUI
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.MessagesRepo
@@ -40,7 +42,7 @@ import kotlinx.coroutines.launch
 class NewMessageViewModel(
     private val dispatchers: CoroutineDispatchers,
     appbarManager: AppbarManager,
-    private val navigationController: NavigationController,
+    override val navigationController: NavigationController,
     viewModelDataTransferManager: ViewModelDataTransferManager,
     private val messagesModel: MessagesRepo,
     exceptionEventManager: ExceptionEventManager

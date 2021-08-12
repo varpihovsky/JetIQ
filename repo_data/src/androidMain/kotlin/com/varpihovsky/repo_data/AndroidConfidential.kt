@@ -1,3 +1,5 @@
+package com.varpihovsky.repo_data
+
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -14,13 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.varpihovsky.core.lifecycle
 
-import kotlinx.coroutines.CoroutineScope
-import androidx.lifecycle.ViewModel as VM
-import androidx.lifecycle.viewModelScope as vmScope
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-actual abstract class ViewModel : VM()
-
-actual val ViewModel.viewModelScope: CoroutineScope
-    get() = vmScope
+@Entity
+actual data class Confidential actual constructor(
+    @PrimaryKey(autoGenerate = false) actual val login: String,
+    actual val password: String
+)

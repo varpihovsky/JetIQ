@@ -23,7 +23,9 @@ import com.varpihovsky.core_lifecycle.JetIQViewModel
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.MessagesRepo
+import com.varpihovsky.ui_data.dto.UIMessageDTO
 import com.varpihovsky.ui_data.mappers.toUIDTO
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class MessagesViewModel(
@@ -32,11 +34,13 @@ class MessagesViewModel(
     appbarManager: AppbarManager,
     exceptionEventManager: ExceptionEventManager,
 ) : JetIQViewModel(appbarManager, navigationManager, exceptionEventManager), Refreshable {
+
     override val isLoading
         get() = messagesModel.isLoading
 
-    val messages = messagesModel.getMessages()
-        .map { messages -> messages.sortedByDescending { it.time.toLong() }.map { it.toUIDTO() } }
+    val messages: Flow<List<UIMessageDTO>>
+        get() = messagesModel.getMessages()
+            .map { messages -> messages.sortedByDescending { it.time.toLong() }.map { it.toUIDTO() } }
 
     init {
         messagesModel.loadMessages()

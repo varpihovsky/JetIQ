@@ -4,6 +4,7 @@ plugins {
     kotlin("multiplatform")
     id(Plugins.android_library)
     kotlin("kapt")
+    compose()
 }
 
 group = Config.group
@@ -19,10 +20,10 @@ kotlin {
                 implementation(project(Modules.ui_data))
                 implementation(project(Modules.repo_data))
 
-                implementation(compose.ui)
-                implementation(compose.foundation)
-                implementation(compose.material)
-                implementation(compose.runtime)
+                api(compose.ui)
+                api(compose.foundation)
+                api(compose.material)
+                api(compose.runtime)
                 implementation(Compose.material_motion)
 
                 implementation(CommonDependencies.kamel)
@@ -46,15 +47,15 @@ android {
         minSdk = AndroidConfig.min_sdk
         targetSdk = AndroidConfig.target_sdk
 
-        consumerProguardFiles("consumer-rules.pro")
+        //      consumerProguardFiles("consumer-rules.pro")
     }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = AndroidConfig.release_minify
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
+//    buildTypes {
+//        getByName("release") {
+//            isMinifyEnabled = AndroidConfig.release_minify
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro"
+//            )
+//        }
+//    }
 }

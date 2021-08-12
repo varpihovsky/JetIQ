@@ -24,6 +24,8 @@ import com.varpihovsky.core.lifecycle.viewModelScope
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core.util.Validator
 import com.varpihovsky.core_lifecycle.JetIQViewModel
+import com.varpihovsky.core_lifecycle.mutableStateOf
+import com.varpihovsky.core_lifecycle.redirectExceptionToUI
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.ProfileRepo
@@ -34,7 +36,7 @@ class AuthViewModel(
     private val profileRepo: ProfileRepo,
     private val loginValidator: Validator<String>,
     private val passwordValidator: Validator<String>,
-    private val navigationController: NavigationController,
+    override val navigationController: NavigationController,
     appbarManager: AppbarManager,
     exceptionEventManager: ExceptionEventManager,
 ) : JetIQViewModel(appbarManager, navigationController, exceptionEventManager) {

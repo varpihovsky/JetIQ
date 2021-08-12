@@ -23,6 +23,8 @@ import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.lifecycle.viewModelScope
 import com.varpihovsky.core.util.CoroutineDispatchers
+import com.varpihovsky.core_lifecycle.JetIQViewModel
+import com.varpihovsky.core_lifecycle.mutableStateOf
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.SubjectRepo
 import com.varpihovsky.repo_data.MarkbookSubjectDTO
@@ -38,7 +40,7 @@ class MarkbookSubjectViewModel(
     appbarManager: AppbarManager,
     navigationController: NavigationController,
     exceptionEventManager: ExceptionEventManager
-) : com.varpihovsky.core_lifecycle.JetIQViewModel(
+) : JetIQViewModel(
     appbarManager,
     navigationController,
     exceptionEventManager

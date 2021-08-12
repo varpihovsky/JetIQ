@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,28 +14,29 @@ package com.varpihovsky.jetiq
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.jetiq
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.varpihovsky.core.lifecycle.ViewModel
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core_nav.main.EntryType
 import com.varpihovsky.core_nav.main.JetNav
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.main.NavigationEntry
-import com.varpihovsky.core_nav.navigation.*
+import com.varpihovsky.core_nav.navigation.BottomNavigationItem
+import com.varpihovsky.core_nav.navigation.BottomNavigationItemFactory
+import com.varpihovsky.core_nav.navigation.NavigationCommand
+import com.varpihovsky.core_nav.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.ProfileRepo
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import javax.inject.Inject
 
-@HiltViewModel
-class NavigationViewModel @Inject constructor(
+class NavigationViewModel(
     private val dispatchers: CoroutineDispatchers,
     private val profileModel: ProfileRepo,
 ) : ViewModel() {

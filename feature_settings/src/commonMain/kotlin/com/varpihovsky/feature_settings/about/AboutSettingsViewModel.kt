@@ -20,13 +20,15 @@ package com.varpihovsky.feature_settings.about
 import androidx.compose.runtime.State
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.exceptions.ExceptionEventManager
+import com.varpihovsky.core_lifecycle.JetIQViewModel
+import com.varpihovsky.core_lifecycle.mutableStateOf
 import com.varpihovsky.core_nav.main.NavigationController
 
 class AboutSettingsViewModel(
     appbarManager: AppbarManager,
     navigationController: NavigationController,
     exceptionEventManager: ExceptionEventManager,
-) : com.varpihovsky.core_lifecycle.JetIQViewModel(
+) : JetIQViewModel(
     appbarManager,
     navigationController,
     exceptionEventManager

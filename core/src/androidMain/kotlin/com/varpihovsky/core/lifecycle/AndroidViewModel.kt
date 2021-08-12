@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.di
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,20 +14,13 @@ package com.varpihovsky.jetiq.di
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core.lifecycle
 
-import com.varpihovsky.core.util.CoroutineDispatchers
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.scopes.ViewModelScoped
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
+import androidx.lifecycle.ViewModel as VM
+import androidx.lifecycle.viewModelScope as vmScope
 
-@Module
-@InstallIn(ViewModelComponent::class)
-object ViewModelModule {
-    @Provides
-    @ViewModelScoped
-    fun provideDispatchers() =
-        CoroutineDispatchers(Dispatchers.IO, Dispatchers.Default, Dispatchers.Unconfined)
-}
+actual typealias ViewModel = VM
+
+actual val ViewModel.viewModelScope: CoroutineScope
+    get() = vmScope

@@ -25,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.zIndex
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.varpihovsky.core_lifecycle.assignAppbar
+import com.varpihovsky.core_lifecycle.emptyAppbar
 import com.varpihovsky.core_ui.compose.foundation.VerticalScrollLayout
 import com.varpihovsky.core_ui.compose.widgets.SettingsIconButton
 import com.varpihovsky.repo_data.ExpandButtonLocation

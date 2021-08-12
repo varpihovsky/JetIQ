@@ -27,9 +27,12 @@ import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.lifecycle.viewModelScope
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core_lifecycle.JetIQViewModel
+import com.varpihovsky.core_lifecycle.mutableStateOf
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.UserPreferencesRepo
+import com.varpihovsky.feature_subjects.markbook.MarkbookSubjectViewModel
+import com.varpihovsky.feature_subjects.success.SuccessSubjectViewModel
 import com.varpihovsky.ui_data.dto.UIProfileDTO
 import com.varpihovsky.ui_data.dto.UISubjectDTO
 import kotlinx.coroutines.flow.*
@@ -38,7 +41,7 @@ import kotlinx.coroutines.launch
 class ProfileViewModel(
     private val dispatchers: CoroutineDispatchers,
     private val profileInteractor: ProfileInteractor,
-    private val navigationController: NavigationController,
+    override val navigationController: NavigationController,
     viewModelDataTransferManager: ViewModelDataTransferManager,
     appbarManager: AppbarManager,
     exceptionEventManager: ExceptionEventManager,

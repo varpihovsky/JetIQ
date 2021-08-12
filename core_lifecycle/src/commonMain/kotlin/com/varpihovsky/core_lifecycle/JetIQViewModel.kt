@@ -16,7 +16,6 @@
  */
 package com.varpihovsky.core_lifecycle
 
-import android.util.Log
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import com.varpihovsky.core.appbar.AppbarCommand
@@ -28,42 +27,41 @@ import com.varpihovsky.core.util.ThreadSafeMutableState
 import com.varpihovsky.core_nav.main.NavigationController
 
 abstract class JetIQViewModel(
-    private val appbarManager: AppbarManager,
-    private val navigationController: NavigationController,
-    private val exceptionEventManager: ExceptionEventManager
+    val appbarManager: AppbarManager,
+    open val navigationController: NavigationController,
+    val exceptionEventManager: ExceptionEventManager
 ) : ViewModel() {
-    fun assignAppbar(
-        title: String? = null,
-        icon: (@Composable () -> Unit)? = null,
-        actions: (@Composable RowScope.() -> Unit)? = null
-    ) {
-        appbarManager.manage(
-            AppbarCommand.Configured(
-                title = title,
-                navIcon = icon,
-                actions = actions
-            )
-        )
-    }
-
-    fun assignAppbar(bar: @Composable () -> Unit) {
-        appbarManager.manage(AppbarCommand.Custom(bar))
-    }
-
-    fun emptyAppbar() {
-        appbarManager.manage(AppbarCommand.Empty)
-    }
-
     open fun onBackNavButtonClick() {
         navigationController.onBack()
     }
+}
 
-    protected fun redirectExceptionToUI(exception: Exception) {
-        Log.d("ViewModels", Log.getStackTraceString(exception))
-        exceptionEventManager.pushException(exception)
-    }
+fun JetIQViewModel.assignAppbar(
+    title: String? = null,
+    icon: (@Composable () -> Unit)? = null,
+    actions: (@Composable RowScope.() -> Unit)? = null
+) {
+    appbarManager.manage(
+        AppbarCommand.Configured(
+            title = title,
+            navIcon = icon,
+            actions = actions
+        )
+    )
+}
 
-    fun <T> mutableStateOf(t: T): ThreadSafeMutableState<T> {
-        return ThreadSafeMutableState(t, viewModelScope)
-    }
+fun JetIQViewModel.assignAppbar(bar: @Composable () -> Unit) {
+    appbarManager.manage(AppbarCommand.Custom(bar))
+}
+
+fun JetIQViewModel.emptyAppbar() {
+    appbarManager.manage(AppbarCommand.Empty)
+}
+
+fun JetIQViewModel.redirectExceptionToUI(exception: Exception) {
+    exceptionEventManager.pushException(exception)
+}
+
+fun <T> JetIQViewModel.mutableStateOf(t: T): ThreadSafeMutableState<T> {
+    return ThreadSafeMutableState(t, viewModelScope)
 }

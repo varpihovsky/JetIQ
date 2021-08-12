@@ -16,9 +16,9 @@
  */
 
 object Versions {
-    const val gradle_version = "7.0.0"
+    const val gradle_version = "4.2.0"
 
-    const val kotlin_version = "1.5.10"
+    const val kotlin_version = "1.5.21"
     const val compose_version = "1.0.0"
     const val mockk_version = "1.12.0"
     const val room_version = "2.4.0-alpha04"
@@ -84,12 +84,6 @@ object Compose {
         "androidx.activity:activity-compose:${Versions.activity_compose_version}"
     const val compose_livedata =
         "androidx.compose.runtime:runtime-livedata:${Versions.compose_version}"
-    const val ui = "androidx.compose.ui:ui:${Versions.compose_version}"
-    const val ui_tooling = "androidx.compose.ui:ui-tooling:${Versions.compose_version}"
-    const val material = "androidx.compose.material:material:${Versions.compose_version}"
-    const val foundation = "androidx.compose.foundation:foundation:${Versions.compose_version}"
-    const val foundation_layout =
-        "androidx.compose.foundation:foundation-layout:${Versions.compose_version}"
 
     const val koin_compose = "io.insert-koin:koin-androidx-compose:${Versions.koin_version}"
 
