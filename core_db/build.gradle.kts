@@ -39,19 +39,7 @@ android {
     defaultConfig {
         minSdkVersion(AndroidConfig.min_sdk)
         targetSdkVersion(AndroidConfig.target_sdk)
-
-//        consumerProguardFiles("consumer-rules.pro")
     }
-
-//    buildTypes {
-//        getByName("release") {
-//            isMinifyEnabled = AndroidConfig.release_minify
-//            proguardFiles(
-//                getDefaultProguardFile("proguard-android-optimize.txt"),
-//                "proguard-rules.pro"
-//            )
-//        }
-    //   }
 
     kapt {
         arguments {

@@ -43,20 +43,7 @@ android {
         minSdkVersion(AndroidConfig.min_sdk)
         targetSdkVersion(AndroidConfig.target_sdk)
 
-//        consumerProguardFiles("consumer-rules.pro")
     }
-//    buildTypes {
-//        getByName("release") {
-//            isMinifyEnabled = AndroidConfig.release_minify
-//            proguardFiles(
-//                getDefaultProguardFile("proguard-android-optimize.txt"),
-//                "proguard-rules.pro"
-//            )
-//        }
-//        val debug by getting {
-//            matchingFallbacks += listOf("release", "debug")
-//        }
-//    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
