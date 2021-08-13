@@ -19,7 +19,7 @@ package com.varpihovsky.core_repo.repo
 
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.util.ThreadSafeMutableState
-import com.varpihovsky.core_network.result.*
+import com.varpihovsky.jetiqApi.result.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 

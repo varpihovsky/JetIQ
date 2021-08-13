@@ -24,7 +24,9 @@ import com.varpihovsky.core_db.dao.ConfidentialDAO
 import com.varpihovsky.core_db.dao.ProfileDAO
 import com.varpihovsky.core_db.dao.SubjectDAO
 import com.varpihovsky.core_db.dao.SubjectDetailsDAO
-import com.varpihovsky.core_network.managers.JetIQSubjectManager
+import com.varpihovsky.core_repo.apiMappers.toDTO
+import com.varpihovsky.jetiqApi.Api
+import com.varpihovsky.jetiqApi.data.Subject
 import com.varpihovsky.repo_data.MarkbookSubjectDTO
 import com.varpihovsky.repo_data.SubjectDTO
 import com.varpihovsky.repo_data.SubjectDetailsDTO
@@ -106,7 +108,7 @@ interface SubjectRepo : Refreshable {
         operator fun invoke(
             subjectDAO: SubjectDAO,
             subjectDetailsDAO: SubjectDetailsDAO,
-            jetIQSubjectManager: JetIQSubjectManager,
+            api: Api,
             confidentialDAO: ConfidentialDAO,
             profileDAO: ProfileDAO,
             exceptionEventManager: ExceptionEventManager,
@@ -114,7 +116,7 @@ interface SubjectRepo : Refreshable {
         ): SubjectRepo = SubjectRepoImpl(
             subjectDAO,
             subjectDetailsDAO,
-            jetIQSubjectManager,
+            api,
             confidentialDAO,
             profileDAO,
             exceptionEventManager,
@@ -126,7 +128,7 @@ interface SubjectRepo : Refreshable {
 private class SubjectRepoImpl constructor(
     private val subjectDAO: SubjectDAO,
     private val subjectDetailsDAO: SubjectDetailsDAO,
-    private val jetIQSubjectManager: JetIQSubjectManager,
+    private val api: Api,
     confidentialDAO: ConfidentialDAO,
     profileDAO: ProfileDAO,
     exceptionEventManager: ExceptionEventManager,
@@ -177,7 +179,7 @@ private class SubjectRepoImpl constructor(
     private suspend fun loadSuccessJournal() {
         val session = requireSession()
         wrapException(
-            result = jetIQSubjectManager.getSuccessJournal(session),
+            result = api.getSuccessJournal(session),
             onSuccess = {
                 if (it.value.isNotEmpty()) {
                     processSubjects(it.value, session)
@@ -191,18 +193,18 @@ private class SubjectRepoImpl constructor(
         )
     }
 
-    private suspend fun processSubjects(subjects: List<SubjectDTO>, session: String) {
+    private suspend fun processSubjects(subjects: List<Subject>, session: String) {
         taskIndex = 0
         subjects.forEach {
-            subjectDAO.insert(it)
-            addSubjectDetails(session, it.card_id.toInt())
+            subjectDAO.insert(it.toDTO())
+            addSubjectDetails(session, it.subjectId.toInt())
         }
     }
 
     private suspend fun addSubjectDetails(session: String, id: Int) {
         wrapException(
-            result = jetIQSubjectManager.getSubjectDetails(session, id),
-            onSuccess = { processSubjectDetails(it.value, id) }
+            result = api.getSubjectDetails(session, id),
+            onSuccess = { processSubjectDetails(it.value.toDTO(), id) }
         )
     }
 
@@ -235,8 +237,8 @@ private class SubjectRepoImpl constructor(
     private suspend fun loadMarkbookSubjects() {
         val session = requireSession()
         wrapException(
-            result = jetIQSubjectManager.getMarkbookSubjects(session),
-            onSuccess = { processMarkbook(it.value) }
+            result = api.getMarkbookSubjects(session),
+            onSuccess = { success -> processMarkbook(success.value.map { it.toDTO() }) }
         )
     }
 

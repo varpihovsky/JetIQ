@@ -47,6 +47,7 @@ object Versions {
     const val core_testing_version = "2.1.0"
 
     const val kamel_version = "0.2.2"
+    const val ktor_version = "1.6.2"
 }
 
 object Config {
@@ -108,6 +109,9 @@ object CommonDependencies {
     const val koin_core = "io.insert-koin:koin-core:${Versions.koin_version}"
     const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1"
     const val kamel = "com.alialbaali.kamel:kamel-image:${Versions.kamel_version}"
+
+    const val ktor_client = "io.ktor:ktor-client-core:${Versions.ktor_version}"
+    const val ktor_serialization = "io.ktor:ktor-client-serialization:${Versions.ktor_version}"
 }
 
 object AndroidDependencies {

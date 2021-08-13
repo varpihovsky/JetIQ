@@ -21,7 +21,6 @@ import androidx.work.*
 import com.varpihovsky.core.di.CoreModule
 import com.varpihovsky.core_db.DatabaseModule
 import com.varpihovsky.core_nav.NavigationModule
-import com.varpihovsky.core_network.NetworkModule
 import com.varpihovsky.core_repo.RepoModule
 import com.varpihovsky.core_repo.repo.UserPreferencesRepo
 import com.varpihovsky.feature_auth.AuthModule
@@ -55,7 +54,6 @@ class JetIQApplication : Application(), KoinComponent {
         CoreModule.module,
         DatabaseModule.module,
         NavigationModule.module,
-        NetworkModule.module,
         RepoModule.module,
         AuthModule.module,
         ContactsModule.module,

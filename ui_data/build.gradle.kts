@@ -17,6 +17,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(Modules.repo_data))
+                implementation(project(Modules.core_network))
 
                 api(compose.ui)
                 api(compose.foundation)

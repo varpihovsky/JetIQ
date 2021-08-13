@@ -17,9 +17,10 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(Modules.core))
-                implementation(project(Modules.core_network))
                 implementation(project(Modules.core_db))
                 implementation(project(Modules.repo_data))
+
+                implementation(project(Modules.core_network))
 
                 api(compose.ui)
                 implementation(CommonDependencies.coroutines)

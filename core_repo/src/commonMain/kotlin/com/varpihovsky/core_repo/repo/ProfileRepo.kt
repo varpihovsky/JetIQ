@@ -18,11 +18,11 @@ package com.varpihovsky.core_repo.repo
  */
 
 import com.varpihovsky.core.exceptions.ExceptionEventManager
-import com.varpihovsky.core.exceptions.Values
 import com.varpihovsky.core_db.dao.ConfidentialDAO
 import com.varpihovsky.core_db.dao.ProfileDAO
 import com.varpihovsky.core_db.dao.reset
-import com.varpihovsky.core_network.managers.JetIQProfileManager
+import com.varpihovsky.core_repo.apiMappers.toDTO
+import com.varpihovsky.jetiqApi.Api
 import com.varpihovsky.repo_data.Confidential
 import com.varpihovsky.repo_data.ProfileDTO
 import kotlinx.coroutines.flow.Flow
@@ -76,12 +76,12 @@ interface ProfileRepo {
         operator fun invoke(
             profileDAO: ProfileDAO,
             confidentialDAO: ConfidentialDAO,
-            jetIQProfileManager: JetIQProfileManager,
+            api: Api,
             exceptionEventManager: ExceptionEventManager
         ): ProfileRepo = ProfileRepoImpl(
             profileDAO,
             confidentialDAO,
-            jetIQProfileManager,
+            api,
             exceptionEventManager
         )
     }
@@ -90,30 +90,26 @@ interface ProfileRepo {
 private class ProfileRepoImpl constructor(
     private val profileDAO: ProfileDAO,
     private val confidentialDAO: ConfidentialDAO,
-    private val jetIQProfileManager: JetIQProfileManager,
+    private val api: Api,
     exceptionEventManager: ExceptionEventManager
 ) : Repo(exceptionEventManager), ProfileRepo {
     override suspend fun login(login: String, password: String): Boolean {
         val profile = wrapException(
-            result = jetIQProfileManager.login(login, password),
-            onSuccess = { it.value },
+            result = api.authorize(login, password),
+            onSuccess = { it.value.toDTO() },
             onFailure = { return false }
         )
-        profile?.let {
+        profile.let {
             confidentialDAO.reset(Confidential(login, password))
             profileDAO.reset(it)
         }
 
-        if (profile == null) {
-            exceptionEventManager.pushException(RuntimeException(Values.LOGIN_OR_PASS_IS_NOT_RIGHT))
-        }
-
-        return profile != null
+        return true
     }
 
     override suspend fun logout() {
         profileDAO.get().last().session?.let {
-            wrapException(jetIQProfileManager.logout(it))
+            wrapException(api.logout(it))
         }
     }
 

@@ -83,7 +83,7 @@ class ContactAdditionViewModel(
 
     init {
         viewModelScope.launch(dispatchers.IO) {
-            faculties.value = listRepo.getFaculties().map { DropDownItem.WithID(it.id, it.text) }
+            faculties.value = listRepo.getFaculties().map { DropDownItem.WithID(it.id, it.name) }
         }
     }
 
@@ -108,7 +108,7 @@ class ContactAdditionViewModel(
         selectedFaculty.value = faculty as DropDownItem.WithID
         viewModelScope.launch(dispatchers.IO) {
             groups.value =
-                listRepo.getGroupByFaculty(faculty.id).map { DropDownItem.WithID(it.id, it.text) }
+                listRepo.getGroupByFaculty(faculty.id).map { DropDownItem.WithID(it.id, it.name) }
         }
     }
 
@@ -118,7 +118,7 @@ class ContactAdditionViewModel(
             val id = profileRepo.getProfileDTO().id.toInt()
 
             contactsState.value = listRepo.getStudentsByGroup(group.id)
-                .map { UIReceiverDTO(it.id, it.text, ReceiverType.STUDENT) }
+                .map { UIReceiverDTO(it.id, it.fullName, ReceiverType.STUDENT) }
                 .filter { it.id != id }
         }
     }
@@ -127,7 +127,7 @@ class ContactAdditionViewModel(
         searchFieldValue.value = value
         viewModelScope.launch(dispatchers.IO) {
             contactsState.value = listRepo.getTeacherByQuery(value)
-                .map { UIReceiverDTO(it.id, it.text, ReceiverType.TEACHER) }
+                .map { UIReceiverDTO(it.id, it.fullName, ReceiverType.TEACHER) }
         }
     }
 

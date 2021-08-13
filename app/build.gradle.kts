@@ -63,7 +63,6 @@ dependencies {
 
     // Needed for dependency injection
     api(coreDB())
-    api(coreNetwork())
 
     // Core
     implementation(AndroidDependencies.core)

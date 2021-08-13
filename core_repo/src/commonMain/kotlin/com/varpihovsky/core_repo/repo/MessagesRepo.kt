@@ -23,7 +23,9 @@ import com.varpihovsky.core.log.e
 import com.varpihovsky.core_db.dao.ConfidentialDAO
 import com.varpihovsky.core_db.dao.MessageDAO
 import com.varpihovsky.core_db.dao.ProfileDAO
-import com.varpihovsky.core_network.managers.JetIQMessageManager
+import com.varpihovsky.core_repo.apiMappers.toDTO
+import com.varpihovsky.jetiqApi.Api
+import com.varpihovsky.jetiqApi.data.Message
 import com.varpihovsky.repo_data.MessageDTO
 import com.varpihovsky.repo_data.MessageToSendDTO
 import kotlinx.coroutines.TimeoutCancellationException
@@ -64,13 +66,13 @@ interface MessagesRepo : Refreshable {
 
     companion object {
         operator fun invoke(
-            jetIQMessageManager: JetIQMessageManager,
+            api: Api,
             messageDAO: MessageDAO,
             confidentialDAO: ConfidentialDAO,
             profileDAO: ProfileDAO,
             exceptionEventManager: ExceptionEventManager
         ): MessagesRepo = MessagesRepoImpl(
-            jetIQMessageManager,
+            api,
             messageDAO,
             confidentialDAO,
             profileDAO,
@@ -80,7 +82,7 @@ interface MessagesRepo : Refreshable {
 }
 
 private class MessagesRepoImpl constructor(
-    private val jetIQMessageManager: JetIQMessageManager,
+    private val api: Api,
     private val messageDAO: MessageDAO,
     confidentialDAO: ConfidentialDAO,
     profileDAO: ProfileDAO,
@@ -119,15 +121,15 @@ private class MessagesRepoImpl constructor(
 
     private suspend fun processMessagesLoading() {
         wrapException(
-            result = jetIQMessageManager.getMessages(requireSession()),
+            result = api.getMessages(requireSession()),
             onSuccess = { addMessagesToDatabase(it.value) },
         )
     }
 
-    private fun addMessagesToDatabase(messages: List<MessageDTO>) {
+    private fun addMessagesToDatabase(messages: List<Message>) {
         messages.forEach {
             if (it.body != null) {
-                messageDAO.addMessage(it)
+                messageDAO.addMessage(it.toDTO())
             }
         }
     }
@@ -141,11 +143,19 @@ private class MessagesRepoImpl constructor(
     override suspend fun sendMessage(messageToSendDTO: MessageToSendDTO) {
         requireSession().let { session ->
             val csrf = wrapException(
-                result = jetIQMessageManager.getCsrf(session),
+                result = api.getCsrf(session),
                 onSuccess = { it.value },
                 onFailure = { return@let }
             )
-            wrapException(result = jetIQMessageManager.sendMessage(session, csrf, messageToSendDTO))
+            wrapException(
+                result = api.sendMessage(
+                    session,
+                    messageToSendDTO.id,
+                    messageToSendDTO.type,
+                    messageToSendDTO.body,
+                    csrf
+                )
+            )
         }
     }
 

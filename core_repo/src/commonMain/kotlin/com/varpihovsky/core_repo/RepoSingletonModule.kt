@@ -21,6 +21,7 @@ import com.varpihovsky.core_repo.repo.ListRepo
 import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.core_repo.repo.ProfileRepo
 import com.varpihovsky.core_repo.repo.SubjectRepo
+import com.varpihovsky.jetiqApi.provideApi
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -31,6 +32,8 @@ object RepoModule {
         factory { ProfileRepo(get(), get(), get(), get()) }
         factory { ListRepo(get(), get(), get()) }
         factory { SubjectRepo(get(), get(), get(), get(), get(), get(), get()) }
+
+        single { provideApi {} }
 
         providePlatform()
     }

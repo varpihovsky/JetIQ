@@ -48,8 +48,6 @@ fun DependencyHandlerScope.coreRepo() = project(Modules.core_repo)
 
 fun DependencyHandlerScope.coreNav() = project(Modules.core_nav)
 
-fun DependencyHandlerScope.coreNetwork() = project(Modules.core_network)
-
 fun DependencyHandlerScope.repoData() = project(Modules.repo_data)
 
 fun DependencyHandlerScope.uiData() = project(Modules.ui_data)

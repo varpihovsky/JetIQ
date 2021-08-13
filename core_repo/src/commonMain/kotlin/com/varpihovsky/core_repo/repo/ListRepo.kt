@@ -19,7 +19,11 @@ package com.varpihovsky.core_repo.repo
 
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core_db.dao.ContactDAO
-import com.varpihovsky.core_network.managers.JetIQListManager
+import com.varpihovsky.jetiqApi.Api
+import com.varpihovsky.jetiqApi.data.Faculty
+import com.varpihovsky.jetiqApi.data.Group
+import com.varpihovsky.jetiqApi.data.Student
+import com.varpihovsky.jetiqApi.data.Teacher
 import com.varpihovsky.repo_data.ContactDTO
 import com.varpihovsky.repo_data.ListItemDTO
 import kotlinx.coroutines.flow.Flow
@@ -37,7 +41,7 @@ interface ListRepo {
      *
      * @return list of [ListItemDTO]
      */
-    suspend fun getFaculties(): List<ListItemDTO>
+    suspend fun getFaculties(): List<Faculty>
 
     /**
      * Returns list of groups by facultyId which you have got from [getFaculties] method. If request
@@ -45,7 +49,7 @@ interface ListRepo {
      *
      * @return list of [ListItemDTO]
      */
-    suspend fun getGroupByFaculty(facultyID: Int): List<ListItemDTO>
+    suspend fun getGroupByFaculty(facultyID: Int): List<Group>
 
     /**
      * Returns list of students by group id which you have got from [getGroupByFaculty] method.
@@ -53,7 +57,7 @@ interface ListRepo {
      *
      * @return list of [ListItemDTO]
      */
-    suspend fun getStudentsByGroup(groupId: Int): List<ListItemDTO>
+    suspend fun getStudentsByGroup(groupId: Int): List<Student>
 
     /**
      * Returns list of teachers by query. If request was successful returns response value.
@@ -61,7 +65,7 @@ interface ListRepo {
      *
      * @return list of [ListItemDTO]
      */
-    suspend fun getTeacherByQuery(query: String): List<ListItemDTO>
+    suspend fun getTeacherByQuery(query: String): List<Teacher>
 
     /**
      * Returns flow of contacts saved in database.
@@ -87,11 +91,11 @@ interface ListRepo {
 
     companion object {
         operator fun invoke(
-            jetIQListManager: JetIQListManager,
+            jetIQApi: Api,
             contactDAO: ContactDAO,
             exceptionEventManager: ExceptionEventManager
         ): ListRepo = ListRepoImpl(
-            jetIQListManager,
+            jetIQApi,
             contactDAO,
             exceptionEventManager
         )
@@ -99,37 +103,37 @@ interface ListRepo {
 }
 
 private class ListRepoImpl constructor(
-    private val jetIQListManager: JetIQListManager,
+    private val api: Api,
     private val contactDAO: ContactDAO,
     exceptionEventManager: ExceptionEventManager
 ) : ListRepo, Repo(exceptionEventManager) {
-    override suspend fun getFaculties(): List<ListItemDTO> {
+    override suspend fun getFaculties(): List<Faculty> {
         return wrapException(
-            result = jetIQListManager.getFaculties(),
+            result = api.getFaculties(),
             onSuccess = { it.value },
             onFailure = { listOf() }
         )
     }
 
-    override suspend fun getGroupByFaculty(facultyID: Int): List<ListItemDTO> {
+    override suspend fun getGroupByFaculty(facultyID: Int): List<Group> {
         return wrapException(
-            result = jetIQListManager.getGroupsByFaculty(facultyID),
+            result = api.getGroupByFaculty(facultyID),
             onSuccess = { it.value },
             onFailure = { listOf() }
         )
     }
 
-    override suspend fun getStudentsByGroup(groupId: Int): List<ListItemDTO> {
+    override suspend fun getStudentsByGroup(groupId: Int): List<Student> {
         return wrapException(
-            result = jetIQListManager.getStudentsByGroup(groupId),
+            result = api.getStudentByGroup(groupId),
             onSuccess = { it.value },
             onFailure = { listOf() }
         )
     }
 
-    override suspend fun getTeacherByQuery(query: String): List<ListItemDTO> {
+    override suspend fun getTeacherByQuery(query: String): List<Teacher> {
         return wrapException(
-            result = jetIQListManager.getTeacherByQuery(query),
+            result = api.getTeachersByQuery(query),
             onSuccess = { it.value },
             onFailure = { listOf() }
         )
