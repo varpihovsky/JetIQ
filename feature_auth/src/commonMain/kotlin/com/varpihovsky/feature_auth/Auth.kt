@@ -19,11 +19,13 @@ package com.varpihovsky.feature_auth
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
@@ -96,7 +98,8 @@ private fun Auth(
                         onCheckedChange = onPasswordHiddenChange
                     )
                 },
-                visualTransformation = visualTransformation
+                visualTransformation = visualTransformation,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )
         }
         CenterLayoutItem(modifier = Modifier.padding(9.dp)) {
@@ -116,6 +119,7 @@ fun AuthField(
     onValueChange: (String) -> Unit,
     placeholderText: String = "",
     trailingIcon: @Composable (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     TextField(
@@ -140,7 +144,8 @@ fun AuthField(
             disabledIndicatorColor = Color.Transparent
         ),
         visualTransformation = visualTransformation,
-        onValueChange = onValueChange
+        onValueChange = onValueChange,
+        keyboardOptions = keyboardOptions
     )
 }
 
