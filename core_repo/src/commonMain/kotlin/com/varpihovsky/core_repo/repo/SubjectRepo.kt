@@ -1,5 +1,3 @@
-package com.varpihovsky.core_repo.repo
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,6 +14,7 @@ package com.varpihovsky.core_repo.repo
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_repo.repo
 
 import com.varpihovsky.core.Refreshable
 import com.varpihovsky.core.exceptions.ExceptionEventManager
@@ -24,13 +23,12 @@ import com.varpihovsky.core_db.dao.ConfidentialDAO
 import com.varpihovsky.core_db.dao.ProfileDAO
 import com.varpihovsky.core_db.dao.SubjectDAO
 import com.varpihovsky.core_db.dao.SubjectDetailsDAO
-import com.varpihovsky.core_repo.apiMappers.toDTO
+import com.varpihovsky.core_repo.apiMappers.withID
+import com.varpihovsky.core_repo.apiMappers.withTasks
 import com.varpihovsky.jetiqApi.Api
+import com.varpihovsky.jetiqApi.data.MarkbookSubject
 import com.varpihovsky.jetiqApi.data.Subject
-import com.varpihovsky.repo_data.MarkbookSubjectDTO
-import com.varpihovsky.repo_data.SubjectDTO
-import com.varpihovsky.repo_data.SubjectDetailsDTO
-import com.varpihovsky.repo_data.relations.SubjectDetailsWithTasks
+import com.varpihovsky.jetiqApi.data.SubjectDetails
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -52,56 +50,54 @@ interface SubjectRepo : Refreshable {
     /**
      * Returns flow of current saved subjects provided by success journal.
      *
-     * @return list of [SubjectDTO]
+     * @return list of [Subject]
      */
-    fun getSubjects(): Flow<List<SubjectDTO>>
+    fun getSubjects(): Flow<List<Subject>>
 
     /**
      * Returns flow of subject with specified id.
      *
-     * @param id id of [SubjectDTO]
+     * @param id id of [Subject]
      *
-     * @return [SubjectDTO]
+     * @return [Subject]
      */
-    fun getSubjectById(id: Int): Flow<SubjectDTO>
+    fun getSubjectById(id: Int): Flow<Subject?>
 
     /**
      * Returns flow of subject details from subject provided by success journal.
-     * Every detail has same id as [SubjectDTO] from [getSubjects] method. Always sorted same as
+     * Every detail has same id as [Subject] from [getSubjects] method. Always sorted same as
      * result from [getSubjects] method.
      *
-     * @return list of [SubjectDetailsDTO]
+     * @return list of [SubjectDetails]
      */
-    fun getSubjectsDetails(): Flow<List<SubjectDetailsDTO>>
+    fun getSubjectsDetails(): Flow<List<SubjectDetails>>
 
     /**
      * Returns flow of subject details with specified id.
      *
-     * @param id id of requested [SubjectDetailsWithTasks]
+     * @param id id of requested [SubjectDetails]
      *
-     * @return [SubjectDetailsWithTasks]
+     * @return [SubjectDetails]
      */
-    fun getDetailsById(id: Int): Flow<SubjectDetailsWithTasks>
+    fun getDetailsById(id: Int): Flow<SubjectDetails?>
 
     /**
      * Returns flow of markbook subjects.
      *
-     * @return list of [MarkbookSubjectDTO]
+     * @return list of [MarkbookSubject]
      */
-    fun getMarkbook(): Flow<List<MarkbookSubjectDTO>>
+    fun getMarkbook(): Flow<List<MarkbookSubject>>
 
     /**
      * Returns flow of markbook subject related to id.
      *
-     * @param id id of [MarkbookSubjectDTO]
+     * @param id id of [MarkbookSubject]
      *
-     * @return [MarkbookSubjectDTO]
+     * @return [MarkbookSubject]
      */
-    fun getMarkbookById(id: Int): Flow<MarkbookSubjectDTO>
+    fun getMarkbookById(id: Int): Flow<MarkbookSubject?>
 
-    /**
-     * Clears database.
-     */
+    /** Clears database. */
     fun clear()
 
     companion object {
@@ -168,11 +164,11 @@ private class SubjectRepoImpl constructor(
         }
     }
 
-    override fun getSubjects(): Flow<List<SubjectDTO>> {
+    override fun getSubjects(): Flow<List<Subject>> {
         return subjectDAO.getAllSubjects()
     }
 
-    override fun getSubjectById(id: Int): Flow<SubjectDTO> {
+    override fun getSubjectById(id: Int): Flow<Subject?> {
         return subjectDAO.getSubjectById(id.toString()).distinctUntilChanged()
     }
 
@@ -196,7 +192,7 @@ private class SubjectRepoImpl constructor(
     private suspend fun processSubjects(subjects: List<Subject>, session: String) {
         taskIndex = 0
         subjects.forEach {
-            subjectDAO.insert(it.toDTO())
+            subjectDAO.insert(it)
             addSubjectDetails(session, it.subjectId.toInt())
         }
     }
@@ -204,33 +200,29 @@ private class SubjectRepoImpl constructor(
     private suspend fun addSubjectDetails(session: String, id: Int) {
         wrapException(
             result = api.getSubjectDetails(session, id),
-            onSuccess = { processSubjectDetails(it.value.toDTO(), id) }
+            onSuccess = { processSubjectDetails(it.value, id) }
         )
     }
 
-    private fun processSubjectDetails(subjectDetailsWithTasks: SubjectDetailsWithTasks, id: Int) {
-        subjectDetailsDAO.insertDetails(subjectDetailsWithTasks.subjectDetailsDTO.withID(id))
-        subjectDetailsWithTasks.subjectTasks.forEach { task ->
-            subjectDetailsDAO.insertTask(
-                task.withIDs(subjectDetailsId = id, id = taskIndex)
-            )
-            taskIndex++
-        }
+    private fun processSubjectDetails(subjectDetailsWithTasks: SubjectDetails, id: Int) {
+        val tasks = subjectDetailsWithTasks.tasks.map { it.withID(taskIndex++) }
+        val details = subjectDetailsWithTasks.withTasks(tasks)
+        subjectDetailsDAO.insertDetails(details.withID(id))
     }
 
-    override fun getSubjectsDetails(): Flow<List<SubjectDetailsDTO>> {
-        return subjectDetailsDAO.getDetailsOnly()
+    override fun getSubjectsDetails(): Flow<List<SubjectDetails>> {
+        return subjectDetailsDAO.getDetails()
     }
 
-    override fun getDetailsById(id: Int): Flow<SubjectDetailsWithTasks> {
+    override fun getDetailsById(id: Int): Flow<SubjectDetails?> {
         return subjectDetailsDAO.getDetailsById(id).distinctUntilChanged()
     }
 
-    override fun getMarkbook(): Flow<List<MarkbookSubjectDTO>> {
+    override fun getMarkbook(): Flow<List<MarkbookSubject>> {
         return subjectDetailsDAO.getMarkbookSubjects()
     }
 
-    override fun getMarkbookById(id: Int): Flow<MarkbookSubjectDTO> {
+    override fun getMarkbookById(id: Int): Flow<MarkbookSubject?> {
         return subjectDetailsDAO.getMarkbookSubjectById(id).distinctUntilChanged()
     }
 
@@ -238,11 +230,11 @@ private class SubjectRepoImpl constructor(
         val session = requireSession()
         wrapException(
             result = api.getMarkbookSubjects(session),
-            onSuccess = { success -> processMarkbook(success.value.map { it.toDTO() }) }
+            onSuccess = { success -> processMarkbook(success.value) }
         )
     }
 
-    private fun processMarkbook(markbookSubjects: List<MarkbookSubjectDTO>) {
+    private fun processMarkbook(markbookSubjects: List<MarkbookSubject>) {
         val current = subjectDetailsDAO.getMarkbookSubjectsList().map { it.withID(id = 0) }
         markbookSubjects.forEach {
             if (!current.contains(it)) {
@@ -258,7 +250,6 @@ private class SubjectRepoImpl constructor(
     private fun clearDatabases() {
         subjectDAO.deleteAll()
         subjectDetailsDAO.deleteAllDetails()
-        subjectDetailsDAO.deleteAllTasks()
         subjectDetailsDAO.deleteAllMarkbookSubjects()
     }
 

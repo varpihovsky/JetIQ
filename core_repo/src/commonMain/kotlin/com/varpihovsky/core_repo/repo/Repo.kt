@@ -1,5 +1,3 @@
-package com.varpihovsky.core_repo.repo
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,6 +14,7 @@ package com.varpihovsky.core_repo.repo
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_repo.repo
 
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core.util.ThreadSafeMutableState

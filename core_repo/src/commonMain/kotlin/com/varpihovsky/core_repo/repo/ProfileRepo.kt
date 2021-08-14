@@ -1,5 +1,3 @@
-package com.varpihovsky.core_repo.repo
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,15 +14,15 @@ package com.varpihovsky.core_repo.repo
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_repo.repo
 
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core_db.dao.ConfidentialDAO
 import com.varpihovsky.core_db.dao.ProfileDAO
 import com.varpihovsky.core_db.dao.reset
-import com.varpihovsky.core_repo.apiMappers.toDTO
 import com.varpihovsky.jetiqApi.Api
+import com.varpihovsky.jetiqApi.data.Profile
 import com.varpihovsky.repo_data.Confidential
-import com.varpihovsky.repo_data.ProfileDTO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.last
 
@@ -54,18 +52,18 @@ interface ProfileRepo {
     /**
      * Returns current user flow.
      *
-     * @return flow of [ProfileDTO]
+     * @return flow of [Profile]
      */
-    fun getProfile(): Flow<ProfileDTO?>
+    fun getProfile(): Flow<Profile?>
 
-    fun getProfileDTO(): ProfileDTO
+    fun getProfileDTO(): Profile?
 
     /**
      * Returns current user flow of confidential.
      *
      * @return flow of [Confidential]
      */
-    fun getConfidential(): Flow<Confidential>
+    fun getConfidential(): Flow<Confidential?>
 
     /**
      * Clears all user-related data.
@@ -96,7 +94,7 @@ private class ProfileRepoImpl constructor(
     override suspend fun login(login: String, password: String): Boolean {
         val profile = wrapException(
             result = api.authorize(login, password),
-            onSuccess = { it.value.toDTO() },
+            onSuccess = { it.value },
             onFailure = { return false }
         )
         profile.let {
@@ -108,14 +106,14 @@ private class ProfileRepoImpl constructor(
     }
 
     override suspend fun logout() {
-        profileDAO.get().last().session?.let {
+        profileDAO.get().last()?.session?.let {
             wrapException(api.logout(it))
         }
     }
 
     override fun getProfile() = profileDAO.get()
 
-    override fun getProfileDTO(): ProfileDTO = profileDAO.getProfile()
+    override fun getProfileDTO() = profileDAO.getProfile()
 
     override fun getConfidential() = confidentialDAO.get()
 

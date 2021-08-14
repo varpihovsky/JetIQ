@@ -25,6 +25,8 @@ kotlin {
                 api(compose.ui)
                 implementation(CommonDependencies.coroutines)
                 implementation(CommonDependencies.koin_core)
+
+                implementation(CommonDependencies.kodein)
             }
         }
         val commonTest by getting {

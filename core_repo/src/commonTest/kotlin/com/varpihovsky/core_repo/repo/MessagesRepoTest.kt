@@ -19,7 +19,6 @@ package com.varpihovsky.core_repo.repo
 
 import com.varpihovsky.core_db.dao.MessageDAO
 import com.varpihovsky.core_network.managers.JetIQMessageManager
-import com.varpihovsky.core_network.result.Result
 import com.varpihovsky.core_repo.testCore.ConfidentRepoTest
 import com.varpihovsky.repo_data.CSRF
 import com.varpihovsky.repo_data.MessageDTO

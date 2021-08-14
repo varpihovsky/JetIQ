@@ -1,5 +1,3 @@
-package com.varpihovsky.core_repo.repo
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,6 +14,7 @@ package com.varpihovsky.core_repo.repo
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_repo.repo
 
 import com.varpihovsky.core.Refreshable
 import com.varpihovsky.core.exceptions.ExceptionEventManager
@@ -23,10 +22,8 @@ import com.varpihovsky.core.log.e
 import com.varpihovsky.core_db.dao.ConfidentialDAO
 import com.varpihovsky.core_db.dao.MessageDAO
 import com.varpihovsky.core_db.dao.ProfileDAO
-import com.varpihovsky.core_repo.apiMappers.toDTO
 import com.varpihovsky.jetiqApi.Api
 import com.varpihovsky.jetiqApi.data.Message
-import com.varpihovsky.repo_data.MessageDTO
 import com.varpihovsky.repo_data.MessageToSendDTO
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
@@ -50,7 +47,7 @@ interface MessagesRepo : Refreshable {
      *
      * @return list of [MessageDTO]
      */
-    fun getMessages(): Flow<List<MessageDTO>>
+    fun getMessages(): Flow<List<Message>>
 
     /**
      * Sends message to user specified in [MessageToSendDTO].
@@ -129,7 +126,7 @@ private class MessagesRepoImpl constructor(
     private fun addMessagesToDatabase(messages: List<Message>) {
         messages.forEach {
             if (it.body != null) {
-                messageDAO.addMessage(it.toDTO())
+                messageDAO.addMessage(it)
             }
         }
     }

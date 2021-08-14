@@ -1,5 +1,3 @@
-package com.varpihovsky.core_repo.repo
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,6 +14,7 @@ package com.varpihovsky.core_repo.repo
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_repo.repo
 
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core_db.dao.ContactDAO
@@ -25,7 +24,6 @@ import com.varpihovsky.jetiqApi.data.Group
 import com.varpihovsky.jetiqApi.data.Student
 import com.varpihovsky.jetiqApi.data.Teacher
 import com.varpihovsky.repo_data.ContactDTO
-import com.varpihovsky.repo_data.ListItemDTO
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -39,7 +37,7 @@ interface ListRepo {
      * Returns list of received faculties if request is successful and empty list when response was
      * failed.
      *
-     * @return list of [ListItemDTO]
+     * @return list of [Faculty]
      */
     suspend fun getFaculties(): List<Faculty>
 
@@ -47,7 +45,7 @@ interface ListRepo {
      * Returns list of groups by facultyId which you have got from [getFaculties] method. If request
      * was successful returns response value. If it was failed returns empty list.
      *
-     * @return list of [ListItemDTO]
+     * @return list of [Group]
      */
     suspend fun getGroupByFaculty(facultyID: Int): List<Group>
 
@@ -55,7 +53,7 @@ interface ListRepo {
      * Returns list of students by group id which you have got from [getGroupByFaculty] method.
      * If request was successful returns response value. If it was failed returns empty list.
      *
-     * @return list of [ListItemDTO]
+     * @return list of [Student]
      */
     suspend fun getStudentsByGroup(groupId: Int): List<Student>
 
@@ -63,7 +61,7 @@ interface ListRepo {
      * Returns list of teachers by query. If request was successful returns response value.
      * If it was failed returns empty list.
      *
-     * @return list of [ListItemDTO]
+     * @return list of [Teacher]
      */
     suspend fun getTeacherByQuery(query: String): List<Teacher>
 
