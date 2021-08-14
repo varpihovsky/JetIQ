@@ -1,5 +1,3 @@
-package com.varpihovsky.repo_data
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,11 +14,15 @@ package com.varpihovsky.repo_data
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.repo_data
 
-expect class Confidential(
-    login: String,
-    password: String
-) {
-    val login: String
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+class Confidential(
+    @SerialName("login")
+    val login: String,
+    @SerialName("password")
     val password: String
-}
+) : Single

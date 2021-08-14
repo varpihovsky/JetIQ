@@ -17,7 +17,11 @@ package com.varpihovsky.ui_data.mappers
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import com.varpihovsky.repo_data.*
+import com.varpihovsky.jetiqApi.data.MarkbookSubject
+import com.varpihovsky.jetiqApi.data.Message
+import com.varpihovsky.jetiqApi.data.Profile
+import com.varpihovsky.jetiqApi.data.Subject
+import com.varpihovsky.repo_data.ContactDTO
 import com.varpihovsky.ui_data.dto.*
 
 fun ContactDTO.toUIDTO() = UIReceiverDTO(
@@ -30,24 +34,24 @@ fun ContactDTO.toUIDTO() = UIReceiverDTO(
     }
 )
 
-fun MarkbookSubjectDTO.toUIDTO() = UISubjectDTO(
+fun MarkbookSubject.toUIDTO() = UISubjectDTO(
     id,
-    subj_name,
+    subjectName,
     teacher,
     total,
     semester
 )
 
-expect fun MessageDTO.toUIDTO(): UIMessageDTO
+expect fun Message.toUIDTO(): UIMessageDTO
 
-fun ProfileDTO.toUIDTO() = UIProfileDTO(
+fun Profile.toUIDTO() = UIProfileDTO(
     id.toInt(),
-    getUsername(u_name),
-    cutFacultyName(d_name),
-    course_num,
-    gr_name,
+    getUsername(fullName),
+    cutFacultyName(departmentName),
+    course,
+    groupName,
     0,
-    photo_url
+    photoUrl
 )
 
 private fun getUsername(name: String): String {
@@ -59,10 +63,10 @@ private fun cutFacultyName(faculty: String) =
     faculty.split(" ").filter { it.length > 2 }.map { it.first().uppercaseChar() }
         .toCharArray().concatToString()
 
-fun SubjectDTO.toUIDTO(total: Int) = UISubjectDTO(
-    card_id.toInt(),
+fun Subject.toUIDTO(total: Int) = UISubjectDTO(
+    subjectId.toInt(),
     subject,
-    t_name,
+    teacherName,
     total,
-    sem.toInt()
+    semester.toInt()
 )

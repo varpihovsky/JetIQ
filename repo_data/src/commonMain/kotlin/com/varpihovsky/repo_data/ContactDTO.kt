@@ -1,5 +1,3 @@
-package com.varpihovsky.repo_data
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,18 +14,21 @@ package com.varpihovsky.repo_data
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.repo_data
 
-expect class ContactDTO(
-    id: Int,
-    text: String,
-    type: String
-) {
-    val id: Int
-    val text: String
+import com.varpihovsky.repo_data.lists.ContactList
+import kotlinx.serialization.Serializable
+
+@Serializable
+class ContactDTO(
+    override val id: Int,
+    val text: String,
     val type: String
+) : Listable<ContactList> {
+    override fun with(id: Int): Listable<ContactList> = ContactDTO(id, text, type)
 
     companion object {
-        val TYPE_STUDENT: String
-        val TYPE_TEACHER: String
+        const val TYPE_STUDENT = "student"
+        const val TYPE_TEACHER = "teacher"
     }
 }

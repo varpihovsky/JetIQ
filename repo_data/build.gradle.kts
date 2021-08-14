@@ -1,9 +1,10 @@
 import extensions.kapt
 
 plugins {
-    kotlin("multiplatform")
-    id(Plugins.android_library)
+    multiplatform()
+    androidLib()
     kotlin("kapt")
+    kotlin("plugin.serialization")
 }
 
 group = Config.group
@@ -15,6 +16,9 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation(CommonDependencies.kodein)
+
+                implementation(CommonDependencies.serialization)
             }
         }
         val androidMain by getting {

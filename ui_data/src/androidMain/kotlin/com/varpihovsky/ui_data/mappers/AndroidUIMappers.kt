@@ -17,14 +17,14 @@ package com.varpihovsky.ui_data.mappers
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import com.varpihovsky.repo_data.MessageDTO
+import com.varpihovsky.jetiqApi.data.Message
 import com.varpihovsky.ui_data.dto.UIMessageDTO
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 
-actual fun MessageDTO.toUIDTO(): UIMessageDTO {
+actual fun Message.toUIDTO(): UIMessageDTO {
     val split = body!!.split("<b>", "</b>:<br>", "</b>")
     return UIMessageDTO(
         id.toInt(),

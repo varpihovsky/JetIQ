@@ -19,6 +19,7 @@ kotlin {
                 implementation(project(Modules.core))
                 implementation(project(Modules.ui_data))
                 implementation(project(Modules.repo_data))
+                implementation(project(Modules.core_network))
 
                 api(compose.ui)
                 api(compose.foundation)

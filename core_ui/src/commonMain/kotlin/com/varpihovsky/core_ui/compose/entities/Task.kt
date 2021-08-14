@@ -29,13 +29,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.varpihovsky.core_ui.compose.widgets.ExpandableList
-import com.varpihovsky.repo_data.SubjectTaskDTO
+import com.varpihovsky.jetiqApi.data.Task
 
 @ExperimentalAnimationApi
 @Composable
 fun TaskList(
     title: String,
-    tasks: List<SubjectTaskDTO>,
+    tasks: List<Task>,
     sum: String,
     mark: String
 ) {

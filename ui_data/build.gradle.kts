@@ -21,6 +21,8 @@ kotlin {
 
                 api(compose.ui)
                 api(compose.foundation)
+
+                implementation(CommonDependencies.kodein)
             }
         }
         val androidMain by getting {
@@ -40,32 +42,10 @@ android {
     defaultConfig {
         minSdkVersion(AndroidConfig.min_sdk)
         targetSdkVersion(AndroidConfig.target_sdk)
-
-        //      consumerProguardFiles("consumer-rules.pro")
     }
-//    buildTypes {
-//        getByName("release") {
-//            isMinifyEnabled = AndroidConfig.release_minify
-//            proguardFiles(
-//                getDefaultProguardFile("proguard-android-optimize.txt"),
-//                "proguard-rules.pro"
-//            )
-//        }
-//    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
-
-//dependencies {
-//    implementation(repoData())
-//
-//    implementation(AndroidDependencies.threetenbp)
-//
-//    implementation(AndroidDependencies.core)
-//    implementation(Compose.ui)
-//    implementation(Compose.foundation)
-//    implementation(AndroidDependencies.swipe_refresh)
-//
-//}
