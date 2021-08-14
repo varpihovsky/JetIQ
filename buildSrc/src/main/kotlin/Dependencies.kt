@@ -48,6 +48,9 @@ object Versions {
 
     const val kamel_version = "0.2.2"
     const val ktor_version = "1.6.2"
+    const val kodein_version = "0.9.0-beta"
+    const val serialization_version = "1.2.2"
+
 }
 
 object Config {
@@ -112,6 +115,13 @@ object CommonDependencies {
 
     const val ktor_client = "io.ktor:ktor-client-core:${Versions.ktor_version}"
     const val ktor_serialization = "io.ktor:ktor-client-serialization:${Versions.ktor_version}"
+
+    const val kodein = "org.kodein.db:kodein-db:${Versions.kodein_version}"
+    const val kodein_serializer =
+        "org.kodein.db:kodein-db-serializer-kotlinx:${Versions.kodein_version}"
+
+    const val serialization =
+        "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serialization_version}"
 }
 
 object AndroidDependencies {
@@ -137,6 +147,9 @@ object AndroidDependencies {
         "com.google.accompanist:accompanist-swiperefresh:${Versions.accompanist_version}"
 
     const val lifecycle_view_model = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+
+    const val kodein_debug = "org.kodein.db:kodein-db-android-debug:${Versions.kodein_version}"
+    const val kodein_release = "org.kodein.db:kodein-db-android:${Versions.kodein_version}"
 }
 
 object TestDependencies {
