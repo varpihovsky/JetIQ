@@ -45,7 +45,7 @@ class SessionRestorationWorker(
     }
 
     private suspend fun reauthorize() {
-        profileModel.getConfidential().last().let {
+        profileModel.getConfidential().last()?.let {
             profileModel.logout()
             profileModel.login(it.login, it.password)
         }

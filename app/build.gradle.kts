@@ -60,6 +60,7 @@ dependencies {
     implementation(project(Modules.feature_profile))
     implementation(project(Modules.feature_settings))
     implementation(project(Modules.feature_subjects))
+    implementation(project(Modules.core_network))
 
     // Needed for dependency injection
     api(coreDB())
@@ -99,4 +100,8 @@ dependencies {
     // Mockk
     testImplementation(TestDependencies.mockk)
     androidTestImplementation(TestDependencies.mockk_android)
+
+    // Kodein
+    debugImplementation(AndroidDependencies.kodein_debug)
+    releaseImplementation(AndroidDependencies.kodein_release)
 }

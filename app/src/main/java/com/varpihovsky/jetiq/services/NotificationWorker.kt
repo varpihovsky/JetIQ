@@ -27,7 +27,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.jetiq.R
-import com.varpihovsky.repo_data.MessageDTO
+import com.varpihovsky.jetiqApi.data.Message
 import com.varpihovsky.ui_data.dto.UIMessageDTO
 import com.varpihovsky.ui_data.mappers.toUIDTO
 import kotlinx.coroutines.CoroutineScope
@@ -45,7 +45,7 @@ class NotificationWorker(
     workerParameters: WorkerParameters,
     private val messagesModel: MessagesRepo
 ) : Worker(context, workerParameters) {
-    private lateinit var currentMessages: List<MessageDTO>
+    private lateinit var currentMessages: List<Message>
 
     /**
      * Creates notification channel if required.
@@ -82,7 +82,7 @@ class NotificationWorker(
         messagesModel.getMessages().last().let { notifyNewMessages(it) }
     }
 
-    private fun notifyNewMessages(newMessages: List<MessageDTO>) {
+    private fun notifyNewMessages(newMessages: List<Message>) {
         val builder = createBuilder()
         newMessages
             .filter { !currentMessages.contains(it) }
