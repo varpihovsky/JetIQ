@@ -1,5 +1,3 @@
-package com.varpihovsky.core.util
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,6 +14,7 @@ package com.varpihovsky.core.util
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core.util
 
 /**
  * Returns same list but instead of same as "from" element, has "to" element.
@@ -38,8 +37,24 @@ fun <T> List<T>.remove(t: T): List<T> {
 }
 
 /**
+ * Returns same list but with added element in the end.
+ */
+fun <T> List<T>.add(t: T): List<T> {
+    val mutable = toMutableList()
+    mutable.add(t)
+    return mutable
+}
+
+/**
  * Returns only selected and mapped to dto list.
  */
 fun <T> List<Selectable<T>>.selectedOnly(): List<T> {
     return filter { it.isSelected }.map { it.dto }
+}
+
+fun <T, K> List<T>.toMap(selector: (T) -> K): Map<K, T> {
+    val keys = map { selector(it) }
+    val hashMap = mutableMapOf<K, T>()
+    forEachIndexed { index, t -> hashMap[keys[index]] = t }
+    return hashMap.toMap()
 }
