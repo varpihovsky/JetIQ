@@ -15,7 +15,7 @@ kotlin {
             dependencies {
                 implementation(CommonDependencies.ktor_client)
                 implementation(CommonDependencies.ktor_serialization)
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+                implementation(CommonDependencies.serialization)
                 implementation(kotlin("reflect"))
             }
 
