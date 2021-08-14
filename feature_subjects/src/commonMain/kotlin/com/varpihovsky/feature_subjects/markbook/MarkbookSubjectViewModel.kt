@@ -27,7 +27,7 @@ import com.varpihovsky.core_lifecycle.JetIQViewModel
 import com.varpihovsky.core_lifecycle.mutableStateOf
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.SubjectRepo
-import com.varpihovsky.repo_data.MarkbookSubjectDTO
+import com.varpihovsky.jetiqApi.data.MarkbookSubject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -46,8 +46,8 @@ class MarkbookSubjectViewModel(
     exceptionEventManager
 ) {
 
-    private val _subject = mutableStateOf(flow<MarkbookSubjectDTO> { })
-    val subject: State<Flow<MarkbookSubjectDTO>> = _subject
+    private val _subject = mutableStateOf(flow<MarkbookSubject?> { })
+    val subject: State<Flow<MarkbookSubject?>> = _subject
 
     init {
         viewModelScope.launch(dispatchers.Default) { collectTransferredData() }

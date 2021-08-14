@@ -115,7 +115,7 @@ class ContactAdditionViewModel(
     fun onGroupSelect(group: DropDownItem) {
         selectedGroup.value = group as DropDownItem.WithID
         viewModelScope.launch(dispatchers.IO) {
-            val id = profileRepo.getProfileDTO().id.toInt()
+            val id = profileRepo.getProfileDTO()?.id?.toInt()
 
             contactsState.value = listRepo.getStudentsByGroup(group.id)
                 .map { UIReceiverDTO(it.id, it.fullName, ReceiverType.STUDENT) }

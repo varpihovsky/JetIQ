@@ -31,6 +31,8 @@ kotlin {
                 api(compose.foundation)
                 api(compose.runtime)
                 implementation(Compose.material_motion)
+
+                implementation(CommonDependencies.kodein)
             }
         }
         val androidMain by getting {

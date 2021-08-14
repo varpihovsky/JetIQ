@@ -22,23 +22,23 @@ import androidx.compose.runtime.collectAsState
 import com.varpihovsky.core_lifecycle.assignAppbar
 import com.varpihovsky.core_ui.compose.widgets.BackIconButton
 import com.varpihovsky.core_ui.compose.widgets.SubjectInfo
-import com.varpihovsky.repo_data.MarkbookSubjectDTO
+import com.varpihovsky.jetiqApi.data.MarkbookSubject
 
 @Composable
 fun MarkbookSubjectScreen(markbookSubjectViewModel: MarkbookSubjectViewModel) {
     val subject =
-        markbookSubjectViewModel.subject.value.collectAsState(initial = MarkbookSubjectDTO()).value
+        markbookSubjectViewModel.subject.value.collectAsState(initial = null).value
 
     markbookSubjectViewModel.assignAppbar(
-        title = subject.subj_name,
+        title = subject?.subjectName ?: "",
         icon = { BackIconButton(markbookSubjectViewModel::onBackNavButtonClick) }
     )
 
-    MarkbookSubjectScreen(markbookSubjectDTO = subject)
+    subject?.let { MarkbookSubjectScreen(markbookSubjectDTO = it) }
 }
 
 @Composable
-private fun MarkbookSubjectScreen(markbookSubjectDTO: MarkbookSubjectDTO) {
+private fun MarkbookSubjectScreen(markbookSubjectDTO: MarkbookSubject) {
     Column {
         SubjectInfo(bigText = "Викладач", smallText = markbookSubjectDTO.teacher)
         SubjectInfo(bigText = "Дата", smallText = markbookSubjectDTO.date)

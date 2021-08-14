@@ -27,8 +27,8 @@ import com.varpihovsky.core_lifecycle.JetIQViewModel
 import com.varpihovsky.core_lifecycle.mutableStateOf
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_repo.repo.SubjectRepo
-import com.varpihovsky.repo_data.SubjectDTO
-import com.varpihovsky.repo_data.relations.SubjectDetailsWithTasks
+import com.varpihovsky.jetiqApi.data.Subject
+import com.varpihovsky.jetiqApi.data.SubjectDetails
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emptyFlow
@@ -46,11 +46,11 @@ class SuccessSubjectViewModel(
     navigationController,
     exceptionEventManager
 ) {
-    private val _subjectDetails = mutableStateOf(emptyFlow<SubjectDetailsWithTasks>())
-    val subjectDetails: State<Flow<SubjectDetailsWithTasks>> = _subjectDetails
+    private val _subjectDetails = mutableStateOf(emptyFlow<SubjectDetails?>())
+    val subjectDetails: State<Flow<SubjectDetails?>> = _subjectDetails
 
-    private val _subject = mutableStateOf(emptyFlow<SubjectDTO>())
-    val subject: State<Flow<SubjectDTO>> = _subject
+    private val _subject = mutableStateOf(emptyFlow<Subject?>())
+    val subject: State<Flow<Subject?>> = _subject
 
     init {
         viewModelScope.launch(dispatchers.Default) { collectTransferredData() }

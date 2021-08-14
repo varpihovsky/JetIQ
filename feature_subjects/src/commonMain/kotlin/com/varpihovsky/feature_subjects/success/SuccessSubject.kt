@@ -32,21 +32,20 @@ import com.varpihovsky.core_lifecycle.assignAppbar
 import com.varpihovsky.core_ui.compose.entities.TaskList
 import com.varpihovsky.core_ui.compose.widgets.BackIconButton
 import com.varpihovsky.core_ui.compose.widgets.SubjectInfo
-import com.varpihovsky.repo_data.SubjectDTO
-import com.varpihovsky.repo_data.relations.SubjectDetailsWithTasks
+import com.varpihovsky.jetiqApi.data.Subject
+import com.varpihovsky.jetiqApi.data.SubjectDetails
 
 @ExperimentalAnimationApi
 @Composable
 fun SuccessSubjectScreen(markbookSubjectViewModel: SuccessSubjectViewModel) {
-    val subjectDetails = markbookSubjectViewModel.subjectDetails.value.collectAsState(
-        initial = SubjectDetailsWithTasks(subjectTasks = listOf())
-    ).value
+    val subjectDetails =
+        markbookSubjectViewModel.subjectDetails.value.collectAsState(initial = null).value
 
     val subject =
-        markbookSubjectViewModel.subject.value.collectAsState(initial = SubjectDTO()).value
+        markbookSubjectViewModel.subject.value.collectAsState(initial = null).value
 
     markbookSubjectViewModel.assignAppbar(
-        title = subject.subject,
+        title = subject?.subject ?: "",
         icon = { BackIconButton(markbookSubjectViewModel::onBackNavButtonClick) }
     )
 
@@ -59,11 +58,13 @@ fun SuccessSubjectScreen(markbookSubjectViewModel: SuccessSubjectViewModel) {
 @ExperimentalAnimationApi
 @Composable
 private fun MarkbookSubjectScreen(
-    subjectDetailsWithTasks: SubjectDetailsWithTasks,
-    subject: SubjectDTO
+    subjectDetailsWithTasks: SubjectDetails?,
+    subject: Subject?
 ) {
-    val firstModuleTasks = subjectDetailsWithTasks.subjectTasks.filter { it.num_mod == "1" }
-    val secondModuleTasks = subjectDetailsWithTasks.subjectTasks.filter { it.num_mod == "2" }
+    val firstModuleTasks =
+        subjectDetailsWithTasks?.tasks?.filter { it.module == "1" } ?: emptyList()
+    val secondModuleTasks =
+        subjectDetailsWithTasks?.tasks?.filter { it.module == "2" } ?: emptyList()
 
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         Card(
@@ -75,27 +76,28 @@ private fun MarkbookSubjectScreen(
                 TaskList(
                     title = "Модуль 1",
                     tasks = firstModuleTasks,
-                    sum = subjectDetailsWithTasks.subjectDetailsDTO.sum1.toString(),
-                    mark = subjectDetailsWithTasks.subjectDetailsDTO.mark1.toString()
+                    sum = subjectDetailsWithTasks?.hundredPointMarkFirstModule?.toString() ?: "...",
+                    mark = subjectDetailsWithTasks?.fivePointMarkFirstModule?.toString() ?: "..."
                 )
                 Divider(Modifier.fillMaxWidth())
                 TaskList(
                     title = "Модуль 2",
                     tasks = secondModuleTasks,
-                    sum = subjectDetailsWithTasks.subjectDetailsDTO.sum2.toString(),
-                    mark = subjectDetailsWithTasks.subjectDetailsDTO.mark2.toString()
+                    sum = subjectDetailsWithTasks?.hundredPointMarkSecondModule?.toString()
+                        ?: "...",
+                    mark = subjectDetailsWithTasks?.fivePointMarkSecondModule?.toString() ?: "..."
                 )
             }
         }
-        SubjectInfo(bigText = "Викладач", smallText = subject.t_name)
+        SubjectInfo(bigText = "Викладач", smallText = subject?.teacherName ?: "")
         SubjectInfo(
             bigText = "Всього",
-            smallText = subjectDetailsWithTasks.subjectDetailsDTO.total.toString()
+            smallText = subjectDetailsWithTasks?.totalHundredPointMark?.toString() ?: "..."
         )
         SubjectInfo(
             bigText = "Оцінка(ects)",
-            smallText = subjectDetailsWithTasks.subjectDetailsDTO.ects
+            smallText = subjectDetailsWithTasks?.ectsMark ?: "..."
         )
-        SubjectInfo(bigText = "Форма", smallText = subject.f_control)
+        SubjectInfo(bigText = "Форма", smallText = subject?.controlForm ?: "...")
     }
 }

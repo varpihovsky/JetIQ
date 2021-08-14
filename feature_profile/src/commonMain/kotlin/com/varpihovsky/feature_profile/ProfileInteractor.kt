@@ -22,9 +22,9 @@ import com.varpihovsky.core.coroutines.runBlocking
 import com.varpihovsky.core.util.CoroutineDispatchers
 import com.varpihovsky.core_repo.repo.ProfileRepo
 import com.varpihovsky.core_repo.repo.SubjectRepo
-import com.varpihovsky.repo_data.MarkbookSubjectDTO
-import com.varpihovsky.repo_data.SubjectDTO
-import com.varpihovsky.repo_data.SubjectDetailsDTO
+import com.varpihovsky.jetiqApi.data.MarkbookSubject
+import com.varpihovsky.jetiqApi.data.Subject
+import com.varpihovsky.jetiqApi.data.SubjectDetails
 import com.varpihovsky.ui_data.dto.MarksInfo
 import com.varpihovsky.ui_data.dto.UIProfileDTO
 import com.varpihovsky.ui_data.dto.UISubjectDTO
@@ -89,34 +89,34 @@ class ProfileInteractor(
     }
 
     private fun formSuccessMarksInfo(
-        subjects: List<SubjectDTO>,
-        subjectDetails: List<SubjectDetailsDTO>
+        subjects: List<Subject>,
+        subjectDetails: List<SubjectDetails>
     ): List<MarksInfo> {
         val subjectDetailsMutable = subjectDetails.toMutableList()
         return formMarksInfo(
             array = subjects,
-            semesterSelector = { it.sem.toInt() },
-            gradeSelector = { subject -> subjectDetailsMutable.find { subject.card_id.toInt() == it.id }?.total },
-            sortSelector = { it.sem }
+            semesterSelector = { it.semester.toInt() },
+            gradeSelector = { subject -> subjectDetailsMutable.find { subject.subjectId.toInt() == it.id }?.totalHundredPointMark },
+            sortSelector = { it.semester }
         )
     }
 
     private fun formSuccessSubjects(
-        subjects: List<SubjectDTO>,
-        subjectDetails: List<SubjectDetailsDTO>
+        subjects: List<Subject>,
+        subjectDetails: List<SubjectDetails>
     ): MutableList<UISubjectDTO> {
         val uiSubjects = mutableListOf<UISubjectDTO>()
         val subjectDetailsMutable = subjectDetails.toMutableList()
         subjects.forEach { subject ->
-            subjectDetailsMutable.find { subject.card_id.toInt() == it.id }?.let { details ->
-                uiSubjects.add(subject.toUIDTO(details.total))
+            subjectDetailsMutable.find { subject.subjectId.toInt() == it.id }?.let { details ->
+                uiSubjects.add(subject.toUIDTO(details.totalHundredPointMark))
                 subjectDetailsMutable.remove(details)
             }
         }
         return uiSubjects
     }
 
-    private fun formMarkbookMarksInfo(markbookSubjects: List<MarkbookSubjectDTO>): List<MarksInfo> {
+    private fun formMarkbookMarksInfo(markbookSubjects: List<MarkbookSubject>): List<MarksInfo> {
         return formMarksInfo(
             array = markbookSubjects,
             semesterSelector = { it.semester },
@@ -125,11 +125,11 @@ class ProfileInteractor(
         )
     }
 
-    private fun formMarkbookSubjects(markbookSubjects: List<MarkbookSubjectDTO>): List<UISubjectDTO> {
+    private fun formMarkbookSubjects(markbookSubjects: List<MarkbookSubject>): List<UISubjectDTO> {
         return markbookSubjects.map { it.toUIDTO() }
     }
 
-    suspend fun getMarkbookDTOById(id: Int): MarkbookSubjectDTO? {
+    suspend fun getMarkbookDTOById(id: Int): MarkbookSubject? {
         return subjectModel.getMarkbook().lastOrNull()?.find { it.id == id }
     }
 
