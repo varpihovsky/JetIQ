@@ -17,10 +17,16 @@ package com.varpihovsky.core_db.dao
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import com.varpihovsky.core_db.internal.delete
+import com.varpihovsky.core_db.internal.deleteAll
+import com.varpihovsky.core_db.internal.listFlow
+import com.varpihovsky.core_db.internal.put
 import com.varpihovsky.repo_data.ContactDTO
+import com.varpihovsky.repo_data.lists.ContactList
 import kotlinx.coroutines.flow.Flow
+import org.kodein.db.DB
 
-expect interface ContactDAO {
+interface ContactDAO {
     fun getContacts(): Flow<List<ContactDTO>>
 
     fun insert(contactDTO: ContactDTO)
@@ -28,4 +34,28 @@ expect interface ContactDAO {
     fun delete(contactDTO: ContactDTO)
 
     fun clear()
+
+    companion object {
+        operator fun invoke(db: DB): ContactDAO = ContactDAOImpl(db)
+    }
+}
+
+class ContactDAOImpl(private val db: DB) : ContactDAO {
+
+    override fun getContacts(): Flow<List<ContactDTO>> {
+        return db.listFlow()
+    }
+
+    override fun insert(contactDTO: ContactDTO) {
+        db.put(model = contactDTO, holderFactory = { ContactList(listOf()) })
+    }
+
+    override fun delete(contactDTO: ContactDTO) {
+        db.delete(contactDTO)
+    }
+
+    override fun clear() {
+        db.deleteAll<ContactList, ContactDTO>()
+    }
+
 }

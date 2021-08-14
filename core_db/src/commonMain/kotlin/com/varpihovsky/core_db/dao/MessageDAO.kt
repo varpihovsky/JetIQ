@@ -17,17 +17,57 @@ package com.varpihovsky.core_db.dao
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import com.varpihovsky.repo_data.MessageDTO
+import com.varpihovsky.core_db.internal.*
+import com.varpihovsky.core_db.internal.types.MessageInternal
+import com.varpihovsky.core_db.internal.types.lists.MessageList
+import com.varpihovsky.core_db.internal.types.mappers.toExternal
+import com.varpihovsky.core_db.internal.types.mappers.toInternal
+import com.varpihovsky.jetiqApi.data.Message
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
+import org.kodein.db.DB
+import org.kodein.db.flowOf
+import org.kodein.db.keyById
 
-expect interface MessageDAO {
-    fun getMessages(): Flow<List<MessageDTO>>
+interface MessageDAO {
+    fun getMessages(): Flow<List<Message>>
 
-    fun getMessageById(id: Int): Flow<MessageDTO>
+    fun getMessageById(id: Int): Flow<Message>
 
-    fun addMessage(messageDTO: MessageDTO)
+    fun addMessage(messageDTO: Message)
 
-    fun deleteMessage(messageDTO: MessageDTO)
+    fun deleteMessage(messageDTO: Message)
 
     fun deleteAll()
+
+    companion object {
+        operator fun invoke(db: DB): MessageDAO = MessageDAOImpl(db)
+    }
+}
+
+private class MessageDAOImpl(private val db: DB) : MessageDAO {
+    override fun getMessages(): Flow<List<Message>> {
+        return db.listFlow<MessageList, MessageInternal>()
+            .map { it.map { internal -> internal.toExternal() } }
+    }
+
+    override fun getMessageById(id: Int): Flow<Message> {
+        return db.flowOf(db.keyById<MessageInternal>(id)).mapNotNull { it?.toExternal() }
+    }
+
+    override fun addMessage(messageDTO: Message) {
+        db.put(
+            policy = PutPolicy.AS_IS,
+            model = messageDTO.toInternal(),
+            holderFactory = { MessageList(listOf()) })
+    }
+
+    override fun deleteMessage(messageDTO: Message) {
+        db.delete(messageDTO.toInternal())
+    }
+
+    override fun deleteAll() {
+        db.deleteAll<MessageList, MessageInternal>()
+    }
 }

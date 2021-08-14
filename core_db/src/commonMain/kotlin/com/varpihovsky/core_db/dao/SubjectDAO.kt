@@ -1,5 +1,3 @@
-package com.varpihovsky.core_db.dao
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,22 +14,68 @@ package com.varpihovsky.core_db.dao
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_db.dao
 
-import com.varpihovsky.repo_data.SubjectDTO
+import com.varpihovsky.core_db.internal.*
+import com.varpihovsky.core_db.internal.types.SubjectInternal
+import com.varpihovsky.core_db.internal.types.lists.SubjectList
+import com.varpihovsky.core_db.internal.types.mappers.toExternal
+import com.varpihovsky.core_db.internal.types.mappers.toInternal
+import com.varpihovsky.jetiqApi.data.Subject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import org.kodein.db.DB
+import org.kodein.db.flowOf
+import org.kodein.db.keyById
 
-expect interface SubjectDAO {
-    fun getSubjectById(id: String): Flow<SubjectDTO>
+interface SubjectDAO {
+    fun getSubjectById(id: String): Flow<Subject?>
 
-    fun getAllSubjects(): Flow<List<SubjectDTO>>
+    fun getAllSubjects(): Flow<List<Subject>>
 
-    fun getAllSubjectsList(): List<SubjectDTO>
+    fun getAllSubjectsList(): List<Subject>
 
-    fun insert(subjectDTO: SubjectDTO)
+    fun insert(subjectDTO: Subject)
 
-    fun delete(subjectDTO: SubjectDTO)
+    fun delete(subjectDTO: Subject)
 
     fun deleteSubjectById(id: Int)
 
     fun deleteAll()
+
+    companion object {
+        operator fun invoke(db: DB): SubjectDAO = SubjectDAOImpl(db)
+    }
+}
+
+private class SubjectDAOImpl(private val db: DB) : SubjectDAO {
+    override fun getSubjectById(id: String): Flow<Subject?> {
+        return db.flowOf(db.keyById<SubjectInternal>(id)).map { it?.toExternal() }
+    }
+
+    override fun getAllSubjects(): Flow<List<Subject>> {
+        return db.listFlow<SubjectList, SubjectInternal>()
+            .map { it.map { internal -> internal.toExternal() } }
+    }
+
+    override fun getAllSubjectsList(): List<Subject> {
+        return db.allList<SubjectInternal>().map { it.toExternal() }
+    }
+
+    override fun insert(subjectDTO: Subject) {
+        db.put(PutPolicy.AS_IS, subjectDTO.toInternal()) { SubjectList(listOf()) }
+    }
+
+    override fun delete(subjectDTO: Subject) {
+        db.delete(subjectDTO.toInternal())
+    }
+
+    override fun deleteSubjectById(id: Int) {
+        val key = db.keyById<SubjectInternal>(id)
+        db.get(key)?.let { db.delete(it) }
+    }
+
+    override fun deleteAll() {
+        db.deleteAll<SubjectList, SubjectInternal>()
+    }
 }

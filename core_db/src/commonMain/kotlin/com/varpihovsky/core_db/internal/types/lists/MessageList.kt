@@ -1,5 +1,3 @@
-package com.varpihovsky.core_db.dao
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,26 +14,16 @@ package com.varpihovsky.core_db.dao
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_db.internal.types.lists
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
-import androidx.room.Query
-import com.varpihovsky.repo_data.ContactDTO
-import kotlinx.coroutines.flow.Flow
+import com.varpihovsky.core_db.internal.types.MessageInternal
+import com.varpihovsky.repo_data.SingleHolder
+import kotlinx.serialization.Serializable
+import org.kodein.db.Key
 
-@Dao
-actual interface ContactDAO {
-    @Query("SELECT * FROM ContactDTO")
-    actual fun getContacts(): Flow<List<ContactDTO>>
-
-    @Insert(onConflict = IGNORE)
-    actual fun insert(contactDTO: ContactDTO)
-
-    @Delete
-    actual fun delete(contactDTO: ContactDTO)
-
-    @Query("DELETE FROM ContactDTO")
-    actual fun clear()
+@Serializable
+internal class MessageList(override val list: List<Key<MessageInternal>>) :
+    SingleHolder<MessageInternal> {
+    override fun with(list: List<Key<MessageInternal>>): SingleHolder<MessageInternal> =
+        MessageList(list)
 }

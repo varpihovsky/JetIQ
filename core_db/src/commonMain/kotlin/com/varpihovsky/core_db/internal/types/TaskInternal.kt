@@ -1,5 +1,3 @@
-package com.varpihovsky.core_db.dao
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,16 +14,15 @@ package com.varpihovsky.core_db.dao
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_db.internal.types
 
-import kotlinx.coroutines.flow.Flow
+import kotlinx.serialization.Serializable
+import org.kodein.db.model.orm.Metadata
 
-interface SingleEntryDAO<T> {
-    fun get(): Flow<T?>
-    fun set(t: T)
-    fun delete()
-}
-
-fun <T> SingleEntryDAO<T>.reset(value: T) {
-    delete()
-    set(value)
-}
+@Serializable
+class TaskInternal(
+    override val id: Int = 0,
+    val legend: String,
+    val module: Int,
+    val points: Int,
+) : Metadata

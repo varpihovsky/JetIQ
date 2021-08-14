@@ -17,13 +17,38 @@ package com.varpihovsky.core_db.dao
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import com.varpihovsky.core_db.internal.delete
+import com.varpihovsky.core_db.internal.keyById
+import com.varpihovsky.core_db.internal.putSingle
 import com.varpihovsky.repo_data.Confidential
 import kotlinx.coroutines.flow.Flow
+import org.kodein.db.DB
+import org.kodein.db.flowOf
 
-expect interface ConfidentialDAO : SingleEntryDAO<Confidential> {
-    override fun get(): Flow<Confidential>
+interface ConfidentialDAO : SingleEntryDAO<Confidential> {
+    override fun get(): Flow<Confidential?>
 
     override fun set(t: Confidential)
 
     override fun delete()
+
+    companion object {
+        operator fun invoke(db: DB): ConfidentialDAO = ConfidentialDAOImpl(db)
+    }
+}
+
+private class ConfidentialDAOImpl(private val db: DB) :
+    ConfidentialDAO {
+    override fun get(): Flow<Confidential?> {
+        return db.flowOf(db.keyById())
+    }
+
+    override fun set(t: Confidential) {
+        db.putSingle(t)
+    }
+
+    override fun delete() {
+        db.delete<Confidential>()
+    }
+
 }

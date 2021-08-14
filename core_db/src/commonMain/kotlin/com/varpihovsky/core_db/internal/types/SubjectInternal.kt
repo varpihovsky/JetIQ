@@ -1,5 +1,3 @@
-package com.varpihovsky.core_db.dao
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,16 +14,21 @@ package com.varpihovsky.core_db.dao
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_db.internal.types
 
-import kotlinx.coroutines.flow.Flow
+import com.varpihovsky.core_db.internal.types.lists.SubjectList
+import com.varpihovsky.repo_data.Listable
+import kotlinx.serialization.Serializable
 
-interface SingleEntryDAO<T> {
-    fun get(): Flow<T?>
-    fun set(t: T)
-    fun delete()
-}
-
-fun <T> SingleEntryDAO<T>.reset(value: T) {
-    delete()
-    set(value)
+@Serializable
+internal class SubjectInternal(
+    override val id: Int,
+    val controlForm: String,
+    val scale: String,
+    val semester: Int,
+    val subject: String,
+    val teacherName: String
+) : Listable<SubjectList> {
+    override fun with(id: Int): Listable<SubjectList> =
+        SubjectInternal(id, controlForm, scale, semester, subject, teacherName)
 }

@@ -1,5 +1,3 @@
-package com.varpihovsky.core_db.dao
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,25 +14,16 @@ package com.varpihovsky.core_db.dao
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_db.internal.types.lists
 
-import androidx.room.*
-import com.varpihovsky.repo_data.MessageDTO
-import kotlinx.coroutines.flow.Flow
+import com.varpihovsky.core_db.internal.types.SubjectDetailsInternal
+import com.varpihovsky.repo_data.SingleHolder
+import kotlinx.serialization.Serializable
+import org.kodein.db.Key
 
-@Dao
-actual interface MessageDAO {
-    @Query("SELECT * FROM MessageDTO")
-    actual fun getMessages(): Flow<List<MessageDTO>>
-
-    @Query("SELECT * FROM MessageDTO WHERE id=:id")
-    actual fun getMessageById(id: Int): Flow<MessageDTO>
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    actual fun addMessage(messageDTO: MessageDTO)
-
-    @Delete
-    actual fun deleteMessage(messageDTO: MessageDTO)
-
-    @Query("DELETE FROM MessageDTO")
-    actual fun deleteAll()
+@Serializable
+internal class SubjectDetailsList(override val list: List<Key<SubjectDetailsInternal>>) :
+    SingleHolder<SubjectDetailsInternal> {
+    override fun with(list: List<Key<SubjectDetailsInternal>>): SingleHolder<SubjectDetailsInternal> =
+        SubjectDetailsList(list)
 }

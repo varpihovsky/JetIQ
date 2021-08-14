@@ -1,5 +1,3 @@
-package com.varpihovsky.core_db.dao
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,25 +14,20 @@ package com.varpihovsky.core_db.dao
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_db.internal.types
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
-import androidx.room.Query
-import com.varpihovsky.repo_data.ProfileDTO
-import kotlinx.coroutines.flow.Flow
+import com.varpihovsky.core_db.internal.types.lists.MessageList
+import com.varpihovsky.repo_data.Listable
+import kotlinx.serialization.Serializable
 
-@Dao
-actual interface ProfileDAO : SingleEntryDAO<ProfileDTO> {
-    @Query("SELECT * FROM ProfileDTO LIMIT 1")
-    actual override fun get(): Flow<ProfileDTO>
-
-    @Query("SELECT * FROM ProfileDTO LIMIT 1")
-    actual fun getProfile(): ProfileDTO
-
-    @Insert(onConflict = REPLACE)
-    actual override fun set(t: ProfileDTO)
-
-    @Query("DELETE FROM ProfileDTO")
-    actual override fun delete()
+@Serializable
+internal class MessageInternal(
+    val body: String?,
+    val idFrom: String,
+    val isTeacher: String,
+    override val id: Int,
+    val time: String
+) : Listable<MessageList> {
+    override fun with(id: Int): Listable<MessageList> =
+        MessageInternal(body, idFrom, isTeacher, id, time)
 }
