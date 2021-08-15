@@ -1,5 +1,3 @@
-import extensions.kapt
-
 plugins {
     multiplatform()
     androidLib()
@@ -12,6 +10,7 @@ version = Config.version
 
 kotlin {
     android()
+    jvm()
 
     sourceSets {
         val commonMain by getting {
@@ -23,15 +22,10 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                // Room
-                implementation(AndroidDependencies.room_runtime)
-                implementation(AndroidDependencies.room)
-                kapt(AndroidDependencies.room_compiler)
-
-                implementation(Dependencies.retrofit_converter)
                 implementation(AndroidDependencies.core)
             }
         }
+        val jvmMain by getting
     }
 }
 
