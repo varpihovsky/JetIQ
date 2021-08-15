@@ -40,7 +40,7 @@ private class ApiImpl(config: ApiConfig) : Api {
 
         return if (result.isSuccess()) {
             val res = result.asHttpResponse()
-            res.copy(value = res.value.withSession(res.headers["Cookie"]))
+            res.copy(value = res.value.withSession(res.headers["set-cookie"]))
         } else result
     }
 
