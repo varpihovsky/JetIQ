@@ -16,7 +16,6 @@
  */
 package com.varpihovsky.core_db.internal.types
 
-import com.varpihovsky.core_db.internal.types.lists.SubjectList
 import com.varpihovsky.repo_data.Listable
 import kotlinx.serialization.Serializable
 
@@ -28,7 +27,7 @@ internal class SubjectInternal(
     val semester: Int,
     val subject: String,
     val teacherName: String
-) : Listable<SubjectList> {
-    override fun with(id: Int): Listable<SubjectList> =
+) : Listable {
+    override fun with(id: Int): Listable =
         SubjectInternal(id, controlForm, scale, semester, subject, teacherName)
 }

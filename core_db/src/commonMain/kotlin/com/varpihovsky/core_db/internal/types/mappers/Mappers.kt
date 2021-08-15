@@ -18,7 +18,6 @@ package com.varpihovsky.core_db.internal.types.mappers
 
 import com.varpihovsky.core_db.internal.types.*
 import com.varpihovsky.jetiqApi.data.*
-import org.kodein.db.Key
 
 internal fun Message.toInternal() = MessageInternal(body, idFrom, isTeacher, id.toInt(), time)
 
@@ -72,11 +71,7 @@ internal fun Subject.toInternal() = SubjectInternal(
     teacherName
 )
 
-internal fun Task.toInternal() = TaskInternal(id, legend, module.toInt(), points)
-
-internal fun TaskInternal.toExternal() = Task(id, legend, module.toString(), points)
-
-internal fun SubjectDetails.toInternal(tasks: List<Key<TaskInternal>>) = SubjectDetailsInternal(
+internal fun SubjectDetails.toInternal() = SubjectDetailsInternal(
     id,
     ectsMark,
     forPresenceMarkFirstModule,
@@ -92,7 +87,7 @@ internal fun SubjectDetails.toInternal(tasks: List<Key<TaskInternal>>) = Subject
     tasks
 )
 
-internal fun SubjectDetailsInternal.toExternal(tasks: List<Task>) = SubjectDetails(
+internal fun SubjectDetailsInternal.toExternal() = SubjectDetails(
     id,
     ectsMark,
     forPresenceMarkFirstModule,

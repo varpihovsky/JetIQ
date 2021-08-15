@@ -16,10 +16,9 @@
  */
 package com.varpihovsky.core_db.internal.types
 
-import com.varpihovsky.core_db.internal.types.lists.SubjectDetailsList
+import com.varpihovsky.jetiqApi.data.Task
 import com.varpihovsky.repo_data.Listable
 import kotlinx.serialization.Serializable
-import org.kodein.db.Key
 
 @Serializable
 internal class SubjectDetailsInternal(
@@ -35,9 +34,9 @@ internal class SubjectDetailsInternal(
     val hundredPointMarkSecondModule: Int,
     val totalHundredPointMark: Int,
     val totalHundredPointMarkPrevious: Int,
-    val tasks: List<Key<TaskInternal>>
-) : Listable<SubjectDetailsList> {
-    override fun with(id: Int): Listable<SubjectDetailsList> = SubjectDetailsInternal(
+    val tasks: List<Task>
+) : Listable {
+    override fun with(id: Int): Listable = SubjectDetailsInternal(
         id,
         ectsMark,
         forPresenceMarkFirstModule,

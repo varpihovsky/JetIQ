@@ -16,7 +16,6 @@
  */
 package com.varpihovsky.core_db.internal.types
 
-import com.varpihovsky.core_db.internal.types.lists.MessageList
 import com.varpihovsky.repo_data.Listable
 import kotlinx.serialization.Serializable
 
@@ -27,7 +26,7 @@ internal class MessageInternal(
     val isTeacher: String,
     override val id: Int,
     val time: String
-) : Listable<MessageList> {
-    override fun with(id: Int): Listable<MessageList> =
+) : Listable {
+    override fun with(id: Int): Listable =
         MessageInternal(body, idFrom, isTeacher, id, time)
 }

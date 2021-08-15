@@ -16,7 +16,6 @@
  */
 package com.varpihovsky.core_db.internal.types
 
-import com.varpihovsky.core_db.internal.types.lists.MarkbookSubjectList
 import com.varpihovsky.repo_data.Listable
 import kotlinx.serialization.Serializable
 
@@ -31,10 +30,10 @@ internal class MarkbookSubjectInternal(
     val mark: String,
     val subjectName: String,
     val teacher: String,
-    val total: Int,
+    val total: Float,
     val semester: Int
-) : Listable<MarkbookSubjectList> {
-    override fun with(id: Int): Listable<MarkbookSubjectList> = MarkbookSubjectInternal(
+) : Listable {
+    override fun with(id: Int): Listable = MarkbookSubjectInternal(
         id,
         credits,
         date,

@@ -18,13 +18,8 @@ package com.varpihovsky.core_db
 
 import com.varpihovsky.core_db.dao.*
 import com.varpihovsky.core_db.internal.types.*
-import com.varpihovsky.core_db.internal.types.lists.MarkbookSubjectList
-import com.varpihovsky.core_db.internal.types.lists.MessageList
-import com.varpihovsky.core_db.internal.types.lists.SubjectDetailsList
-import com.varpihovsky.core_db.internal.types.lists.SubjectList
 import com.varpihovsky.repo_data.Confidential
 import com.varpihovsky.repo_data.ContactDTO
-import com.varpihovsky.repo_data.lists.ContactList
 import org.kodein.db.DB
 import org.kodein.db.TypeTable
 import org.kodein.db.impl.inDir
@@ -51,31 +46,19 @@ object DatabaseModule {
                     KotlinxSerializer {
                         +Confidential.serializer()
                         +ContactDTO.serializer()
-                        +MessageList.serializer()
                         +ProfileInternal.serializer()
                         +MessageInternal.serializer()
                         +SubjectInternal.serializer()
-                        +ContactList.serializer()
-                        +SubjectList.serializer()
-                        +SubjectDetailsList.serializer()
                         +SubjectDetailsInternal.serializer()
-                        +TaskInternal.serializer()
                         +MarkbookSubjectInternal.serializer()
-                        +MarkbookSubjectList.serializer()
                     },
                     TypeTable {
                         root<Confidential>()
                         root<ContactDTO>()
-                        root<MessageList>()
                         root<ProfileInternal>()
                         root<MessageInternal>()
                         root<SubjectInternal>()
-                        root<ContactList>()
-                        root<SubjectList>()
-                        root<SubjectDetailsList>()
-                        root<TaskInternal>()
                         root<MarkbookSubjectInternal>()
-                        root<MarkbookSubjectList>()
                     }
                 )
 
