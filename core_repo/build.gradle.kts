@@ -12,6 +12,7 @@ version = Config.version
 
 kotlin {
     android()
+    jvm()
 
     sourceSets {
         val commonMain by getting {
@@ -55,6 +56,7 @@ kotlin {
                 implementation(TestDependencies.mockk)
             }
         }
+        val jvmMain by getting
     }
 }
 
