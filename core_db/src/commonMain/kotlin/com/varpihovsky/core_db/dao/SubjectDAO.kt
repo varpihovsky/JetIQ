@@ -18,15 +18,16 @@ package com.varpihovsky.core_db.dao
 
 import com.varpihovsky.core_db.internal.*
 import com.varpihovsky.core_db.internal.types.SubjectInternal
-import com.varpihovsky.core_db.internal.types.lists.SubjectList
 import com.varpihovsky.core_db.internal.types.mappers.toExternal
 import com.varpihovsky.core_db.internal.types.mappers.toInternal
 import com.varpihovsky.jetiqApi.data.Subject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import org.kodein.db.DB
 import org.kodein.db.flowOf
 import org.kodein.db.keyById
+import org.kodein.db.on
 
 interface SubjectDAO {
     fun getSubjectById(id: String): Flow<Subject?>
@@ -49,13 +50,19 @@ interface SubjectDAO {
 }
 
 private class SubjectDAOImpl(private val db: DB) : SubjectDAO {
+    private val dataFetcher = DataFetcher<SubjectInternal>(db.allList())
+
+    init {
+        db.on<SubjectInternal>().register(dataFetcher)
+    }
+
     override fun getSubjectById(id: String): Flow<Subject?> {
-        return db.flowOf(db.keyById<SubjectInternal>(id)).map { it?.toExternal() }
+        return db.flowOf<SubjectInternal>(db.keyById(id.toInt())).filter { it?.id == id.toInt() }
+            .map { it?.toExternal() }
     }
 
     override fun getAllSubjects(): Flow<List<Subject>> {
-        return db.listFlow<SubjectList, SubjectInternal>()
-            .map { it.map { internal -> internal.toExternal() } }
+        return dataFetcher.flow.map { it.map { internal -> internal.toExternal() } }
     }
 
     override fun getAllSubjectsList(): List<Subject> {
@@ -63,7 +70,7 @@ private class SubjectDAOImpl(private val db: DB) : SubjectDAO {
     }
 
     override fun insert(subjectDTO: Subject) {
-        db.put(PutPolicy.AS_IS, subjectDTO.toInternal()) { SubjectList(listOf()) }
+        db.putListable(model = subjectDTO.toInternal())
     }
 
     override fun delete(subjectDTO: Subject) {
@@ -76,6 +83,6 @@ private class SubjectDAOImpl(private val db: DB) : SubjectDAO {
     }
 
     override fun deleteAll() {
-        db.deleteAll<SubjectList, SubjectInternal>()
+        db.deleteAll<SubjectInternal>()
     }
 }

@@ -17,14 +17,15 @@ package com.varpihovsky.core_db.dao
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import com.varpihovsky.core_db.internal.delete
+import com.varpihovsky.core_db.internal.DataFetcher
+import com.varpihovsky.core_db.internal.allList
 import com.varpihovsky.core_db.internal.deleteAll
-import com.varpihovsky.core_db.internal.listFlow
-import com.varpihovsky.core_db.internal.put
+import com.varpihovsky.core_db.internal.putListable
 import com.varpihovsky.repo_data.ContactDTO
-import com.varpihovsky.repo_data.lists.ContactList
 import kotlinx.coroutines.flow.Flow
 import org.kodein.db.DB
+import org.kodein.db.deleteById
+import org.kodein.db.on
 
 interface ContactDAO {
     fun getContacts(): Flow<List<ContactDTO>>
@@ -41,21 +42,26 @@ interface ContactDAO {
 }
 
 class ContactDAOImpl(private val db: DB) : ContactDAO {
+    private val dataFetcher: DataFetcher<ContactDTO> = DataFetcher(db.allList())
+
+    init {
+        db.on<ContactDTO>().register(dataFetcher)
+    }
 
     override fun getContacts(): Flow<List<ContactDTO>> {
-        return db.listFlow()
+        return dataFetcher.flow
     }
 
     override fun insert(contactDTO: ContactDTO) {
-        db.put(model = contactDTO, holderFactory = { ContactList(listOf()) })
+        db.putListable(model = contactDTO)
     }
 
     override fun delete(contactDTO: ContactDTO) {
-        db.delete(contactDTO)
+        db.deleteById<ContactDTO>(contactDTO.id)
     }
 
     override fun clear() {
-        db.deleteAll<ContactList, ContactDTO>()
+        db.deleteAll<ContactDTO>()
     }
 
 }

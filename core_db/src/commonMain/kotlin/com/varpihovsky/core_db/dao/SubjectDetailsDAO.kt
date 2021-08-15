@@ -16,20 +16,23 @@
  */
 package com.varpihovsky.core_db.dao
 
-import com.varpihovsky.core_db.internal.*
-import com.varpihovsky.core_db.internal.get
+import com.varpihovsky.core_db.internal.DataFetcher
+import com.varpihovsky.core_db.internal.allList
+import com.varpihovsky.core_db.internal.deleteAll
+import com.varpihovsky.core_db.internal.putListable
 import com.varpihovsky.core_db.internal.types.MarkbookSubjectInternal
 import com.varpihovsky.core_db.internal.types.SubjectDetailsInternal
-import com.varpihovsky.core_db.internal.types.TaskInternal
-import com.varpihovsky.core_db.internal.types.lists.MarkbookSubjectList
-import com.varpihovsky.core_db.internal.types.lists.SubjectDetailsList
 import com.varpihovsky.core_db.internal.types.mappers.toExternal
 import com.varpihovsky.core_db.internal.types.mappers.toInternal
 import com.varpihovsky.jetiqApi.data.MarkbookSubject
 import com.varpihovsky.jetiqApi.data.SubjectDetails
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
-import org.kodein.db.*
+import org.kodein.db.DB
+import org.kodein.db.flowOf
+import org.kodein.db.keyById
+import org.kodein.db.on
 
 interface SubjectDetailsDAO {
     fun insertDetails(subjectDetailsDTO: SubjectDetails)
@@ -55,50 +58,47 @@ interface SubjectDetailsDAO {
     }
 }
 
-private class SubjectDetailsDAOImpl(private val db: DB) : SubjectDetailsDAO {
+private class SubjectDetailsDAOImpl(private val db: DB) :
+    SubjectDetailsDAO {
+    private val detailsFetcher: DataFetcher<SubjectDetailsInternal>
+    private val markbookFetcher: DataFetcher<MarkbookSubjectInternal>
+
+    init {
+        // allList throws exception when it is joined with declaration.
+        detailsFetcher = DataFetcher(db.allList())
+        markbookFetcher = DataFetcher(db.allList())
+        db.on<SubjectDetailsInternal>().register(detailsFetcher)
+        db.on<MarkbookSubjectInternal>().register(markbookFetcher)
+    }
+
     override fun insertDetails(subjectDetailsDTO: SubjectDetails) {
-        val tasks = subjectDetailsDTO.tasks.map { it.toInternal() }.map { db.put(it) }
-        val details = subjectDetailsDTO.toInternal(tasks)
-        db.put(PutPolicy.AS_IS, details) { SubjectDetailsList(listOf()) }
+        val details = subjectDetailsDTO.toInternal()
+        db.putListable(model = details)
     }
 
     override fun insertMarkbookSubject(markbookSubjectDTO: MarkbookSubject) {
-        db.put(PutPolicy.LAST, markbookSubjectDTO.toInternal()) { MarkbookSubjectList(listOf()) }
+        db.putListable(model = markbookSubjectDTO.toInternal())
     }
 
     override fun deleteAllDetails() {
-        val cursor = db.find<TaskInternal>().all()
-        db.deleteAll(cursor)
-
-        cursor.close()
-
-        db.deleteAll<SubjectDetailsList, SubjectDetailsInternal>()
+        db.deleteAll<SubjectDetailsInternal>()
     }
 
     override fun deleteAllMarkbookSubjects() {
-        db.deleteAll<MarkbookSubjectList, MarkbookSubjectInternal>()
+        db.deleteAll<MarkbookSubjectInternal>()
     }
 
     override fun getDetails(): Flow<List<SubjectDetails>> {
-        val details = db.listFlow<SubjectDetailsList, SubjectDetailsInternal>()
-        return details.map { list ->
-            list.map { details ->
-                val tasks = details.tasks.mapNotNull { key -> db.get(key)?.toExternal() }
-                details.toExternal(tasks)
-            }
-        }
+        return detailsFetcher.flow.map { it.map { internal -> internal.toExternal() } }
     }
 
     override fun getDetailsById(id: Int): Flow<SubjectDetails?> {
-        val detailsFlow = db.flowOf<SubjectDetailsInternal>(db.keyById(id))
-        return detailsFlow.map { details ->
-            val tasks = details?.tasks?.mapNotNull { key -> db.get(key)?.toExternal() }
-            tasks?.let { details.toExternal(it) }
-        }
+        return db.flowOf<SubjectDetailsInternal>(db.keyById(id)).filter { it?.id == id }
+            .map { it?.toExternal() }
     }
 
     override fun getMarkbookSubjects(): Flow<List<MarkbookSubject>> {
-        return db.listFlow<MarkbookSubjectList, MarkbookSubjectInternal>()
+        return markbookFetcher.flow
             .map { it.map { internal -> internal.toExternal() } }
     }
 
@@ -107,7 +107,8 @@ private class SubjectDetailsDAOImpl(private val db: DB) : SubjectDetailsDAO {
     }
 
     override fun getMarkbookSubjectById(id: Int): Flow<MarkbookSubject?> {
-        return db.flowOf<MarkbookSubjectInternal>(db.keyById(id)).map { it?.toExternal() }
+        return db.flowOf<MarkbookSubjectInternal>(db.keyById(id)).filter { it?.id == id }
+            .map { it?.toExternal() }
     }
 
 }

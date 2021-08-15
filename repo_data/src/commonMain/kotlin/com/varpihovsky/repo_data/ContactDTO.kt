@@ -16,7 +16,6 @@
  */
 package com.varpihovsky.repo_data
 
-import com.varpihovsky.repo_data.lists.ContactList
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -24,8 +23,28 @@ class ContactDTO(
     override val id: Int,
     val text: String,
     val type: String
-) : Listable<ContactList> {
-    override fun with(id: Int): Listable<ContactList> = ContactDTO(id, text, type)
+) : Listable {
+    override fun with(id: Int): Listable = ContactDTO(id, text, type)
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+
+        other as ContactDTO
+
+        if (id != other.id) return false
+        if (text != other.text) return false
+        if (type != other.type) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id
+        result = 31 * result + text.hashCode()
+        result = 31 * result + type.hashCode()
+        return result
+    }
 
     companion object {
         const val TYPE_STUDENT = "student"

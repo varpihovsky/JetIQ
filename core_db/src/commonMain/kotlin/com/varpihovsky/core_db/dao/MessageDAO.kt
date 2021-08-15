@@ -19,7 +19,6 @@ package com.varpihovsky.core_db.dao
 
 import com.varpihovsky.core_db.internal.*
 import com.varpihovsky.core_db.internal.types.MessageInternal
-import com.varpihovsky.core_db.internal.types.lists.MessageList
 import com.varpihovsky.core_db.internal.types.mappers.toExternal
 import com.varpihovsky.core_db.internal.types.mappers.toInternal
 import com.varpihovsky.jetiqApi.data.Message
@@ -29,6 +28,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import org.kodein.db.DB
 import org.kodein.db.flowOf
 import org.kodein.db.keyById
+import org.kodein.db.on
 
 interface MessageDAO {
     fun getMessages(): Flow<List<Message>>
@@ -47,9 +47,14 @@ interface MessageDAO {
 }
 
 private class MessageDAOImpl(private val db: DB) : MessageDAO {
+    private val dataFetcher = DataFetcher<MessageInternal>(db.allList())
+
+    init {
+        db.on<MessageInternal>().register(dataFetcher)
+    }
+
     override fun getMessages(): Flow<List<Message>> {
-        return db.listFlow<MessageList, MessageInternal>()
-            .map { it.map { internal -> internal.toExternal() } }
+        return dataFetcher.flow.map { it.map { internal -> internal.toExternal() } }
     }
 
     override fun getMessageById(id: Int): Flow<Message> {
@@ -57,10 +62,7 @@ private class MessageDAOImpl(private val db: DB) : MessageDAO {
     }
 
     override fun addMessage(messageDTO: Message) {
-        db.put(
-            policy = PutPolicy.AS_IS,
-            model = messageDTO.toInternal(),
-            holderFactory = { MessageList(listOf()) })
+        db.putListable(model = messageDTO.toInternal())
     }
 
     override fun deleteMessage(messageDTO: Message) {
@@ -68,6 +70,6 @@ private class MessageDAOImpl(private val db: DB) : MessageDAO {
     }
 
     override fun deleteAll() {
-        db.deleteAll<MessageList, MessageInternal>()
+        db.deleteAll<MessageInternal>()
     }
 }
