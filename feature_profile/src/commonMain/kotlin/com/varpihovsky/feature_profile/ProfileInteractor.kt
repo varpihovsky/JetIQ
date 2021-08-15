@@ -31,8 +31,12 @@ import com.varpihovsky.ui_data.dto.UISubjectDTO
 import com.varpihovsky.ui_data.dto.formMarksInfo
 import com.varpihovsky.ui_data.mappers.toUIDTO
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 class ProfileInteractor(
     private val dispatchers: CoroutineDispatchers,
@@ -120,17 +124,13 @@ class ProfileInteractor(
         return formMarksInfo(
             array = markbookSubjects,
             semesterSelector = { it.semester },
-            gradeSelector = { it.total },
+            gradeSelector = { it.total.roundToInt() },
             sortSelector = { it.semester }
         )
     }
 
     private fun formMarkbookSubjects(markbookSubjects: List<MarkbookSubject>): List<UISubjectDTO> {
         return markbookSubjects.map { it.toUIDTO() }
-    }
-
-    suspend fun getMarkbookDTOById(id: Int): MarkbookSubject? {
-        return subjectModel.getMarkbook().lastOrNull()?.find { it.id == id }
     }
 
     override fun onRefresh() {
