@@ -18,6 +18,7 @@ package com.varpihovsky.jetiqApi.internal
 
 import com.varpihovsky.jetiqApi.data.*
 import kotlinx.serialization.json.*
+import kotlin.math.roundToInt
 
 internal fun deserializeMarkbookSubjects(json: String): List<MarkbookSubject> {
     val jsonObj = Json.parseToJsonElement(json).jsonObject
@@ -49,10 +50,10 @@ internal fun deserializeSubjectDetails(json: String): SubjectDetails {
         jsonObj["h_pres2"]!!.jsonPrimitive.int,
         jsonObj["mark1"]!!.jsonPrimitive.int,
         jsonObj["mark2"]!!.jsonPrimitive.int,
-        jsonObj["sum1"]!!.jsonPrimitive.int,
-        jsonObj["sum2"]!!.jsonPrimitive.int,
-        jsonObj["total"]!!.jsonPrimitive.int,
-        jsonObj["total_prev"]!!.jsonPrimitive.int,
+        jsonObj["sum1"]!!.jsonPrimitive.float.roundToInt(),
+        jsonObj["sum2"]!!.jsonPrimitive.float.roundToInt(),
+        jsonObj["total"]!!.jsonPrimitive.float.roundToInt(),
+        jsonObj["total_prev"]!!.jsonPrimitive.float.roundToInt(),
         deserializeSubjectTasks(json)
     )
 }

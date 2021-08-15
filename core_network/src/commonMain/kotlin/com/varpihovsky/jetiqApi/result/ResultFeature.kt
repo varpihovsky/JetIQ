@@ -38,20 +38,13 @@ internal class ResultFeature(private val config: Config) {
 
     internal fun isSuccessful(): Boolean = config.successfulStatusCodes.contains(status)
 
-    private fun reset() {
-        status = null
-        headers = null
-        url = null
-    }
 
     private fun wrapResponse(interception: HttpResponseContainer): HttpResponseContainer {
-        val wrapped = if (responseWrap) {
+        return if (responseWrap) {
             resultWrapper.wrap(interception)
         } else {
             interception
         }
-        reset()
-        return wrapped
     }
 
     companion object Feature : HttpClientFeature<Config, ResultFeature> {

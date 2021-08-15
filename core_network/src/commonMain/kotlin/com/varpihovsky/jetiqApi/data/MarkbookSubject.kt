@@ -21,7 +21,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 open class MarkbookSubject(
-    val id: Int,
+    val id: Int = 0,
     val credits: String,
     val date: String,
     val ects: String,
@@ -31,8 +31,8 @@ open class MarkbookSubject(
     @SerialName("subj_name")
     val subjectName: String,
     val teacher: String,
-    val total: Int,
-    val semester: Int
+    val total: Float,
+    val semester: Int = 0
 ) {
     fun withSemester(semester: Int) =
         MarkbookSubject(

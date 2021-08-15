@@ -25,5 +25,5 @@ class Task(
     val legend: String,
     @SerialName("num_mod")
     val module: String,
-    val points: Int,
+    val points: Float,
 )

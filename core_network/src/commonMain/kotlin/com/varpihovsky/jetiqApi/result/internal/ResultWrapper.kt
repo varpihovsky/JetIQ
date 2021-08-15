@@ -21,6 +21,7 @@ import com.varpihovsky.jetiqApi.result.Result
 import com.varpihovsky.jetiqApi.result.ResultFeature
 import io.ktor.client.call.*
 import io.ktor.client.statement.*
+import io.ktor.http.*
 
 internal class ResultWrapper(private val feature: ResultFeature) {
     fun wrap(interception: HttpResponseContainer) = HttpResponseContainer(
@@ -34,7 +35,7 @@ internal class ResultWrapper(private val feature: ResultFeature) {
         } else {
             Result.Failure.HttpError(
                 HttpException(
-                    statusCode = feature.status!!,
+                    statusCode = feature.status ?: HttpStatusCode.ServiceUnavailable,
                     url = feature.url,
                     cause = null
                 )
