@@ -23,7 +23,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.ExperimentalComposeUiApi
 import com.varpihovsky.core.appbar.AppbarManager
-import com.varpihovsky.core.di.get
+import com.varpihovsky.core.di.getViewModel
 import com.varpihovsky.core.eventBus.EventBus
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core_ui.theme.JetIQTheme
@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val viewModel = get<NavigationViewModel>()
+            val viewModel = getViewModel<NavigationViewModel>()
 
             JetIQTheme {
                 Root(

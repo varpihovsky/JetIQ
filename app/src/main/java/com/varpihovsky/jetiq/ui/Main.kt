@@ -35,6 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.di.get
+import com.varpihovsky.core.di.getViewModel
 import com.varpihovsky.core.eventBus.EventBus
 import com.varpihovsky.core.exceptions.ExceptionEventManager
 import com.varpihovsky.core_lifecycle.JetIQViewModel
@@ -171,7 +172,7 @@ fun initNavigation(
     JetNav.createControllerIfNotCreated(eventBus, startDestination) {
         entry {
             val entryRoute = NavigationDirections.authentication.destination
-            composable = { handleBackPress(get<AuthViewModel>()) { Auth(viewModel = it) } }
+            composable = { handleBackPress(getViewModel<AuthViewModel>()) { Auth(viewModel = it) } }
             route = entryRoute
             entryType = EntryType.SubMenu
             inAnimation = materialSharedAxisYIn(forward = true, slideDistance = 200)
@@ -180,7 +181,13 @@ fun initNavigation(
         entry {
             val entryRoute = NavigationDirections.newMessage.destination
             composable =
-                { handleBackPress(get<NewMessageViewModel>()) { NewMessageScreen(newMessageViewModel = it) } }
+                {
+                    handleBackPress(getViewModel<NewMessageViewModel>()) {
+                        NewMessageScreen(
+                            newMessageViewModel = it
+                        )
+                    }
+                }
             route = entryRoute
             entryType = EntryType.SubMenu
             inAnimation = materialElevationScaleIn()
@@ -189,7 +196,13 @@ fun initNavigation(
         entry {
             val entryRoute = NavigationDirections.contacts.destination
             composable =
-                { handleBackPress(get<ContactsViewModel>()) { ContactsScreen(contactsViewModel = it) } }
+                {
+                    handleBackPress(getViewModel<ContactsViewModel>()) {
+                        ContactsScreen(
+                            contactsViewModel = it
+                        )
+                    }
+                }
             route = entryRoute
             entryType = EntryType.SubMenu
             inAnimation = materialFadeThroughIn()
@@ -198,7 +211,7 @@ fun initNavigation(
         entry {
             val entryRoute = NavigationDirections.mainSettings.destination
             composable = {
-                handleBackPress(get<MainSettingsViewModel>()) {
+                handleBackPress(getViewModel<MainSettingsViewModel>()) {
                     MainSettingsScreen(mainSettingsViewModel = it)
                 }
             }
@@ -210,7 +223,7 @@ fun initNavigation(
         entry {
             val entryRoute = NavigationDirections.aboutSettings.destination
             composable = {
-                handleBackPress(get<AboutSettingsViewModel>()) {
+                handleBackPress(getViewModel<AboutSettingsViewModel>()) {
                     AboutSettingsScreen(aboutSettingsViewModel = it)
                 }
             }
@@ -222,7 +235,7 @@ fun initNavigation(
         entry {
             val entryRoute = NavigationDirections.generalSettings.destination
             composable = {
-                handleBackPress(get<GeneralSettingsViewModel>()) {
+                handleBackPress(getViewModel<GeneralSettingsViewModel>()) {
                     GeneralSettingsScreen(generalSettingsViewModel = it)
                 }
             }
@@ -234,7 +247,7 @@ fun initNavigation(
         entry {
             val entryRoute = NavigationDirections.markbookSubject.destination
             composable = {
-                handleBackPress(get<MarkbookSubjectViewModel>()) {
+                handleBackPress(getViewModel<MarkbookSubjectViewModel>()) {
                     MarkbookSubjectScreen(markbookSubjectViewModel = it)
                 }
             }
@@ -246,7 +259,7 @@ fun initNavigation(
         entry {
             val entryRoute = NavigationDirections.successSubject.destination
             composable = {
-                handleBackPress(get<SuccessSubjectViewModel>()) {
+                handleBackPress(getViewModel<SuccessSubjectViewModel>()) {
                     SuccessSubjectScreen(markbookSubjectViewModel = it)
                 }
             }
@@ -258,7 +271,7 @@ fun initNavigation(
         entry {
             val entryRoute = NavigationDirections.messages.destination
             composable =
-                { handleBackPress(get<MessagesViewModel>()) { MessagesScreen(viewModel = it) } }
+                { handleBackPress(getViewModel<MessagesViewModel>()) { MessagesScreen(viewModel = it) } }
             route = entryRoute
             entryType = EntryType.Main
             inAnimation = materialSharedAxisXIn(forward = true, slideDistance = 200)
@@ -268,7 +281,7 @@ fun initNavigation(
             val entryRoute = NavigationDirections.profile.destination
             applyPaddingValues = false
             composable = { values ->
-                handleBackPress(get<ProfileViewModel>()) {
+                handleBackPress(getViewModel<ProfileViewModel>()) {
                     Profile(
                         profileViewModel = get(),
                         paddingValues = values

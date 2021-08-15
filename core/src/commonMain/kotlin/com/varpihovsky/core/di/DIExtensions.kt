@@ -47,7 +47,13 @@ inline fun <reified T : ViewModel> Module.viewModel(
 ): Pair<Module, InstanceFactory<T>> = factory(qualifier, definition)
 
 @Composable
-expect inline fun <reified T : ViewModel> getViewModel(
+inline fun <reified T : ViewModel> getViewModel(
     qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null,
+    noinline parameters: ParametersDefinition? = null
+): T = getViewModelActual<T>(qualifier, parameters)
+
+@Composable
+expect inline fun <reified T : ViewModel> getViewModelActual(
+    qualifier: Qualifier?,
+    noinline parameters: ParametersDefinition?,
 ): T

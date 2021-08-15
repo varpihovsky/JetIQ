@@ -7,7 +7,7 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.androidx.compose.getViewModel as vm
 
 @Composable
-actual inline fun <reified T : ViewModel> getViewModel(
+actual inline fun <reified T : ViewModel> getViewModelActual(
     qualifier: Qualifier?,
     noinline parameters: ParametersDefinition?,
 ): T = vm(qualifier, parameters)
