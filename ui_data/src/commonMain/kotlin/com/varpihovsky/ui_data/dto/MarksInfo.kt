@@ -37,7 +37,7 @@ fun <T, S : Comparable<S>> formMarksInfo(
 
     resultArray.forEach {
         if (semesterSelector(it) != currentSemester) {
-            marksInfo.add(MarksInfo(currentSemester, grade / subIndex))
+            marksInfo.add(MarksInfo(currentSemester, grade / if (subIndex == 0) 1 else subIndex))
             grade = 0
             subIndex = 0
             currentSemester++

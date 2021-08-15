@@ -23,6 +23,7 @@ import com.varpihovsky.jetiqApi.data.Profile
 import com.varpihovsky.jetiqApi.data.Subject
 import com.varpihovsky.repo_data.ContactDTO
 import com.varpihovsky.ui_data.dto.*
+import kotlin.math.roundToInt
 
 fun ContactDTO.toUIDTO() = UIReceiverDTO(
     id,
@@ -38,7 +39,7 @@ fun MarkbookSubject.toUIDTO() = UISubjectDTO(
     id,
     subjectName,
     teacher,
-    total,
+    total.roundToInt(),
     semester
 )
 
