@@ -235,11 +235,8 @@ private class SubjectRepoImpl constructor(
     }
 
     private fun processMarkbook(markbookSubjects: List<MarkbookSubject>) {
-        val current = subjectDetailsDAO.getMarkbookSubjectsList().map { it.withID(id = 0) }
-        markbookSubjects.forEach {
-            if (!current.contains(it)) {
-                subjectDetailsDAO.insertMarkbookSubject(it)
-            }
+        markbookSubjects.forEachIndexed { index, it ->
+            subjectDetailsDAO.insertMarkbookSubject(it.withID(index))
         }
     }
 

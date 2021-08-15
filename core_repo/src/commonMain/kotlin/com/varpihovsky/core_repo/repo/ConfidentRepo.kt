@@ -22,7 +22,6 @@ import com.varpihovsky.core_db.dao.ProfileDAO
 import com.varpihovsky.core_db.dao.SingleEntryDAO
 import com.varpihovsky.repo_data.Confidential
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 /**
@@ -57,15 +56,15 @@ abstract class ConfidentRepo internal constructor(
 
     private suspend fun collectSession() {
         collectSingleEntry(profileDAO) {
-            session = it.session
+            session = it?.session
         }
     }
 
     private suspend fun <T> collectSingleEntry(
         singleEntryDAO: SingleEntryDAO<T>,
-        collector: (T) -> Unit
+        collector: (T?) -> Unit
     ) {
-        singleEntryDAO.get().filterNotNull().collect { collector(it) }
+        singleEntryDAO.get().collect { collector(it) }
     }
 
     /**
