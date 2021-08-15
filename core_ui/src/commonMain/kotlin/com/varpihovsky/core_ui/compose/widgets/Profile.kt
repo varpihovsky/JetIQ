@@ -61,8 +61,8 @@ fun Avatar(
             contentDescription = null,
             contentScale = contentScale,
             colorFilter = colorFilter,
-            onLoading = { AvatarPlaceholder(placeholderEnabled) },
-            onFailure = { AvatarPlaceholder(placeholderEnabled) },
+            onLoading = { AvatarPlaceholder(modifier, placeholderEnabled) },
+            onFailure = { AvatarPlaceholder(modifier, placeholderEnabled) },
             resource = lazyPainterResource(data = Url(url)) {
                 this.requestBuilder {
                     cacheControl(CacheControl.MAX_AGE)
@@ -74,10 +74,11 @@ fun Avatar(
 }
 
 @Composable
-private fun AvatarPlaceholder(placeholderEnabled: Boolean) {
-    Box(Modifier.fillMaxSize()) {
+private fun AvatarPlaceholder(modifier: Modifier, placeholderEnabled: Boolean) {
+    Box(modifier) {
         if (placeholderEnabled) {
             Icon(
+                modifier = Modifier.fillMaxSize(),
                 imageVector = Icons.Default.Person,
                 contentDescription = null
             )
