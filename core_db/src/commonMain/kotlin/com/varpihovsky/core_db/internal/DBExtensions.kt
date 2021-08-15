@@ -16,13 +16,8 @@
  */
 package com.varpihovsky.core_db.internal
 
-import com.varpihovsky.core.util.add
-import com.varpihovsky.core.util.remove
-import com.varpihovsky.core.util.replaceAndReturn
 import com.varpihovsky.repo_data.Listable
 import com.varpihovsky.repo_data.Single
-import com.varpihovsky.repo_data.SingleHolder
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import org.kodein.db.*
 import org.kodein.db.model.orm.Metadata
@@ -84,98 +79,30 @@ internal inline fun <reified M : Single> DB.delete() = delete(keyById<M>())
 internal inline fun <reified M : Single> DB.keyById() = keyById<M>(Single.identifier)
 
 /**
- * Returns flow of list with type of given [T] generic.
- *
- * It is flow of list of flows under the hood, so every change of list or element returns new list.
- */
-@OptIn(FlowPreview::class)
-internal inline fun <reified K : SingleHolder<T>, reified T : Listable<K>> DB.listFlow(): Flow<List<T>> {
-    val flow = flowOf<K>(keyById())
-    val f = flow.mapNotNull { it?.list?.map { key -> flowOf(key) } }.map { instantCombine(it) }
-    return f.flattenConcat().map { it.filterNotNull() }
-}
-
-/**
- * Converts iterable of flow into flow of list.
- */
-private inline fun <reified T> instantCombine(
-    flows: Iterable<Flow<T>>
-): Flow<List<T>> = combine(flows.map { flow ->
-    flow.map {
-        @Suppress("USELESS_CAST") // Required for onStart(null)
-        Holder(it) as Holder<T>?
-    }.onStart { emit(null) }
-}) { holders -> holders.filterNotNull().map { holder -> holder.value } }
-
-/**
- * Class used to hold some data. Used in the [instantCombine] function.
- */
-private class Holder<T>(val value: T)
-
-/**
- * Puts [model] into database and [SingleHolder], so both list and value will be updated.
+ * Puts [model] into database.
  *
  * @param policy if it is last, function set new id to the [model]. If it is as is, creates new or
  * replaces existing model by id.
  *
  * @param model model to put, always must extend [Listable] interface.
- *
- * @param holderFactory used to create new factory if it isn't exist.
  */
-internal inline fun <reified K : SingleHolder<T>, reified T : Listable<K>> DB.put(
-    policy: PutPolicy = PutPolicy.LAST,
-    model: T,
-    holderFactory: () -> K
+internal inline fun <reified T : Listable> DB.putListable(
+    model: T
 ) {
-    val holder = get() ?: holderFactory()
-
-    val newModel = when (policy) {
-        PutPolicy.LAST -> model.with(get(holder.list.last())?.id ?: 0)
-        PutPolicy.AS_IS -> model
-    }
-
-    val oldKey = keyById<T>(model.id)
-    val key = put(newModel)
-    val newHolder = when (policy) {
-        PutPolicy.LAST -> holder.with(holder.list.add(key) as List<Key<T>>)
-        PutPolicy.AS_IS -> holder.with(holder.list.replaceAndReturn(oldKey, key) as List<Key<T>>)
-    }
-
-    putSingle(newHolder)
-}
-
-internal enum class PutPolicy {
-    LAST, AS_IS
+    putMetadata(model)
 }
 
 /**
- * Deletes model from both database and holder.
+ * Deletes model from database.
  *
  * @param model model to delete.
  */
-internal inline fun <reified K : SingleHolder<T>, reified T : Listable<K>> DB.delete(
-    model: T
-) {
-    val holder = get<K>() ?: return
+internal inline fun <reified T : Listable> DB.delete(model: T) = delete(keyById<T>(model.id))
 
-    val key = keyById<T>(model.id)
-
-    delete<T>(model)
-    val newHolder = holder.with(holder.list.remove(key))
-
-    putSingle(newHolder)
-}
-
-/** Deletes all instances with type [T] both from holder [K] and database. */
-internal inline fun <reified K : SingleHolder<T>, reified T : Listable<K>> DB.deleteAll() {
-    val holder = get<K>() ?: return
-
-    putSingle(holder.with(listOf()))
-
+/** Deletes all instances with type [T] from database. */
+internal inline fun <reified T : Listable> DB.deleteAll() {
     val cursor = find<T>().all()
-
     deleteAll(cursor)
-
     cursor.close()
 }
 
