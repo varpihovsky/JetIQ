@@ -67,7 +67,7 @@ class NewMessageViewModel(
     }
 
     override fun onBackNavButtonClick() {
-        receivers.value = listOf()
+        resetFields()
         super.onBackNavButtonClick()
     }
 
