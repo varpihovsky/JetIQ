@@ -5,6 +5,6 @@ import org.koin.dsl.module
 
 object MessagesModule {
     val module = module {
-        viewModel { MessagesViewModel(get(), get(), get(), get()) }
+        viewModel { MessagesViewModel(get(), get(), get(), get(), get()) }
     }
 }

@@ -22,6 +22,8 @@ import com.varpihovsky.core.di.CoreModule
 import com.varpihovsky.core_db.DatabaseModule
 import com.varpihovsky.core_nav.NavigationModule
 import com.varpihovsky.core_repo.RepoModule
+import com.varpihovsky.core_repo.repo.MessagesRepo
+import com.varpihovsky.core_repo.repo.SubjectRepo
 import com.varpihovsky.core_repo.repo.UserPreferencesRepo
 import com.varpihovsky.feature_auth.AuthModule
 import com.varpihovsky.feature_contacts.ContactsModule
@@ -68,7 +70,10 @@ class JetIQApplication : Application(), KoinComponent {
         super.onCreate()
         initDi()
         scheduleBackgroundWork()
-        CoroutineScope(Dispatchers.IO).launch { collectNotificationSettings() }
+        CoroutineScope(Dispatchers.IO).launch {
+            startLoading()
+            collectNotificationSettings()
+        }
     }
 
     private fun initDi() {
@@ -77,6 +82,15 @@ class JetIQApplication : Application(), KoinComponent {
             workManagerFactory()
             modules(modules)
         }
+    }
+
+    private suspend fun startLoading() {
+        // Injecting in this place to not hold link
+        val subjectRepo: SubjectRepo by inject()
+        subjectRepo.load()
+
+        val messagesRepo: MessagesRepo by inject()
+        messagesRepo.loadMessages()
     }
 
     private suspend fun collectNotificationSettings() {

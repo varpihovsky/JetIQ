@@ -28,5 +28,5 @@ interface Refreshable {
     /**
      * Method that will be invoked when user refreshes any data.
      */
-    fun onRefresh()
+    suspend fun onRefresh()
 }

@@ -57,13 +57,8 @@ class ProfileInteractor(
 
     init {
         runBlocking {
-            scope.launch(dispatchers.IO) { startLoading() }
             scope.launch { initMappers() }.join()
         }
-    }
-
-    private suspend fun startLoading() {
-        subjectModel.load()
     }
 
     private fun initMappers() {
@@ -133,7 +128,7 @@ class ProfileInteractor(
         return markbookSubjects.map { it.toUIDTO() }
     }
 
-    override fun onRefresh() {
+    override suspend fun onRefresh() {
         subjectModel.onRefresh()
     }
 }

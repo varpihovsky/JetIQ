@@ -11,6 +11,8 @@ object AuthModule {
             AuthViewModel(
                 get(),
                 get(),
+                get(),
+                get(),
                 get(qualifier = qualifier("login_checker")),
                 get(qualifier = qualifier("password_checker")),
                 get(),

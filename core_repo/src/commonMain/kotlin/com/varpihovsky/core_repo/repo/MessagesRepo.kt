@@ -28,7 +28,6 @@ import com.varpihovsky.repo_data.MessageToSendDTO
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 
 /**
@@ -40,7 +39,7 @@ interface MessagesRepo : Refreshable {
     /**
      * Requests messages from server and adds missing. If message is present in database - ignores.
      */
-    fun loadMessages()
+    suspend fun loadMessages()
 
     /**
      * Returns flow of current messages in database. To load messages use [loadMessages] method.
@@ -88,26 +87,26 @@ private class MessagesRepoImpl constructor(
     override val isLoading
         get() = _isLoading
 
-    override fun onRefresh() {
+    override suspend fun onRefresh() {
         loadMessages()
     }
 
     private val _isLoading = mutableStateOf(false)
 
-    override fun loadMessages() {
-        repoScope.launch {
-            _isLoading.value = true
+    override suspend fun loadMessages() {
+        if (currentSession() == null) return
 
-            try {
-                launchWithTimeout()
-            } catch (e: TimeoutCancellationException) {
-                e(e.stackTraceToString())
-            }
+        _isLoading.value = true
 
-            delay(LOADING_DELAY)
-
-            _isLoading.value = false
+        try {
+            launchWithTimeout()
+        } catch (e: TimeoutCancellationException) {
+            e(e.stackTraceToString())
         }
+
+        delay(LOADING_DELAY)
+
+        _isLoading.value = false
     }
 
     private suspend fun launchWithTimeout() {

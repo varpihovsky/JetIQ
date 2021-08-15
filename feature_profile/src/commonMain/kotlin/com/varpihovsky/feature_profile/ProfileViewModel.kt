@@ -18,7 +18,6 @@ package com.varpihovsky.feature_profile
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.State
-import com.varpihovsky.core.Refreshable
 import com.varpihovsky.core.appbar.AppbarManager
 import com.varpihovsky.core.coroutines.runBlocking
 import com.varpihovsky.core.dataTransfer.ViewModelData
@@ -46,10 +45,10 @@ class ProfileViewModel(
     appbarManager: AppbarManager,
     exceptionEventManager: ExceptionEventManager,
     userPreferencesRepo: UserPreferencesRepo
-) : JetIQViewModel(appbarManager, navigationController, exceptionEventManager), Refreshable {
+) : JetIQViewModel(appbarManager, navigationController, exceptionEventManager) {
     val data by lazy { Data() }
     val scrollState = ScrollState(0)
-    override val isLoading: State<Boolean>
+    val isLoading: State<Boolean>
         get() = profileInteractor.isLoading
 
     lateinit var profile: StateFlow<UIProfileDTO>
@@ -124,8 +123,10 @@ class ProfileViewModel(
         }
     }
 
-    override fun onRefresh() {
-        profileInteractor.onRefresh()
+    fun onRefresh() {
+        viewModelScope.launch(dispatchers.IO) {
+            profileInteractor.onRefresh()
+        }
     }
 
     fun onSettingsClick() {

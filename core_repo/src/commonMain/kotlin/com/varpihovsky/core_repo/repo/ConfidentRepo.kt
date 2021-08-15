@@ -67,6 +67,8 @@ abstract class ConfidentRepo internal constructor(
         singleEntryDAO.get().collect { collector(it) }
     }
 
+    protected fun currentSession() = session
+
     /**
      * Returns [Confidential] if it there is in repo. If it isn't causes thread block.
      *

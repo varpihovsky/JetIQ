@@ -28,12 +28,16 @@ import com.varpihovsky.core_lifecycle.mutableStateOf
 import com.varpihovsky.core_lifecycle.redirectExceptionToUI
 import com.varpihovsky.core_nav.main.NavigationController
 import com.varpihovsky.core_nav.navigation.NavigationDirections
+import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.core_repo.repo.ProfileRepo
+import com.varpihovsky.core_repo.repo.SubjectRepo
 import kotlinx.coroutines.launch
 
 class AuthViewModel(
     private val dispatchers: CoroutineDispatchers,
     private val profileRepo: ProfileRepo,
+    private val subjectRepo: SubjectRepo,
+    private val messagesRepo: MessagesRepo,
     private val loginValidator: Validator,
     private val passwordValidator: Validator,
     override val navigationController: NavigationController,
@@ -88,12 +92,14 @@ class AuthViewModel(
             }
         }
 
-    private fun processLogin() {
-        viewModelScope.launch(dispatchers.IO) { authorize() }
+    private suspend fun processLogin() {
+        authorize()
     }
 
     private suspend fun authorize() {
         if (profileRepo.login(login.value, password.value)) {
+            viewModelScope.launch(dispatchers.IO) { subjectRepo.load() }
+            viewModelScope.launch(dispatchers.IO) { messagesRepo.loadMessages() }
             navigationController.manage(NavigationDirections.profile.destination)
         }
     }

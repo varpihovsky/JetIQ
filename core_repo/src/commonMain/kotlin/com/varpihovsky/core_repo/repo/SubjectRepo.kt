@@ -134,35 +134,32 @@ private class SubjectRepoImpl constructor(
 
     private var taskIndex = 0
 
-    override fun onRefresh() {
-        repoScope.launch {
-            load()
-        }
+    override suspend fun onRefresh() {
+        load()
     }
 
     override suspend fun load() {
-        repoScope.launch {
-            isLoading.value = true
+        if (currentSession() == null) return
 
-            try {
-                launchAllJobsWithTimeout()
-            } catch (e: TimeoutCancellationException) {
-                e(e.stackTraceToString())
-            }
+        isLoading.value = true
 
-            isLoading.value = false
-        }.join()
-    }
-
-    private suspend fun launchAllJobsWithTimeout() {
-        withTimeout(JOB_TIMEOUT) {
-            val successJob = launch { loadSuccessJournal() }
-            val markbookJob = launch { loadMarkbookSubjects() }
-
-            successJob.join()
-            markbookJob.join()
+        try {
+            launchAllJobsWithTimeout()
+        } catch (e: TimeoutCancellationException) {
+            e(e.stackTraceToString())
         }
+
+        isLoading.value = false
     }
+
+    private suspend fun launchAllJobsWithTimeout() = withTimeout(JOB_TIMEOUT) {
+        val successJob = launch { loadSuccessJournal() }
+        val markbookJob = launch { loadMarkbookSubjects() }
+
+        successJob.join()
+        markbookJob.join()
+    }
+
 
     override fun getSubjects(): Flow<List<Subject>> {
         return subjectDAO.getAllSubjects()
