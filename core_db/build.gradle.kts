@@ -10,6 +10,7 @@ version = Config.version
 
 kotlin {
     android()
+    jvm()
 
     sourceSets {
         val commonMain by getting {
@@ -31,6 +32,7 @@ kotlin {
                 implementation(AndroidDependencies.koin_android)
             }
         }
+        val jvmMain by getting
     }
 }
 
