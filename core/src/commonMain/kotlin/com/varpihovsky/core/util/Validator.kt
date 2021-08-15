@@ -22,4 +22,10 @@ interface Validator {
      * Should return true if parameter passes checking.
      */
     fun validate(t: String): Boolean
+
+    companion object {
+        operator fun invoke(validator: (String) -> Boolean) = object : Validator {
+            override fun validate(t: String): Boolean = validator(t)
+        }
+    }
 }

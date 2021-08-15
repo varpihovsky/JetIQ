@@ -25,13 +25,7 @@ object AuthModule {
         factory(qualifier = qualifier("password_checker")) { providePasswordChecker() }
     }
 
-    private fun provideLoginChecker(): Validator = object : Validator {
-        override fun validate(t: String): Boolean =
-            t.isNotEmpty()
-    }
+    private fun provideLoginChecker(): Validator = Validator { it.isNotEmpty() }
 
-    private fun providePasswordChecker(): Validator = object : Validator {
-        override fun validate(t: String): Boolean =
-            t.isNotEmpty()
-    }
+    private fun providePasswordChecker(): Validator = Validator { it.isNotEmpty() }
 }
