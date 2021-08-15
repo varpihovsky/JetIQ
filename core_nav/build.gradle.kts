@@ -13,6 +13,7 @@ version = Config.version
 
 kotlin {
     android()
+    jvm()
 
     sourceSets {
         val commonMain by getting {
@@ -33,6 +34,7 @@ kotlin {
                 implementation(AndroidDependencies.core)
             }
         }
+        val jvmMain by getting
     }
 }
 
