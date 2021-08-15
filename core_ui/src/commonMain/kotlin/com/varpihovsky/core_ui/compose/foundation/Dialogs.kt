@@ -26,7 +26,20 @@ expect fun ErrorDialog(
 )
 
 @Composable
-expect fun AlertDialog(
+fun AlertDialog(
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit,
+    confirmButton: @Composable () -> Unit,
+    dismissButton: @Composable () -> Unit,
+    title: @Composable () -> Unit,
+    text: @Composable () -> Unit
+) {
+    AlertDialogActual(modifier, onDismissRequest, confirmButton, dismissButton, title, text)
+}
+
+
+@Composable
+internal expect fun AlertDialogActual(
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
     confirmButton: @Composable () -> Unit,

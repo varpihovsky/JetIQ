@@ -58,7 +58,7 @@ actual fun ErrorDialog(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-actual fun AlertDialog(
+actual fun AlertDialogActual(
     modifier: Modifier,
     onDismissRequest: () -> Unit,
     confirmButton: @Composable () -> Unit,
