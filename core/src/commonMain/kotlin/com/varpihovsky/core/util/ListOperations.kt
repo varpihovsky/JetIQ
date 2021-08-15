@@ -21,8 +21,13 @@ package com.varpihovsky.core.util
  */
 fun <T> List<T>.replaceAndReturn(from: T, to: T): List<T> {
     val mutable = toMutableList()
-    val fromIndex = mutable.indexOf(from)
-    mutable.removeAt(fromIndex)
+    var fromIndex = mutable.indexOf(from)
+    if (fromIndex != -1) {
+        mutable.removeAt(fromIndex)
+    }
+    if (fromIndex == -1) {
+        fromIndex = 0
+    }
     mutable.add(fromIndex, to)
     return mutable
 }
