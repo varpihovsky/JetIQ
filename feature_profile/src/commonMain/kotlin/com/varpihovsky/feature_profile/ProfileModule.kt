@@ -16,12 +16,11 @@
  */
 package com.varpihovsky.feature_profile
 
-import com.varpihovsky.core.di.viewModel
 import org.koin.dsl.module
 
 object ProfileModule {
     val module = module {
-        viewModel { ProfileViewModel(get(), get(), get(), get(), get(), get(), get()) }
+        single { ProfileViewModel(get(), get(), get(), get(), get(), get(), get()) }
         factory { ProfileInteractor(get(), get(), get()) }
     }
 }
