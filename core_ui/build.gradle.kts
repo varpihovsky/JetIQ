@@ -12,6 +12,7 @@ version = Config.version
 
 kotlin {
     android()
+    jvm()
 
     sourceSets {
         val commonMain by getting {
@@ -36,6 +37,11 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(AndroidDependencies.app_compat)
+            }
+        }
+        val jvmMain by getting {
+            dependencies {
+                api(compose.desktop.common)
             }
         }
     }

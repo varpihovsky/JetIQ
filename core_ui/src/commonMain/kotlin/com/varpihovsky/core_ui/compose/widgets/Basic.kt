@@ -24,6 +24,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
@@ -178,10 +180,27 @@ fun SearchBar(
 }
 
 @Composable
-expect fun PasswordFieldIcon(
+fun PasswordFieldIcon(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
-)
+) {
+    IconToggleButton(
+        checked = checked,
+        onCheckedChange = onCheckedChange
+    ) {
+        if (checked) {
+            Icon(
+                imageVector = Icons.Default.Face,
+                contentDescription = null
+            )
+        } else {
+            Icon(
+                imageVector = Icons.Default.Lock,
+                contentDescription = null
+            )
+        }
+    }
+}
 
 @Composable
 fun DropDownMenu(

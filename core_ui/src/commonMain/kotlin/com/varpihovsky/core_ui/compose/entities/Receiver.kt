@@ -11,6 +11,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -103,7 +105,7 @@ fun Contact(
                         .clip(CircleShape)
                         .background(Color.Green.copy(alpha = 0.2f))
                         .zIndex(10f),
-                    painter = checkIcon(),
+                    imageVector = Icons.Default.Check,
                     contentDescription = null
                 )
             }
