@@ -8,6 +8,7 @@ version = Config.version
 
 kotlin {
     android()
+    jvm()
 
     sourceSets {
         val commonMain by getting {
@@ -22,6 +23,15 @@ kotlin {
             }
         }
         val androidMain by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(TestDependencies.core_testing)
+                implementation(TestDependencies.mockk)
+
+                implementation(TestDependencies.coroutines_test)
+            }
+        }
+        val jvmMain by getting {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(TestDependencies.core_testing)
