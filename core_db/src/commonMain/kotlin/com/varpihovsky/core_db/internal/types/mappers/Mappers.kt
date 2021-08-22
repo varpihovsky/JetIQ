@@ -18,6 +18,7 @@ package com.varpihovsky.core_db.internal.types.mappers
 
 import com.varpihovsky.core_db.internal.types.*
 import com.varpihovsky.jetiqApi.data.*
+import com.varpihovsky.repo_data.MessageToSendDTO
 
 internal fun Message.toInternal() = MessageInternal(body, idFrom, isTeacher, id.toInt(), time)
 
@@ -130,3 +131,7 @@ internal fun MarkbookSubjectInternal.toExternal() = MarkbookSubject(
     total,
     semester
 )
+
+internal fun MessageToSendDTO.toInternal(id: Int) = SentMessageInternal(id, this.id, type, body)
+
+internal fun SentMessageInternal.toExternal() = MessageToSendDTO(receiverId, type, body)

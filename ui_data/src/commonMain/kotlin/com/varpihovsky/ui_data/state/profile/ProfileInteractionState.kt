@@ -20,9 +20,10 @@ package com.varpihovsky.ui_data.state.profile
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.PaddingValues
 
-expect class ProfileInteractionState {
-    val scrollState: ScrollState
-    val onRefresh: () -> Unit
-    val onSettingsClick: () -> Unit
+class ProfileInteractionState(
+    val scrollState: ScrollState,
+    val onRefresh: () -> Unit,
+    val isRefreshing: Boolean,
+    val onSettingsClick: () -> Unit,
     val paddingValues: PaddingValues
-}
+)

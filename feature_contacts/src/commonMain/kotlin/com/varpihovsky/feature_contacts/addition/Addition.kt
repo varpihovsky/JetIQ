@@ -1,5 +1,3 @@
-package com.varpihovsky.feature_contacts.addition
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,6 +14,7 @@ package com.varpihovsky.feature_contacts.addition
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.feature_contacts.addition
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
@@ -25,10 +24,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.varpihovsky.core.util.Selectable
 import com.varpihovsky.core_ui.compose.entities.Contact
 import com.varpihovsky.core_ui.compose.foundation.AlertDialog
@@ -45,30 +47,40 @@ import soup.compose.material.motion.MaterialSharedAxisX
 @ExperimentalFoundationApi
 @Composable
 fun AdditionDialog(
-    contactAdditionViewModel: ContactAdditionViewModel,
+    contactAdditionComponent: ContactAdditionComponent,
     onDismissRequest: () -> Unit,
     onConfirmButtonClick: (List<UIReceiverDTO>) -> Unit
 ) {
-    contactAdditionViewModel.callback = onConfirmButtonClick
+    LaunchedEffect(onConfirmButtonClick) {
+        contactAdditionComponent.callback = onConfirmButtonClick
+    }
+
+    val selectedContactType by contactAdditionComponent.selectedContactType.subscribeAsState()
+    val faculties by contactAdditionComponent.faculties.subscribeAsState()
+    val selectedFaculty by contactAdditionComponent.selectedFaculty.subscribeAsState()
+    val groups by contactAdditionComponent.groups.subscribeAsState()
+    val selectedGroup by contactAdditionComponent.selectedGroup.subscribeAsState()
+    val searchFieldValue by contactAdditionComponent.searchFieldValue.subscribeAsState()
+    val contacts by contactAdditionComponent.contacts.collectAsState(initial = listOf())
 
     AdditionDialog(
         onDismissRequest = {
             onDismissRequest()
-            contactAdditionViewModel.onDismiss()
+            contactAdditionComponent.onDismiss()
         },
-        onConfirmButtonClick = contactAdditionViewModel::onConfirm,
-        selectedContactType = contactAdditionViewModel.data.selectedContactType.value,
-        onContactTypeSelected = { contactAdditionViewModel.onContactTypeSelected(it) },
-        faculties = contactAdditionViewModel.data.faculties.value,
-        selectedFaculty = contactAdditionViewModel.data.selectedFaculty.value,
-        onFacultySelect = contactAdditionViewModel::onFacultySelect,
-        groups = contactAdditionViewModel.data.groups.value,
-        selectedGroup = contactAdditionViewModel.data.selectedGroup.value,
-        onGroupSelect = contactAdditionViewModel::onGroupSelect,
-        searchFieldValue = contactAdditionViewModel.data.searchFieldValue.value,
-        onSearchFieldValueChange = contactAdditionViewModel::onSearchFieldValueChange,
-        contacts = contactAdditionViewModel.data.contacts.collectAsState(listOf()).value,
-        onContactSelected = contactAdditionViewModel::onContactSelected
+        onConfirmButtonClick = contactAdditionComponent::onConfirm,
+        selectedContactType = selectedContactType,
+        onContactTypeSelected = { contactAdditionComponent.onContactTypeSelected(it) },
+        faculties = faculties,
+        selectedFaculty = selectedFaculty,
+        onFacultySelect = contactAdditionComponent::onFacultySelect,
+        groups = groups,
+        selectedGroup = selectedGroup,
+        onGroupSelect = contactAdditionComponent::onGroupSelect,
+        searchFieldValue = searchFieldValue,
+        onSearchFieldValueChange = contactAdditionComponent::onSearchFieldValueChange,
+        contacts = contacts,
+        onContactSelected = contactAdditionComponent::onContactSelected
     )
 }
 

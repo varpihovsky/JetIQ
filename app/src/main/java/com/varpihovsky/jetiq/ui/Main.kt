@@ -49,25 +49,25 @@ import com.varpihovsky.core_ui.compose.ExceptionProcessor
 import com.varpihovsky.core_ui.compose.widgets.Appbar
 import com.varpihovsky.core_ui.compose.widgets.InfoCard
 import com.varpihovsky.feature_auth.Auth
-import com.varpihovsky.feature_auth.AuthViewModel
-import com.varpihovsky.feature_contacts.ContactsScreen
-import com.varpihovsky.feature_contacts.ContactsViewModel
-import com.varpihovsky.feature_messages.MessagesScreen
-import com.varpihovsky.feature_messages.MessagesViewModel
+import com.varpihovsky.feature_auth.AuthComponent
+import com.varpihovsky.feature_messages.contacts.ContactsComponent
+import com.varpihovsky.feature_messages.contacts.ContactsScreen
+import com.varpihovsky.feature_messages.wall.MessageWall
+import com.varpihovsky.feature_messages.wall.MessagesComponent
+import com.varpihovsky.feature_new_message.NewMessageComponent
 import com.varpihovsky.feature_new_message.NewMessageScreen
-import com.varpihovsky.feature_new_message.NewMessageViewModel
-import com.varpihovsky.feature_profile.Profile
-import com.varpihovsky.feature_profile.ProfileViewModel
+import com.varpihovsky.feature_profile.profile.Profile
+import com.varpihovsky.feature_profile.profile.ProfileComponent
+import com.varpihovsky.feature_profile.subjects.markbook.MarkbookSubjectComponent
+import com.varpihovsky.feature_profile.subjects.markbook.MarkbookSubjectScreen
+import com.varpihovsky.feature_profile.subjects.success.SuccessSubjectComponent
+import com.varpihovsky.feature_profile.subjects.success.SuccessSubjectScreen
+import com.varpihovsky.feature_settings.about.AboutSettingsComponent
 import com.varpihovsky.feature_settings.about.AboutSettingsScreen
-import com.varpihovsky.feature_settings.about.AboutSettingsViewModel
+import com.varpihovsky.feature_settings.general.GeneralSettingsComponent
 import com.varpihovsky.feature_settings.general.GeneralSettingsScreen
-import com.varpihovsky.feature_settings.general.GeneralSettingsViewModel
+import com.varpihovsky.feature_settings.main.MainSettingsComponent
 import com.varpihovsky.feature_settings.main.MainSettingsScreen
-import com.varpihovsky.feature_settings.main.MainSettingsViewModel
-import com.varpihovsky.feature_subjects.markbook.MarkbookSubjectScreen
-import com.varpihovsky.feature_subjects.markbook.MarkbookSubjectViewModel
-import com.varpihovsky.feature_subjects.success.SuccessSubjectScreen
-import com.varpihovsky.feature_subjects.success.SuccessSubjectViewModel
 import com.varpihovsky.jetiq.NavigationViewModel
 import soup.compose.material.motion.*
 
@@ -172,7 +172,7 @@ fun initNavigation(
     JetNav.createControllerIfNotCreated(eventBus, startDestination) {
         entry {
             val entryRoute = NavigationDirections.authentication.destination
-            composable = { handleBackPress(getViewModel<AuthViewModel>()) { Auth(viewModel = it) } }
+            composable = { handleBackPress(getViewModel<AuthComponent>()) { Auth(viewModel = it) } }
             route = entryRoute
             entryType = EntryType.SubMenu
             inAnimation = materialSharedAxisYIn(forward = true, slideDistance = 200)
@@ -182,9 +182,9 @@ fun initNavigation(
             val entryRoute = NavigationDirections.newMessage.destination
             composable =
                 {
-                    handleBackPress(getViewModel<NewMessageViewModel>()) {
+                    handleBackPress(getViewModel<NewMessageComponent>()) {
                         NewMessageScreen(
-                            newMessageViewModel = it
+                            newMessageComponent = it
                         )
                     }
                 }
@@ -197,9 +197,9 @@ fun initNavigation(
             val entryRoute = NavigationDirections.contacts.destination
             composable =
                 {
-                    handleBackPress(getViewModel<ContactsViewModel>()) {
+                    handleBackPress(getViewModel<ContactsComponent>()) {
                         ContactsScreen(
-                            contactsViewModel = it
+                            contactsComponent = it
                         )
                     }
                 }
@@ -211,8 +211,8 @@ fun initNavigation(
         entry {
             val entryRoute = NavigationDirections.mainSettings.destination
             composable = {
-                handleBackPress(getViewModel<MainSettingsViewModel>()) {
-                    MainSettingsScreen(mainSettingsViewModel = it)
+                handleBackPress(getViewModel<MainSettingsComponent>()) {
+                    MainSettingsScreen(mainSettingsComponent = it)
                 }
             }
             route = entryRoute
@@ -223,7 +223,7 @@ fun initNavigation(
         entry {
             val entryRoute = NavigationDirections.aboutSettings.destination
             composable = {
-                handleBackPress(getViewModel<AboutSettingsViewModel>()) {
+                handleBackPress(getViewModel<AboutSettingsComponent>()) {
                     AboutSettingsScreen(aboutSettingsViewModel = it)
                 }
             }
@@ -235,8 +235,8 @@ fun initNavigation(
         entry {
             val entryRoute = NavigationDirections.generalSettings.destination
             composable = {
-                handleBackPress(getViewModel<GeneralSettingsViewModel>()) {
-                    GeneralSettingsScreen(generalSettingsViewModel = it)
+                handleBackPress(getViewModel<GeneralSettingsComponent>()) {
+                    GeneralSettingsScreen(generalSettingsComponent = it)
                 }
             }
             route = entryRoute
@@ -247,8 +247,8 @@ fun initNavigation(
         entry {
             val entryRoute = NavigationDirections.markbookSubject.destination
             composable = {
-                handleBackPress(getViewModel<MarkbookSubjectViewModel>()) {
-                    MarkbookSubjectScreen(markbookSubjectViewModel = it)
+                handleBackPress(getViewModel<MarkbookSubjectComponent>()) {
+                    MarkbookSubjectScreen(markbookSubjectComponent = it)
                 }
             }
             route = entryRoute
@@ -259,8 +259,8 @@ fun initNavigation(
         entry {
             val entryRoute = NavigationDirections.successSubject.destination
             composable = {
-                handleBackPress(getViewModel<SuccessSubjectViewModel>()) {
-                    SuccessSubjectScreen(markbookSubjectViewModel = it)
+                handleBackPress(getViewModel<SuccessSubjectComponent>()) {
+                    SuccessSubjectScreen(successSubjectComponent = it)
                 }
             }
             route = entryRoute
@@ -271,7 +271,7 @@ fun initNavigation(
         entry {
             val entryRoute = NavigationDirections.messages.destination
             composable =
-                { handleBackPress(getViewModel<MessagesViewModel>()) { MessagesScreen(viewModel = it) } }
+                { handleBackPress(getViewModel<MessagesComponent>()) { MessageWall(messagesComponent = it) } }
             route = entryRoute
             entryType = EntryType.Main
             inAnimation = materialSharedAxisXIn(forward = true, slideDistance = 200)
@@ -281,9 +281,9 @@ fun initNavigation(
             val entryRoute = NavigationDirections.profile.destination
             applyPaddingValues = false
             composable = { values ->
-                handleBackPress(getViewModel<ProfileViewModel>()) {
+                handleBackPress(getViewModel<ProfileComponent>()) {
                     Profile(
-                        profileViewModel = get(),
+                        profileComponent = get(),
                         paddingValues = values
                     )
                 }

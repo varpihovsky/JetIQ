@@ -16,7 +16,6 @@
  */
 package com.varpihovsky.core_ui.compose.widgets
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
@@ -59,7 +58,6 @@ fun InfoCard(
     }
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun InfoList(
     modifier: Modifier = Modifier,

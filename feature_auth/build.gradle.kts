@@ -11,6 +11,7 @@ version = Config.version
 
 kotlin {
     android()
+    jvm()
 
     sourceSets {
         val commonMain by getting {
@@ -21,11 +22,14 @@ kotlin {
                 implementation(project(Modules.core_nav))
                 implementation(project(Modules.core_lifecycle))
 
-                implementation(CommonDependencies.koin_core)
+                api(CommonDependencies.koin_core)
 
                 api(compose.ui)
                 api(compose.material)
                 api(compose.foundation)
+
+                api(Compose.decompose)
+                api(Compose.decompose_extensions)
             }
         }
         val androidMain by getting {
@@ -33,6 +37,7 @@ kotlin {
                 implementation(AndroidDependencies.lifecycle_view_model)
             }
         }
+        val jvmMain by getting
     }
 }
 android {

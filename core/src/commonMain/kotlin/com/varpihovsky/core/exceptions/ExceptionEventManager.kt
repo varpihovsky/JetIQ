@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.mapNotNull
  */
 class ExceptionEventManager(private val eventBus: EventBus) {
     /**
-     * Same as [EventBus.bus] but with exceptions only.
+     * Same as [EventBus.bus] but with com.varpihovsky.ui_root.exceptions only.
      */
     val exceptions = eventBus.bus.mapNotNull { it as? Throwable }.distinctUntilChanged()
 

@@ -1,5 +1,3 @@
-package com.varpihovsky.core_repo
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,13 +14,10 @@ package com.varpihovsky.core_repo
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.core_repo
 
-import com.varpihovsky.core_repo.repo.ListRepo
-import com.varpihovsky.core_repo.repo.MessagesRepo
-import com.varpihovsky.core_repo.repo.ProfileRepo
-import com.varpihovsky.core_repo.repo.SubjectRepo
+import com.varpihovsky.core_repo.repo.*
 import com.varpihovsky.jetiqApi.provideApi
-import org.koin.core.module.Module
 import org.koin.dsl.module
 
 object RepoModule {
@@ -32,11 +27,10 @@ object RepoModule {
         factory { ProfileRepo(get(), get(), get(), get()) }
         factory { ListRepo(get(), get(), get()) }
         factory { SubjectRepo(get(), get(), get(), get(), get(), get(), get()) }
+        factory {
+            UserPreferencesRepo(get())
+        }
 
         single { provideApi {} }
-
-        providePlatform()
     }
 }
-
-internal expect fun Module.providePlatform()

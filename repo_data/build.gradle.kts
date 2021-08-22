@@ -15,9 +15,9 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(CommonDependencies.kodein)
+                api(CommonDependencies.kodein)
 
-                implementation(CommonDependencies.serialization)
+                api(CommonDependencies.serialization)
             }
         }
         val androidMain by getting {

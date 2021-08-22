@@ -18,7 +18,6 @@ package com.varpihovsky.core_db.internal
 
 import com.varpihovsky.repo_data.Listable
 import com.varpihovsky.repo_data.Single
-import kotlinx.coroutines.flow.*
 import org.kodein.db.*
 import org.kodein.db.model.orm.Metadata
 
@@ -80,9 +79,6 @@ internal inline fun <reified M : Single> DB.keyById() = keyById<M>(Single.identi
 
 /**
  * Puts [model] into database.
- *
- * @param policy if it is last, function set new id to the [model]. If it is as is, creates new or
- * replaces existing model by id.
  *
  * @param model model to put, always must extend [Listable] interface.
  */

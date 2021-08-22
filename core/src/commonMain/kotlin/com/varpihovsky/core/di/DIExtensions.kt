@@ -19,6 +19,7 @@ package com.varpihovsky.core.di
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.varpihovsky.core.lifecycle.ViewModel
+import com.varpihovsky.core.log.Logger
 import org.koin.core.definition.Definition
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.module.Module
@@ -35,6 +36,7 @@ inline fun <reified T : Any> get(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null
 ): T = remember(qualifier, parameters) {
+    Logger.ui("Retrieving ${T::class.simpleName}")
     // Due to koin supports injection in composable function only in android source sets
     // we need to copy paste that thing in common source set.
     // GlobalContext in koin sources and defaultContext are same.

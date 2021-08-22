@@ -16,8 +16,10 @@
  */
 package com.varpihovsky.core_repo.repo
 
+import com.varpihovsky.core_db.dao.PreferencesDAO
 import com.varpihovsky.repo_data.UserPreferences
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 
 /**
  * Interface used for providing preferences data of current user.
@@ -33,14 +35,28 @@ interface UserPreferencesRepo {
     /**
      * Method used to set one key of preference. Later changes will be provided in [flow].
      */
-    suspend fun <T> set(key: PreferencesKeys, value: T)
+    suspend fun set(preferences: UserPreferences)
 
     /**
      * Clears all preferences.
      */
     suspend fun clear()
+
+    companion object {
+        operator fun invoke(preferencesDAO: PreferencesDAO): UserPreferencesRepo =
+            UserPreferencesRepoImpl(preferencesDAO)
+    }
 }
 
-// We have empty class because there can be any preferences on any platform
-expect sealed class PreferencesKeys
+private class UserPreferencesRepoImpl(private val preferencesDAO: PreferencesDAO) : UserPreferencesRepo {
+    override val flow: Flow<UserPreferences>
+        get() = preferencesDAO.get().filterNotNull()
 
+    override suspend fun set(preferences: UserPreferences) {
+        preferencesDAO.set(preferences)
+    }
+
+    override suspend fun clear() {
+        preferencesDAO.delete()
+    }
+}

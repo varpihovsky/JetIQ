@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -35,9 +34,7 @@ fun ContactList(
     searchFieldValue: String,
     onSearchFieldValueChange: (String) -> Unit,
     contacts: List<Selectable<UIReceiverDTO>>,
-    isLongClickEnabled: Boolean,
     onLongClick: (Selectable<UIReceiverDTO>) -> Unit,
-    isClickEnabled: Boolean,
     onClick: (Selectable<UIReceiverDTO>) -> Unit
 ) {
     LazyColumn(
@@ -56,9 +53,7 @@ fun ContactList(
             Contact(
                 modifier = Modifier.padding(4.dp),
                 contact = contacts[it],
-                isLongClickEnabled = isLongClickEnabled,
                 onLongClick = onLongClick,
-                isClickEnabled = isClickEnabled,
                 onClick = onClick
             )
             if (it != contacts.size) {
@@ -73,12 +68,9 @@ fun ContactList(
 fun Contact(
     modifier: Modifier = Modifier,
     contact: Selectable<UIReceiverDTO>,
-    isLongClickEnabled: Boolean,
     onLongClick: (Selectable<UIReceiverDTO>) -> Unit,
-    isClickEnabled: Boolean,
     onClick: (Selectable<UIReceiverDTO>) -> Unit
 ) {
-
     val startPadding = animateDpAsState(targetValue = if (contact.isSelected) 10.dp else 0.dp)
 
     Row(
@@ -86,9 +78,9 @@ fun Contact(
             .fillMaxWidth()
             .combinedClickable(
                 role = Role.Button,
-                enabled = isClickEnabled || isLongClickEnabled,
-                onClick = { if (isClickEnabled) onClick(contact) },
-                onLongClick = { if (isLongClickEnabled) onLongClick(contact) }
+                enabled = true,
+                onClick = { onClick(contact) },
+                onLongClick = { onLongClick(contact) }
             )
             .padding(start = startPadding.value),
         verticalAlignment = Alignment.CenterVertically
@@ -121,6 +113,3 @@ fun Contact(
         )
     }
 }
-
-@Composable
-internal expect fun checkIcon(): Painter

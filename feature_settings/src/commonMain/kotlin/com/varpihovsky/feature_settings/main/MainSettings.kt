@@ -29,18 +29,15 @@ import androidx.compose.material.icons.filled.SettingsApplications
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.varpihovsky.core_lifecycle.assignAppbar
-import com.varpihovsky.core_ui.compose.widgets.BackIconButton
 import com.varpihovsky.core_ui.compose.widgets.FullWidthButton
 
 @Composable
-fun MainSettingsScreen(
-    mainSettingsViewModel: MainSettingsViewModel
-) {
-    mainSettingsViewModel.assignAppbar(
-        title = "Налаштування",
-        icon = { BackIconButton(mainSettingsViewModel::onBackNavButtonClick) },
-    )
+internal fun MainSettingsScreen(mainSettingsComponent: MainSettingsComponent) {
+    mainSettingsComponent.appBarController.run {
+        show()
+        setText("Налаштування")
+        setIconToBack()
+    }
 
     Column(
         modifier = Modifier
@@ -52,7 +49,7 @@ fun MainSettingsScreen(
         FullWidthButton(
             title = "Загальне",
             hint = "",
-            onClick = mainSettingsViewModel::onGeneralClick,
+            onClick = mainSettingsComponent::onGeneralClick,
             icon = {
                 Icon(
                     imageVector = Icons.Default.SettingsApplications,
@@ -63,7 +60,7 @@ fun MainSettingsScreen(
         FullWidthButton(
             title = "Про додаток",
             hint = "",
-            onClick = mainSettingsViewModel::onAboutClick,
+            onClick = mainSettingsComponent::onAboutClick,
             icon = {
                 Icon(
                     imageVector = Icons.Default.Help,
@@ -74,7 +71,7 @@ fun MainSettingsScreen(
         FullWidthButton(
             title = "Вихід",
             hint = "Вийти з облікового запису,\nБАЗА ДАНИХ БУДЕ СТЕРТА!",
-            onClick = mainSettingsViewModel::onLogoutClick,
+            onClick = mainSettingsComponent::onLogoutClick,
             icon = {
                 Icon(
                     imageVector = Icons.Default.Logout,

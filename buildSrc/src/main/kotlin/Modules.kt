@@ -35,7 +35,6 @@ object Modules {
     const val feature_new_message = ":feature_new_message"
     const val feature_profile = ":feature_profile"
     const val feature_settings = ":feature_settings"
-    const val feature_subjects = ":feature_subjects"
 }
 
 fun DependencyHandlerScope.app() = project(Modules.app)

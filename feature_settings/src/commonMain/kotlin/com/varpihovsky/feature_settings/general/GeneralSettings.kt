@@ -18,8 +18,6 @@ package com.varpihovsky.feature_settings.general
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import com.varpihovsky.core_lifecycle.assignAppbar
-import com.varpihovsky.core_ui.compose.widgets.BackIconButton
 import com.varpihovsky.repo_data.UserPreferences
 import com.varpihovsky.ui_data.dto.DropDownItem
 import kotlinx.coroutines.flow.Flow
@@ -27,17 +25,17 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 @Composable
-fun GeneralSettingsScreen(generalSettingsViewModel: GeneralSettingsViewModel) {
-    generalSettingsViewModel.assignAppbar(
-        title = "Загальне",
-        icon = { BackIconButton(generalSettingsViewModel::onBackNavButtonClick) }
-    )
+internal fun GeneralSettingsScreen(generalSettingsComponent: GeneralSettingsComponent) {
+    generalSettingsComponent.appBarController.run {
+        setText("Загальне")
+        setIconToBack()
+    }
 
-    GeneralSettings(generalSettingsViewModel)
+    GeneralSettings(generalSettingsComponent)
 }
 
 @Composable
-internal expect fun GeneralSettings(generalSettingsViewModel: GeneralSettingsViewModel)
+internal expect fun GeneralSettings(generalSettingsComponent: GeneralSettingsComponent)
 
 @Composable
 internal fun <T> Flow<UserPreferences>.preferenceFlowToState(
@@ -45,3 +43,6 @@ internal fun <T> Flow<UserPreferences>.preferenceFlowToState(
 ) = map { DropDownItem.Simple(selector(it).toString()) }
     .distinctUntilChanged()
     .collectAsState(DropDownItem.Empty)
+
+@Composable
+internal fun Flow<UserPreferences>.preferenceFlowToState() = distinctUntilChanged().collectAsState(UserPreferences())

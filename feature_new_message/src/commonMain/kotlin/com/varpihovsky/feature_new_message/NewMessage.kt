@@ -1,5 +1,3 @@
-package com.varpihovsky.feature_new_message
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,6 +14,7 @@ package com.varpihovsky.feature_new_message
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.feature_new_message
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ScrollState
@@ -28,36 +27,38 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.varpihovsky.core_lifecycle.assignAppbar
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.varpihovsky.core_ui.compose.widgets.Avatar
-import com.varpihovsky.core_ui.compose.widgets.BackIconButton
 import com.varpihovsky.core_ui.compose.widgets.InfoCard
 import com.varpihovsky.ui_data.dto.ReceiverType
 import com.varpihovsky.ui_data.dto.UIReceiverDTO
 import com.varpihovsky.ui_data.dto.getPhotoURL
 
 @Composable
-fun NewMessageScreen(
-    newMessageViewModel: NewMessageViewModel
-) {
-    newMessageViewModel.assignAppbar(
-        title = "Нове повідомлення...",
-        icon = { BackIconButton(onClick = newMessageViewModel::onBackNavButtonClick) }
-    )
+fun NewMessageScreen(newMessageComponent: NewMessageComponent) {
+    newMessageComponent.appBarController.run {
+        show()
+        setText("Нове повідомлення...")
+        setIconToBack()
+    }
+
+    val receivers by newMessageComponent.receivers.subscribeAsState()
+    val messageFieldValue by newMessageComponent.messageFieldValue.subscribeAsState()
 
     NewMessageScreen(
         scrollState = rememberScrollState(),
-        receivers = newMessageViewModel.data.receivers.value,
-        onReceiverRemove = newMessageViewModel::onReceiverRemove,
-        onNewReceiverButtonClick = newMessageViewModel::onNewReceiverButtonClick,
-        messageFieldValue = newMessageViewModel.data.messageFieldValue.value,
-        onMessageValueChange = newMessageViewModel::onMessageValueChange,
-        onSendClick = newMessageViewModel::onSendClick
+        receivers = receivers,
+        onReceiverRemove = newMessageComponent::onReceiverRemove,
+        onNewReceiverButtonClick = newMessageComponent::onNewReceiverButtonClick,
+        messageFieldValue = messageFieldValue,
+        onMessageValueChange = newMessageComponent::onMessageValueChange,
+        onSendClick = newMessageComponent::onSendClick
     )
 }
 

@@ -11,6 +11,7 @@ version = Config.version
 
 kotlin {
     android()
+    jvm()
 
     sourceSets {
         val commonMain by getting {
@@ -22,7 +23,6 @@ kotlin {
                 implementation(project(Modules.core_lifecycle))
                 implementation(project(Modules.ui_data))
                 implementation(project(Modules.repo_data))
-                implementation(project(Modules.feature_subjects))
                 implementation(project(Modules.core_network))
 
                 implementation(CommonDependencies.koin_core)
@@ -31,6 +31,8 @@ kotlin {
                 api(compose.material)
                 api(compose.foundation)
                 api(compose.materialIconsExtended)
+
+                implementation(CommonDependencies.kodein)
             }
         }
         val androidMain by getting {
@@ -40,6 +42,7 @@ kotlin {
                 implementation(Compose.view_model_compose)
             }
         }
+        val jvmMain by getting
     }
 }
 android {

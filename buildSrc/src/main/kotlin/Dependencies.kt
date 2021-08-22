@@ -51,6 +51,8 @@ object Versions {
     const val kodein_version = "0.9.0-beta"
     const val serialization_version = "1.2.2"
 
+    const val decompose_version = "0.3.1"
+    const val date_time_version = "0.2.1"
 }
 
 object Config {
@@ -99,19 +101,17 @@ object Compose {
     const val material_motion =
         "soup.compose.material:library:0.6.4"
     const val calpose = "com.github.sigmadeltasoftware:CalPose:master-SNAPSHOT"
-}
 
-object Dependencies {
-    const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit_version}"
-    const val retrofit_converter =
-        "com.squareup.retrofit2:converter-gson:${Versions.retrofit_version}"
-    const val retrofit_logging = "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2"
+    const val decompose = "com.arkivanov.decompose:decompose:${Versions.decompose_version}"
+    const val decompose_extensions =
+        "com.arkivanov.decompose:extensions-compose-jetbrains:${Versions.decompose_version}"
 }
 
 object CommonDependencies {
     const val koin_core = "io.insert-koin:koin-core:${Versions.koin_version}"
     const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1"
     const val kamel = "com.alialbaali.kamel:kamel-image:${Versions.kamel_version}"
+    const val date_time = "org.jetbrains.kotlinx:kotlinx-datetime:${Versions.date_time_version}"
 
     const val ktor_client = "io.ktor:ktor-client-core:${Versions.ktor_version}"
     const val ktor_serialization = "io.ktor:ktor-client-serialization:${Versions.ktor_version}"
@@ -150,6 +150,11 @@ object AndroidDependencies {
 
     const val kodein_debug = "org.kodein.db:kodein-db-android-debug:${Versions.kodein_version}"
     const val kodein_release = "org.kodein.db:kodein-db-android:${Versions.kodein_version}"
+}
+
+object JvmDependencies {
+    const val kodein = "org.kodein.db:kodein-db-jvm:${Versions.kodein_version}"
+    const val kodein_jni = "org.kodein.db:kodein-leveldb-jni-jvm-linux:${Versions.kodein_version}"
 }
 
 object TestDependencies {

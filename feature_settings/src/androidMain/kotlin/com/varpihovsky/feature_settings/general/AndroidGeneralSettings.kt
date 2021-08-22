@@ -30,7 +30,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.varpihovsky.core_repo.repo.PreferencesKeys
 import com.varpihovsky.core_ui.compose.widgets.FullWidthSwitch
 import com.varpihovsky.core_ui.compose.widgets.VerticalSubscribedExposedDropDownList
 import com.varpihovsky.repo_data.ExpandButtonLocation
@@ -47,12 +46,14 @@ private val buttonLocationSuggestions = listOf(
 ).map { DropDownItem.Simple(it.toString()) }
 
 @Composable
-internal actual fun GeneralSettings(generalSettingsViewModel: GeneralSettingsViewModel) {
-    val showNotifications by generalSettingsViewModel.preferenceData.map { it.showNotifications }
+internal actual fun GeneralSettings(generalSettingsComponent: GeneralSettingsComponent) {
+    val currentPreference by generalSettingsComponent.preferenceData.preferenceFlowToState()
+
+    val showNotifications by generalSettingsComponent.preferenceData.map { it.showNotifications }
         .collectAsState(initial = true)
-    val successListType by generalSettingsViewModel.preferenceData.preferenceFlowToState { successListType }
-    val markbookListType by generalSettingsViewModel.preferenceData.preferenceFlowToState { markbookListType }
-    val buttonLocation by generalSettingsViewModel.preferenceData.preferenceFlowToState { profileListExpandButtonLocation }
+    val successListType by generalSettingsComponent.preferenceData.preferenceFlowToState { successListType }
+    val markbookListType by generalSettingsComponent.preferenceData.preferenceFlowToState { markbookListType }
+    val buttonLocation by generalSettingsComponent.preferenceData.preferenceFlowToState { profileListExpandButtonLocation }
 
     Column(
         modifier = Modifier
@@ -71,10 +72,7 @@ internal actual fun GeneralSettings(generalSettingsViewModel: GeneralSettingsVie
             text = "Нотифікації про нові повідомлення.",
             checked = showNotifications,
             onCheckedChange = {
-                generalSettingsViewModel.onPreferenceSet(
-                    PreferencesKeys.SHOW_NOTIFICATION,
-                    PreferenceValueMapper.map(PreferencesKeys.SHOW_NOTIFICATION, it)
-                )
+                generalSettingsComponent.onPreferenceSet(currentPreference.copy(showNotifications = it))
             }
         )
 
@@ -91,12 +89,8 @@ internal actual fun GeneralSettings(generalSettingsViewModel: GeneralSettingsVie
             suggestions = listTypeSuggestions,
             selected = successListType,
             onSelect = {
-                generalSettingsViewModel.onPreferenceSet(
-                    PreferencesKeys.SUCCESS_LIST_TYPE,
-                    PreferenceValueMapper.map(
-                        PreferencesKeys.SUCCESS_LIST_TYPE,
-                        (it as DropDownItem.Simple).text
-                    )
+                generalSettingsComponent.onPreferenceSet(
+                    currentPreference.copy(successListType = SubjectListType.ofString(it.text))
                 )
             }
         )
@@ -106,12 +100,8 @@ internal actual fun GeneralSettings(generalSettingsViewModel: GeneralSettingsVie
             suggestions = listTypeSuggestions,
             selected = markbookListType,
             onSelect = {
-                generalSettingsViewModel.onPreferenceSet(
-                    PreferencesKeys.MARKBOOK_LIST_TYPE,
-                    PreferenceValueMapper.map(
-                        PreferencesKeys.MARKBOOK_LIST_TYPE,
-                        (it as DropDownItem.Simple).text
-                    )
+                generalSettingsComponent.onPreferenceSet(
+                    currentPreference.copy(markbookListType = SubjectListType.ofString(it.text))
                 )
             }
         )
@@ -121,12 +111,8 @@ internal actual fun GeneralSettings(generalSettingsViewModel: GeneralSettingsVie
             suggestions = buttonLocationSuggestions,
             selected = buttonLocation,
             onSelect = {
-                generalSettingsViewModel.onPreferenceSet(
-                    PreferencesKeys.EXPAND_BUTTON_LOCATION,
-                    PreferenceValueMapper.map(
-                        PreferencesKeys.EXPAND_BUTTON_LOCATION,
-                        (it as DropDownItem.Simple).text
-                    )
+                generalSettingsComponent.onPreferenceSet(
+                    currentPreference.copy(profileListExpandButtonLocation = ExpandButtonLocation.ofString(it.text))
                 )
             }
         )

@@ -18,17 +18,8 @@ package com.varpihovsky.ui_data.state.profile
  */
 
 import com.varpihovsky.repo_data.ExpandButtonLocation
-import com.varpihovsky.repo_data.SubjectListType
-import com.varpihovsky.ui_data.dto.MarksInfo
-import com.varpihovsky.ui_data.dto.UISubjectDTO
 
 data class SubjectListState(
     val title: String,
-    val marksInfo: List<MarksInfo>,
-    val subjects: List<UISubjectDTO>,
-    val listType: SubjectListType,
-    val checked: Boolean,
-    val onToggle: (Boolean) -> Unit,
-    val onSubjectClick: (UISubjectDTO) -> Unit,
     val buttonLocation: ExpandButtonLocation
 )

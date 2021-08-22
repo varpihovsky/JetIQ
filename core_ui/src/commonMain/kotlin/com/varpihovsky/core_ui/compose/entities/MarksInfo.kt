@@ -16,13 +16,11 @@
  */
 package com.varpihovsky.core_ui.compose.entities
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import com.varpihovsky.core_ui.compose.widgets.BoxInfo
 import com.varpihovsky.ui_data.dto.MarksInfo
 
-@ExperimentalAnimationApi
 @Composable
 fun MarksList(
     marks: List<MarksInfo>

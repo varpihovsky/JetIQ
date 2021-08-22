@@ -25,13 +25,12 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
-import com.varpihovsky.core.di.get
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.varpihovsky.core.util.Selectable
 import com.varpihovsky.core.util.selectedOnly
-import com.varpihovsky.core_lifecycle.assignAppbar
 import com.varpihovsky.core_ui.compose.entities.ContactList
-import com.varpihovsky.core_ui.compose.widgets.BackIconButton
 import com.varpihovsky.feature_contacts.addition.AdditionDialog
 import com.varpihovsky.ui_data.dto.UIReceiverDTO
 
@@ -40,59 +39,66 @@ import com.varpihovsky.ui_data.dto.UIReceiverDTO
 @ExperimentalFoundationApi
 @Composable
 fun ContactsScreen(
-    contactsViewModel: ContactsViewModel
+    contactsComponent: ContactsComponent
 ) {
-    val contacts = contactsViewModel.data.contacts.collectAsState(listOf()).value
+    val contacts by contactsComponent.contacts.collectAsState(listOf())
+    val isChoosing by contactsComponent.isChoosing.subscribeAsState()
+    val isExternalChoosing by contactsComponent.isExternalChoosing.subscribeAsState()
+    val isAdding by contactsComponent.isAdding.subscribeAsState()
+    val searchFieldValue by contactsComponent.searchFieldValue.collectAsState()
+    val isLongClickEnabled by contactsComponent.isLongClickEnabled.subscribeAsState()
+    val isClickEnabled by contactsComponent.isClickEnabled.subscribeAsState()
 
     ContactsAppbar(
-        contactsViewModel = contactsViewModel,
-        isChoosing = contactsViewModel.data.isChoosing.value,
-        isExternalChoosing = contactsViewModel.data.isExternalChoosing.value,
+        contactsComponent = contactsComponent,
+        isChoosing = isChoosing,
+        isExternalChoosing = isExternalChoosing,
         contacts = contacts
     )
 
-    if (contactsViewModel.data.isAdding.value) {
+    if (isAdding) {
         AdditionDialog(
-            contactAdditionViewModel = get(),
-            onDismissRequest = contactsViewModel::onDismissRequest,
-            onConfirmButtonClick = contactsViewModel::onConfirmButtonClick
+            contactAdditionComponent = contactsComponent.contactsAdditionComponent,
+            onDismissRequest = contactsComponent::onDismissRequest,
+            onConfirmButtonClick = contactsComponent::onConfirmButtonClick
         )
     }
 
     ContactList(
-        searchFieldValue = contactsViewModel.data.searchFieldValue.collectAsState().value,
-        onSearchFieldValueChange = contactsViewModel::onSearchFieldValueChange,
+        searchFieldValue = searchFieldValue,
+        onSearchFieldValueChange = contactsComponent::onSearchFieldValueChange,
         contacts = contacts,
-        isLongClickEnabled = contactsViewModel.data.isLongClickEnabled.value,
-        onLongClick = contactsViewModel::onContactLongClick,
-        isClickEnabled = contactsViewModel.data.isClickEnabled.value,
-        onClick = contactsViewModel::onContactClick
+        isLongClickEnabled = isLongClickEnabled,
+        onLongClick = contactsComponent::onContactLongClick,
+        isClickEnabled = isClickEnabled,
+        onClick = contactsComponent::onContactClick
     )
 }
 
 @Composable
 fun ContactsAppbar(
-    contactsViewModel: ContactsViewModel,
+    contactsComponent: ContactsComponent,
     isChoosing: Boolean,
     isExternalChoosing: Boolean,
     contacts: List<Selectable<UIReceiverDTO>>
 ) {
     val text = if (isChoosing) "Вибір контактів..." else "Контакти"
-    contactsViewModel.assignAppbar(
-        title = text,
-        icon = { BackIconButton(onClick = contactsViewModel::onBackNavButtonClick) },
-        actions = {
-            IconButton(onClick = contactsViewModel::onAddClick) {
+    contactsComponent.appBarController.run {
+        show()
+        setText(text)
+        setIconToBack()
+        setActions {
+            IconButton(onClick = contactsComponent::onAddClick) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Додати")
             }
             if (!isExternalChoosing) {
                 IconButton(
-                    onClick = contactsViewModel::onRemoveClick,
+                    onClick = contactsComponent::onRemoveClick,
                     enabled = contacts.selectedOnly().isNotEmpty()
                 ) {
                     Icon(imageVector = Icons.Default.Delete, contentDescription = "Видалити")
                 }
             }
         }
-    )
+    }
 }

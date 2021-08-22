@@ -11,6 +11,7 @@ version = Config.version
 
 kotlin {
     android()
+    jvm()
 
     sourceSets {
         val commonMain by getting {
@@ -37,6 +38,7 @@ kotlin {
                 implementation(AndroidDependencies.lifecycle_view_model)
             }
         }
+        val jvmMain by getting
     }
 }
 android {

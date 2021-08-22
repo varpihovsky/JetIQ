@@ -16,11 +16,11 @@
  */
 package com.varpihovsky.feature_profile
 
+import com.varpihovsky.feature_profile.profile.ProfileInteractor
 import org.koin.dsl.module
 
 object ProfileModule {
     val module = module {
-        single { ProfileViewModel(get(), get(), get(), get(), get(), get(), get()) }
         factory { ProfileInteractor(get(), get(), get()) }
     }
 }

@@ -22,19 +22,21 @@ import java.util.logging.Logger
 import kotlin.reflect.KClass
 
 actual object Logger {
-    private val logger = Logger.getGlobal()
+    private val logger = Logger.getLogger("Logger").apply {
+        this.level = Level.FINEST
+    }
     private const val UI_TAG = "UI"
 
     actual fun d(clazz: KClass<*>, message: String) {
-        logger.log(Level.FINE, formMessage(clazz, message))
+        logger.log(Level.INFO, formMessage(clazz, message))
     }
 
     actual fun ui(message: String) {
-        logger.log(Level.FINE, "UI: $message")
+        logger.log(Level.INFO, "UI: $message")
     }
 
     actual fun e(clazz: KClass<*>, message: String) {
-        logger.log(Level.SEVERE, formMessage(clazz, message))
+        logger.log(Level.INFO, formMessage(clazz, message))
     }
 
     actual fun w(clazz: KClass<*>, message: String) {
@@ -42,7 +44,7 @@ actual object Logger {
     }
 
     actual fun v(clazz: KClass<*>, message: String) {
-        logger.log(Level.FINEST, formMessage(clazz, message))
+        logger.log(Level.INFO, formMessage(clazz, message))
     }
 
     actual fun i(clazz: KClass<*>, message: String) {

@@ -69,3 +69,23 @@ fun VerticalScrollLayout(
         content()
     }
 }
+
+@Composable
+fun SwipeRefresh(
+    modifier: Modifier = Modifier,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
+    indicatorPadding: PaddingValues = PaddingValues(),
+    content: @Composable () -> Unit
+) {
+    SwipeRefreshActual(modifier, isRefreshing, onRefresh, indicatorPadding, content)
+}
+
+@Composable
+internal expect fun SwipeRefreshActual(
+    modifier: Modifier,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
+    indicatorPadding: PaddingValues,
+    content: @Composable () -> Unit
+)

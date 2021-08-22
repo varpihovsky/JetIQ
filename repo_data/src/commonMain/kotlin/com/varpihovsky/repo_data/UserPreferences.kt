@@ -1,5 +1,7 @@
 package com.varpihovsky.repo_data
 
+import kotlinx.serialization.Serializable
+
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -17,12 +19,13 @@ package com.varpihovsky.repo_data
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+@Serializable
 data class UserPreferences(
     val showNotifications: Boolean = true,
     val successListType: SubjectListType = SubjectListType.PARTIAL,
     val markbookListType: SubjectListType = SubjectListType.PARTIAL,
     val profileListExpandButtonLocation: ExpandButtonLocation = ExpandButtonLocation.LOWER
-)
+) : Single
 
 // These classes could be multiplatform but Exceptions can't be shared
 

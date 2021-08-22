@@ -46,7 +46,7 @@ import soup.compose.material.motion.MaterialSharedAxisX
 
 private const val DEFAULT_DRAG_VELOCITY = 100
 
-@ExperimentalAnimationApi
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SubjectListPart(
     subjects: List<UISubjectDTO>,

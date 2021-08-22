@@ -16,10 +16,13 @@
  */
 package com.varpihovsky.core_db
 
+import com.varpihovsky.core.log.d
 import com.varpihovsky.core_db.dao.*
 import com.varpihovsky.core_db.internal.types.*
 import com.varpihovsky.repo_data.Confidential
 import com.varpihovsky.repo_data.ContactDTO
+import com.varpihovsky.repo_data.ReadMessage
+import com.varpihovsky.repo_data.UserPreferences
 import org.kodein.db.DB
 import org.kodein.db.TypeTable
 import org.kodein.db.impl.inDir
@@ -38,6 +41,11 @@ object DatabaseModule {
         factory { MessageDAO(get()) }
         factory { ContactDAO(get()) }
         factory { ConfidentialDAO(get()) }
+        factory {
+            PreferencesDAO(get()).apply {
+                d("Created preferences")
+            }
+        }
 
         single {
             DB.inDir(get(qualifier = qualifier(PATH)))
@@ -51,6 +59,9 @@ object DatabaseModule {
                         +SubjectInternal.serializer()
                         +SubjectDetailsInternal.serializer()
                         +MarkbookSubjectInternal.serializer()
+                        +UserPreferences.serializer()
+                        +ReadMessage.serializer()
+                        +SentMessageInternal.serializer()
                     },
                     TypeTable {
                         root<Confidential>()
@@ -59,8 +70,11 @@ object DatabaseModule {
                         root<MessageInternal>()
                         root<SubjectInternal>()
                         root<MarkbookSubjectInternal>()
+                        root<UserPreferences>()
+                        root<ReadMessage>()
+                        root<SentMessageInternal>()
                     }
-                )
+                ).apply { d("Created db") }
 
         }
 

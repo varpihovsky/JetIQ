@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
@@ -31,26 +32,29 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.varpihovsky.core_lifecycle.emptyAppbar
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.varpihovsky.core_ui.compose.foundation.CenterLayout
 import com.varpihovsky.core_ui.compose.foundation.CenterLayoutItem
 import com.varpihovsky.core_ui.compose.widgets.PasswordFieldIcon
 
 @Composable
-fun Auth(
-    viewModel: AuthViewModel
-) {
-    viewModel.emptyAppbar()
+fun Auth(authComponent: AuthComponent) {
+    authComponent.appBarController.hide()
+
+    val loginValue by authComponent.login.subscribeAsState()
+    val passwordValue by authComponent.password.subscribeAsState()
+    val isPasswordHidden by authComponent.isPasswordHidden.subscribeAsState()
+    val isProgressShown by authComponent.isProgressShown.subscribeAsState()
 
     Auth(
-        loginValue = viewModel.data.login.value,
-        loginOnChange = viewModel::onLoginChange,
-        passwordValue = viewModel.data.password.value,
-        passwordOnChange = viewModel::onPasswordChange,
-        onLoginClick = viewModel::onLogin,
-        passwordHidden = viewModel.data.passwordHidden.value,
-        onPasswordHiddenChange = viewModel::onPasswordHiddenChange,
-        progressShown = viewModel.data.progressShown.value
+        loginValue = loginValue,
+        loginOnChange = authComponent::onLoginChange,
+        passwordValue = passwordValue,
+        passwordOnChange = authComponent::onPasswordChange,
+        onLoginClick = authComponent::onLogin,
+        passwordHidden = isPasswordHidden,
+        onPasswordHiddenChange = authComponent::onPasswordHiddenChange,
+        progressShown = isProgressShown
     )
 }
 

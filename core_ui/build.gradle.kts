@@ -37,6 +37,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(AndroidDependencies.app_compat)
+                api(AndroidDependencies.swipe_refresh)
             }
         }
         val jvmMain by getting {

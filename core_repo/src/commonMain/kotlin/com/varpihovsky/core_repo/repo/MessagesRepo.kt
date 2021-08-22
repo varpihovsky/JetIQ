@@ -60,6 +60,14 @@ interface MessagesRepo : Refreshable {
      */
     fun clear()
 
+    fun isMessageRead(id: Int): Flow<Boolean>
+
+    fun isMessageWasRead(id: Int): Boolean
+
+    fun setMessageRead(id: Int)
+
+    fun getSentMessages(receiverId: Int, receiverType: Int): Flow<List<MessageToSendDTO>>
+
     companion object {
         operator fun invoke(
             api: Api,
@@ -136,6 +144,22 @@ private class MessagesRepoImpl constructor(
         messageDAO.deleteAll()
     }
 
+    override fun isMessageRead(id: Int): Flow<Boolean> {
+        return messageDAO.isMessageRead(id)
+    }
+
+    override fun isMessageWasRead(id: Int): Boolean {
+        return messageDAO.isMessageWasRead(id)
+    }
+
+    override fun setMessageRead(id: Int) {
+        messageDAO.setMessageRead(id)
+    }
+
+    override fun getSentMessages(receiverId: Int, receiverType: Int): Flow<List<MessageToSendDTO>> {
+        return messageDAO.getSentMessages(receiverId, receiverType)
+    }
+
     override suspend fun sendMessage(messageToSendDTO: MessageToSendDTO) {
         requireSession().let { session ->
             val csrf = wrapException(
@@ -152,6 +176,7 @@ private class MessagesRepoImpl constructor(
                     csrf
                 )
             )
+            messageDAO.addSentMessage(messageToSendDTO)
         }
     }
 

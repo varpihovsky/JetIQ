@@ -59,7 +59,6 @@ dependencies {
     implementation(project(Modules.feature_new_message))
     implementation(project(Modules.feature_profile))
     implementation(project(Modules.feature_settings))
-    implementation(project(Modules.feature_subjects))
     implementation(project(Modules.core_network))
 
     // Needed for dependency injection

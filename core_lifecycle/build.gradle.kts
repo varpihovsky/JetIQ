@@ -11,6 +11,7 @@ version = Config.version
 
 kotlin {
     android()
+    jvm()
 
     sourceSets {
         val commonMain by getting {
@@ -20,6 +21,9 @@ kotlin {
 
                 api(compose.foundation)
                 api(compose.runtime)
+
+                api(Compose.decompose)
+                api(Compose.decompose_extensions)
             }
         }
         val androidMain by getting {
@@ -27,6 +31,7 @@ kotlin {
                 api(AndroidDependencies.lifecycle_view_model)
             }
         }
+        val jvmMain by getting
     }
 }
 

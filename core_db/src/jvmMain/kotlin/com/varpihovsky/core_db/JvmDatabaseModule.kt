@@ -16,11 +16,13 @@
  */
 package com.varpihovsky.core_db
 
+import com.varpihovsky.core.log.d
 import org.koin.core.module.Module
 import org.koin.core.qualifier.qualifier
+import java.io.File
 
 internal actual fun Module.providePath() {
     factory(qualifier = qualifier(DatabaseModule.PATH)) {
-        this::class.java.protectionDomain.codeSource.location.path
+        File("").absolutePath.also { d(it) }
     }
 }
