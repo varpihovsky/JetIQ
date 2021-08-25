@@ -40,6 +40,7 @@ import com.varpihovsky.core_ui.compose.widgets.PasswordFieldIcon
 @Composable
 fun Auth(authComponent: AuthComponent) {
     authComponent.appBarController.hide()
+    authComponent.bottomBarController.hide()
 
     val loginValue by authComponent.login.subscribeAsState()
     val passwordValue by authComponent.password.subscribeAsState()
