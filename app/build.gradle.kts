@@ -1,37 +1,47 @@
+import org.jetbrains.compose.compose
+
 plugins {
     id(Plugins.android_application)
     kotlin("android")
     kotlin("kapt")
+    compose()
     parcelize()
-    id(Plugins.hilt)
 }
 
 android {
-    compileSdkVersion(AndroidConfig.compile_sdk)
+    compileSdk = AndroidConfig.compile_sdk
     defaultConfig {
         applicationId = AndroidConfig.application_id
-        minSdkVersion(AndroidConfig.min_sdk)
-        targetSdkVersion(AndroidConfig.target_sdk)
+        minSdk = AndroidConfig.min_sdk
+        targetSdk = AndroidConfig.target_sdk
         versionCode = AndroidConfig.version_code
         versionName = AndroidConfig.application_version
     }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = AndroidConfig.release_minify
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
+//    buildTypes {
+//        getByName("release") {
+//            isMinifyEnabled = AndroidConfig.release_minify
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro"
+//            )
+//        }
+//    }
+//    testOptions {
+//        unitTests.isReturnDefaultValues = true
+//    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = Versions.compose_version
-    }
-    testOptions {
-        unitTests.isReturnDefaultValues = true
+}
+
+configurations {
+    "implementation" {
+        exclude(group = "androidx.compose.animation")
+        exclude(group = "androidx.compose.foundation")
+        exclude(group = "androidx.compose.material")
+        exclude(group = "androidx.compose.runtime")
+        exclude(group = "androidx.compose.ui")
     }
 }
 
@@ -41,10 +51,16 @@ dependencies {
     implementation(coreNav())
     implementation(uiData())
     implementation(repoData())
+    implementation(project(Modules.core_ui))
+    implementation(project(Modules.core_lifecycle))
+    implementation(project(Modules.feature_auth))
+    implementation(project(Modules.feature_messages))
+    implementation(project(Modules.feature_profile))
+    implementation(project(Modules.feature_settings))
+    implementation(project(Modules.core_network))
 
     // Needed for dependency injection
     api(coreDB())
-    api(coreNetwork())
 
     // Core
     implementation(AndroidDependencies.core)
@@ -56,33 +72,18 @@ dependencies {
     implementation(Compose.activity_compose)
     implementation(Compose.view_model_compose)
     implementation(Compose.compose_livedata)
+    implementation(AndroidDependencies.lifecycle_view_model)
 
     // Compose
-    implementation(Compose.ui)
-    implementation(Compose.material)
-    implementation(Compose.ui_tooling)
+    api(compose.ui)
+    api(compose.material)
+    api(compose.uiTooling)
+    implementation(Compose.material_motion)
 
-    // Calpose
-    implementation(Compose.calpose)
-    implementation(AndroidDependencies.threetenbp)
-
-    // Retrofit
-    implementation(Dependencies.retrofit)
-    implementation(Dependencies.retrofit_converter)
-
-    //Dagger
-    implementation(AndroidDependencies.hilt)
-    kapt(AndroidDependencies.hilt_compiler)
-    kapt(AndroidDependencies.hilt_androidx_compiler)
-    implementation(AndroidDependencies.hilt_work)
-
-    // Coil
-    implementation(AndroidDependencies.coil)
-    implementation(AndroidDependencies.coil_base)
-    implementation(AndroidDependencies.coil_compose)
-
-    // Accompanist
-    implementation(AndroidDependencies.swipe_refresh)
+    //koin
+    implementation(CommonDependencies.koin_core)
+    implementation(AndroidDependencies.koin_android)
+    implementation(AndroidDependencies.koin_work_manager)
 
     // WorkManager
     implementation(AndroidDependencies.work)
@@ -90,7 +91,6 @@ dependencies {
     // JUnit
     testImplementation(TestDependencies.junit)
     androidTestImplementation(TestDependencies.junit_ext)
-    androidTestImplementation(TestDependencies.compose_test)
     testImplementation(TestDependencies.core_testing)
     testImplementation(TestDependencies.coroutines_test)
 
@@ -98,9 +98,7 @@ dependencies {
     testImplementation(TestDependencies.mockk)
     androidTestImplementation(TestDependencies.mockk_android)
 
-    // Espresso
-    androidTestImplementation(TestDependencies.espresso)
-
-    implementation(Compose.material_motion)
-    implementation(AndroidDependencies.preferences)
+    // Kodein
+    debugImplementation(AndroidDependencies.kodein_debug)
+    releaseImplementation(AndroidDependencies.kodein_release)
 }

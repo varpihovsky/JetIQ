@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.services
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,6 +14,7 @@ package com.varpihovsky.jetiq.services
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.jetiq.services
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -24,16 +23,13 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationManagerCompat
-import androidx.hilt.work.HiltWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.jetiq.R
-import com.varpihovsky.repo_data.MessageDTO
+import com.varpihovsky.jetiqApi.data.Message
 import com.varpihovsky.ui_data.dto.UIMessageDTO
 import com.varpihovsky.ui_data.mappers.toUIDTO
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.last
@@ -44,13 +40,12 @@ import kotlinx.coroutines.launch
  *
  * @author Vladyslav Podrezenko
  */
-@HiltWorker
-class NotificationWorker @AssistedInject constructor(
-    @Assisted private val context: Context,
-    @Assisted workerParameters: WorkerParameters,
+class NotificationWorker(
+    private val context: Context,
+    workerParameters: WorkerParameters,
     private val messagesModel: MessagesRepo
 ) : Worker(context, workerParameters) {
-    private lateinit var currentMessages: List<MessageDTO>
+    private lateinit var currentMessages: List<Message>
 
     /**
      * Creates notification channel if required.
@@ -87,7 +82,7 @@ class NotificationWorker @AssistedInject constructor(
         messagesModel.getMessages().last().let { notifyNewMessages(it) }
     }
 
-    private fun notifyNewMessages(newMessages: List<MessageDTO>) {
+    private fun notifyNewMessages(newMessages: List<Message>) {
         val builder = createBuilder()
         newMessages
             .filter { !currentMessages.contains(it) }

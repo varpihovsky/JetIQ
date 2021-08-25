@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,6 +14,7 @@ package com.varpihovsky.jetiq
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.jetiq
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -23,33 +22,18 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.varpihovsky.core.appbar.AppbarManager
-import com.varpihovsky.core.dataTransfer.ViewModelDataTransferManager
+import com.varpihovsky.core.di.getViewModel
 import com.varpihovsky.core.eventBus.EventBus
 import com.varpihovsky.core.exceptions.ExceptionEventManager
-import com.varpihovsky.core_nav.main.NavigationControllerStorage
-import com.varpihovsky.jetiq.ui.compose.Root
-import com.varpihovsky.jetiq.ui.theme.JetIQTheme
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import com.varpihovsky.core_ui.theme.JetIQTheme
+import com.varpihovsky.jetiq.ui.Root
+import org.koin.android.ext.android.inject
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @Inject
-    lateinit var appbarManager: AppbarManager
-
-    @Inject
-    lateinit var viewModelDataTransferManager: ViewModelDataTransferManager
-
-    @Inject
-    lateinit var navigationControllerStorage: NavigationControllerStorage
-
-    @Inject
-    lateinit var exceptionEventManager: ExceptionEventManager
-
-    @Inject
-    lateinit var eventBus: EventBus
+    private val appbarManager: AppbarManager by inject()
+    private val exceptionEventManager: ExceptionEventManager by inject()
+    private val eventBus: EventBus by inject()
 
     @ExperimentalComposeUiApi
     @ExperimentalFoundationApi
@@ -58,7 +42,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val viewModel = viewModel<NavigationViewModel>(key = VIEW_MODEL_TAG)
+            val viewModel = getViewModel<NavigationViewModel>()
 
             JetIQTheme {
                 Root(
@@ -69,9 +53,5 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
-    }
-
-    companion object {
-        private const val VIEW_MODEL_TAG = "NavigationViewModel"
     }
 }

@@ -1,39 +1,54 @@
 plugins {
-    id(Plugins.android_library)
-    kotlin("android")
+    multiplatform()
+    androidLib()
     kotlin("kapt")
+    kotlin("plugin.serialization")
 }
 
 group = Config.group
 version = Config.version
 
+kotlin {
+    android()
+    jvm()
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                api(CommonDependencies.kodein)
+
+                api(CommonDependencies.serialization)
+            }
+        }
+        val androidMain by getting {
+            dependencies {
+                implementation(AndroidDependencies.core)
+            }
+        }
+        val jvmMain by getting
+    }
+}
+
 android {
     compileSdkVersion(AndroidConfig.compile_sdk)
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdkVersion(AndroidConfig.min_sdk)
         targetSdkVersion(AndroidConfig.target_sdk)
 
-        consumerProguardFiles("consumer-rules.pro")
+//        consumerProguardFiles("consumer-rules.pro")
     }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = AndroidConfig.release_minify
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
+//    buildTypes {
+//        getByName("release") {
+//            isMinifyEnabled = AndroidConfig.release_minify
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro"
+//            )
+//        }
+//    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
-}
-
-dependencies {
-    // Room
-    implementation(AndroidDependencies.room_runtime)
-    implementation(AndroidDependencies.room)
-    kapt(AndroidDependencies.room_compiler)
-    testImplementation(AndroidDependencies.room_testing)
-
-    implementation(Dependencies.retrofit_converter)
-
-    implementation(AndroidDependencies.core)
 }

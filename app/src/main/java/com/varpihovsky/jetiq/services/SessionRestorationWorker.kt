@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq.services
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,14 +14,12 @@ package com.varpihovsky.jetiq.services
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.jetiq.services
 
 import android.content.Context
-import androidx.hilt.work.HiltWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.varpihovsky.core_repo.repo.ProfileRepo
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.last
@@ -35,10 +31,9 @@ import kotlinx.coroutines.launch
  *
  * @author Vladyslav Podrezenko
  */
-@HiltWorker
-class SessionRestorationWorker @AssistedInject constructor(
-    @Assisted context: Context,
-    @Assisted workerParameters: WorkerParameters,
+class SessionRestorationWorker(
+    context: Context,
+    workerParameters: WorkerParameters,
     private val profileModel: ProfileRepo
 ) : Worker(context, workerParameters) {
     override fun doWork(): Result {
@@ -50,7 +45,7 @@ class SessionRestorationWorker @AssistedInject constructor(
     }
 
     private suspend fun reauthorize() {
-        profileModel.getConfidential().last().let {
+        profileModel.getConfidential().last()?.let {
             profileModel.logout()
             profileModel.login(it.login, it.password)
         }

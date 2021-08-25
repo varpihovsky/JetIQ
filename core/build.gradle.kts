@@ -1,75 +1,74 @@
+import org.jetbrains.compose.compose
+
 plugins {
+    kotlin("multiplatform")
     id(Plugins.android_library)
-    kotlin("android")
     kotlin("kapt")
-    id(Plugins.hilt)
     parcelize()
+    compose()
 }
 
 group = Config.group
 version = Config.version
 
-android {
-    compileSdkVersion(AndroidConfig.compile_sdk)
-    buildToolsVersion = AndroidConfig.build_tools_version
+kotlin {
+    android()
+    jvm()
 
-    defaultConfig {
-        minSdkVersion(AndroidConfig.min_sdk)
-        targetSdkVersion(AndroidConfig.target_sdk)
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(CommonDependencies.koin_core)
 
-        consumerProguardFiles("consumer-rules.pro")
-    }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = AndroidConfig.release_minify
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+                api(compose.runtime)
+                api(compose.ui)
+                api(compose.foundation)
+
+            }
         }
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = Versions.compose_version
+        val commonTest by getting {
+            dependencies {
+                implementation(project(Modules.core_test))
+
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+
+                implementation(TestDependencies.mockk)
+            }
+        }
+        val androidMain by getting {
+            dependencies {
+                implementation(AndroidDependencies.koin_android)
+                implementation(Compose.koin_compose)
+
+                implementation(AndroidDependencies.lifecycle_view_model)
+            }
+        }
+        val jvmMain by getting
     }
 }
 
-dependencies {
-    //Dagger
-    implementation(AndroidDependencies.hilt)
-    kapt(AndroidDependencies.hilt_compiler)
-    kapt(AndroidDependencies.hilt_androidx_compiler)
-    implementation(AndroidDependencies.hilt_work)
+android {
+    compileSdk = AndroidConfig.compile_sdk
+    buildToolsVersion = AndroidConfig.build_tools_version
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    defaultConfig {
+        minSdk = AndroidConfig.min_sdk
+        targetSdk = AndroidConfig.target_sdk
 
-    // For local unit tests
-    testImplementation(AndroidDependencies.hilt_testing)
-    kaptTest(AndroidDependencies.hilt_compiler)
-
-    // Core
-    implementation(AndroidDependencies.core)
-    implementation(AndroidDependencies.app_compat)
-    implementation(AndroidDependencies.material)
-
-    // Architecture components
-    implementation(Compose.lifecycle_runtime)
-    implementation(Compose.activity_compose)
-    implementation(Compose.view_model_compose)
-    implementation(Compose.compose_livedata)
-
-    // Compose
-    implementation(Compose.ui)
-    implementation(Compose.foundation_layout)
-
-    // JUnit
-    testImplementation(TestDependencies.junit)
-    androidTestImplementation(TestDependencies.junit_ext)
-    androidTestImplementation(TestDependencies.compose_test)
-    testImplementation(TestDependencies.core_testing)
-    testImplementation(TestDependencies.coroutines_test)
-
-    // Mockk
-    testImplementation(TestDependencies.mockk)
-    androidTestImplementation(TestDependencies.mockk_android)
+        //      consumerProguardFiles("consumer-rules.pro")
+    }
+//    buildTypes {
+//        getByName("release") {
+//            isMinifyEnabled = AndroidConfig.release_minify
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro"
+//            )
+//        }
+//    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
 }

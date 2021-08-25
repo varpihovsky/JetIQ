@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import org.gradle.kotlin.dsl.kotlin
 import org.gradle.plugin.use.PluginDependenciesSpec
 
 object Plugins {
@@ -22,6 +23,15 @@ object Plugins {
     const val android_library = "com.android.library"
 
     const val hilt = "dagger.hilt.android.plugin"
+
+    const val compose_multiplatform = "org.jetbrains.compose"
+
+    const val feature = "com.android.dynamic-feature"
 }
 
 fun PluginDependenciesSpec.parcelize() = id("kotlin-parcelize")
+fun PluginDependenciesSpec.feature() = id(Plugins.android_library)
+fun PluginDependenciesSpec.compose() = id(Plugins.compose_multiplatform)
+fun PluginDependenciesSpec.multiplatform() = kotlin("multiplatform")
+fun PluginDependenciesSpec.androidLib() = id(Plugins.android_library)
+fun PluginDependenciesSpec.androidApp() = id(Plugins.android_application)

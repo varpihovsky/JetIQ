@@ -1,45 +1,53 @@
+import org.jetbrains.compose.compose
+
 plugins {
+    kotlin("multiplatform")
     id(Plugins.android_library)
-    kotlin("android")
+    id(Plugins.compose_multiplatform)
     parcelize()
 }
 
 group = Config.group
 version = Config.version
 
-android {
-    compileSdkVersion(AndroidConfig.compile_sdk)
-    defaultConfig {
-        minSdkVersion(AndroidConfig.min_sdk)
-        targetSdkVersion(AndroidConfig.target_sdk)
+kotlin {
+    android()
+    jvm()
 
-        consumerProguardFiles("consumer-rules.pro")
-    }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = AndroidConfig.release_minify
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(project(Modules.repo_data))
+                implementation(project(Modules.core_network))
+
+                api(compose.ui)
+                api(compose.foundation)
+
+                implementation(CommonDependencies.kodein)
+            }
         }
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = Versions.compose_version
+        val androidMain by getting {
+            dependencies {
+                implementation(AndroidDependencies.threetenbp)
+                implementation(AndroidDependencies.core)
+
+                implementation(AndroidDependencies.swipe_refresh)
+            }
+        }
+        val jvmMain by getting
     }
 }
 
-dependencies {
-    implementation(repoData())
+android {
+    compileSdkVersion(AndroidConfig.compile_sdk)
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    defaultConfig {
+        minSdkVersion(AndroidConfig.min_sdk)
+        targetSdkVersion(AndroidConfig.target_sdk)
+    }
 
-    implementation(AndroidDependencies.threetenbp)
-
-    implementation(AndroidDependencies.core)
-    implementation(Compose.ui)
-    implementation(Compose.foundation)
-    implementation(AndroidDependencies.swipe_refresh)
-
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
 }

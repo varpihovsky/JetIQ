@@ -21,14 +21,12 @@ import com.varpihovsky.core_nav.navigation.NavigationDirections
 import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.jetiq.testCore.ViewModelTest
 import com.varpihovsky.repo_data.MessageDTO
-import com.varpihovsky.ui_data.mappers.toUIDTO
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 

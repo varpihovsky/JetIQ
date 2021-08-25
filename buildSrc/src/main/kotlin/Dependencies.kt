@@ -16,9 +16,9 @@
  */
 
 object Versions {
-    const val gradle_version = "7.0.0"
+    const val gradle_version = "4.2.0"
 
-    const val kotlin_version = "1.5.10"
+    const val kotlin_version = "1.5.21"
     const val compose_version = "1.0.0"
     const val mockk_version = "1.12.0"
     const val room_version = "2.4.0-alpha04"
@@ -37,13 +37,22 @@ object Versions {
     const val dagger_version = "2.38.1"
     const val dagger_additionals_version = "1.0.0"
 
-    const val activity_compose_version = "1.3.1"
+    const val koin_version = "3.1.2"
 
+    const val activity_compose_version = "1.3.1"
 
     const val junit_version = "4.13.2"
     const val junit_ext_version = "1.1.3"
-    const val coroutines_testing_version = "1.5.1-native-mt"
+    const val coroutines_testing_version = "1.5.1"
     const val core_testing_version = "2.1.0"
+
+    const val kamel_version = "0.2.2"
+    const val ktor_version = "1.6.2"
+    const val kodein_version = "0.9.0-beta"
+    const val serialization_version = "1.2.2"
+
+    const val decompose_version = "0.3.1"
+    const val date_time_version = "0.2.1"
 }
 
 object Config {
@@ -81,12 +90,8 @@ object Compose {
         "androidx.activity:activity-compose:${Versions.activity_compose_version}"
     const val compose_livedata =
         "androidx.compose.runtime:runtime-livedata:${Versions.compose_version}"
-    const val ui = "androidx.compose.ui:ui:${Versions.compose_version}"
-    const val ui_tooling = "androidx.compose.ui:ui-tooling:${Versions.compose_version}"
-    const val material = "androidx.compose.material:material:${Versions.compose_version}"
-    const val foundation = "androidx.compose.foundation:foundation:${Versions.compose_version}"
-    const val foundation_layout =
-        "androidx.compose.foundation:foundation-layout:${Versions.compose_version}"
+
+    const val koin_compose = "io.insert-koin:koin-androidx-compose:${Versions.koin_version}"
 
     const val compiler = "androidx.compose.compiler:compiler:${Versions.compose_version}"
 
@@ -94,15 +99,29 @@ object Compose {
         "androidx.lifecycle:lifecycle-viewmodel-compose:${Versions.view_model_compose_version}"
 
     const val material_motion =
-        "com.github.fornewid:material-motion-compose:${Versions.material_motion_version}"
+        "soup.compose.material:library:0.6.4"
     const val calpose = "com.github.sigmadeltasoftware:CalPose:master-SNAPSHOT"
+
+    const val decompose = "com.arkivanov.decompose:decompose:${Versions.decompose_version}"
+    const val decompose_extensions =
+        "com.arkivanov.decompose:extensions-compose-jetbrains:${Versions.decompose_version}"
 }
 
-object Dependencies {
-    const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit_version}"
-    const val retrofit_converter =
-        "com.squareup.retrofit2:converter-gson:${Versions.retrofit_version}"
-    const val retrofit_logging = "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2"
+object CommonDependencies {
+    const val koin_core = "io.insert-koin:koin-core:${Versions.koin_version}"
+    const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1"
+    const val kamel = "com.alialbaali.kamel:kamel-image:${Versions.kamel_version}"
+    const val date_time = "org.jetbrains.kotlinx:kotlinx-datetime:${Versions.date_time_version}"
+
+    const val ktor_client = "io.ktor:ktor-client-core:${Versions.ktor_version}"
+    const val ktor_serialization = "io.ktor:ktor-client-serialization:${Versions.ktor_version}"
+
+    const val kodein = "org.kodein.db:kodein-db:${Versions.kodein_version}"
+    const val kodein_serializer =
+        "org.kodein.db:kodein-db-serializer-kotlinx:${Versions.kodein_version}"
+
+    const val serialization =
+        "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serialization_version}"
 }
 
 object AndroidDependencies {
@@ -110,21 +129,14 @@ object AndroidDependencies {
     const val app_compat = "androidx.appcompat:appcompat:${Versions.appcompat_version}"
     const val material = "com.google.android.material:material:${Versions.material_version}"
 
-    const val hilt = "com.google.dagger:hilt-android:${Versions.dagger_version}"
-    const val hilt_compiler = "com.google.dagger:hilt-android-compiler:${Versions.dagger_version}"
-    const val hilt_androidx_compiler =
-        "androidx.hilt:hilt-compiler:${Versions.dagger_additionals_version}"
-    const val hilt_work = "androidx.hilt:hilt-work:${Versions.dagger_additionals_version}"
-    const val hilt_testing = "com.google.dagger:hilt-android-testing:${Versions.dagger_version}"
+    const val koin_android = "io.insert-koin:koin-android:${Versions.koin_version}"
+    const val koin_work_manager =
+        "io.insert-koin:koin-androidx-workmanager:${Versions.koin_version}"
 
     const val room = "androidx.room:room-ktx:${Versions.room_version}"
     const val room_runtime = "androidx.room:room-runtime:${Versions.room_version}"
     const val room_compiler = "androidx.room:room-compiler:${Versions.room_version}"
     const val room_testing = "androidx.room:room-testing:${Versions.room_version}"
-
-    const val coil = "io.coil-kt:coil:${Versions.coil_version}"
-    const val coil_base = "io.coil-kt:coil-base:${Versions.coil_version}"
-    const val coil_compose = "io.coil-kt:coil-compose:${Versions.coil_version}"
 
     const val preferences =
         "androidx.datastore:datastore-preferences:${Versions.preferences_version}"
@@ -133,6 +145,16 @@ object AndroidDependencies {
 
     const val swipe_refresh =
         "com.google.accompanist:accompanist-swiperefresh:${Versions.accompanist_version}"
+
+    const val lifecycle_view_model = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+
+    const val kodein_debug = "org.kodein.db:kodein-db-android-debug:${Versions.kodein_version}"
+    const val kodein_release = "org.kodein.db:kodein-db-android:${Versions.kodein_version}"
+}
+
+object JvmDependencies {
+    const val kodein = "org.kodein.db:kodein-db-jvm:${Versions.kodein_version}"
+    const val kodein_jni = "org.kodein.db:kodein-leveldb-jni-jvm-linux:${Versions.kodein_version}"
 }
 
 object TestDependencies {

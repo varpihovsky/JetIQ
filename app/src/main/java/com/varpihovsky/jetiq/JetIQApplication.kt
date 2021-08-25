@@ -1,5 +1,3 @@
-package com.varpihovsky.jetiq
-
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -16,52 +14,83 @@ package com.varpihovsky.jetiq
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.varpihovsky.jetiq
 
 import android.app.Application
-import android.graphics.Bitmap
-import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.*
-import coil.Coil
-import coil.ImageLoader
+import com.varpihovsky.core.di.CoreModule
+import com.varpihovsky.core_db.DatabaseModule
+import com.varpihovsky.core_nav.NavigationModule
+import com.varpihovsky.core_repo.RepoModule
+import com.varpihovsky.core_repo.repo.MessagesRepo
+import com.varpihovsky.core_repo.repo.SubjectRepo
 import com.varpihovsky.core_repo.repo.UserPreferencesRepo
+import com.varpihovsky.feature_auth.AuthModule
+import com.varpihovsky.feature_contacts.ContactsModule
+import com.varpihovsky.feature_messages.MessagesModule
+import com.varpihovsky.feature_new_message.NewMessageModule
+import com.varpihovsky.feature_profile.ProfileModule
+import com.varpihovsky.feature_settings.SettingsModule
+import com.varpihovsky.feature_subjects.SubjectsModule
+import com.varpihovsky.jetiq.di.ApplicationModule
 import com.varpihovsky.jetiq.services.SessionRestorationWorker
-import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
+import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.koin.workManagerFactory
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.context.startKoin
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Named
 
-@HiltAndroidApp
-class JetIQApplication : Application(), Configuration.Provider {
-    // Hilt work manager integration
-    @Inject
-    lateinit var workerFactory: HiltWorkerFactory
-
-    @Inject
-    lateinit var userPreferencesRepo: UserPreferencesRepo
-
-    @Inject
-    @Named("Coil")
-    lateinit var okHttpClient: OkHttpClient
+class JetIQApplication : Application(), KoinComponent {
+    private val userPreferencesRepo: UserPreferencesRepo by inject()
 
     private val workManager by lazy { WorkManager.getInstance(this) }
 
-    override fun getWorkManagerConfiguration(): Configuration =
-        Configuration.Builder()
-            .setWorkerFactory(workerFactory)
-            .build()
+    private val modules = listOf(
+        ApplicationModule.module,
+        CoreModule.module,
+        DatabaseModule.module,
+        NavigationModule.module,
+        RepoModule.module,
+        AuthModule.module,
+        ContactsModule.module,
+        MessagesModule.module,
+        NewMessageModule.module,
+        ProfileModule.module,
+        SettingsModule.module,
+        SubjectsModule.module
+    )
 
     override fun onCreate() {
         super.onCreate()
-
+        initDi()
         scheduleBackgroundWork()
-        CoroutineScope(Dispatchers.IO).launch { collectNotificationSettings() }
-        initCoil()
+        CoroutineScope(Dispatchers.IO).launch {
+            startLoading()
+            collectNotificationSettings()
+        }
+    }
+
+    private fun initDi() {
+        startKoin {
+            androidContext(this@JetIQApplication)
+            workManagerFactory()
+            modules(modules)
+        }
+    }
+
+    private suspend fun startLoading() {
+        // Injecting in this place to not hold link
+        val subjectRepo: SubjectRepo by inject()
+        subjectRepo.load()
+
+        val messagesRepo: MessagesRepo by inject()
+        messagesRepo.loadMessages()
     }
 
     private suspend fun collectNotificationSettings() {
@@ -124,16 +153,6 @@ class JetIQApplication : Application(), Configuration.Provider {
         flexInterval, timeUnit
     ).setConstraints(constraints)
         .build()
-
-    private fun initCoil() {
-        Coil.setImageLoader(
-            ImageLoader.Builder(this)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .okHttpClient(okHttpClient)
-                .crossfade(true)
-                .build()
-        )
-    }
 
     companion object {
         private const val SESSION_RESTORATION_INTERVAL = 4L
