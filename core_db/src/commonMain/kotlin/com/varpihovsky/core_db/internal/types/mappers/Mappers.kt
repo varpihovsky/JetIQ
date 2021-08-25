@@ -132,6 +132,6 @@ internal fun MarkbookSubjectInternal.toExternal() = MarkbookSubject(
     semester
 )
 
-internal fun MessageToSendDTO.toInternal(id: Int) = SentMessageInternal(id, this.id, type, body)
+internal fun MessageToSendDTO.toInternal(id: Int) = SentMessageInternal(id, this.id, type, body, time)
 
-internal fun SentMessageInternal.toExternal() = MessageToSendDTO(receiverId, type, body)
+internal fun SentMessageInternal.toExternal() = MessageToSendDTO(receiverId, type, body, time)

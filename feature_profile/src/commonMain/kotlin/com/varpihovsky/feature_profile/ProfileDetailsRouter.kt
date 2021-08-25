@@ -17,6 +17,8 @@
 package com.varpihovsky.feature_profile
 
 import com.arkivanov.decompose.RouterState
+import com.arkivanov.decompose.popWhile
+import com.arkivanov.decompose.push
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
@@ -32,8 +34,6 @@ internal class ProfileDetailsRouter(
     val routerState: Value<RouterState<Config, ProfileRootComponent.DetailsChild>> by lazy { router.state }
 
     private var id: Int = stateKeeper.consume<SavedState>(STATE_KEEPER_SUBJECT_ID_KEY)?.id ?: 0
-    private var isInFullScreen: Boolean =
-        stateKeeper.consume<SavedState>(STATE_KEEPER_SUBJECT_ID_KEY)?.isInFullScreen ?: false
 
     private val router = jetIQComponentContext.profileRouter(
         initialConfiguration = { Config.None },
@@ -44,7 +44,7 @@ internal class ProfileDetailsRouter(
     )
 
     init {
-        stateKeeper.register(STATE_KEEPER_SUBJECT_ID_KEY) { SavedState(id, isInFullScreen) }
+        stateKeeper.register(STATE_KEEPER_SUBJECT_ID_KEY) { SavedState(id) }
     }
 
     private fun createChild(
@@ -53,37 +53,30 @@ internal class ProfileDetailsRouter(
     ): ProfileRootComponent.DetailsChild = when (config) {
         Config.None -> ProfileRootComponent.DetailsChild.None
         Config.Success -> ProfileRootComponent.DetailsChild.Success(
-            SuccessSubjectComponent(profileComponentContext, id, isInFullScreen)
+            SuccessSubjectComponent(profileComponentContext, id)
         )
         Config.Markbook -> ProfileRootComponent.DetailsChild.Markbook(
-            MarkbookSubjectComponent(profileComponentContext, id, isInFullScreen)
+            MarkbookSubjectComponent(profileComponentContext, id)
         )
-    }
-
-    fun setFullScreen(isInFullScreen: Boolean) {
-        this.isInFullScreen = isInFullScreen
-
-        when (val child = router.state.value.activeChild.instance) {
-            is ProfileRootComponent.DetailsChild.Success -> child.component.setFullScreen(isInFullScreen)
-            is ProfileRootComponent.DetailsChild.Markbook -> child.component.setFullScreen(isInFullScreen)
-        }
     }
 
     fun navigateToSuccess(id: Int) {
         this.id = id
-        router.navigate { stack -> stack.dropLastWhile { it is Config.None }.plus(Config.Success) }
+        router.popWhile { it !is Config.None }
+        router.push(Config.Success)
     }
 
     fun navigateToMarkbook(id: Int) {
         this.id = id
-        router.navigate { stack -> stack.dropLastWhile { it is Config.None }.plus(Config.Markbook) }
+        router.popWhile { it !is Config.None }
+        router.push(Config.Markbook)
     }
 
     fun clear() {
-        router.navigate { stack -> stack.dropLastWhile { it is Config.None } }
+        router.popWhile { it !is Config.None }
     }
 
-    fun isShown() = router.state.value.activeChild.configuration != Config.None
+    fun isShown() = router.state.value.activeChild.configuration !is Config.None
 
     sealed class Config : Parcelable {
         @Parcelize
@@ -97,7 +90,7 @@ internal class ProfileDetailsRouter(
     }
 
     @Parcelize
-    private class SavedState(val id: Int, val isInFullScreen: Boolean) : Parcelable
+    private class SavedState(val id: Int) : Parcelable
 
     companion object {
         const val STATE_KEEPER_SUBJECT_ID_KEY = "ProfileDetailsRouterSubjectId"

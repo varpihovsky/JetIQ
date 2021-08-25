@@ -22,13 +22,9 @@ kotlin {
                 implementation(project(Modules.repo_data))
                 implementation(project(Modules.core_ui))
                 implementation(project(Modules.core_lifecycle))
-                implementation(project(Modules.feature_auth))
-                implementation(project(Modules.feature_contacts))
-                implementation(project(Modules.feature_messages))
-                implementation(project(Modules.feature_new_message))
-                implementation(project(Modules.feature_profile))
-                implementation(project(Modules.feature_settings))
                 implementation(project(Modules.core_network))
+                implementation(project(Modules.ui_root))
+
 
                 // Needed for dependency injection
                 api(project(Modules.core_db))

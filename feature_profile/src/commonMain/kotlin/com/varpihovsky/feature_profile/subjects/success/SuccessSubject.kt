@@ -29,7 +29,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.varpihovsky.core_lifecycle.composition.LocalCompositionState
+import com.varpihovsky.core_lifecycle.composition.Mode
 import com.varpihovsky.core_ui.compose.entities.TaskList
 import com.varpihovsky.core_ui.compose.widgets.SubjectInfo
 import com.varpihovsky.jetiqApi.data.Subject
@@ -39,9 +40,8 @@ import com.varpihovsky.jetiqApi.data.SubjectDetails
 internal fun SuccessSubjectScreen(successSubjectComponent: SuccessSubjectComponent) {
     val subjectDetails by successSubjectComponent.subjectDetails.collectAsState(initial = null)
     val subject by successSubjectComponent.subject.collectAsState(initial = null)
-    val isInFullScreen by successSubjectComponent.isInFullScreen.subscribeAsState()
 
-    if (isInFullScreen) {
+    if (LocalCompositionState.current.currentMode is Mode.Mobile) {
         successSubjectComponent.appBarController.run {
             show()
             setText(subject?.subject ?: "")
@@ -49,7 +49,7 @@ internal fun SuccessSubjectScreen(successSubjectComponent: SuccessSubjectCompone
         }
     }
 
-    MarkbookSubjectScreen(
+    SuccessSubjectScreen(
         subjectDetailsWithTasks = subjectDetails,
         subject = subject
     )
@@ -57,7 +57,7 @@ internal fun SuccessSubjectScreen(successSubjectComponent: SuccessSubjectCompone
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-private fun MarkbookSubjectScreen(
+private fun SuccessSubjectScreen(
     subjectDetailsWithTasks: SubjectDetails?,
     subject: Subject?
 ) {

@@ -27,9 +27,7 @@ object RepoModule {
         factory { ProfileRepo(get(), get(), get(), get()) }
         factory { ListRepo(get(), get(), get()) }
         factory { SubjectRepo(get(), get(), get(), get(), get(), get(), get()) }
-        factory {
-            UserPreferencesRepo(get())
-        }
+        factory { UserPreferencesRepo(get()) }
 
         single { provideApi {} }
     }

@@ -64,8 +64,9 @@ internal class MessagesMainRouter(
         Config.Contacts -> MessagesRootComponent.MainChild.Contacts(
             ContactsComponent(
                 messagesComponentContext,
-                false,
-                ::onChatSelected.get()
+                isExternalChoosing = false,
+                isUnknownContactOn = !isSquashed,
+                onContactClick = ::onChatSelected.get()
             )
         )
     }
@@ -88,13 +89,7 @@ internal class MessagesMainRouter(
     }
 
     fun navigateToWall() {
-        router.navigate { stack ->
-            if (stack.lastOrNull() is Config.Wall) {
-                return@navigate stack
-            }
-
-            stack.minus(Config.Contacts)
-        }
+        router.navigate { listOf(Config.Wall) }
     }
 
     fun setSquashed(isSquashed: Boolean) {

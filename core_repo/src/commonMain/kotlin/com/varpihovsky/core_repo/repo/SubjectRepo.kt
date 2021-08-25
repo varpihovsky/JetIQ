@@ -18,6 +18,7 @@ package com.varpihovsky.core_repo.repo
 
 import com.varpihovsky.core.Refreshable
 import com.varpihovsky.core.exceptions.ExceptionEventManager
+import com.varpihovsky.core.log.d
 import com.varpihovsky.core.log.e
 import com.varpihovsky.core_db.dao.ConfidentialDAO
 import com.varpihovsky.core_db.dao.ProfileDAO
@@ -29,7 +30,6 @@ import com.varpihovsky.jetiqApi.Api
 import com.varpihovsky.jetiqApi.data.MarkbookSubject
 import com.varpihovsky.jetiqApi.data.Subject
 import com.varpihovsky.jetiqApi.data.SubjectDetails
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -139,13 +139,11 @@ private class SubjectRepoImpl constructor(
     }
 
     override suspend fun load() {
-        if (currentSession() == null) return
-
         isLoading.value = true
 
         try {
             launchAllJobsWithTimeout()
-        } catch (e: TimeoutCancellationException) {
+        } catch (e: Exception) {
             e(e.stackTraceToString())
         }
 
@@ -176,13 +174,15 @@ private class SubjectRepoImpl constructor(
             onSuccess = {
                 if (it.value.isNotEmpty()) {
                     processSubjects(it.value, session)
+                    d(it.value.toString())
                     return@wrapException
                 }
 
                 val confidential = requireConfidential()
                 profileRepo.login(confidential.login, confidential.password)
                 loadSuccessJournal()
-            }
+            },
+            onFailure = { d("ERROR!!!") }
         )
     }
 

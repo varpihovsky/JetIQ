@@ -26,8 +26,8 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.varpihovsky.core.util.JetIQPlatformTools
-import com.varpihovsky.core.util.Platform
+import com.varpihovsky.core_lifecycle.composition.LocalCompositionState
+import com.varpihovsky.core_lifecycle.composition.Mode
 import com.varpihovsky.core_ui.compose.entities.*
 import com.varpihovsky.core_ui.compose.foundation.CenterLayoutItem
 import com.varpihovsky.core_ui.compose.foundation.SwipeRefresh
@@ -50,7 +50,8 @@ import kotlin.math.roundToInt
 const val AVATAR_SIZE = 200
 const val SCROLL_OFFSET = -177
 
-internal fun Profile(profileComponent: ProfileComponent, paddingValues: PaddingValues) {
+@Composable
+internal fun Profile(profileComponent: ProfileComponent) {
     val buttonLocation by profileComponent.expandButtonLocation.collectAsState(initial = ExpandButtonLocation.LOWER)
     val profile = profileComponent.profile.collectAsState().value
 
@@ -63,28 +64,35 @@ internal fun Profile(profileComponent: ProfileComponent, paddingValues: PaddingV
                 isRefreshing = profileComponent.isLoading.value,
                 onRefresh = profileComponent::onRefresh,
                 onSettingsClick = profileComponent::onSettingsClick,
-                paddingValues = paddingValues
+                paddingValues = LocalCompositionState.current.paddingValues
             ),
             appbarState = ProfileAppbarState(
                 onShow = {
                     profileComponent.appBarController.run {
                         show()
-                        when (JetIQPlatformTools.currentPlatform) {
-                            Platform.Android -> {
+                        when (LocalCompositionState.current.currentMode) {
+                            Mode.Mobile -> {
                                 setText(profile.name)
+                                hideIcon()
                                 setActions { SettingsIconButton(onClick = profileComponent::onSettingsClick) }
                             }
-                            Platform.JVM -> {
+                            Mode.Desktop -> {
                                 setText("Профіль")
                                 setIconToDrawer()
+                                setActions { }
                             }
                         }
                     }
                 },
                 onHide = {
-                    when (JetIQPlatformTools.currentPlatform) {
-                        Platform.Android -> profileComponent.appBarController.hide()
-                        Platform.JVM -> Unit
+                    when (LocalCompositionState.current.currentMode) {
+                        Mode.Mobile -> profileComponent.appBarController.hide()
+                        Mode.Desktop -> profileComponent.appBarController.run {
+                            show()
+                            setText("Профіль")
+                            setIconToDrawer()
+                            setActions { }
+                        }
                     }
                 }
             ),
@@ -106,17 +114,19 @@ internal fun Profile(profileState: ProfileState, profileComponent: ProfileCompon
 
     val profileTextShown = profileTextPosition.value < 0
 
-    LaunchedEffect(key1 = profileTextShown, key2 = remember { Any() }) {
-        if (profileTextShown) profileState.appbarState.onShow() else profileState.appbarState.onHide()
-    }
+    if (profileTextShown) profileState.appbarState.onShow() else profileState.appbarState.onHide()
 
     SwipeRefresh(
+        modifier = Modifier.padding(
+            if (LocalCompositionState.current.currentMode is Mode.Desktop) LocalCompositionState.current.paddingValues
+            else PaddingValues()
+        ),
         isRefreshing = profileState.interactionState.isRefreshing,
         onRefresh = profileState.interactionState.onRefresh,
         indicatorPadding = PaddingValues(top = profileState.interactionState.paddingValues.calculateTopPadding())
     ) {
         Box {
-            if (!profileTextShown) {
+            if (!profileTextShown && LocalCompositionState.current.currentMode is Mode.Mobile) {
                 SettingsIconButton(
                     modifier = Modifier
                         .align(Alignment.TopEnd)

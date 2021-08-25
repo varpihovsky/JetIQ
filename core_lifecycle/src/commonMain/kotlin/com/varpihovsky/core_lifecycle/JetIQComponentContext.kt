@@ -11,6 +11,7 @@ interface JetIQComponentContext : ComponentContext {
     val appBarController: AppBarController
     val exceptionController: ExceptionController
     val mainNavigationController: MainNavigationController
+    val drawerController: DrawerController
 }
 
 class DefaultJetIQComponentContext(
@@ -18,7 +19,8 @@ class DefaultJetIQComponentContext(
     override val bottomBarController: BottomBarController,
     override val appBarController: AppBarController,
     override val exceptionController: ExceptionController,
-    override val mainNavigationController: MainNavigationController
+    override val mainNavigationController: MainNavigationController,
+    override val drawerController: DrawerController
 ) : JetIQComponentContext, ComponentContext by componentContext
 
 fun <C : Parcelable, T : Any> ComponentContext.jetIQRouter(
@@ -31,7 +33,8 @@ fun <C : Parcelable, T : Any> ComponentContext.jetIQRouter(
     bottomBarController: BottomBarController,
     appBarController: AppBarController,
     exceptionController: ExceptionController,
-    mainNavigationController: MainNavigationController
+    mainNavigationController: MainNavigationController,
+    drawerController: DrawerController
 ): Router<C, T> =
     router(
         initialConfiguration = initialConfiguration,
@@ -47,7 +50,8 @@ fun <C : Parcelable, T : Any> ComponentContext.jetIQRouter(
                 bottomBarController = bottomBarController,
                 appBarController = appBarController,
                 exceptionController = exceptionController,
-                mainNavigationController = mainNavigationController
+                mainNavigationController = mainNavigationController,
+                drawerController = drawerController
             )
         )
     }
@@ -59,7 +63,8 @@ fun <C : Parcelable, T : Any> JetIQComponentContext.router(
     key: String = "JetIQChildRouter",
     handleBackButton: Boolean = false,
     childFactory: (configuration: C, JetIQComponentContext) -> T,
-    mainNavigationController: MainNavigationController
+    mainNavigationController: MainNavigationController,
+    drawerController: DrawerController
 ): Router<C, T> =
     router(
         initialConfiguration = initialConfiguration,
@@ -75,7 +80,8 @@ fun <C : Parcelable, T : Any> JetIQComponentContext.router(
                 bottomBarController = bottomBarController,
                 appBarController = appBarController,
                 exceptionController = exceptionController,
-                mainNavigationController = mainNavigationController
+                mainNavigationController = mainNavigationController,
+                drawerController = drawerController
             )
         )
     }
@@ -85,5 +91,6 @@ fun JetIQComponentContext.childContext(key: String): JetIQComponentContext = Def
     bottomBarController,
     appBarController,
     exceptionController,
-    mainNavigationController
+    mainNavigationController,
+    drawerController
 )

@@ -20,16 +20,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.varpihovsky.core_lifecycle.composition.LocalCompositionState
+import com.varpihovsky.core_lifecycle.composition.Mode
 import com.varpihovsky.core_ui.compose.widgets.SubjectInfo
 import com.varpihovsky.jetiqApi.data.MarkbookSubject
 
 @Composable
 internal fun MarkbookSubjectScreen(markbookSubjectComponent: MarkbookSubjectComponent) {
     val subject by markbookSubjectComponent.subject.collectAsState(initial = null)
-    val isInFullScreen by markbookSubjectComponent.isInFullScreen.subscribeAsState()
 
-    if (isInFullScreen) {
+    if (LocalCompositionState.current.currentMode is Mode.Mobile) {
         markbookSubjectComponent.appBarController.run {
             show()
             setText(subject?.subjectName ?: "")

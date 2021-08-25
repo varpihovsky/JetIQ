@@ -49,6 +49,7 @@ internal fun <C : Parcelable, T : Any> JetIQComponentContext.profileRouter(
     appBarController = appBarController,
     exceptionController = exceptionController,
     mainNavigationController = mainNavigationController,
+    drawerController = drawerController,
     childFactory = { configuration, jetIQComponentContext ->
         childFactory(
             configuration,

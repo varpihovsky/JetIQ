@@ -5,37 +5,81 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import com.varpihovsky.core.appbar.AppbarManager
-import com.varpihovsky.core.di.getViewModel
-import com.varpihovsky.core.eventBus.EventBus
-import com.varpihovsky.core.exceptions.ExceptionEventManager
-import com.varpihovsky.jetiq.ui.Root
+import androidx.compose.ui.window.rememberWindowState
+import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import com.varpihovsky.core.di.CoreModule
+import com.varpihovsky.core_db.DatabaseModule
+import com.varpihovsky.core_nav.NavigationModule
+import com.varpihovsky.core_repo.RepoModule
+import com.varpihovsky.core_repo.repo.MessagesRepo
+import com.varpihovsky.core_repo.repo.SubjectRepo
+import com.varpihovsky.feature_auth.AuthModule
+import com.varpihovsky.feature_profile.ProfileModule
+import com.varpihovsky.jetiq.di.ApplicationModule
+import com.varpihovsky.ui_root.root.Root
+import com.varpihovsky.ui_root.root.RootComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.context.GlobalContext
+import org.koin.core.context.stopKoin
 
 class Application : KoinComponent {
     private var isRunning by mutableStateOf(true)
 
-    private val appbarManager: AppbarManager by inject()
-    private val exceptionEventManager: ExceptionEventManager by inject()
-    private val eventBus: EventBus by inject()
+    private val lifecycleRegistry = LifecycleRegistry()
+
+    private val subjectRepo: SubjectRepo by inject()
+    private val messagesRepo: MessagesRepo by inject()
+
+    private val modules = listOf(
+        ApplicationModule.module,
+        CoreModule.module,
+        DatabaseModule.module,
+        NavigationModule.module,
+        RepoModule.module,
+        AuthModule.module,
+        ProfileModule.module,
+    )
 
     fun run() {
+        initDi()
+        CoroutineScope(Dispatchers.IO).launch {
+            subjectRepo.load()
+            messagesRepo.loadMessages()
+        }
         initUi()
+        stopKoin()
     }
 
+    private fun initDi() {
+        GlobalContext.startKoin {
+            //printLogger(Level.DEBUG)
+            modules(modules)
+        }
+    }
+
+    @OptIn(ExperimentalDecomposeApi::class)
     private fun initUi() = application {
+        val rootComponent = RootComponent(DefaultComponentContext(lifecycleRegistry))
+        val windowState = rememberWindowState()
+
+        LifecycleController(lifecycleRegistry, windowState)
+
         if (isRunning) {
             Window(
+                state = windowState,
                 onCloseRequest = { isRunning = false }
             ) {
-                Root(
-                    navigationViewModel = getViewModel(),
-                    appbarManager = appbarManager,
-                    exceptionEventManager = exceptionEventManager,
-                    eventBus = eventBus
-                )
+                Root(rootComponent)
             }
+        } else {
+            exitApplication()
         }
     }
 

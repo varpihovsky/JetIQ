@@ -22,7 +22,11 @@ import com.arkivanov.decompose.value.Value
 import com.varpihovsky.core_lifecycle.BottomBarController
 import com.varpihovsky.core_lifecycle.BottomBarEntry
 
-class BottomBarComponent(componentContext: ComponentContext) : ComponentContext by componentContext,
+class BottomBarComponent(
+    componentContext: ComponentContext,
+    private val onProfileNavigate: () -> Unit,
+    private val onMessagesNavigate: () -> Unit
+) : ComponentContext by componentContext,
     BottomBarController {
     private val _isShown = MutableValue(false)
     val isShown: Value<Boolean> = _isShown
@@ -31,6 +35,14 @@ class BottomBarComponent(componentContext: ComponentContext) : ComponentContext 
     val entry: Value<BottomBarEntry> = _entry
 
     override fun select(bottomBarEntry: BottomBarEntry) {
+        set(bottomBarEntry)
+        when (bottomBarEntry) {
+            BottomBarEntry.Profile -> onProfileNavigate()
+            BottomBarEntry.Messages -> onMessagesNavigate()
+        }
+    }
+
+    fun set(bottomBarEntry: BottomBarEntry) {
         _entry.value = bottomBarEntry
     }
 

@@ -30,10 +30,12 @@ import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.varpihovsky.ui_root.drawer.DrawerComponent
 import soup.compose.material.motion.MaterialSharedAxisY
 
+@Composable
 @OptIn(ExperimentalAnimationApi::class)
-fun Appbar(appbarComponent: AppbarComponent) {
+fun Appbar(appbarComponent: AppbarComponent, drawerState: DrawerComponent, isDrawerButtonShown: Boolean) {
     val isShown by appbarComponent.isShown.subscribeAsState()
     val text by appbarComponent.text.subscribeAsState()
     val actions by appbarComponent.actions.subscribeAsState()
@@ -66,10 +68,10 @@ fun Appbar(appbarComponent: AppbarComponent) {
                 }
                 NavigationIconState.Drawer -> @Composable {
                     {
-                        IconButton(
-                            onClick = { }
-                        ) {
-                            Icon(imageVector = Icons.Default.Dashboard, contentDescription = null)
+                        if (isDrawerButtonShown) {
+                            IconButton(onClick = { drawerState.toggle() }) {
+                                Icon(imageVector = Icons.Default.Dashboard, contentDescription = null)
+                            }
                         }
 
                     }

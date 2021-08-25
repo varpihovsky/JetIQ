@@ -52,7 +52,7 @@ class AppbarComponent(componentContext: ComponentContext) : ComponentContext by 
         _navigationIcon.value = NavigationIconState.Empty
     }
 
-    override fun setActions(actions: RowScope.() -> Unit) {
+    override fun setActions(actions: @Composable RowScope.() -> Unit) {
         _actions.value = actions
     }
 

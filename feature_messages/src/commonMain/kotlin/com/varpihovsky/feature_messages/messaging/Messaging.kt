@@ -26,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.varpihovsky.core_ui.compose.entities.MessageItem
 import com.varpihovsky.ui_data.dto.UIMessageDTO
+import kotlin.math.max
 
 const val maxMessageSize = 0.6f
 const val minMessageSize = 0.1f
@@ -43,7 +44,7 @@ internal fun Messaging(modifier: Modifier = Modifier, messagingComponent: Messag
 
 @Composable
 private fun Message(message: MessagingComponent.Message) {
-    val size = calculateMessageSize(message.body)
+    val size = calculateMessageSize(message.body, message.title)
 
     val messageComposable = @Composable {
         MessageItem(UIMessageDTO(0, message.title, message.body, message.timeToString()))
@@ -52,19 +53,26 @@ private fun Message(message: MessagingComponent.Message) {
     Row(modifier = Modifier.fillMaxWidth()) {
         when (message.type) {
             MessagingComponent.Message.Type.Your -> {
-                Box(modifier = Modifier.fillMaxWidth(size))
-                messageComposable()
+                Box(modifier = Modifier.weight(1f - size))
+                Box(modifier = Modifier.weight(size)) {
+                    messageComposable()
+                }
             }
             MessagingComponent.Message.Type.Others -> {
-                messageComposable()
-                Box(modifier = Modifier.fillMaxWidth(size))
+                Box(modifier = Modifier.weight(size)) {
+                    messageComposable()
+                }
+                Box(modifier = Modifier.weight(1f - size))
             }
         }
     }
 }
 
-private fun calculateMessageSize(message: String): Float {
-    var size = message.length.toFloat() / 5000
+private fun calculateMessageSize(message: String, title: String): Float {
+    val title = title.length / 55f
+    val message = message.length / 34f
+
+    var size = max(message, title)
 
     if (size > maxMessageSize) {
         size = maxMessageSize

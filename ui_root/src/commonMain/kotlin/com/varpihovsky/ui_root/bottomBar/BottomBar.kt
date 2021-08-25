@@ -17,8 +17,7 @@
 package com.varpihovsky.ui_root.bottomBar
 
 import androidx.compose.animation.*
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Message
@@ -45,20 +44,25 @@ fun BottomBar(bottomBarComponent: BottomBarComponent) {
         BottomAppBar {
             val currentEntry by bottomBarComponent.entry.subscribeAsState()
 
-            BottomNavigationMenuButton(
-                checked = currentEntry == BottomBarEntry.Messages,
-                onClick = { bottomBarComponent.select(BottomBarEntry.Messages) },
-                painter = rememberVectorPainter(Icons.Default.Message),
-                contentDescription = "Повідомлення",
-                buttonSubscription = "Повідомлення"
-            )
-            BottomNavigationMenuButton(
-                checked = currentEntry == BottomBarEntry.Profile,
-                onClick = { bottomBarComponent.select(BottomBarEntry.Profile) },
-                painter = rememberVectorPainter(Icons.Default.Person),
-                contentDescription = "Профіль",
-                buttonSubscription = "Профіль"
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                BottomNavigationMenuButton(
+                    checked = currentEntry == BottomBarEntry.Messages,
+                    onClick = { bottomBarComponent.select(BottomBarEntry.Messages) },
+                    painter = rememberVectorPainter(Icons.Default.Message),
+                    contentDescription = "Повідомлення",
+                    buttonSubscription = "Повідомлення"
+                )
+                BottomNavigationMenuButton(
+                    checked = currentEntry == BottomBarEntry.Profile,
+                    onClick = { bottomBarComponent.select(BottomBarEntry.Profile) },
+                    painter = rememberVectorPainter(Icons.Default.Person),
+                    contentDescription = "Профіль",
+                    buttonSubscription = "Профіль"
+                )
+            }
         }
     }
 }
@@ -72,7 +76,7 @@ private fun BottomNavigationMenuButton(
     buttonSubscription: String,
     onClick: () -> Unit
 ) {
-    val iconColor by animateColorAsState(targetValue = if (checked) MaterialTheme.colors.primary else MaterialTheme.colors.onBackground)
+    val iconColor by animateColorAsState(targetValue = if (checked) MaterialTheme.colors.secondary else MaterialTheme.colors.onPrimary)
 
     IconButton(
         modifier = Modifier.wrapContentSize(unbounded = true),

@@ -16,6 +16,8 @@
  */
 package com.varpihovsky.feature_messages
 
+import com.arkivanov.decompose.popWhile
+import com.arkivanov.decompose.push
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.varpihovsky.core_lifecycle.JetIQComponentContext
@@ -55,7 +57,8 @@ internal class MessagesDetailsRouter(
 
     fun navigateToChat(chat: UIReceiverDTO) {
         currentContact = chat
-        router.navigate { stack -> stack.dropLastWhile { it is Config.None }.plus(Config.Chat) }
+        router.popWhile { it !is Config.None }
+        router.push(Config.Chat)
     }
 
     fun isShown() = router.state.value.activeChild.configuration !is Config.None

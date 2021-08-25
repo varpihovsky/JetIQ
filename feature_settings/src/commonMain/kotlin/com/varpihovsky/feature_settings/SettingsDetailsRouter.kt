@@ -17,6 +17,7 @@
 package com.varpihovsky.feature_settings
 
 import com.arkivanov.decompose.RouterState
+import com.arkivanov.decompose.popWhile
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
@@ -50,19 +51,19 @@ internal class SettingsDetailsRouter(
     fun navigateToGeneralSettings() {
         router.navigate { stack ->
             if (stack.lastOrNull() is Config.GeneralSettings) return@navigate stack
-            stack.dropLastWhile { it is Config.None }.plus(Config.GeneralSettings)
+            stack.dropLastWhile { it !is Config.None }.plus(Config.GeneralSettings)
         }
     }
 
     fun navigateToAboutSettings() {
         router.navigate { stack ->
             if (stack.lastOrNull() is Config.AboutSettings) return@navigate stack
-            stack.dropLastWhile { it is Config.None }.plus(Config.AboutSettings)
+            stack.dropLastWhile { it !is Config.None }.plus(Config.AboutSettings)
         }
     }
 
     fun hide() {
-        router.navigate { stack -> stack.dropLastWhile { it is Config.None } }
+        router.popWhile { it !is Config.None }
     }
 
     fun isShown() = when (router.state.value.activeChild.configuration) {

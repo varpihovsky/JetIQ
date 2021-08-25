@@ -42,13 +42,13 @@ internal fun ChosenContacts(modifier: Modifier = Modifier, chosenContactsCompone
                 onRemove = chosenContactsComponent::onRemoveContactClick
             )
         }
-
-        IconButton(
-            onClick = chosenContactsComponent::onAddContactClick
-        ) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = null)
+        item {
+            IconButton(
+                onClick = chosenContactsComponent::onAddContactClick
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = null)
+            }
         }
-
     }
 }
 

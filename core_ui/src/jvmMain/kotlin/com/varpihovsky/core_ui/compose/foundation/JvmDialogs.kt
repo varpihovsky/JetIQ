@@ -16,11 +16,11 @@
  */
 package com.varpihovsky.core_ui.compose.foundation
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -32,28 +32,31 @@ actual fun ErrorDialog(
     message: String,
     onDismiss: () -> Unit
 ) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        buttons = {
-            CenterLayoutItem {
-                BasicTextButton(
-                    modifier = Modifier.padding(10.dp),
-                    onClick = onDismiss,
-                    text = "Відхилити"
-                )
+    Box(contentAlignment = Alignment.Center) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            dialogProvider = UndecoratedWindowAlertDialogProvider,
+            buttons = {
+                CenterLayoutItem {
+                    BasicTextButton(
+                        modifier = Modifier.padding(10.dp),
+                        onClick = onDismiss,
+                        text = "Відхилити"
+                    )
+                }
+            },
+            title = {
+                CenterLayoutItem {
+                    Text(modifier = Modifier.padding(10.dp), text = "Помилка")
+                }
+            },
+            text = {
+                CenterLayoutItem {
+                    Text(modifier = Modifier.padding(10.dp), text = message)
+                }
             }
-        },
-        title = {
-            CenterLayoutItem {
-                Text(modifier = Modifier.padding(10.dp), text = "Помилка")
-            }
-        },
-        text = {
-            CenterLayoutItem {
-                Text(modifier = Modifier.padding(10.dp), text = message)
-            }
-        }
-    )
+        )
+    }
 }
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
@@ -68,6 +71,7 @@ actual fun AlertDialogActual(
 ) {
     AlertDialog(
         modifier = modifier,
+        dialogProvider = PopupAlertDialogProvider,
         onDismissRequest = onDismissRequest,
         confirmButton = confirmButton,
         dismissButton = dismissButton,

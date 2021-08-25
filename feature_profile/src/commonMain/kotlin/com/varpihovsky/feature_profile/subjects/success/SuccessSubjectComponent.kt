@@ -16,8 +16,6 @@
  */
 package com.varpihovsky.feature_profile.subjects.success
 
-import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
 import com.varpihovsky.core_repo.repo.SubjectRepo
 import com.varpihovsky.feature_profile.ProfileComponentContext
 import com.varpihovsky.jetiqApi.data.Subject
@@ -29,15 +27,7 @@ import org.koin.core.component.get
 internal class SuccessSubjectComponent(
     profileComponentContext: ProfileComponentContext,
     subjectId: Int,
-    isInFullScreen: Boolean
 ) : ProfileComponentContext by profileComponentContext, KoinComponent {
     val subjectDetails: Flow<SubjectDetails?> = get<SubjectRepo>().getDetailsById(subjectId)
     val subject: Flow<Subject?> = get<SubjectRepo>().getSubjectById(subjectId)
-    val isInFullScreen: Value<Boolean> by lazy { _isInFullScreen }
-
-    private val _isInFullScreen = MutableValue(isInFullScreen)
-
-    fun setFullScreen(isInFullScreen: Boolean) {
-        _isInFullScreen.value = isInFullScreen
-    }
 }

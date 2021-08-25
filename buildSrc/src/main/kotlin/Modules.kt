@@ -29,6 +29,7 @@ object Modules {
     const val core_test = ":core_test"
     const val repo_data = ":repo_data"
     const val ui_data = ":ui_data"
+    const val ui_root = ":ui_root"
     const val feature_auth = ":feature_auth"
     const val feature_contacts = ":feature_contacts"
     const val feature_messages = ":feature_messages"

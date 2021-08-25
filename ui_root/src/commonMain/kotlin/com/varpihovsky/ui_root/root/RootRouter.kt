@@ -31,6 +31,7 @@ class RootRouter(
     bottomBarController: BottomBarController,
     appBarController: AppBarController,
     exceptionController: ExceptionController,
+    drawerController: DrawerController,
     private val initial: Config
 ) : MainNavigationController {
     val state by lazy { router.state }
@@ -39,13 +40,14 @@ class RootRouter(
         initialConfiguration = { initial },
         key = "RootRouter",
         childFactory = ::createChild,
-        handleBackButton = true,
         bottomBarController = bottomBarController,
         appBarController = appBarController,
         configurationClass = Config::class,
         exceptionController = exceptionController,
-        mainNavigationController = this
+        mainNavigationController = this,
+        drawerController = drawerController
     )
+    private var navigationCallback: ((Config) -> Unit)? = null
 
     private fun createChild(config: Config, componentContext: JetIQComponentContext) =
         when (config) {
@@ -57,14 +59,36 @@ class RootRouter(
 
     override fun navigateToProfile() {
         router.navigate { listOf(Config.Profile) }
+        navigationCallback?.invoke(Config.Profile)
     }
 
     override fun navigateToSettings() {
         router.push(Config.Settings)
+        navigationCallback?.invoke(Config.Settings)
     }
 
     override fun navigateToAuth() {
         router.navigate { listOf(Config.Auth) }
+        navigationCallback?.invoke(Config.Auth)
+    }
+
+    override fun navigateToMessages() {
+        router.push(Config.Messages)
+        navigationCallback?.invoke(Config.Messages)
+    }
+
+    fun setNavigationCallback(callback: (Config) -> Unit) {
+        navigationCallback = callback
+    }
+
+    fun onBack(): Boolean {
+        router.navigate { stack ->
+            val s = if (stack.size > 1) stack.dropLast(1) else stack
+            s.lastOrNull()?.let { navigationCallback?.invoke(it) }
+            s
+        }
+        //Needed for backPressDispatcher
+        return true
     }
 
     sealed class Config : Parcelable {

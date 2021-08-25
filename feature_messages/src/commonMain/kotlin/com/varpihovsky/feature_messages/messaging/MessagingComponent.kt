@@ -16,6 +16,7 @@
  */
 package com.varpihovsky.feature_messages.messaging
 
+import com.varpihovsky.core_repo.repo.ListRepo
 import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.core_repo.repo.ProfileRepo
 import com.varpihovsky.feature_messages.MessagesComponentContext
@@ -37,26 +38,37 @@ internal class MessagingComponent(
 ) : MessagesComponentContext by messagesComponentContext, KoinComponent {
 
     val state: Flow<List<Message>> by lazy {
-        messagesRepo.getMessages().map { receivedMessages ->
-            receivedMessages
-                .filter { it.idFrom == receiverId.toString() && it.isTeacher == receiverType.toString() }
-                .map { it.toUIDTO() }
-                .map { Message(it.sender, it.message, Message.Type.Others, it.time.toLong()) }
-        }.combine(
-            messagesRepo.getSentMessages(receiverId, receiverType).map {
-                it.map {
-                    Message(profileRepo.getProfileDTO()?.fullName ?: "", it.body, Message.Type.Your, it.time)
-                }
-            }) { receivedMessages, sentMessages ->
+        if (receiverId != -1) {
+            messagesRepo.getMessages().map { receivedMessages ->
+                receivedMessages
+                    .filter { it.idFrom == receiverId.toString() && it.isTeacher == receiverType.toString() }
+                    .map { it.toUIDTO() }
+                    .map { Message(it.sender, it.message, Message.Type.Others, it.time.toLong()) }
+            }.combine(
+                messagesRepo.getSentMessages(receiverId, receiverType).map {
+                    it.map {
+                        Message(profileRepo.getProfileDTO()?.fullName ?: "", it.body, Message.Type.Your, it.time)
+                    }
+                }) { receivedMessages, sentMessages ->
 
-            val all = receivedMessages + sentMessages
+                val all = receivedMessages + sentMessages
 
-            all.sortedBy { it.time }
+                all.sortedByDescending { it.time }
+            }
+        } else {
+            messagesRepo.getMessages().combine(listRepo.getContacts()) { receivedMessages, contacts ->
+                receivedMessages.filter { message -> !contacts.any { it.id.toString() == message.id && it.type == message.isTeacher } }
+                    .map { /* We still need time info in the next stage of mapping */Pair(it.toUIDTO(), it) }
+                    .map {
+                        Message(it.first.sender, it.first.message, Message.Type.Others, it.second.time.toLong())
+                    }.sortedByDescending { it.time }
+            }
         }
     }
 
     private val messagesRepo: MessagesRepo by inject()
     private val profileRepo: ProfileRepo by inject()
+    private val listRepo: ListRepo by inject()
 
 
     data class Message(val title: String, val body: String, val type: Type, val time: Long) {

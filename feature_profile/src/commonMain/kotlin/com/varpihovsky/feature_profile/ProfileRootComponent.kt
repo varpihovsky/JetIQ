@@ -19,6 +19,7 @@ package com.varpihovsky.feature_profile
 import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import com.varpihovsky.core.log.i
 import com.varpihovsky.core_lifecycle.JetIQComponentContext
 import com.varpihovsky.core_lifecycle.childContext
 import com.varpihovsky.feature_profile.profile.ProfileComponent
@@ -39,11 +40,13 @@ class ProfileRootComponent(
 
     init {
         backPressedDispatcher.register {
+            i(detailsRouter.isShown().toString())
             if (!detailsRouter.isShown()) {
-                return@register false
+                false
+            } else {
+                detailsRouter.clear()
+                true
             }
-            detailsRouter.clear()
-            false
         }
     }
 
@@ -61,7 +64,6 @@ class ProfileRootComponent(
 
     internal fun setMultiPane(isMultiPane: Boolean) {
         _isMultiPane.value = isMultiPane
-        detailsRouter.setFullScreen(isMultiPane)
     }
 
     internal sealed class DetailsChild {

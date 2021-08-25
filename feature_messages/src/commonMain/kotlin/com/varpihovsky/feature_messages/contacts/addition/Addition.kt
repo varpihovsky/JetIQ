@@ -17,10 +17,10 @@
 package com.varpihovsky.feature_messages.contacts.addition
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -29,6 +29,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.varpihovsky.core.util.Selectable
@@ -107,8 +108,8 @@ private fun AdditionDialog(
     AlertDialog(
         modifier = Modifier
             .wrapContentSize()
-            .animateContentSize()
-            .padding(20.dp),
+            .sizeIn(maxHeight = 600.dp),
+//            .padding(20.dp),
         onDismissRequest = onDismissRequest,
         confirmButton = {
             BasicTextButton(
@@ -124,7 +125,12 @@ private fun AdditionDialog(
         },
         title = { Text(modifier = Modifier.padding(10.dp), text = "Новий контакт") },
         text = {
-            Column {
+            // Due to bug in Alert Dialog, we can't to put in LazyColumn, while Column with verticalScroll Modifier
+            // breaks layout size, so here we set always-on height and change offset after scrolling.
+            // It doesn't look as it have to, but at least it works.
+            val scrollState = rememberScrollState()
+            val offset = LocalDensity.current.density * scrollState.value
+            Column(modifier = Modifier.height(600.dp).offset(y = -offset.dp)) {
                 HorizontalSubscribedExposedDropDownList(
                     modifier = Modifier.padding(bottom = 7.dp),
                     text = "Тип: ",
@@ -170,17 +176,29 @@ private fun AdditionDialog(
                         }
                     }
                 }
-
-                LazyColumn(modifier = Modifier.heightIn(min = 0.dp, max = 300.dp)) {
-                    items(count = contacts.size, key = { contacts[it].dto }) {
+//                LazyColumn causes exception in alert dialog on jvm.
+//                LazyColumn {
+//                    items(count = contacts.size, key = { contacts[it].dto }) {
+//                        Contact(
+//                            contact = contacts[it],
+//                            onLongClick = { },
+//                            onClick = onContactSelected
+//                        )
+//                    }
+//                }
+                Column(
+                    modifier = Modifier.verticalScroll(scrollState)
+                ) {
+                    contacts.forEach {
                         Contact(
-                            contact = contacts[it],
+                            contact = it,
                             onLongClick = { },
                             onClick = onContactSelected
                         )
                     }
                 }
             }
+
         }
     )
 }

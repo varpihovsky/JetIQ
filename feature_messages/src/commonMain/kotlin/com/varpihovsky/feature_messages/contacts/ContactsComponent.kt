@@ -28,6 +28,7 @@ import com.varpihovsky.core_lifecycle.childContext
 import com.varpihovsky.core_repo.repo.ListRepo
 import com.varpihovsky.feature_messages.contacts.addition.ContactAdditionComponent
 import com.varpihovsky.repo_data.ContactDTO
+import com.varpihovsky.ui_data.dto.ReceiverType
 import com.varpihovsky.ui_data.dto.UIReceiverDTO
 import com.varpihovsky.ui_data.mappers.toUIDTO
 import kotlinx.coroutines.CoroutineScope
@@ -40,6 +41,7 @@ import org.koin.core.component.inject
 class ContactsComponent(
     jetIQComponentContext: JetIQComponentContext,
     isExternalChoosing: Boolean,
+    isUnknownContactOn: Boolean,
     // When isn't choosing
     private val onContactClick: (UIReceiverDTO) -> Unit
 ) : JetIQComponentContext by jetIQComponentContext, KoinComponent, Lifecycle.Callbacks {
@@ -52,9 +54,7 @@ class ContactsComponent(
     val contacts: Flow<List<Selectable<UIReceiverDTO>>>
         get() = selectionEngine.state
             .combine(searchFieldValue) { contacts, field ->
-                contacts
-                    .filter { it.dto.text.lowercase().contains(field) }
-                    .sortedBy { it.dto.text }
+                contacts.filter { it.dto.text.lowercase().contains(field) }
             }
 
     private val listRepo: ListRepo by inject()
@@ -63,7 +63,14 @@ class ContactsComponent(
     private val scope = CoroutineScope(Dispatchers.Main)
 
     private val selectionEngine = SelectionEngine(
-        listRepo.getContacts().map { it.map(ContactDTO::toUIDTO) },
+        listRepo.getContacts().map {
+            if (isUnknownContactOn) {
+                listOf(UIReceiverDTO(-1, "Невідомий Контакт", ReceiverType.STUDENT)) +
+                        it.map(ContactDTO::toUIDTO).sortedBy { it.text }
+            } else {
+                it.map(ContactDTO::toUIDTO).sortedBy { it.text }
+            }
+        },
         scope,
         dispatchers.IO
     )

@@ -16,8 +16,6 @@
  */
 package com.varpihovsky.feature_profile.subjects.markbook
 
-import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
 import com.varpihovsky.core_repo.repo.SubjectRepo
 import com.varpihovsky.feature_profile.ProfileComponentContext
 import com.varpihovsky.jetiqApi.data.MarkbookSubject
@@ -28,14 +26,6 @@ import org.koin.core.component.get
 internal class MarkbookSubjectComponent(
     profileComponentContext: ProfileComponentContext,
     markbookId: Int,
-    isInFullScreen: Boolean
 ) : ProfileComponentContext by profileComponentContext, KoinComponent {
     val subject: Flow<MarkbookSubject?> = get<SubjectRepo>().getMarkbookById(markbookId)
-    val isInFullScreen: Value<Boolean> by lazy { _isInFullScreen }
-
-    private val _isInFullScreen = MutableValue(isInFullScreen)
-
-    fun setFullScreen(isInFullScreen: Boolean) {
-        _isInFullScreen.value = isInFullScreen
-    }
 }

@@ -6,4 +6,6 @@ interface MainNavigationController {
     fun navigateToSettings()
 
     fun navigateToAuth()
+
+    fun navigateToMessages()
 }

@@ -29,6 +29,7 @@ import com.varpihovsky.core_repo.repo.SubjectRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.qualifier
@@ -88,8 +89,10 @@ class AuthComponent(
 
     private suspend fun authorize() {
         if (profileRepo.login(_login.value, _password.value)) {
-            scope.launch(dispatchers.IO) { subjectRepo.load() }
-            scope.launch(dispatchers.IO) { messagesRepo.loadMessages() }
+            withContext(dispatchers.IO) {
+                subjectRepo.load()
+                messagesRepo.loadMessages()
+            }
             mainNavigationController.navigateToProfile()
         }
     }

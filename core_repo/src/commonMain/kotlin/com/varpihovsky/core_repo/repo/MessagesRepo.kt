@@ -25,7 +25,6 @@ import com.varpihovsky.core_db.dao.ProfileDAO
 import com.varpihovsky.jetiqApi.Api
 import com.varpihovsky.jetiqApi.data.Message
 import com.varpihovsky.repo_data.MessageToSendDTO
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withTimeout
@@ -102,13 +101,12 @@ private class MessagesRepoImpl constructor(
     private val _isLoading = mutableStateOf(false)
 
     override suspend fun loadMessages() {
-        if (currentSession() == null) return
 
         _isLoading.value = true
 
         try {
             launchWithTimeout()
-        } catch (e: TimeoutCancellationException) {
+        } catch (e: Exception) {
             e(e.stackTraceToString())
         }
 

@@ -23,7 +23,7 @@ kotlin {
                 implementation(project(Modules.core_lifecycle))
                 implementation(project(Modules.ui_data))
                 implementation(project(Modules.repo_data))
-                implementation(project(Modules.core_network))
+                api(project(Modules.core_network))
 
                 implementation(CommonDependencies.koin_core)
 

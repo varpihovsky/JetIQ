@@ -21,6 +21,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -187,9 +189,11 @@ fun ExposedDropDownList(
             expanded = expanded,
             onDismissRequest = { onExpandedChange(false) }
         ) {
-            suggestions.forEach { label ->
-                DropDownMenuItem(onClick = { onSelect(label) }) {
-                    Text(text = label.text)
+            Column(modifier = Modifier.heightIn(max = 150.dp).verticalScroll(rememberScrollState())) {
+                suggestions.forEach { label ->
+                    DropDownMenuItem(onClick = { onSelect(label) }) {
+                        Text(text = label.text)
+                    }
                 }
             }
         }
