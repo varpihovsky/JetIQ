@@ -22,6 +22,7 @@ import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.varpihovsky.core_lifecycle.JetIQComponentContext
 import com.varpihovsky.feature_messages.chat.ChatComponent
+import com.varpihovsky.feature_messages.groupMessage.GroupMessageComponent
 import com.varpihovsky.ui_data.dto.UIReceiverDTO
 
 internal class MessagesDetailsRouter(
@@ -51,14 +52,19 @@ internal class MessagesDetailsRouter(
                 checkNotNull(currentContact)
             )
         )
-        Config.GroupMessage -> TODO()
-        Config.Contacts -> TODO()
+        Config.GroupMessage -> MessagesRootComponent.DetailsChild.GroupMessage(
+            GroupMessageComponent(messagesComponentContext)
+        )
     }
 
     fun navigateToChat(chat: UIReceiverDTO) {
         currentContact = chat
         router.popWhile { it !is Config.None }
         router.push(Config.Chat)
+    }
+
+    fun navigateToGroupMessage() {
+        router.navigate { stack -> stack.dropLastWhile { it !is Config.None }.plus(Config.GroupMessage) }
     }
 
     fun isShown() = router.state.value.activeChild.configuration !is Config.None
@@ -72,8 +78,5 @@ internal class MessagesDetailsRouter(
 
         @Parcelize
         object GroupMessage : Config()
-
-        @Parcelize
-        object Contacts : Config()
     }
 }
