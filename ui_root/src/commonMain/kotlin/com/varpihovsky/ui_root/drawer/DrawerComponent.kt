@@ -31,7 +31,7 @@ class DrawerComponent(
 
     private var time = Clock.System.now().epochSeconds
 
-    override fun setNavigation(content: @Composable () -> Unit, text: String) {
+    override fun setNavigation(text: String, content: @Composable () -> Unit) {
         _temporalNavigationText.value = text
         _temporalNavigationContent.value = content
     }
