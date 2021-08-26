@@ -104,7 +104,7 @@ internal class MessagesMainRouter(
     }
 
     fun hide() {
-        router.navigate { stack -> stack.dropLastWhile { it is Config.None } }
+        router.navigate { listOf(Config.None) }
     }
 
     private fun isShown() = router.state.value.activeChild.configuration !is Config.None
