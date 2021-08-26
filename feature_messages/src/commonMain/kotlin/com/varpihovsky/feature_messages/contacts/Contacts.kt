@@ -18,6 +18,8 @@ package com.varpihovsky.feature_messages.contacts
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
@@ -27,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.varpihovsky.core.util.Selectable
 import com.varpihovsky.core.util.selectedOnly
@@ -37,8 +40,10 @@ import com.varpihovsky.ui_data.dto.UIReceiverDTO
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun ContactsScreen(
+    modifier: Modifier = Modifier,
     contactsComponent: ContactsComponent,
-    isMultiPane: Boolean
+    isMultiPane: Boolean,
+    scrollState: ScrollState = rememberScrollState()
 ) {
     val contacts by contactsComponent.contacts.collectAsState(listOf())
     val isChoosing by contactsComponent.isChoosing.subscribeAsState()
@@ -64,11 +69,13 @@ fun ContactsScreen(
     }
 
     ContactList(
+        modifier = modifier,
         searchFieldValue = searchFieldValue,
         onSearchFieldValueChange = contactsComponent::onSearchFieldValueChange,
         contacts = contacts,
         onLongClick = contactsComponent::onContactLongClick,
-        onClick = contactsComponent::onContactClick
+        onClick = contactsComponent::onContactClick,
+        scrollState = scrollState
     )
 }
 
