@@ -16,32 +16,57 @@
  */
 package com.varpihovsky.feature_messages
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Message
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.decompose.value.Value
+import com.varpihovsky.core_lifecycle.composition.LocalCompositionState
+import com.varpihovsky.core_lifecycle.composition.Mode
+import com.varpihovsky.core_ui.compose.widgets.DrawerItem
 import com.varpihovsky.feature_messages.chat.Chat
 import com.varpihovsky.feature_messages.contacts.ContactsScreen
-import com.varpihovsky.feature_messages.messaging.GroupMessage
+import com.varpihovsky.feature_messages.contacts.addition.AdditionDialog
+import com.varpihovsky.feature_messages.groupMessage.GroupMessage
 import com.varpihovsky.feature_messages.wall.MessageWall
 
 private const val MULTIPANE_WIDTH_THRESHOLD = 800
-private const val MAIN_PANE_WEIGH = 0.30f
-private const val DETAILS_PANE_WEIGHT = 0.70f
-private const val SINGLE_PANE_WEIGHT = 1f
 
 @Composable
 fun MessagesScreen(messagesRootComponent: MessagesRootComponent) {
     val isMultiPane by messagesRootComponent.isMultiPane.subscribeAsState()
+
+    if (LocalCompositionState.current.currentMode is Mode.Desktop) {
+        messagesRootComponent.drawerController.setNavigation(text = "Повідомлення") {
+            DrawerItem(
+                text = "Новий контакт...",
+                icon = rememberVectorPainter(Icons.Default.Add),
+                onClick = messagesRootComponent::newContactDialog
+            )
+            DrawerItem(
+                text = "Групове повідомлення...",
+                icon = rememberVectorPainter(Icons.Default.Message),
+                onClick = messagesRootComponent::navigateToGroupMessage
+            )
+        }
+    }
+
+    messagesRootComponent.contactAdditionComponent.value?.let {
+        AdditionDialog(
+            contactAdditionComponent = it,
+            onDismissRequest = messagesRootComponent::onDismissRequest,
+            onConfirmButtonClick = messagesRootComponent::onConfirmButtonClick
+        )
+    }
 
     BoxWithConstraints {
         val isMultiPaneRequired = maxWidth >= MULTIPANE_WIDTH_THRESHOLD.dp
@@ -50,8 +75,19 @@ fun MessagesScreen(messagesRootComponent: MessagesRootComponent) {
             messagesRootComponent.setMultiPane(isMultiPaneRequired)
         }
 
+        val currentWidth = maxWidth
+        val mainPaneWidth = when {
+            currentWidth > 800.dp && currentWidth < 1000.dp -> 250.dp
+            currentWidth > 1000.dp && currentWidth < 1400.dp -> 330.dp
+            else -> 430.dp
+        }
+
+        val mainPaneModifier = if (isMultiPane) Modifier.width(mainPaneWidth) else Modifier.fillMaxSize()
+        val detailsPaneModifier =
+            if (isMultiPane) Modifier.width(currentWidth - mainPaneWidth) else Modifier.fillMaxSize()
+
         Row(modifier = Modifier.fillMaxSize()) {
-            Box(modifier = Modifier.weight(if (isMultiPane) MAIN_PANE_WEIGH else SINGLE_PANE_WEIGHT)) {
+            Box(modifier = mainPaneModifier) {
                 MainPane(
                     routerState = messagesRootComponent.mainRouterState,
                     isMultiPane = isMultiPane
@@ -59,16 +95,16 @@ fun MessagesScreen(messagesRootComponent: MessagesRootComponent) {
             }
 
             if (isMultiPane) {
-                Box(modifier = Modifier.weight(DETAILS_PANE_WEIGHT))
+                Box(modifier = detailsPaneModifier)
             }
         }
 
         Row(modifier = Modifier.fillMaxSize()) {
             if (isMultiPane) {
-                Box(modifier = Modifier.weight(MAIN_PANE_WEIGH))
+                Box(modifier = mainPaneModifier)
             }
 
-            Box(modifier = Modifier.weight(if (isMultiPane) DETAILS_PANE_WEIGHT else SINGLE_PANE_WEIGHT)) {
+            Box(modifier = detailsPaneModifier) {
                 DetailsPane(
                     routerState = messagesRootComponent.detailsRouterState,
                     isMultiPane = isMultiPane
@@ -87,7 +123,10 @@ private fun MainPane(routerState: Value<RouterState<*, MessagesRootComponent.Mai
         when (val child = it.instance) {
             is MessagesRootComponent.MainChild.None -> Box {}
             is MessagesRootComponent.MainChild.Wall -> MessageWall(child.component)
-            is MessagesRootComponent.MainChild.Contacts -> ContactsScreen(child.component, isMultiPane)
+            is MessagesRootComponent.MainChild.Contacts -> ContactsScreen(
+                contactsComponent = child.component,
+                isMultiPane = isMultiPane
+            )
         }
     }
 }
@@ -101,8 +140,6 @@ private fun DetailsPane(routerState: Value<RouterState<*, MessagesRootComponent.
             is MessagesRootComponent.DetailsChild.None -> Box {}
             is MessagesRootComponent.DetailsChild.Chat -> Chat(child.component)
             is MessagesRootComponent.DetailsChild.GroupMessage -> GroupMessage(child.component)
-            is MessagesRootComponent.DetailsChild.Contacts -> ContactsScreen(child.component, isMultiPane)
         }
-
     }
 }
