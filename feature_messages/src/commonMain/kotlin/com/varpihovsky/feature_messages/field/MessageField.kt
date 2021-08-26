@@ -32,23 +32,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.varpihovsky.core_ui.compose.widgets.Avatar
-import com.varpihovsky.core_ui.compose.widgets.InfoCard
 import com.varpihovsky.ui_data.dto.ReceiverType
 import com.varpihovsky.ui_data.dto.UIReceiverDTO
 import com.varpihovsky.ui_data.dto.getPhotoURL
 
 @Composable
 internal fun MessageField(modifier: Modifier = Modifier, messageFieldComponent: MessageFieldComponent) {
-//    messageFieldComponent.appBarController.run {
-//        show()
-//        setText("Нове повідомлення...")
-//        setIconToBack()
-//    }
-
     val messageFieldValue by messageFieldComponent.messageFieldValue.subscribeAsState()
 
     MessageField(
-        modifier = Modifier,
+        modifier = modifier,
         messageFieldValue = messageFieldValue,
         onMessageValueChange = messageFieldComponent::onMessageValueChange,
         onSendClick = messageFieldComponent::onSendClick
@@ -62,17 +55,13 @@ private fun MessageField(
     messageFieldValue: String,
     onSendClick: () -> Unit
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
-        InfoCard {
-            Column {
-                MessageField(
-                    modifier = Modifier.fillMaxSize().padding(5.dp),
-                    fieldValue = messageFieldValue,
-                    onValueChange = onMessageValueChange,
-                    onSendClick = onSendClick
-                )
-            }
-        }
+    Card {
+        MessageField(
+            modifier = modifier,
+            fieldValue = messageFieldValue,
+            onValueChange = onMessageValueChange,
+            onSendClick = onSendClick
+        )
     }
 }
 
@@ -158,20 +147,23 @@ fun Receiver(
 }
 
 @Composable
-fun MessageField(
+private fun MessageField(
     modifier: Modifier = Modifier,
     fieldValue: String,
     onValueChange: (String) -> Unit,
     onSendClick: () -> Unit
 ) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        TextField(modifier = Modifier.weight(4f), value = fieldValue, onValueChange = onValueChange)
-        IconButton(modifier = Modifier.weight(1f), onClick = onSendClick) {
-            Icon(imageVector = Icons.Default.Send, contentDescription = "Відправити")
+    BoxWithConstraints {
+        val maxWidth = this.maxWidth
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TextField(modifier = Modifier.width(maxWidth - 50.dp), value = fieldValue, onValueChange = onValueChange)
+            IconButton(onClick = onSendClick) {
+                Icon(imageVector = Icons.Default.Send, contentDescription = "Відправити")
+            }
         }
     }
 }
