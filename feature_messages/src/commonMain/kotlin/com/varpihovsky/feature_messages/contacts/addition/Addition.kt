@@ -43,9 +43,7 @@ import com.varpihovsky.ui_data.dto.DropDownItem
 import com.varpihovsky.ui_data.dto.UIReceiverDTO
 import soup.compose.material.motion.MaterialSharedAxisX
 
-@ExperimentalAnimationApi
-@ExperimentalComposeUiApi
-@ExperimentalFoundationApi
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun AdditionDialog(
     contactAdditionComponent: ContactAdditionComponent,
