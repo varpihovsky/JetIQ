@@ -42,7 +42,7 @@ internal class MessagesComponent(
     private val scope = CoroutineScope(Dispatchers.Main)
 
     fun onNewMessageButtonClick() {
-        navigationController.navigateToNewMessage()
+        navigationController.navigateToGroupMessage()
     }
 
     fun onRefresh() {

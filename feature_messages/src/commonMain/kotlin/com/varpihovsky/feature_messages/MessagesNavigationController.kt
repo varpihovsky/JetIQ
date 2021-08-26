@@ -19,5 +19,5 @@ package com.varpihovsky.feature_messages
 interface MessagesNavigationController {
     fun navigateToContacts()
 
-    fun navigateToNewMessage()
+    fun navigateToGroupMessage()
 }
