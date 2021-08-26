@@ -42,8 +42,8 @@ internal class MessagingComponent(
             messagesRepo.getMessages().map { receivedMessages ->
                 receivedMessages
                     .filter { it.idFrom == receiverId.toString() && it.isTeacher == receiverType.toString() }
-                    .map { it.toUIDTO() }
-                    .map { Message(it.sender, it.message, Message.Type.Others, it.time.toLong()) }
+                    .map { Pair(it.toUIDTO(), it) }
+                    .map { Message(it.first.sender, it.first.message, Message.Type.Others, it.second.time.toLong()) }
             }.combine(
                 messagesRepo.getSentMessages(receiverId, receiverType).map {
                     it.map {
@@ -57,11 +57,11 @@ internal class MessagingComponent(
             }
         } else {
             messagesRepo.getMessages().combine(listRepo.getContacts()) { receivedMessages, contacts ->
-                receivedMessages.filter { message -> !contacts.any { it.id.toString() == message.id && it.type == message.isTeacher } }
-                    .map { /* We still need time info in the next stage of mapping */Pair(it.toUIDTO(), it) }
-                    .map {
-                        Message(it.first.sender, it.first.message, Message.Type.Others, it.second.time.toLong())
-                    }.sortedByDescending { it.time }
+                receivedMessages
+                    .filter { message -> !contacts.any { it.id.toString() == message.id && it.type == message.isTeacher } }
+                    .map { Pair(it.toUIDTO(), it) }
+                    .map { Message(it.first.sender, it.first.message, Message.Type.Others, it.second.time.toLong()) }
+                    .sortedByDescending { it.time }
             }
         }
     }
