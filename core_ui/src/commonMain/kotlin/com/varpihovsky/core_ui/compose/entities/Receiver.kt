@@ -1,12 +1,8 @@
 package com.varpihovsky.core_ui.compose.entities
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
@@ -31,32 +27,30 @@ import com.varpihovsky.ui_data.dto.getPhotoURL
 @ExperimentalFoundationApi
 @Composable
 fun ContactList(
+    modifier: Modifier,
     searchFieldValue: String,
     onSearchFieldValueChange: (String) -> Unit,
     contacts: List<Selectable<UIReceiverDTO>>,
     onLongClick: (Selectable<UIReceiverDTO>) -> Unit,
-    onClick: (Selectable<UIReceiverDTO>) -> Unit
+    onClick: (Selectable<UIReceiverDTO>) -> Unit,
+    scrollState: ScrollState
 ) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        stickyHeader(null) {
-            SearchBar(
-                searchFieldValue = searchFieldValue,
-                onSearchFieldValueChange = onSearchFieldValueChange
-            )
-        }
-        items(count = contacts.size) {
-            if (it != 0) {
+    Column(modifier = modifier.fillMaxSize().verticalScroll(scrollState)) {
+        SearchBar(
+            searchFieldValue = searchFieldValue,
+            onSearchFieldValueChange = onSearchFieldValueChange
+        )
+        contacts.forEachIndexed { index, selectable ->
+            if (index != 0) {
                 Divider(Modifier.fillMaxWidth())
             }
             Contact(
                 modifier = Modifier.padding(4.dp),
-                contact = contacts[it],
+                contact = selectable,
                 onLongClick = onLongClick,
                 onClick = onClick
             )
-            if (it != contacts.size) {
+            if (index != contacts.size) {
                 Divider(Modifier.fillMaxWidth())
             }
         }
