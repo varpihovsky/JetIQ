@@ -19,9 +19,6 @@ package com.varpihovsky.ui_root.root
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.shrinkHorizontally
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
@@ -152,18 +149,7 @@ fun RootLayout(
                                         RootRouter.Config.Settings -> materialSharedAxisX(forward, 200)
                                     }
                                 ) {
-                                    Box(
-                                        modifier = Modifier.draggable(
-                                            state = rememberDraggableState { },
-                                            orientation = Orientation.Horizontal,
-                                            onDragStopped = { velocity ->
-                                                if (velocity > DEFAULT_DRAG_VELOCITY && !drawerState.isShown.value) {
-                                                    drawerState.toggle()
-                                                } else if (velocity < -DEFAULT_DRAG_VELOCITY && drawerState.isShown.value) {
-                                                    drawerState.toggle()
-                                                }
-                                            }),
-                                    ) { content(it) }
+                                    Box { content(it) }
                                 }
                             }
                         ) {
