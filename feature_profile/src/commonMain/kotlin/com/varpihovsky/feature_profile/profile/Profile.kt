@@ -30,6 +30,7 @@ import com.varpihovsky.core_lifecycle.composition.LocalCompositionState
 import com.varpihovsky.core_lifecycle.composition.Mode
 import com.varpihovsky.core_ui.compose.entities.*
 import com.varpihovsky.core_ui.compose.foundation.CenterLayoutItem
+import com.varpihovsky.core_ui.compose.foundation.StaggeredVerticalGrid
 import com.varpihovsky.core_ui.compose.foundation.SwipeRefresh
 import com.varpihovsky.core_ui.compose.foundation.VerticalScrollLayout
 import com.varpihovsky.core_ui.compose.widgets.Avatar
@@ -163,21 +164,36 @@ internal fun ProfileWall(
             onProfileTextPositioned = onProfileTextPositioned
         )
 
-        InfoCard {
-            ProfileSubjectsList(
-                state = profileState.successState,
-                interactionState = profileState.interactionState,
-                subjectsComponent = successSubjectsComponent
-            )
+        val lists = @Composable {
+            InfoCard {
+                ProfileSubjectsList(
+                    state = profileState.successState,
+                    interactionState = profileState.interactionState,
+                    subjectsComponent = successSubjectsComponent
+                )
+            }
+
+            InfoCard {
+                ProfileSubjectsList(
+                    state = profileState.markbookState,
+                    interactionState = profileState.interactionState,
+                    subjectsComponent = markbookSubjectsComponent
+                )
+            }
         }
 
-        InfoCard {
-            ProfileSubjectsList(
-                state = profileState.markbookState,
-                interactionState = profileState.interactionState,
-                subjectsComponent = markbookSubjectsComponent
-            )
+        when (LocalCompositionState.current.currentMode) {
+            Mode.Mobile -> lists()
+            Mode.Desktop -> {
+                BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                    StaggeredVerticalGrid(
+                        maxColumnWidth = if (maxWidth > 900.dp) maxWidth / 2 else maxWidth,
+                        content = lists
+                    )
+                }
+            }
         }
+
     }
 }
 
