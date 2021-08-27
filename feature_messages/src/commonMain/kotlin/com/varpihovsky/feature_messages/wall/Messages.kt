@@ -53,6 +53,7 @@ internal fun MessageWall(messagesComponent: MessagesComponent) {
                 )
             }
         }
+        hideIcon()
     }
     messagesComponent.bottomBarController.show()
 
