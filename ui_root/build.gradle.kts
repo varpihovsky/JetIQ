@@ -19,7 +19,6 @@ kotlin {
                 implementation(project(Modules.core_lifecycle))
                 implementation(project(Modules.core_repo))
                 api(project(Modules.feature_profile))
-                api(project(Modules.feature_settings))
                 api(project(Modules.feature_messages))
                 api(project(Modules.feature_auth))
 

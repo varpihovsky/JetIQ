@@ -17,7 +17,6 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(Modules.core))
-                implementation(project(Modules.core_nav))
 
                 api(compose.foundation)
                 api(compose.runtime)

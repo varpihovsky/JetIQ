@@ -48,7 +48,6 @@ configurations {
 dependencies {
     implementation(core())
     implementation(coreRepo())
-    implementation(coreNav())
     implementation(uiData())
     implementation(repoData())
     implementation(project(Modules.core_ui))
@@ -56,7 +55,6 @@ dependencies {
     implementation(project(Modules.feature_auth))
     implementation(project(Modules.feature_messages))
     implementation(project(Modules.feature_profile))
-    implementation(project(Modules.feature_settings))
     implementation(project(Modules.core_network))
 
     // Needed for dependency injection

@@ -17,7 +17,6 @@ kotlin {
             dependencies {
                 implementation(project(Modules.core))
                 implementation(project(Modules.core_repo))
-                implementation(project(Modules.core_nav))
                 implementation(project(Modules.ui_data))
                 implementation(project(Modules.repo_data))
                 implementation(project(Modules.core_ui))

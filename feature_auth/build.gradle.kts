@@ -19,7 +19,6 @@ kotlin {
                 implementation(project(Modules.core_ui))
                 implementation(project(Modules.core))
                 implementation(project(Modules.core_repo))
-                implementation(project(Modules.core_nav))
                 implementation(project(Modules.core_lifecycle))
 
                 api(CommonDependencies.koin_core)
