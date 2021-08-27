@@ -30,14 +30,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.varpihovsky.core_lifecycle.composition.LocalCompositionState
+import com.varpihovsky.core_lifecycle.composition.Mode
 import com.varpihovsky.core_ui.compose.OpenPage
 import com.varpihovsky.core_ui.compose.widgets.FullWidthButton
 
 @Composable
 internal fun AboutSettingsScreen(aboutSettingsViewModel: AboutSettingsComponent) {
-    aboutSettingsViewModel.appBarController.run {
-        setText("Про додаток")
-        setIconToBack()
+    if (LocalCompositionState.current.currentMode is Mode.Mobile) {
+        aboutSettingsViewModel.appBarController.run {
+            show()
+            setText("Про додаток")
+            setIconToBack()
+        }
     }
 
     val pageToOpen by aboutSettingsViewModel.pageToOpen.subscribeAsState()

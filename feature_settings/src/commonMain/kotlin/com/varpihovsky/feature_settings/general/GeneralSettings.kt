@@ -18,6 +18,8 @@ package com.varpihovsky.feature_settings.general
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import com.varpihovsky.core_lifecycle.composition.LocalCompositionState
+import com.varpihovsky.core_lifecycle.composition.Mode
 import com.varpihovsky.repo_data.UserPreferences
 import com.varpihovsky.ui_data.dto.DropDownItem
 import kotlinx.coroutines.flow.Flow
@@ -26,9 +28,11 @@ import kotlinx.coroutines.flow.map
 
 @Composable
 internal fun GeneralSettingsScreen(generalSettingsComponent: GeneralSettingsComponent) {
-    generalSettingsComponent.appBarController.run {
-        setText("Загальне")
-        setIconToBack()
+    if (LocalCompositionState.current.currentMode is Mode.Mobile) {
+        generalSettingsComponent.appBarController.run {
+            setText("Загальне")
+            setIconToBack()
+        }
     }
 
     GeneralSettings(generalSettingsComponent)

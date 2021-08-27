@@ -29,6 +29,8 @@ import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.decompose.value.Value
+import com.varpihovsky.core_lifecycle.composition.LocalCompositionState
+import com.varpihovsky.core_lifecycle.composition.Mode
 import com.varpihovsky.feature_settings.about.AboutSettingsScreen
 import com.varpihovsky.feature_settings.general.GeneralSettingsScreen
 import com.varpihovsky.feature_settings.main.MainSettingsScreen
@@ -41,6 +43,16 @@ private const val SINGLE_PANE_WEIGHT = 1f
 @Composable
 fun SettingsScreen(settingsRootComponent: SettingsRootComponent) {
     val isMultiPane by settingsRootComponent.isMultiPane.subscribeAsState()
+
+    settingsRootComponent.appBarController.run {
+        show()
+        setIconToBack()
+        setText("Налаштування")
+        setActions { }
+    }
+    if (LocalCompositionState.current.currentMode is Mode.Mobile) {
+        settingsRootComponent.bottomBarController.hide()
+    }
 
     BoxWithConstraints {
         val isMultiPaneRequired = maxWidth >= MULTIPANE_WIDTH_THRESHOLD.dp
