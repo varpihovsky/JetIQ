@@ -46,6 +46,12 @@ fun MessagesScreen(messagesRootComponent: MessagesRootComponent) {
     val isMultiPane by messagesRootComponent.isMultiPane.subscribeAsState()
 
     if (LocalCompositionState.current.currentMode is Mode.Desktop) {
+        messagesRootComponent.appBarController.run {
+            show()
+            setText("Повідомлення")
+            setIconToDrawer()
+            setActions { }
+        }
         messagesRootComponent.drawerController.setNavigation(text = "Повідомлення") {
             DrawerItem(
                 text = "Новий контакт...",
