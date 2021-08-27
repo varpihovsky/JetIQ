@@ -67,6 +67,10 @@ internal class MessagesDetailsRouter(
         router.navigate { stack -> stack.dropLastWhile { it !is Config.None }.plus(Config.GroupMessage) }
     }
 
+    fun hide() {
+        router.popWhile { it !is Config.None }
+    }
+
     fun isShown() = router.state.value.activeChild.configuration !is Config.None
 
     sealed class Config : Parcelable {

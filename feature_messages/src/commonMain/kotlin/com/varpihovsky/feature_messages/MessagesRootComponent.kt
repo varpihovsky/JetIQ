@@ -54,6 +54,30 @@ class MessagesRootComponent(
     private val _contactAdditionComponent = mutableStateOf<ContactAdditionComponent?>(null)
     private val scope = CoroutineScope(Dispatchers.Main)
 
+    init {
+        backPressedDispatcher.register {
+            val isBackStackProcessed = when (val child = detailsRouterState.value.activeChild.instance) {
+                is DetailsChild.GroupMessage -> child.component.backPressedDispatcher.onBackPressed()
+                else -> false
+            }
+
+            if (isBackStackProcessed) return@register true
+
+            if (_isMultiPane.value) {
+                return@register false
+            }
+
+            if (!_isMultiPane.value && mainRouterState.value.activeChild.instance is MainChild.Contacts) {
+                mainRouter.navigateToWall()
+                return@register true
+            }
+
+            detailsRouter.hide()
+            mainRouter.show()
+            true
+        }
+    }
+
     override fun navigateToContacts() {
         mainRouter.navigateToContacts()
     }

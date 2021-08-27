@@ -17,7 +17,6 @@
 package com.varpihovsky.feature_messages
 
 import com.arkivanov.decompose.RouterState
-import com.arkivanov.decompose.push
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
@@ -50,9 +49,10 @@ internal class MessagesMainRouter(
     )
 
     private var isSquashed: Boolean = stateKeeper.consume<SavedState>(STATE_KEEPER_KEY)?.isSquashed ?: true
+    private var lastStack: List<Config> = stateKeeper.consume<SavedState>(STATE_KEEPER_KEY)?.lastStack ?: listOf()
 
     init {
-        stateKeeper.register(STATE_KEEPER_KEY) { SavedState(isSquashed) }
+        stateKeeper.register(STATE_KEEPER_KEY) { SavedState(isSquashed, lastStack) }
     }
 
     private fun createChild(
@@ -72,10 +72,7 @@ internal class MessagesMainRouter(
     }
 
     fun show() {
-        // If not squashed it isn't need to be shown, because it is already shown
-        if (isSquashed) {
-            router.push(Config.Wall)
-        }
+        router.navigate { lastStack.ifEmpty { listOf(Config.Wall) } }
     }
 
     fun navigateToContacts() {
@@ -104,10 +101,15 @@ internal class MessagesMainRouter(
     }
 
     fun hide() {
+        saveStack()
         router.navigate { listOf(Config.None) }
     }
 
     private fun isShown() = router.state.value.activeChild.configuration !is Config.None
+
+    private fun saveStack() {
+        lastStack = router.state.value.backStack.map { it.configuration } + routerState.value.activeChild.configuration
+    }
 
     sealed class Config : Parcelable {
         @Parcelize
@@ -121,7 +123,7 @@ internal class MessagesMainRouter(
     }
 
     @Parcelize
-    private class SavedState(val isSquashed: Boolean) : Parcelable
+    private class SavedState(val isSquashed: Boolean, val lastStack: List<Config>) : Parcelable
 
     companion object {
         const val STATE_KEEPER_KEY = "MessageMainRouterState"
