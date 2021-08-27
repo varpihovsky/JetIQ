@@ -12,7 +12,6 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleC
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.varpihovsky.core.di.CoreModule
 import com.varpihovsky.core_db.DatabaseModule
-import com.varpihovsky.core_nav.NavigationModule
 import com.varpihovsky.core_repo.RepoModule
 import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.core_repo.repo.SubjectRepo
@@ -41,7 +40,6 @@ class Application : KoinComponent {
         ApplicationModule.module,
         CoreModule.module,
         DatabaseModule.module,
-        NavigationModule.module,
         RepoModule.module,
         AuthModule.module,
         ProfileModule.module,

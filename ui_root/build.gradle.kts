@@ -21,6 +21,7 @@ kotlin {
                 api(project(Modules.feature_profile))
                 api(project(Modules.feature_messages))
                 api(project(Modules.feature_auth))
+                api(project(Modules.feature_settings))
 
                 implementation(kotlin("stdlib-common"))
 
