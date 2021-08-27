@@ -46,6 +46,7 @@ internal fun GroupMessage(groupMessageComponent: GroupMessageComponent) {
             setText("Групове повідомлення...")
             setIconToBack()
         }
+        groupMessageComponent.bottomBarController.hide()
     }
 
     when {
