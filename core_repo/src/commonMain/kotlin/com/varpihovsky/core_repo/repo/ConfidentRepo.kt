@@ -17,12 +17,14 @@
 package com.varpihovsky.core_repo.repo
 
 import com.varpihovsky.core.exceptions.ExceptionEventManager
+import com.varpihovsky.core.log.d
 import com.varpihovsky.core_db.dao.ConfidentialDAO
 import com.varpihovsky.core_db.dao.ProfileDAO
 import com.varpihovsky.core_db.dao.SingleEntryDAO
 import com.varpihovsky.repo_data.Confidential
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlin.jvm.Volatile
 
 /**
  * Standard class for all Repo classes which need data about current user.
@@ -34,7 +36,10 @@ abstract class ConfidentRepo internal constructor(
     private val profileDAO: ProfileDAO,
     exceptionEventManager: ExceptionEventManager
 ) : Repo(exceptionEventManager) {
+    @Volatile
     private var confidential: Confidential? = null
+
+    @Volatile
     private var session: String? = null
 
     init {
@@ -56,6 +61,7 @@ abstract class ConfidentRepo internal constructor(
 
     private suspend fun collectSession() {
         collectSingleEntry(profileDAO) {
+            d("Got an session: ${it?.session}")
             session = it?.session
         }
     }
