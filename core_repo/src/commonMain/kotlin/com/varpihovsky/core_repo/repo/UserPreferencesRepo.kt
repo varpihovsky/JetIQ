@@ -19,7 +19,7 @@ package com.varpihovsky.core_repo.repo
 import com.varpihovsky.core_db.dao.PreferencesDAO
 import com.varpihovsky.repo_data.UserPreferences
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 
 /**
  * Interface used for providing preferences data of current user.
@@ -50,7 +50,7 @@ interface UserPreferencesRepo {
 
 private class UserPreferencesRepoImpl(private val preferencesDAO: PreferencesDAO) : UserPreferencesRepo {
     override val flow: Flow<UserPreferences>
-        get() = preferencesDAO.get().filterNotNull()
+        get() = preferencesDAO.get().map { it ?: UserPreferences() }
 
     override suspend fun set(preferences: UserPreferences) {
         preferencesDAO.set(preferences)
