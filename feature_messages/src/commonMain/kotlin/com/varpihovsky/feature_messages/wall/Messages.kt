@@ -73,8 +73,8 @@ fun MessageWall(
 ) {
     SwipeRefresh(isRefreshing = loadingState, onRefresh = onRefresh) {
         MessagesList(messages = messages)
-        NewMessageButton(onClick = onClick)
     }
+    NewMessageButton(onClick = onClick)
 }
 
 @ExperimentalAnimationApi
