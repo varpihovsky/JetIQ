@@ -60,10 +60,18 @@ class MessagesRootComponent(
 
     override fun navigateToGroupMessage() {
         detailsRouter.navigateToGroupMessage()
+
+        if (!_isMultiPane.value) {
+            mainRouter.hide()
+        }
     }
 
     private fun onChatSelected(chat: UIReceiverDTO) {
         detailsRouter.navigateToChat(chat)
+
+        if (!_isMultiPane.value) {
+            mainRouter.hide()
+        }
     }
 
     internal fun newContactDialog() {
