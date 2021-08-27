@@ -40,6 +40,14 @@ import com.varpihovsky.feature_messages.field.MessageField
 internal fun GroupMessage(groupMessageComponent: GroupMessageComponent) {
     val contactsComponent by groupMessageComponent.contactsComponent
 
+    if (LocalCompositionState.current.currentMode == Mode.Mobile) {
+        groupMessageComponent.appBarController.run {
+            show()
+            setText("Групове повідомлення...")
+            setIconToBack()
+        }
+    }
+
     when {
         // Show as separate screen
         contactsComponent != null && LocalCompositionState.current.currentMode == Mode.Mobile -> ContactsScreen(
