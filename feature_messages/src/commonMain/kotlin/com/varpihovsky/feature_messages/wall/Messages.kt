@@ -54,6 +54,7 @@ internal fun MessageWall(messagesComponent: MessagesComponent) {
             }
         }
     }
+    messagesComponent.bottomBarController.show()
 
     MessageWall(
         messages = messagesComponent.messages.collectAsState(initial = listOf()).value,
