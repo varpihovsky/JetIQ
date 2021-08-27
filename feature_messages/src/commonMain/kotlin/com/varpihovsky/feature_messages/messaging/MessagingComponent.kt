@@ -58,7 +58,7 @@ internal class MessagingComponent(
         } else {
             messagesRepo.getMessages().combine(listRepo.getContacts()) { receivedMessages, contacts ->
                 receivedMessages
-                    .filter { message -> !contacts.any { it.id.toString() == message.id && it.type == message.isTeacher } }
+                    .filter { message -> contacts.any { it.id.toString() == message.idFrom && it.type == message.isTeacher } }
                     .map { Pair(it.toUIDTO(), it) }
                     .map { Message(it.first.sender, it.first.message, Message.Type.Others, it.second.time.toLong()) }
                     .sortedByDescending { it.time }
