@@ -19,6 +19,9 @@ package com.varpihovsky.ui_root.bottomBar
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.parcelable.Parcelable
+import com.arkivanov.essenty.parcelable.Parcelize
+import com.arkivanov.essenty.statekeeper.consume
 import com.varpihovsky.core_lifecycle.BottomBarController
 import com.varpihovsky.core_lifecycle.BottomBarEntry
 
@@ -31,8 +34,14 @@ class BottomBarComponent(
     private val _isShown = MutableValue(false)
     val isShown: Value<Boolean> = _isShown
 
-    private val _entry = MutableValue<BottomBarEntry>(BottomBarEntry.Profile)
+    private val _entry = MutableValue<BottomBarEntry>(
+        stateKeeper.consume<SavedState>(SAVED_STATE_KEY)?.entry ?: BottomBarEntry.Profile
+    )
     val entry: Value<BottomBarEntry> = _entry
+
+    init {
+        stateKeeper.register(SAVED_STATE_KEY) { SavedState(entry.value) }
+    }
 
     override fun select(bottomBarEntry: BottomBarEntry) {
         set(bottomBarEntry)
@@ -52,5 +61,12 @@ class BottomBarComponent(
 
     override fun show() {
         _isShown.value = true
+    }
+
+    @Parcelize
+    private class SavedState(val entry: BottomBarEntry) : Parcelable
+
+    companion object {
+        private const val SAVED_STATE_KEY = "BottomBarComponentKey"
     }
 }

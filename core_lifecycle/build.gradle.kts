@@ -4,6 +4,7 @@ plugins {
     multiplatform()
     androidLib()
     compose()
+    parcelize()
 }
 
 group = Config.group
