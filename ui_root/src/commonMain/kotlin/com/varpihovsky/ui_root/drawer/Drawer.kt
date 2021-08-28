@@ -5,6 +5,8 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
@@ -29,7 +31,7 @@ fun Drawer(drawerComponent: DrawerComponent) {
     val temporalNavigationText by drawerComponent.temporalNavigationText.subscribeAsState()
     val temporalNavigationContent by drawerComponent.temporalNavigationContent.collectAsState()
     Card(modifier = Modifier.fillMaxHeight()) {
-        Column {
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             Avatar(modifier = Modifier.padding(10.dp), url = profileLink)
 
             Divider(modifier = Modifier.padding(15.dp))

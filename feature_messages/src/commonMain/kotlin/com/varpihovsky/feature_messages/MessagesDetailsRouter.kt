@@ -20,6 +20,8 @@ import com.arkivanov.decompose.popWhile
 import com.arkivanov.decompose.push
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
+import com.arkivanov.essenty.statekeeper.consume
+import com.varpihovsky.core.log.d
 import com.varpihovsky.core_lifecycle.JetIQComponentContext
 import com.varpihovsky.feature_messages.chat.ChatComponent
 import com.varpihovsky.feature_messages.groupMessage.GroupMessageComponent
@@ -31,6 +33,9 @@ internal class MessagesDetailsRouter(
 ) : JetIQComponentContext by jetIQComponentContext {
     val routerState by lazy { router.state }
 
+    private var currentContact: UIReceiverDTO? =
+        stateKeeper.consume<SavedState>(STATE_SAVE_KEY)?.currentContact
+
     private val router = jetIQComponentContext.messagesRouter(
         initialConfiguration = { Config.None },
         configurationClass = Config::class,
@@ -39,7 +44,9 @@ internal class MessagesDetailsRouter(
         childFactory = ::createChild,
     )
 
-    private var currentContact: UIReceiverDTO? = null
+    init {
+        stateKeeper.register(STATE_SAVE_KEY) { SavedState(currentContact) }
+    }
 
     private fun createChild(
         config: Config,
@@ -58,13 +65,16 @@ internal class MessagesDetailsRouter(
     }
 
     fun navigateToChat(chat: UIReceiverDTO) {
+        d(chat.toString())
         currentContact = chat
         router.popWhile { it !is Config.None }
         router.push(Config.Chat)
     }
 
     fun navigateToGroupMessage() {
-        router.navigate { stack -> stack.dropLastWhile { it !is Config.None }.plus(Config.GroupMessage) }
+        router.navigate { stack ->
+            stack.dropLastWhile { it !is Config.None }.plus(Config.GroupMessage)
+        }
     }
 
     fun hide() {
@@ -72,6 +82,9 @@ internal class MessagesDetailsRouter(
     }
 
     fun isShown() = router.state.value.activeChild.configuration !is Config.None
+
+    @Parcelize
+    private class SavedState(val currentContact: UIReceiverDTO?) : Parcelable
 
     sealed class Config : Parcelable {
         @Parcelize
@@ -82,5 +95,9 @@ internal class MessagesDetailsRouter(
 
         @Parcelize
         object GroupMessage : Config()
+    }
+
+    companion object {
+        private const val STATE_SAVE_KEY = "MessagesDetailsRouterKey"
     }
 }

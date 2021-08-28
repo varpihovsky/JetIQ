@@ -24,6 +24,8 @@ kotlin {
                 api(compose.foundation)
 
                 implementation(CommonDependencies.kodein)
+
+                api(AndroidDependencies.essenty_parcelize)
             }
         }
         val androidMain by getting {

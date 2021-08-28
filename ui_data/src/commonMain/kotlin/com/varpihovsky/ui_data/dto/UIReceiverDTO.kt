@@ -1,5 +1,8 @@
 package com.varpihovsky.ui_data.dto
 
+import com.arkivanov.essenty.parcelable.Parcelable
+import com.arkivanov.essenty.parcelable.Parcelize
+
 /* JetIQ
  * Copyright © 2021 Vladyslav Podrezenko
  *
@@ -17,19 +20,17 @@ package com.varpihovsky.ui_data.dto
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-expect class UIReceiverDTO(
-    id: Int,
-    text: String,
-    type: ReceiverType
-) {
-    val id: Int
-    val text: String
+@Parcelize
+data class UIReceiverDTO(
+    val id: Int,
+    val text: String,
     val type: ReceiverType
-}
+) : Parcelable
 
 fun UIReceiverDTO.getPhotoURL() = type.getPhotoMethodURL() + id
 
-enum class ReceiverType {
+@Parcelize
+enum class ReceiverType : Parcelable {
     STUDENT {
         override fun getPhotoMethodURL(): String =
             "https://iq.vntu.edu.ua/b06175/getfile.php?stud_id="
