@@ -39,7 +39,7 @@ fun BottomBar(bottomBarComponent: BottomBarComponent) {
     AnimatedVisibility(
         visible = isShown.value,
         enter = slideInVertically(),
-        exit = shrinkHorizontally()
+        exit = shrinkVertically()
     ) {
         BottomAppBar {
             val currentEntry by bottomBarComponent.entry.subscribeAsState()

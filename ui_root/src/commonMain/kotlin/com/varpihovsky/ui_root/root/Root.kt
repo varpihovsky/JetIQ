@@ -16,6 +16,7 @@
  */
 package com.varpihovsky.ui_root.root
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.shrinkHorizontally
@@ -24,7 +25,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -122,13 +122,13 @@ fun RootLayout(
                 Row {
                     val isShown by drawerState.isShown.subscribeAsState()
 
-                    androidx.compose.animation.AnimatedVisibility(
+                    AnimatedVisibility(
                         modifier = Modifier.width(250.dp).padding(top = appbarHeight.toDp()),
                         visible = isShown && isDrawerButtonShown,
-                        enter = expandHorizontally(expandFrom = Alignment.End),
-                        exit = shrinkHorizontally(shrinkTowards = Alignment.End)
+                        enter = expandHorizontally(),
+                        exit = shrinkHorizontally()
                     ) {
-                        Drawer(drawerState, isDrawerButtonShown)
+                        Drawer(drawerState)
                     }
                     Box {
                         Children(

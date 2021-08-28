@@ -24,7 +24,7 @@ import com.varpihovsky.core_ui.compose.widgets.DrawerItem
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun Drawer(drawerComponent: DrawerComponent, isDrawerButtonShown: Boolean) {
+fun Drawer(drawerComponent: DrawerComponent) {
     val profileLink by drawerComponent.profileLink.collectAsState("")
     val temporalNavigationText by drawerComponent.temporalNavigationText.subscribeAsState()
     val temporalNavigationContent by drawerComponent.temporalNavigationContent.collectAsState()

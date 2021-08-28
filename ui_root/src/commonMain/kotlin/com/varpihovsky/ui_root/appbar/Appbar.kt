@@ -18,7 +18,7 @@ package com.varpihovsky.ui_root.appbar
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.varpihovsky.ui_root.drawer.DrawerComponent
 import soup.compose.material.motion.MaterialSharedAxisY
@@ -44,7 +45,7 @@ fun Appbar(appbarComponent: AppbarComponent, drawerState: DrawerComponent, isDra
     AnimatedVisibility(
         visible = isShown,
         enter = slideInVertically(),
-        exit = shrinkHorizontally()
+        exit = shrinkVertically(shrinkTowards = Alignment.Top)
     ) {
         TopAppBar(
             title = {
