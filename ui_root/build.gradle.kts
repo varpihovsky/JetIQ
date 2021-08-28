@@ -2,6 +2,7 @@ plugins {
     androidLib()
     multiplatform()
     compose()
+    id("kotlin-parcelize")
 }
 
 group = Config.group
@@ -37,6 +38,8 @@ kotlin {
                 api(Compose.material_motion)
 
                 api(CommonDependencies.koin_core)
+
+                api(AndroidDependencies.essenty_parcelize)
             }
         }
     }

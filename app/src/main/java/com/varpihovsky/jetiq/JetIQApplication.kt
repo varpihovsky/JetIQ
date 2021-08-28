@@ -20,18 +20,12 @@ import android.app.Application
 import androidx.work.*
 import com.varpihovsky.core.di.CoreModule
 import com.varpihovsky.core_db.DatabaseModule
-import com.varpihovsky.core_nav.NavigationModule
 import com.varpihovsky.core_repo.RepoModule
 import com.varpihovsky.core_repo.repo.MessagesRepo
 import com.varpihovsky.core_repo.repo.SubjectRepo
 import com.varpihovsky.core_repo.repo.UserPreferencesRepo
 import com.varpihovsky.feature_auth.AuthModule
-import com.varpihovsky.feature_contacts.ContactsModule
-import com.varpihovsky.feature_messages.MessagesModule
-import com.varpihovsky.feature_new_message.NewMessageModule
 import com.varpihovsky.feature_profile.ProfileModule
-import com.varpihovsky.feature_settings.SettingsModule
-import com.varpihovsky.feature_subjects.SubjectsModule
 import com.varpihovsky.jetiq.di.ApplicationModule
 import com.varpihovsky.jetiq.services.SessionRestorationWorker
 import kotlinx.coroutines.CoroutineScope
@@ -55,15 +49,9 @@ class JetIQApplication : Application(), KoinComponent {
         ApplicationModule.module,
         CoreModule.module,
         DatabaseModule.module,
-        NavigationModule.module,
         RepoModule.module,
         AuthModule.module,
-        ContactsModule.module,
-        MessagesModule.module,
-        NewMessageModule.module,
         ProfileModule.module,
-        SettingsModule.module,
-        SubjectsModule.module
     )
 
     override fun onCreate() {

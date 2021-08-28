@@ -134,9 +134,6 @@ object AndroidDependencies {
         "io.insert-koin:koin-androidx-workmanager:${Versions.koin_version}"
 
     const val room = "androidx.room:room-ktx:${Versions.room_version}"
-    const val room_runtime = "androidx.room:room-runtime:${Versions.room_version}"
-    const val room_compiler = "androidx.room:room-compiler:${Versions.room_version}"
-    const val room_testing = "androidx.room:room-testing:${Versions.room_version}"
 
     const val preferences =
         "androidx.datastore:datastore-preferences:${Versions.preferences_version}"
@@ -150,6 +147,8 @@ object AndroidDependencies {
 
     const val kodein_debug = "org.kodein.db:kodein-db-android-debug:${Versions.kodein_version}"
     const val kodein_release = "org.kodein.db:kodein-db-android:${Versions.kodein_version}"
+
+    const val essenty_parcelize = "com.arkivanov.essenty:parcelable:0.1.2"
 }
 
 object JvmDependencies {

@@ -4,6 +4,7 @@ plugins {
     multiplatform()
     feature()
     compose()
+    id("kotlin-parcelize")
 }
 
 group = Config.group
@@ -32,6 +33,8 @@ kotlin {
                 api(compose.foundation)
                 api(compose.uiTooling)
                 api(compose.materialIconsExtended)
+
+                api(AndroidDependencies.essenty_parcelize)
             }
         }
         val androidMain by getting {

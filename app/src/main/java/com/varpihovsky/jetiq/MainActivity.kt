@@ -19,38 +19,20 @@ package com.varpihovsky.jetiq
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.ui.ExperimentalComposeUiApi
-import com.varpihovsky.core.appbar.AppbarManager
-import com.varpihovsky.core.di.getViewModel
-import com.varpihovsky.core.eventBus.EventBus
-import com.varpihovsky.core.exceptions.ExceptionEventManager
+import com.arkivanov.decompose.defaultComponentContext
 import com.varpihovsky.core_ui.theme.JetIQTheme
-import com.varpihovsky.jetiq.ui.Root
-import org.koin.android.ext.android.inject
+import com.varpihovsky.ui_root.root.Root
+import com.varpihovsky.ui_root.root.RootComponent
 
 class MainActivity : ComponentActivity() {
-    private val appbarManager: AppbarManager by inject()
-    private val exceptionEventManager: ExceptionEventManager by inject()
-    private val eventBus: EventBus by inject()
-
-    @ExperimentalComposeUiApi
-    @ExperimentalFoundationApi
-    @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContent {
-            val viewModel = getViewModel<NavigationViewModel>()
+        val root = RootComponent(defaultComponentContext())
 
+        setContent {
             JetIQTheme {
-                Root(
-                    navigationViewModel = viewModel,
-                    appbarManager = appbarManager,
-                    exceptionEventManager = exceptionEventManager,
-                    eventBus = eventBus
-                )
+                Root(root)
             }
         }
     }

@@ -17,18 +17,7 @@ android {
         versionCode = AndroidConfig.version_code
         versionName = AndroidConfig.application_version
     }
-//    buildTypes {
-//        getByName("release") {
-//            isMinifyEnabled = AndroidConfig.release_minify
-//            proguardFiles(
-//                getDefaultProguardFile("proguard-android-optimize.txt"),
-//                "proguard-rules.pro"
-//            )
-//        }
-//    }
-//    testOptions {
-//        unitTests.isReturnDefaultValues = true
-//    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -56,6 +45,7 @@ dependencies {
     implementation(project(Modules.feature_messages))
     implementation(project(Modules.feature_profile))
     implementation(project(Modules.core_network))
+    implementation(project(Modules.ui_root))
 
     // Needed for dependency injection
     api(coreDB())
@@ -99,4 +89,6 @@ dependencies {
     // Kodein
     debugImplementation(AndroidDependencies.kodein_debug)
     releaseImplementation(AndroidDependencies.kodein_release)
+
+    implementation(Compose.decompose_extensions)
 }
