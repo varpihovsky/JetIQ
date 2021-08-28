@@ -16,10 +16,8 @@
  */
 package com.varpihovsky.feature_settings
 
-import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.pop
 import com.arkivanov.decompose.push
-import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.varpihovsky.core_lifecycle.JetIQComponentContext
@@ -29,7 +27,7 @@ internal class SettingsMainRouter(
     jetIQComponentContext: JetIQComponentContext,
     settingsNavigationHandler: SettingsNavigationHandler
 ) {
-    val routerState: Value<RouterState<Config, SettingsRootComponent.MainChild>> by lazy { router.state }
+    val routerState by lazy { router.state }
 
     private val router = jetIQComponentContext.settingsRouter(
         initialConfiguration = { Config.Main },
@@ -44,11 +42,15 @@ internal class SettingsMainRouter(
         settingsComponentContext: SettingsComponentContext
     ): SettingsRootComponent.MainChild = when (config) {
         Config.None -> SettingsRootComponent.MainChild.None
-        Config.Main -> SettingsRootComponent.MainChild.Main(MainSettingsComponent(settingsComponentContext))
+        Config.Main -> SettingsRootComponent.MainChild.Main(
+            MainSettingsComponent(
+                settingsComponentContext
+            )
+        )
     }
 
-    fun moveToBackStack() {
-        if (router.state.value.activeChild.configuration !is Config.None) {
+    fun hide() {
+        if (router.state.value.activeChild.configuration is Config.Main) {
             router.push(Config.None)
         }
     }

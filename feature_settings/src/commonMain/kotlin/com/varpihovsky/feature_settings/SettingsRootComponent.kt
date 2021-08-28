@@ -19,6 +19,7 @@ package com.varpihovsky.feature_settings
 import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import com.varpihovsky.core.log.d
 import com.varpihovsky.core_lifecycle.JetIQComponentContext
 import com.varpihovsky.feature_settings.about.AboutSettingsComponent
 import com.varpihovsky.feature_settings.general.GeneralSettingsComponent
@@ -61,14 +62,12 @@ class SettingsRootComponent(
     }
 
     fun setMultiPane(isMultiPane: Boolean) {
-        if (_isMultiPane.value != isMultiPane) {
-            _isMultiPane.value = isMultiPane
+        _isMultiPane.value = isMultiPane
 
-            if (isMultiPane) {
-                switchToMultiPane()
-            } else {
-                switchToSinglePane()
-            }
+        if (isMultiPane) {
+            switchToMultiPane()
+        } else {
+            switchToSinglePane()
         }
     }
 
@@ -76,7 +75,7 @@ class SettingsRootComponent(
         if (_isMultiPane.value) {
             mainRouter.show()
         } else {
-            mainRouter.moveToBackStack()
+            mainRouter.hide()
         }
     }
 
@@ -85,10 +84,9 @@ class SettingsRootComponent(
     }
 
     private fun switchToSinglePane() {
+        d(detailsRouter.isShown().toString())
         if (detailsRouter.isShown()) {
-            mainRouter.moveToBackStack()
-        } else {
-            mainRouter.show()
+            mainRouter.hide()
         }
     }
 

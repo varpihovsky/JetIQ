@@ -66,10 +66,7 @@ internal class SettingsDetailsRouter(
         router.popWhile { it !is Config.None }
     }
 
-    fun isShown() = when (router.state.value.activeChild.configuration) {
-        Config.None -> false
-        else -> true
-    }
+    fun isShown() = router.state.value.activeChild.configuration !is Config.None
 
     sealed class Config : Parcelable {
         @Parcelize
