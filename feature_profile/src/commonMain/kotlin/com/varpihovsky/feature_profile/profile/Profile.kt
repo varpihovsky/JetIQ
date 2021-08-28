@@ -56,6 +56,10 @@ internal fun Profile(profileComponent: ProfileComponent) {
     val buttonLocation by profileComponent.expandButtonLocation.collectAsState(initial = ExpandButtonLocation.LOWER)
     val profile = profileComponent.profile.collectAsState().value
 
+    if (LocalCompositionState.current.currentMode is Mode.Mobile) {
+        profileComponent.bottomBarController.show()
+    }
+
     Profile(
         profileComponent = profileComponent,
         profileState = ProfileState(

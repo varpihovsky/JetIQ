@@ -35,6 +35,7 @@ internal fun MarkbookSubjectScreen(markbookSubjectComponent: MarkbookSubjectComp
             setText(subject?.subjectName ?: "")
             setIconToBack()
         }
+        markbookSubjectComponent.bottomBarController.hide()
     }
 
     subject?.let { MarkbookSubjectScreen(markbookSubjectDTO = it) }

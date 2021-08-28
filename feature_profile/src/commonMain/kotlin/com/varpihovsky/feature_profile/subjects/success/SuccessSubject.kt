@@ -47,6 +47,7 @@ internal fun SuccessSubjectScreen(successSubjectComponent: SuccessSubjectCompone
             setText(subject?.subject ?: "")
             setIconToBack()
         }
+        successSubjectComponent.bottomBarController.hide()
     }
 
     SuccessSubjectScreen(
