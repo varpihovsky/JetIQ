@@ -75,7 +75,7 @@ fun MessagesScreen(messagesRootComponent: MessagesRootComponent) {
     }
 
     BoxWithConstraints {
-        val isMultiPaneRequired = maxWidth >= MULTIPANE_WIDTH_THRESHOLD.dp
+        val isMultiPaneRequired = LocalCompositionState.current.currentMode is Mode.Desktop
 
         LaunchedEffect(isMultiPaneRequired) {
             messagesRootComponent.setMultiPane(isMultiPaneRequired)
@@ -83,6 +83,7 @@ fun MessagesScreen(messagesRootComponent: MessagesRootComponent) {
 
         val currentWidth = maxWidth
         val mainPaneWidth = when {
+            currentWidth > 400.dp && currentWidth < 800.dp -> 220.dp
             currentWidth > 800.dp && currentWidth < 1000.dp -> 250.dp
             currentWidth > 1000.dp && currentWidth < 1400.dp -> 330.dp
             else -> 430.dp
