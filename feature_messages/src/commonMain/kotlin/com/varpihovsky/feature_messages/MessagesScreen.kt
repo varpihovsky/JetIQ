@@ -130,8 +130,7 @@ private fun MainPane(routerState: Value<RouterState<*, MessagesRootComponent.Mai
             is MessagesRootComponent.MainChild.None -> Box {}
             is MessagesRootComponent.MainChild.Wall -> MessageWall(child.component)
             is MessagesRootComponent.MainChild.Contacts -> ContactsScreen(
-                contactsComponent = child.component,
-                isMultiPane = isMultiPane
+                contactsComponent = child.component
             )
         }
     }

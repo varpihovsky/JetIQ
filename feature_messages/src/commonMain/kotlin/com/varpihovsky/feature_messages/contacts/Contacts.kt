@@ -33,6 +33,8 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.varpihovsky.core.util.Selectable
 import com.varpihovsky.core.util.selectedOnly
+import com.varpihovsky.core_lifecycle.composition.LocalCompositionState
+import com.varpihovsky.core_lifecycle.composition.Mode
 import com.varpihovsky.core_ui.compose.entities.ContactList
 import com.varpihovsky.feature_messages.contacts.addition.AdditionDialog
 import com.varpihovsky.ui_data.dto.UIReceiverDTO
@@ -42,7 +44,6 @@ import com.varpihovsky.ui_data.dto.UIReceiverDTO
 fun ContactsScreen(
     modifier: Modifier = Modifier,
     contactsComponent: ContactsComponent,
-    isMultiPane: Boolean,
     scrollState: ScrollState = rememberScrollState()
 ) {
     val contacts by contactsComponent.contacts.collectAsState(listOf())
@@ -51,13 +52,14 @@ fun ContactsScreen(
     val isAdding by contactsComponent.isAdding.subscribeAsState()
     val searchFieldValue by contactsComponent.searchFieldValue.collectAsState()
 
-    if (!isMultiPane) {
+    if (LocalCompositionState.current.currentMode is Mode.Mobile) {
         ContactsAppbar(
             contactsComponent = contactsComponent,
             isChoosing = isChoosing,
             isExternalChoosing = isExternalChoosing,
             contacts = contacts
         )
+        contactsComponent.bottomBarController.hide()
     }
 
     if (isAdding) {

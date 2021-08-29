@@ -53,7 +53,6 @@ internal fun GroupMessage(groupMessageComponent: GroupMessageComponent) {
         // Show as separate screen
         contactsComponent != null && LocalCompositionState.current.currentMode == Mode.Mobile -> ContactsScreen(
             contactsComponent = contactsComponent!!, // It isn't null any way
-            isMultiPane = false
         )
         else -> GroupMessagePane(groupMessageComponent, contactsComponent)
     }
@@ -75,7 +74,6 @@ private fun GroupMessagePane(groupMessageComponent: GroupMessageComponent, conta
                 ContactsScreen(
                     modifier = Modifier.offset(y = -offset.dp),
                     contactsComponent = it,
-                    isMultiPane = false,
                     scrollState = scrollState
                 )
             }
