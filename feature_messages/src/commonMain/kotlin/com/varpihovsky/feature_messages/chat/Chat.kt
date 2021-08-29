@@ -46,7 +46,9 @@ internal fun Chat(chatComponent: ChatComponent) {
 
         val messaging = subcompose(Keys.MESSAGING) {
             Messaging(
-                modifier = Modifier.padding(bottom = field?.maxOfOrNull { it.height }?.dp ?: 0.dp),
+                modifier = Modifier.padding(
+                    bottom = field?.maxOfOrNull { it.height }?.toDp() ?: 0.dp
+                ),
                 messagingComponent = chatComponent.messagingComponent
             )
         }.map { it.measure(constraints) }
