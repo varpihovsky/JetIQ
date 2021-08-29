@@ -24,6 +24,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import com.varpihovsky.core_lifecycle.composition.LocalCompositionState
+import com.varpihovsky.core_lifecycle.composition.Mode
 import com.varpihovsky.core_ui.compose.entities.MessageItem
 import com.varpihovsky.ui_data.dto.UIMessageDTO
 import kotlin.math.max
@@ -69,10 +71,14 @@ private fun Message(message: MessagingComponent.Message) {
 }
 
 private fun calculateMessageSize(message: String, title: String): Float {
-    val title = title.length / 55f
+    val title = title.length / 40f
     val message = message.length / 34f
 
     var size = max(message, title)
+
+    if (LocalCompositionState.current.currentMode is Mode.Mobile) {
+        size *= 1.5f
+    }
 
     if (size > maxMessageSize) {
         size = maxMessageSize
