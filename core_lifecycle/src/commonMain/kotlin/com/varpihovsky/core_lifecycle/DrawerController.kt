@@ -6,4 +6,6 @@ interface DrawerController {
     fun setNavigation(text: String, content: @Composable () -> Unit)
 
     fun clear()
+
+    fun hide()
 }

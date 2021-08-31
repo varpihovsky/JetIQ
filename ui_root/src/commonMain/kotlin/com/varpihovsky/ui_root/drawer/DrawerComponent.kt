@@ -41,6 +41,10 @@ class DrawerComponent(
         _temporalNavigationContent.value = null
     }
 
+    override fun hide() {
+        _isShown.value = false
+    }
+
     fun onSettingsClick() {
         toggle()
         onSettingsClick.invoke()
