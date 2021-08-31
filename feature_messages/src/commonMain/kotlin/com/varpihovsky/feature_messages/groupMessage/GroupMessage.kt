@@ -18,7 +18,9 @@ package com.varpihovsky.feature_messages.groupMessage
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -45,6 +47,7 @@ internal fun GroupMessage(groupMessageComponent: GroupMessageComponent) {
             show()
             setText("Групове повідомлення...")
             setIconToBack()
+            setActions { }
         }
         groupMessageComponent.bottomBarController.hide()
     }
@@ -59,12 +62,21 @@ internal fun GroupMessage(groupMessageComponent: GroupMessageComponent) {
 }
 
 @Composable
-private fun GroupMessagePane(groupMessageComponent: GroupMessageComponent, contactsComponent: ContactsComponent?) {
+private fun GroupMessagePane(
+    groupMessageComponent: GroupMessageComponent,
+    contactsComponent: ContactsComponent?
+) {
     contactsComponent?.let {
         AlertDialog(
             modifier = Modifier.height(500.dp),
             onDismissRequest = groupMessageComponent::onDismissRequest,
-            confirmButton = { TextButton(onClick = groupMessageComponent::onAcceptButtonClick) { Text("Прийняти") } },
+            confirmButton = {
+                TextButton(onClick = groupMessageComponent::onAcceptButtonClick) {
+                    Text(
+                        "Прийняти"
+                    )
+                }
+            },
             dismissButton = { IconButton(onClick = groupMessageComponent::onDismissRequest) { Text("Відхилити") } },
             title = { Text("Вибір контактів...") },
             text = {
@@ -82,12 +94,19 @@ private fun GroupMessagePane(groupMessageComponent: GroupMessageComponent, conta
     }
 
     SubcomposeLayout { constraints ->
-        val chosenContacts = subcompose(Keys.CONTACTS) {
-            ChosenContacts(chosenContactsComponent = groupMessageComponent.chosenContactsComponent)
-        }.map { it.measure(constraints) }
-
         val field = subcompose(Keys.FIELD) {
             MessageField(messageFieldComponent = groupMessageComponent.messageFieldComponent)
+        }.map { it.measure(constraints) }
+
+        val fieldHeight = field.maxByOrNull { it.height }?.height ?: 0
+
+        val chosenContacts = subcompose(Keys.CONTACTS) {
+            ChosenContacts(
+                modifier = Modifier.padding(
+                    bottom = fieldHeight.toDp()
+                ).verticalScroll(rememberScrollState()),
+                chosenContactsComponent = groupMessageComponent.chosenContactsComponent
+            )
         }.map { it.measure(constraints) }
 
         layout(constraints.maxWidth, constraints.maxHeight) {

@@ -26,16 +26,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.varpihovsky.core.log.Logger
+import com.varpihovsky.core.log.d
 import com.varpihovsky.ui_data.dto.ReceiverType
 import com.varpihovsky.ui_data.dto.UIReceiverDTO
 import kotlin.math.roundToInt
 
 @Composable
-internal fun ChosenContacts(modifier: Modifier = Modifier, chosenContactsComponent: ChosenContactsComponent) {
+internal fun ChosenContacts(
+    modifier: Modifier = Modifier,
+    chosenContactsComponent: ChosenContactsComponent
+) {
     val contacts by chosenContactsComponent.contacts.subscribeAsState()
+
+    Logger.ui(contacts.size.toString())
 
     if (contacts.isEmpty()) {
         Row(
@@ -43,7 +51,11 @@ internal fun ChosenContacts(modifier: Modifier = Modifier, chosenContactsCompone
             verticalAlignment = Alignment.CenterVertically
         ) {
             ContactChips(
-                contact = UIReceiverDTO(id = -1, "Одержувачі пусті...", type = ReceiverType.STUDENT),
+                contact = UIReceiverDTO(
+                    id = -1,
+                    "Одержувачі пусті...",
+                    type = ReceiverType.STUDENT
+                ),
                 onRemove = {}
             )
             AddButton(onClick = chosenContactsComponent::onAddContactClick)
@@ -65,42 +77,64 @@ private fun FlowLayout(
     onRemove: (UIReceiverDTO) -> Unit,
     onAdd: () -> Unit
 ) {
-    SubcomposeLayout(
-        modifier = modifier
-    ) { constraints ->
+    SubcomposeLayout(modifier = modifier) { constraints ->
+        constraints.d(constraints.toString())
+
+        val paddingY = 15.toDp().value.roundToInt()
+        val paddingX = 10.toDp().value.roundToInt()
+
+        var currentX = paddingX
+        var currentY = paddingY
+
         val placeables = contacts.mapIndexed { index, uiReceiverDTO ->
             subcompose(index) {
                 ContactChips(
                     contact = uiReceiverDTO,
                     onRemove = onRemove
                 )
-            }.map { it.measure(constraints) }
-        }
-
-        val addButton = subcompose(Keys.ADD_BUTTON) { AddButton(onAdd) }.map { it.measure(constraints) }
-
-        layout(constraints.maxWidth, constraints.maxHeight) {
-            val paddingY = 15.toDp().value.roundToInt()
-            val paddingX = 10.toDp().value.roundToInt()
-
-            var currentX = paddingX
-            var currentY = paddingY
-
-            placeables.forEachIndexed { index, list ->
-                list.forEach { it.place(currentX, currentY) }
-
-                currentX += (list.maxOfOrNull { it.width } ?: 10) + paddingX
-
-                val nextPlaceableWidth = placeables.getOrNull(index + 1)?.maxOfOrNull { it.width } ?: 0
-                if (currentX + nextPlaceableWidth + paddingX > constraints.maxWidth) {
-                    currentX = paddingX
-                    currentY += (list.maxOfOrNull { it.height } ?: 10) + paddingY
+            }.map {
+                FlowLayoutData(
+                    placeable = it.measure(constraints),
+                    x = currentX,
+                    y = currentY
+                ).also {
+                    currentX += it.placeable.width + paddingX
+                    if (currentX + paddingX + it.placeable.width > constraints.maxWidth) {
+                        currentX = paddingX
+                        currentY += it.placeable.height + paddingY
+                    }
+                    it.d("${currentX}:${currentY}")
                 }
             }
-            addButton.forEach { it.place(currentX, currentY) }
+        }.onEach { it.d(it.toString()) }
+
+        val addButton =
+            subcompose(Keys.ADD_BUTTON) {
+                AddButton(onAdd)
+            }.map { it.measure(constraints) }.map {
+                val x = placeables.last().maxOf { it.x + it.placeable.width + paddingX }
+                val y = placeables.last().maxOf { it.y }
+                it.d("$x $y")
+                it.d("${it.width} ${it.height}")
+                FlowLayoutData(it, x, y)
+            }
+
+        // We also need a shadow to be visible
+        val shadowPadding = 35.toDp().value.roundToInt()
+
+        val layoutHeight = placeables.last().maxOf { it.y + it.placeable.height }
+
+
+        layout(constraints.maxWidth, layoutHeight + shadowPadding) {
+            placeables.forEach { list ->
+                list.forEach { it.placeable.place(it.x, it.y) }
+            }
+            addButton.forEach { it.placeable.place(it.x, it.y) }
         }
     }
 }
+
+private data class FlowLayoutData(val placeable: Placeable, val x: Int, val y: Int)
 
 @Composable
 private fun AddButton(onClick: () -> Unit) {
