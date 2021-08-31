@@ -88,6 +88,8 @@ class MessagesRootComponent(
         if (!_isMultiPane.value) {
             mainRouter.hide()
         }
+
+        drawerController.hide()
     }
 
     private fun onChatSelected(chat: UIReceiverDTO) {
@@ -100,6 +102,7 @@ class MessagesRootComponent(
 
     internal fun newContactDialog() {
         _contactAdditionComponent.value = ContactAdditionComponent(childContext("ContactAdditionComponent"))
+        drawerController.hide()
     }
 
     internal fun onConfirmButtonClick(contacts: List<UIReceiverDTO>) {
