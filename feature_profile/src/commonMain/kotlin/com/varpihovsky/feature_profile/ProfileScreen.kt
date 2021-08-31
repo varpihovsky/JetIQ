@@ -42,6 +42,8 @@ const val DETAILS_PANE_WEIGHT = 0.25f
 fun ProfileScreen(profileRootComponent: ProfileRootComponent) {
     val isMultiPane by profileRootComponent.isMultiPane.subscribeAsState()
 
+    profileRootComponent.drawerController.clear()
+
     Box {
         val isMultiPaneRequired = LocalCompositionState.current.currentMode == Mode.Desktop
         val routerState by profileRootComponent.detailsRouterState.subscribeAsState()
