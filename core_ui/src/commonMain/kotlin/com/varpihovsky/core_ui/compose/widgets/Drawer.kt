@@ -24,6 +24,6 @@ fun DrawerItem(
             painter = icon,
             contentDescription = contentDescription
         )
-        Text(text = text, style = MaterialTheme.typography.h5)
+        Text(text = text, style = MaterialTheme.typography.h6)
     }
 }
