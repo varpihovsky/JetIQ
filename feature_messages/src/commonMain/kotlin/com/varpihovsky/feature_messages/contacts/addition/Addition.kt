@@ -106,8 +106,8 @@ private fun AdditionDialog(
     AlertDialog(
         modifier = Modifier
             .wrapContentSize()
-            .sizeIn(maxHeight = 600.dp),
-//            .padding(20.dp),
+            .sizeIn(maxHeight = 600.dp)
+            .padding(20.dp),
         onDismissRequest = onDismissRequest,
         confirmButton = {
             BasicTextButton(
@@ -123,12 +123,7 @@ private fun AdditionDialog(
         },
         title = { Text(modifier = Modifier.padding(10.dp), text = "Новий контакт") },
         text = {
-            // Due to bug in Alert Dialog, we can't to put in LazyColumn, while Column with verticalScroll Modifier
-            // breaks layout size, so here we set always-on height and change offset after scrolling.
-            // It doesn't look as it have to, but at least it works.
-            val scrollState = rememberScrollState()
-            val offset = LocalDensity.current.density * scrollState.value
-            Column(modifier = Modifier.height(600.dp).offset(y = -offset.dp)) {
+            Column(modifier = Modifier.height(600.dp)) {
                 HorizontalSubscribedExposedDropDownList(
                     modifier = Modifier.padding(bottom = 7.dp),
                     text = "Тип: ",
@@ -174,18 +169,15 @@ private fun AdditionDialog(
                         }
                     }
                 }
-//                LazyColumn causes exception in alert dialog on jvm.
-//                LazyColumn {
-//                    items(count = contacts.size, key = { contacts[it].dto }) {
-//                        Contact(
-//                            contact = contacts[it],
-//                            onLongClick = { },
-//                            onClick = onContactSelected
-//                        )
-//                    }
-//                }
+
+                // Due to bug in Alert Dialog, we can't to put in LazyColumn, while Column with verticalScroll Modifier
+                // breaks layout size, so here we set always-on height and change offset after scrolling.
+                // It doesn't look as it have to, but at least it works.
+                val scrollState = rememberScrollState()
+                val offset = LocalDensity.current.density * scrollState.value
+
                 Column(
-                    modifier = Modifier.verticalScroll(scrollState)
+                    modifier = Modifier.verticalScroll(scrollState).offset(y = -offset.dp)
                 ) {
                     contacts.forEach {
                         Contact(
